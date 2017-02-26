@@ -14,12 +14,19 @@ To run any scripts defined in package.json.
 From root:
 ```bash
   npm run massinstall
-  npm link
 ```
 
 ## Running the Desktop App
 ```bash
   npm run desktop_launch
+
+  sudo gem install sass
+  sass --watch // Will compile .scss into .css
+
+  cd desktop
+  npm run dev // Debugger for desktop app (webpack --watch)
+
+  run 
 ```
 ## Running the Server
 ```bash
