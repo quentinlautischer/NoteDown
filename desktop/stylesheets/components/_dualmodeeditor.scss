@@ -1,0 +1,41 @@
+@import 'utils/all';
+
+.markdown-input-editor {
+  position: absolute;
+  box-sizing: border-box;
+  top: 5%;
+  left: 5%;
+  width: 45%;
+  height: 90%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.1);
+  resize: none;
+  outline: none;
+  font-size: 1.3em;
+  color: map-get($colors, dark);
+  font-family: 'Source Code Pro';
+  font-weight: 300;
+}
+
+.markdown-output-renderer {
+  position: absolute;
+  box-sizing: border-box;
+  top: 5%;
+  left: 50%;
+  width: 45%;
+  height: 90%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.1);
+  resize: none;
+  outline: none;
+  font-size: 1.3em;
+  color: map-get($colors, light);
+  background-color: map-get($colors, dark);
+  font-family: 'Source Code Pro';
+  font-weight: 300;
+  overflow-x: scroll
+}

@@ -1,0 +1,73 @@
+.menu-button {
+  width: 85.71429%;
+  float: left;
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  border-radius: 0.25rem; }
+  .menu-button.past, .menu-button.future {
+    opacity: 0.5; }
+  .menu-button:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.3); }
+
+.markdown-input-editor {
+  position: absolute;
+  box-sizing: border-box;
+  top: 5%;
+  left: 5%;
+  width: 45%;
+  height: 90%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  resize: none;
+  outline: none;
+  font-size: 1.3em;
+  color: #898989;
+  font-family: 'Source Code Pro';
+  font-weight: 300; }
+
+.markdown-output-renderer {
+  position: absolute;
+  box-sizing: border-box;
+  top: 5%;
+  left: 50%;
+  width: 45%;
+  height: 90%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  resize: none;
+  outline: none;
+  font-size: 1.3em;
+  color: #cdcdcd;
+  background-color: #898989;
+  font-family: 'Source Code Pro';
+  font-weight: 300;
+  overflow-x: scroll; }
+
+.notedown-title-logo {
+  font-family: Chalkduster;
+  width: 85.71429%;
+  float: center;
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  border-radius: 0.25rem; }
+
+body {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  font-family: "Roboto", sans-serif;
+  background-color: #0aaf82;
+  overflow: hidden; }
+
+/*# sourceMappingURL=main.css.map */

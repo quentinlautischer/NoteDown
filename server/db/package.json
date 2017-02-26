@@ -1,0 +1,15 @@
+{
+  "name": "NoteDownDB",
+  "description": "Note Taking App",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "undefined"
+  },
+  "main": "server.js",
+  "dependencies": {
+    "mongodb": "^2.2.23"
+  },
+  "devDependencies": {},
+  "license": "MIT"
+}
