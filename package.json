@@ -8,7 +8,7 @@
   },
   "main": "none.js",
   "scripts": {
-    "massinstall": "npm install & cd server && npm install && cd .. & cd server/db && npm install && cd ../.. & cd desktop && npm install && cd ..",
+    "massinstall": "npm install & cd server && npm install && cd .. & cd server/db && npm install && cd ../.. & cd desktop && npm install && cd .. & cd mobile && npm install && cd ..",
     "desktop_launch": "scripts/desktop_launch.js",
     "server_launch": "scripts/server_launch.js",
     "db_launch": "scripts/db_launch.js",
