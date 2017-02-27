@@ -9,11 +9,11 @@
   "main": "none.js",
   "scripts": {
     "massinstall": "npm install & cd server && npm install && cd .. & cd server/db && npm install && cd ../.. & cd desktop && npm install && cd .. & cd mobile && npm install && cd ..",
-    "desktop_launch": "scripts/desktop_launch.js",
-    "server_launch": "scripts/server_launch.js",
-    "db_launch": "scripts/db_launch.js",
-    "ios_launch": "scripts/ios_launch.js",
-    "android_launch": "scripts/android_launch.js"
+    "desktop": "cd desktop && electron .",
+    "server": "cd server && node server.js",
+    "db": "",
+    "ios_launch": "cd mobile && react-native run-ios",
+    "android_launch": "cd mobile && react-native run-android"
   },
   "babel": {
     "presets": [
