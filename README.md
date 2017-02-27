@@ -18,32 +18,30 @@ From root:
 
 ## Running the Desktop App
 ```bash
-  npm run desktop_launch
+  npm run desktop
 
   sudo gem install sass
   sass --watch // Will compile .scss into .css
 
   cd desktop
   npm run dev // Debugger for desktop app (webpack --watch)
-
-  run 
 ```
 ## Running the Server
 ```bash
-  npm run server_launch
+  npm run server
 ```
 ## Running the DB
 ```bash
-  npm run db_launch
+  npm run db
 ```
 
 ## Running the Mac App (OSX only)
 ```bash
-  npm run ios_launch
+  npm run ios
 ```
 
 ## Running the Android App (AVD must be running)
 ```bash
-  npm run android_launch
+  npm run android
 ```
 
