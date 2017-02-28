@@ -67,6 +67,7 @@ app.on('activate', function () {
 
 client.on('data', function(data) {
   console.log('Server Response: ' + data);
+  mainWindow.webContents.send('request-login-reply', 'granted');
 })
 
 client.on('close', function(){

@@ -5,8 +5,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import LoginButton from './components/loginButton';
-import QuickmodeButton from './components/quickmodeButton';
+
+import StartMenu from './components/startMenu';
+
+import FolderContainerView from './components/folderContainerView'
 import DualmodeEditor from './components/dualmodeEditor'
 import NoteDownTitleLogo from './components/notedownTitleLogo';
 
@@ -52,12 +54,13 @@ class App extends React.Component {
       return (
         <MuiThemeProvider>
           <div>
-            <NoteDownTitleLogo />
-            <LoginButton onClick={() => this.request_login()} /> 
-            <QuickmodeButton onClick={() => this.quickmode()} />
-            <Dialog 
-                open={this.state.exceptionOccured} 
-                title={this.state.exceptionMsg}
+           <StartMenu 
+            request_login={() => this.request_login()}
+            quickmode={() => this.quickmode()}
+            />
+           <Dialog 
+            open={this.state.exceptionOccured} 
+            title={this.state.exceptionMsg}
             />
           </div>
         </MuiThemeProvider>
@@ -66,8 +69,11 @@ class App extends React.Component {
       return (
         <DualmodeEditor />
       );
+    } else if (this.state.mode == 'folderview') {
+      return (
+        <FolderContainerView />
+      );
     }
-    
   }
 
   quickmode() {
@@ -82,6 +88,9 @@ class App extends React.Component {
     ipc.send('request-login', "username"+' '+"password");
     ipc.on('request-login-reply', (event, arg) => {
       console.log('received login reply: ' + arg);
+      this.setState({
+        mode: 'folderview',
+      });
     })
   }
 

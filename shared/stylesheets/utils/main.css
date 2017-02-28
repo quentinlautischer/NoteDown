@@ -1,11 +1,11 @@
 .menu-button {
   width: 85.71429%;
-  float: left;
   text-align: center;
   padding: 0.5rem;
   font-size: 0.75rem;
   font-weight: 400;
-  border-radius: 0.25rem; }
+  border-radius: 0.25rem;
+  transition: background-color 0.25s ease-in-out; }
   .menu-button.past, .menu-button.future {
     opacity: 0.5; }
   .menu-button:hover {
@@ -59,6 +59,25 @@
   font-size: 0.75rem;
   font-weight: 400;
   border-radius: 0.25rem; }
+
+.folder-view {
+  position: relative;
+  box-sizing: border-box;
+  top: 5%;
+  left: 5%;
+  width: 30%;
+  height: 20%;
+  padding: 100px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  resize: none;
+  outline: none;
+  font-size: 1.3em;
+  color: #898989;
+  font-family: 'Source Code Pro';
+  font-weight: 300;
+  text-align: center; }
 
 body {
   position: absolute;

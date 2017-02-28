@@ -1,12 +1,12 @@
 .menu-button {
   width: percentage(6/7);
-  float: left;
+  // float: left;
   text-align: center;
   padding: 0.5rem;
   font-size: 0.75rem;
   font-weight: 400;
   border-radius: 0.25rem;
-  //transition: background-color 0.25s ease-in-out;
+  transition: background-color 0.25s ease-in-out;
 
   // Variants
   &.past, &.future {

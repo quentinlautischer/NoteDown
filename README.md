@@ -23,6 +23,10 @@ From root:
   sudo gem install sass
   sass --watch // Will compile .scss into .css
 
+  OR
+
+  npm run watch_sass // compiles .sass to .css
+
   cd desktop
   npm run dev // Debugger for desktop app (webpack --watch)
 ```
@@ -38,6 +42,9 @@ From root:
 ## Running the Mac App (OSX only)
 ```bash
   npm run ios
+
+  npm run watch_sass // compiles .sass to .css
+  npm run mobile_watch_css // compiles .css to .js for mobile style
 ```
 
 ## Running the Android App (AVD must be running)
