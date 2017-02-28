@@ -6,8 +6,6 @@ import {
     TouchableHighlight
 } from 'react-native';
 
-var styles = require('../styles.js');
-
 export default class LoginScene extends Component {
     navigate(){
         this.props.navigator.push({
@@ -19,7 +17,7 @@ export default class LoginScene extends Component {
         return (
             <View>
                 <Text>This is the login scene.</Text>
-                <TouchableHighlight style={styles.menubutton} onPress = {this.navigate.bind(this)}>
+                <TouchableHighlight onPress = {this.navigate.bind(this)}>
                     <Text>Login</Text>
                 </TouchableHighlight>
             </View>
