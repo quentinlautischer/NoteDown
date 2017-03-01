@@ -9,13 +9,13 @@ var db = mongoose.connection;
 var HOST = '127.0.0.1';
 var PORT = 3000;
 
-net.createServer(function(sock) {
+var server = net.createServer(function(sock) {
 
   console.log('Connected: ' + sock.remoteAddress + ':' + sock.remotePort);
 
   sock.on('data', function(data) {
     console.log('I got your msg: ' + data);
-    
+
     var account = new Account({
       email: 'lalala@gmail.com',
       name: 'lala',
@@ -42,10 +42,14 @@ net.createServer(function(sock) {
 
   db.on('error', console.error.bind(console, 'connection error:'));
   db.once('open', function(){
-    
+
 
   });
 
 }).listen(PORT, HOST);
+
+server.on('connection', function(data) {
+    console.log('A client just joined on');
+});
 
 console.log('Server listening on: ' + HOST +':'+ PORT);
