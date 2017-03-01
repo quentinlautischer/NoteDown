@@ -4,7 +4,7 @@ import { AppRegistry } from 'react-native';
 
 import Navigate from './scenes/Navigate';
 
-export default class Main extends Component {
+class Main extends Component {
     render() {
         return <Navigate />
     }
