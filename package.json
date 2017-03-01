@@ -12,7 +12,7 @@
     "desktop": "cd desktop && electron . && cd ..",
     "desktop_watch_webkit": "cd desktop && npm run dev && cd ..",
     "server": "cd server && node server.js && cd ..",
-    "db": "cd server/db && mongod --dbpath /data/db && cd ../..",
+    "db": "cd server/db && mongod --dbpath ./data/db && cd ../..",
     "ios": "cd mobile && react-native run-ios && cd ..",
     "android": "cd mobile && react-native run-android && cd ..",
     "watch_sass": "cd shared && sass --watch stylesheets && cd ..",
