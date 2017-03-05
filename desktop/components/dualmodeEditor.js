@@ -5,6 +5,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import Renderer from './renderer';
+import TocNav from './tocNav';
+
 var shared = require('../../shared/parser.js');
 class DualmodeEditor extends React.Component {
   constructor() {
@@ -32,26 +34,17 @@ class DualmodeEditor extends React.Component {
 
   render() {
     return (
-      <MuiThemeProvider>
-        <div>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <textarea id="userText" value={this.state.content} className="markdown-input-editor" onChange={this.handleChange}>
-                    {this.state.content}
-                  </textarea>
-                </td>
-                <td>
-                  <div id="renderField" className="markdown-output-renderer" 
-                  dangerouslySetInnerHTML= {{__html: this.state.rendered_content}}>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div className="dualMode-container">
+        <textarea id="userText" value={this.state.content} className="markdown-input-editor" onChange={this.handleChange}>
+          {this.state.content}
+        </textarea>
+        <div className="render-container">
+          <TocNav />
+          <div id="renderField" className="markdown-output-renderer" 
+            dangerouslySetInnerHTML= {{__html: this.state.rendered_content}}>
+          </div>
         </div>
-      </MuiThemeProvider>
+      </div>
     );
   }
 

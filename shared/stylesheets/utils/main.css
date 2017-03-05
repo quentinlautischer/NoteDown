@@ -1,5 +1,5 @@
 .menu-button {
-  width: 85.71429%;
+  width: pecentage(1/4);
   text-align: center;
   padding: 0.5rem;
   font-size: 0.75rem;
@@ -10,15 +10,16 @@
     opacity: 0.5; }
   .menu-button:hover {
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.3); }
+    background-color: rgba(255, 255, 255, 0.3);
+    width: pecentage(1/4); }
 
 .markdown-input-editor {
   position: absolute;
   box-sizing: border-box;
-  top: 5%;
-  left: 5%;
-  width: 45%;
-  height: 90%;
+  top: 1%;
+  left: 1%;
+  width: 48%;
+  height: 97%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -33,10 +34,10 @@
 .markdown-output-renderer {
   position: absolute;
   box-sizing: border-box;
-  top: 5%;
+  top: 21%;
   left: 50%;
-  width: 45%;
-  height: 90%;
+  width: 48%;
+  height: 77%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -52,7 +53,7 @@
 
 .notedown-title-logo {
   font-family: Chalkduster;
-  width: 85.71429%;
+  width: 100%;
   float: center;
   text-align: center;
   padding: 0.5rem;
@@ -78,6 +79,46 @@
   font-family: 'Source Code Pro';
   font-weight: 300;
   text-align: center; }
+
+.menu-text-field {
+  font-family: Chalkduster;
+  float: center;
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  border-radius: 0.25rem; }
+
+.login-signup-toggle {
+  display: 'flex';
+  flex-direction: 'row'; }
+
+.toc-nav {
+  position: absolute;
+  box-sizing: border-box;
+  top: 1%;
+  left: 50%;
+  width: 48%;
+  height: 20%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  resize: none;
+  outline: none;
+  font-size: 1.3em;
+  color: #898989;
+  background-color: white;
+  font-family: 'Source Code Pro';
+  font-weight: 300; }
+
+.toc-nav .a {
+  color: red; }
+
+.start-menu {
+  position: relative;
+  margin-top: 20%;
+  align: center; }
 
 body {
   position: absolute;

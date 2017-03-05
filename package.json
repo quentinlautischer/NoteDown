@@ -8,7 +8,7 @@
   },
   "main": "none.js",
   "scripts": {
-    "massinstall": "npm install & cd server && npm install && cd .. & cd server/db && npm install && cd ../.. & cd desktop && npm install && cd .. & cd mobile && npm install && cd ..",
+    "massinstall": "npm install & cd server && npm install && cd .. & cd server/db && npm install && cd ../.. & cd desktop && npm install && cd .. & cd mobile && npm install && cd .. & cd shared && npm install && cd ..",
     "desktop": "cd desktop && electron . && cd ..",
     "desktop_watch_webkit": "cd desktop && npm run dev && cd ..",
     "server": "cd server && node server.js && cd ..",

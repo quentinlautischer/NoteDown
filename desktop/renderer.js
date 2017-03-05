@@ -56,6 +56,7 @@ class App extends React.Component {
           <div>
            <StartMenu 
             request_login={() => this.request_login()}
+            request_signu={() => this.request_signup()}
             quickmode={() => this.quickmode()}
             />
            <Dialog 
@@ -88,6 +89,17 @@ class App extends React.Component {
     ipc.send('request-login', "username"+' '+"password");
     ipc.on('request-login-reply', (event, arg) => {
       console.log('received login reply: ' + arg);
+      this.setState({
+        mode: 'folderview',
+      });
+    })
+  }
+
+  request_sign_up() {
+    console.log("received login request");
+    ipc.send('request-signup', "username"+' '+"password");
+    ipc.on('request-signup-reply', (event, arg) => {
+      console.log('received signup reply: ' + arg);
       this.setState({
         mode: 'folderview',
       });

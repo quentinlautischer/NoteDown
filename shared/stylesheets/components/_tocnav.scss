@@ -1,0 +1,23 @@
+.toc-nav {
+  position: absolute;
+  box-sizing: border-box;
+  top: 1%;
+  left: 50%;
+  width: 48%;
+  height: 20%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.1);
+  resize: none;
+  outline: none;
+  font-size: 1.3em;
+  color: map-get($colors, dark);
+  background-color: white;
+  font-family: 'Source Code Pro';
+  font-weight: 300;
+}
+
+.toc-nav .a {
+  color: red;
+}
