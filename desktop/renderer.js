@@ -86,7 +86,10 @@ class App extends React.Component {
 
   request_login() {
     console.log("received login request");
-    ipc.send('request-login', "username"+' '+"password");
+
+    const data = {username: "stub_user", password: "stub_pass"};
+    ipc.send('request-login', data);
+
     ipc.on('request-login-reply', (event, arg) => {
       console.log('received login reply: ' + arg);
       this.setState({

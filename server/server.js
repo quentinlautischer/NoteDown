@@ -15,23 +15,24 @@ var server = net.createServer(function(sock) {
 
   sock.on('data', function(data) {
     console.log('I got your msg: ' + data);
+    
 
-    var account = new Account({
-      email: 'lalala@gmail.com',
-      name: 'lala',
-      password: '123'
-    });
+    // var account = new Account({
+    //   email: 'lalala@gmail.com',
+    //   name: 'lala',
+    //   password: '123'
+    // });
 
-    account.save(function (err, account) {
-      if (err) return console.error(err);
-      console.log('db save of account: sucess');
+    // account.save(function (err, account) {
+    //   if (err) return console.error(err);
+    //   console.log('db save of account: sucess');
 
-      Account.find(function (err, account) {
-        if (err)
-          return console.error(err);
-        console.log('Accounts: ' + account);
-      });
-    });
+    //   Account.find(function (err, account) {
+    //     if (err)
+    //       return console.error(err);
+    //     console.log('Accounts: ' + account);
+    //   });
+    // });
 
     sock.write('Login Granted');
   });
@@ -49,7 +50,7 @@ var server = net.createServer(function(sock) {
 }).listen(PORT, HOST);
 
 server.on('connection', function(data) {
-    console.log('A client just joined on');
+    console.log('A client just joined');
 });
 
 console.log('Server listening on: ' + HOST +':'+ PORT);

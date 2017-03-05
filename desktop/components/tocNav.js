@@ -1,4 +1,5 @@
 import React from 'react';
+import TocItem from './tocItem';
 
 class TocNav extends React.Component {
   render() {
@@ -11,4 +12,6 @@ class TocNav extends React.Component {
       </div>
     );
   }
-pdefault pocpavp
+}
+
+export default TocNav;

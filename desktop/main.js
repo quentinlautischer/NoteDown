@@ -1,54 +1,37 @@
 const electron = require('electron')
-// Module to control application life.
 const app = electron.app
-// Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
 const path = require('path')
 const url = require('url')
 
 const ipcMain = require('electron').ipcMain;
-
 const net = require('net');
 
 var HOST = '127.0.0.1';
 var PORT = '3000';
-
 var client = new net.Socket();
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
 function createWindow () {
-  // Create the browser window.
   mainWindow = new BrowserWindow({width: 1200, height: 800})
 
-  // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
     slashes: true
   }))
 
-  // Open the DevTools.
   mainWindow.webContents.openDevTools()
 
-  // Emitted when the window is closed.
   mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     mainWindow = null
   })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
 
-// Quit when all windows are closed.
 app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
@@ -77,17 +60,20 @@ client.on('close', function(){
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.on('request-login', (event, arg) => {
-  console.log('Main Process received login request: ' + arg);
+ipcMain.on('request-login', (event, data) => {
+  console.log('Main Process received login request: ' + data.username + ' ' + data.password);
 
   client.connect(PORT, HOST, function() {
     console.log('Connected');
-    client.write('Requesting Login with credentials: ' + arg);
+    const event = {event: "request-login", username: data.username + ' ' + data.password};
+    client.write(JSON.stringify(event));
   });
-  // var render_result = shared.call_shared_foo(arg);
-  // console.log('Post Rendered text: ' + render_result);
-  // event.sender.send('render-text-reply', render_result);
 })
+
+ipcMain.on('request-signup', (event, arg) => {
+  console.log('Main Process received signup request: ' + arg);
+})
+
 
 process.on('uncaughtException', function (error) {
   console.log("Error occured: " + error);
