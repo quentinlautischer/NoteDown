@@ -10,8 +10,8 @@ function parse(str) {
 function p_header(fullText) {
   var resultText = fullText;
   var tempText;
-  var r_setext = "/^(.*?)\n(-|=)+$/gm";
-  var r_atx = "/^(#{1,6})\s*(.+?)\s*#*$/gm";
+  var r_setext = /^(.*?)\n(-|=)+$/gm;
+  var r_atx = /^(#{1,6})\s*(.+?)\s*#*$/gm;
   var magnitude;
   var bound1, bound2;
   
@@ -47,8 +47,8 @@ function p_header(fullText) {
 function p_links(fullText) {
   var resultText = fullText;
   var tempText;
-  var r_refs = "/^\s{0,3}\[(.+?)\]:\s*(.*?)\s*$/gm";
-  var r_links = "/!?\[(.*?)\]((\(|\[).*?(\)|\]))/gm";
+  var r_refs = /^\s{0,3}\[(.+?)\]:\s*(.*?)\s*$/gm;
+  var r_links = /!?\[(.*?)\]((\(|\[).*?(\)|\]))/gm;
   var isImage, address;
   var refs = [];
   var bound1, bound2;
