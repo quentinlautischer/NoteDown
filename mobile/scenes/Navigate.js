@@ -4,7 +4,8 @@ import {
   Text,
   View,
   Navigator,
-  TouchableHighlight
+  TouchableHighlight,
+  StyleSheet
 } from 'react-native';
 
 import LoginScene from './LoginScene';
@@ -61,19 +62,26 @@ export default class Navigate extends Component {
                             } else {
                                 return (
                                 <TouchableHighlight onPress={() => navigator.pop()}>
-                                  <Text>Back</Text>
+                                  <Text style={{padding: 10}}>Back</Text>
                                 </TouchableHighlight>
                             );
                         }},
                         RightButton: (route, navigator, index, navState) =>
                             { return null; },
                         Title: (route, navigator, index, navState) =>
-                            { return (<Text>{route.title}</Text>); }
+                            { return null; }
                     }}
                     />
                 }
-            style={{padding: 40}}
+            style={styles.view}
             />
         );
     }
 }
+
+var styles = StyleSheet.create({
+    view: {
+        padding: 50,
+        backgroundColor: '#0aaf82',
+    }
+});
