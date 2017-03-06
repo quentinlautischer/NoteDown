@@ -72,7 +72,7 @@
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _dualmodeEditor = __webpack_require__(380);
+	var _dualmodeEditor = __webpack_require__(379);
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
@@ -80,7 +80,11 @@
 
 	var _notedownTitleLogo2 = _interopRequireDefault(_notedownTitleLogo);
 
-	var _Dialog = __webpack_require__(384);
+	var _waiter = __webpack_require__(384);
+
+	var _waiter2 = _interopRequireDefault(_waiter);
+
+	var _Dialog = __webpack_require__(385);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -96,7 +100,7 @@
 
 	var _Paper2 = _interopRequireDefault(_Paper);
 
-	var _reactTapEventPlugin = __webpack_require__(389);
+	var _reactTapEventPlugin = __webpack_require__(390);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -113,7 +117,7 @@
 
 	(0, _reactTapEventPlugin2.default)();
 
-	var ipc = __webpack_require__(395).ipcRenderer;
+	var ipc = __webpack_require__(396).ipcRenderer;
 
 	var App = function (_React$Component) {
 	  _inherits(App, _React$Component);
@@ -124,24 +128,33 @@
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
 
 	    _this.state = {
-	      mode: 'sign-in',
+	      mode: 'start-menu',
+	      currentFolderid: null,
+	      waiting: false,
 	      exceptionOccured: false,
 	      exceptionMsg: "No Exception"
 	    };
 
-	    ipc.on('error-toast', function (event, arg) {
-	      console.log("error occured: " + arg);
-	      _this.setState({
-	        exceptionOccured: true
-	      });
-	      _this.setState({
-	        exceptionMsg: 'Main Proc Exception Caught: ' + arg
-	      });
-	    });
+	    _this.notes = {
+	      userid: null,
+	      images: [],
+	      folders: []
+	    };
+
+	    _this.init_ipc_app();
 	    return _this;
 	  }
 
 	  _createClass(App, [{
+	    key: 'setCurrentFolder',
+	    value: function setCurrentFolder(id) {
+	      console.log("Setting Current Folder " + id);
+	      this.setState({
+	        currentFolderid: id,
+	        mode: 'editor'
+	      });
+	    }
+	  }, {
 	    key: 'handleRequestClose',
 	    value: function handleRequestClose() {
 	      this.setState({
@@ -153,7 +166,7 @@
 	    value: function render() {
 	      var _this2 = this;
 
-	      if (this.state.mode == 'sign-in') {
+	      if (this.state.mode == 'start-menu') {
 	        return _react2.default.createElement(
 	          _MuiThemeProvider2.default,
 	          null,
@@ -161,11 +174,11 @@
 	            'div',
 	            null,
 	            _react2.default.createElement(_startMenu2.default, {
-	              request_login: function request_login() {
-	                return _this2.request_login();
+	              request_login: function request_login(username, password) {
+	                return _this2.request_login(username, password);
 	              },
-	              request_signu: function request_signu() {
-	                return _this2.request_signup();
+	              request_signup: function request_signup(username, password, email) {
+	                return _this2.request_signup(username, password, email);
 	              },
 	              quickmode: function quickmode() {
 	                return _this2.quickmode();
@@ -174,59 +187,121 @@
 	            _react2.default.createElement(_Dialog2.default, {
 	              open: this.state.exceptionOccured,
 	              title: this.state.exceptionMsg
+	            }),
+	            _react2.default.createElement(_waiter2.default, {
+	              open: this.state.waiting,
+	              title: "Waiting"
 	            })
 	          )
 	        );
-	      } else if (this.state.mode == 'quickmode') {
-	        return _react2.default.createElement(_dualmodeEditor2.default, null);
+	      } else if (this.state.mode == 'editor') {
+	        return _react2.default.createElement(_dualmodeEditor2.default, { state: this.state, notes: this.notes });
 	      } else if (this.state.mode == 'folderview') {
-	        return _react2.default.createElement(_folderContainerView2.default, null);
+	        return _react2.default.createElement(_folderContainerView2.default, { newFolder: function newFolder() {
+	            return _this2.newFolder();
+	          }, openFolder: function openFolder(id) {
+	            return _this2.setCurrentFolder(id);
+	          }, notes: this.notes });
 	      }
+	    }
+	  }, {
+	    key: 'newFolder',
+	    value: function newFolder() {
+	      console.log("new folder");
+	    }
+	  }, {
+	    key: 'open_folder',
+	    value: function open_folder(id) {
+	      console.log("Open Folder");
+	      console.log("Request to open folder: " + id);
+	      console.log(id);
+	      //Setup some state    
 	    }
 	  }, {
 	    key: 'quickmode',
 	    value: function quickmode() {
 	      console.log("quickmode enabled");
 	      this.setState({
-	        mode: 'quickmode'
+	        mode: 'editor'
 	      });
 	    }
 	  }, {
 	    key: 'request_login',
-	    value: function request_login() {
-	      var _this3 = this;
+	    value: function request_login(username, password) {
+	      console.log("received login request; Username: " + username + " Password: " + password);
 
-	      console.log("received login request");
-
-	      var data = { username: "stub_user", password: "stub_pass" };
+	      var data = { username: username, password: password };
 	      ipc.send('request-login', data);
 
-	      ipc.on('request-login-reply', function (event, arg) {
-	        console.log('received login reply: ' + arg);
-	        _this3.setState({
-	          mode: 'folderview'
-	        });
+	      this.setState({
+	        waiting: true
 	      });
 	    }
 	  }, {
-	    key: 'request_sign_up',
-	    value: function request_sign_up() {
-	      var _this4 = this;
+	    key: 'request_signup',
+	    value: function request_signup(username, password, email) {
+	      console.log("received signup request; Username: " + username + " Password: " + password + " Email: " + email);
 
-	      console.log("received login request");
-	      ipc.send('request-signup', "username" + ' ' + "password");
-	      ipc.on('request-signup-reply', function (event, arg) {
-	        console.log('received signup reply: ' + arg);
-	        _this4.setState({
-	          mode: 'folderview'
-	        });
+	      var data = { username: username, password: password, email: email };
+	      ipc.send('request-signup', data);
+
+	      this.setState({
+	        waiting: true
 	      });
 	    }
 	  }, {
-	    key: 'start_app',
-	    value: function start_app() {
-	      console.log("toggling app mode");
-	      this.setState({ mode: 'app' });
+	    key: 'request_pull_data',
+	    value: function request_pull_data() {
+	      console.log("requesting data pull");
+	      var data = { userid: "lautisch" };
+	      ipc.send('request-pull-data', data);
+	    }
+	  }, {
+	    key: 'init_ipc_app',
+	    value: function init_ipc_app() {
+	      var _this3 = this;
+
+	      ipc.on('error-toast', function (event, arg) {
+	        console.log("error occured: " + arg);
+	        _this3.setState({
+	          exceptionOccured: true,
+	          exceptionMsg: 'Main Proc Exception Caught: ' + arg
+	        });
+	      });
+
+	      ipc.on('request-login-response', function (event, arg) {
+	        console.log('received login response: ' + arg);
+	        _this3.setState({ waiting: false });
+
+	        _this3.request_pull_data();
+	      });
+
+	      ipc.on('request-signup-response', function (event, arg) {
+	        console.log('received signup reply: ' + arg);
+	        _this3.setState({
+	          waiting: true
+	        });
+
+	        _this3.request_pull_data();
+	      });
+
+	      ipc.on('request-push-data-response', function (event, arg) {
+	        console.log('request-push-data-response: ' + arg);
+	      });
+
+	      ipc.on('request-pull-data-response', function (event, arg) {
+	        console.log('request-pull-data-response: ' + arg);
+
+	        _this3.notes = arg.notes;
+
+	        console.log(_this3.notes);
+
+	        _this3.setState({ mode: 'folderview' });
+	      });
+
+	      ipc.on('request-photo-response', function (event, arg) {
+	        console.log('request-photo-response: ' + arg);
+	      });
 	    }
 	  }]);
 
@@ -28942,17 +29017,46 @@
 	    var _this = _possibleConstructorReturn(this, (StartMenu.__proto__ || Object.getPrototypeOf(StartMenu)).call(this));
 
 	    _this.state = {
-	      mode: 'main'
+	      mode: 'main',
+	      username: '',
+	      password: '',
+	      email: ''
 	    };
+
+	    _this.handleUsernameChange = _this.handleUsernameChange.bind(_this);
+	    _this.handlePasswordChange = _this.handlePasswordChange.bind(_this);
+	    _this.handleEmailChange = _this.handleEmailChange.bind(_this);
+
+	    _this.handleSubmit = _this.handleSubmit.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(StartMenu, [{
-	    key: 'getInitialState',
-	    value: function getInitialState() {
-	      return {
-	        mode: 'main'
-	      };
+	    key: 'handleUsernameChange',
+	    value: function handleUsernameChange(event) {
+	      this.setState({
+	        username: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'handlePasswordChange',
+	    value: function handlePasswordChange(event) {
+	      this.setState({
+	        password: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'handleEmailChange',
+	    value: function handleEmailChange(event) {
+	      this.setState({
+	        email: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'handleSubmit',
+	    value: function handleSubmit(event) {
+	      alert('A name was submitted: ' + this.state.username);
+	      event.preventDefault();
 	    }
 	  }, {
 	    key: 'render',
@@ -28964,13 +29068,13 @@
 	          'div',
 	          { className: 'start-menu' },
 	          _react2.default.createElement(_notedownTitleLogo2.default, null),
-	          _react2.default.createElement(_menuTextField2.default, { className: 'username', hintText: 'Username' }),
-	          _react2.default.createElement(_menuTextField2.default, { className: 'password-field', hintText: 'Password' }),
+	          _react2.default.createElement(_menuTextField2.default, { value: this.state.username, className: 'username', hintText: 'Username', onChange: this.handleUsernameChange }),
+	          _react2.default.createElement(_menuTextField2.default, { value: this.state.password, className: 'password-field', hintText: 'Password', onChange: this.handlePasswordChange }),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'login-signup-toggle' },
 	            _react2.default.createElement(_menuButton2.default, { className: 'login-btn', label: 'Login', onClick: function onClick() {
-	                return _this2.props.request_login();
+	                return _this2.props.request_login(_this2.state.username, _this2.state.password);
 	              } }),
 	            _react2.default.createElement('br', null),
 	            _react2.default.createElement('br', null),
@@ -28994,14 +29098,14 @@
 	          'div',
 	          { className: 'start-menu' },
 	          _react2.default.createElement(_notedownTitleLogo2.default, null),
-	          _react2.default.createElement(_menuTextField2.default, { className: 'username', hintText: 'Username' }),
-	          _react2.default.createElement(_menuTextField2.default, { className: 'password-field', hintText: 'Password' }),
-	          _react2.default.createElement(_menuTextField2.default, { className: 'email', hintText: 'Email' }),
+	          _react2.default.createElement(_menuTextField2.default, { value: this.state.username, className: 'username', hintText: 'Username', onChange: this.handleUsernameChange }),
+	          _react2.default.createElement(_menuTextField2.default, { value: this.state.password, className: 'password-field', hintText: 'Password', onChange: this.handlePasswordChange }),
+	          _react2.default.createElement(_menuTextField2.default, { value: this.state.email, className: 'email', hintText: 'Email', onChange: this.handleEmailChange }),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'login-signup-toggle' },
 	            _react2.default.createElement(_menuButton2.default, { label: 'Sign-Up', onClick: function onClick() {
-	                return _this2.props.request_signup();
+	                return _this2.props.request_signup(_this2.state.username, _this2.state.password, _this2.state.email);
 	              } }),
 	            _react2.default.createElement('br', null),
 	            _react2.default.createElement('br', null),
@@ -32714,9 +32818,9 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _TextField = __webpack_require__(365);
+	var _TextField2 = __webpack_require__(365);
 
-	var _TextField2 = _interopRequireDefault(_TextField);
+	var _TextField3 = _interopRequireDefault(_TextField2);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32726,13 +32830,13 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var MenuTextField = function (_React$Component) {
-	  _inherits(MenuTextField, _React$Component);
+	var MenuTextField = function (_TextField) {
+	  _inherits(MenuTextField, _TextField);
 
 	  function MenuTextField() {
 	    _classCallCheck(this, MenuTextField);
 
-	    return _possibleConstructorReturn(this, (MenuTextField.__proto__ || Object.getPrototypeOf(MenuTextField)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (MenuTextField.__proto__ || Object.getPrototypeOf(MenuTextField)).call(this));
 	  }
 
 	  _createClass(MenuTextField, [{
@@ -32741,13 +32845,19 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'menu-text-field' },
-	        _react2.default.createElement(_TextField2.default, { hintStyle: { textAlign: 'center' }, className: 'menu-text-field', hintText: this.props.hintText })
+	        _react2.default.createElement(_TextField3.default, {
+	          hintStyle: { textAlign: 'center' },
+	          className: this.props.className + " menu-text-field",
+	          hintText: this.props.hintText,
+	          value: this.props.value,
+	          onChange: this.props.onChange
+	        })
 	      );
 	    }
 	  }]);
 
 	  return MenuTextField;
-	}(_react2.default.Component);
+	}(_TextField3.default);
 
 	exports.default = MenuTextField;
 
@@ -34382,10 +34492,6 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	var _folderView = __webpack_require__(379);
-
-	var _folderView2 = _interopRequireDefault(_folderView);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34394,29 +34500,54 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	// {this.props.results.map(function(result) {
-	//  return <FolderView key={result.id} result="item"/>;
-	// })}
-
 	var FolderContainerView = function (_React$Component) {
 	  _inherits(FolderContainerView, _React$Component);
 
-	  function FolderContainerView() {
+	  function FolderContainerView(props) {
 	    _classCallCheck(this, FolderContainerView);
 
-	    return _possibleConstructorReturn(this, (FolderContainerView.__proto__ || Object.getPrototypeOf(FolderContainerView)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (FolderContainerView.__proto__ || Object.getPrototypeOf(FolderContainerView)).call(this, props));
+
+	    _this.folderid = "0";
+
+	    _this.selectFolder = _this.selectFolder.bind(_this);
+	    _this.renderFolder = _this.renderFolder.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(FolderContainerView, [{
+	    key: 'selectFolder',
+	    value: function selectFolder(id, e) {
+	      console.log("Selected Folder: " + id);
+	      this.props.openFolder(id);
+	    }
+	  }, {
+	    key: 'renderFolder',
+	    value: function renderFolder(_ref) {
+	      var name = _ref.name,
+	          _id = _ref._id;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { key: _id, className: 'folder-view', onClick: this.selectFolder.bind(this, _id) },
+	        name
+	      );
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+
 	      return _react2.default.createElement(
-	        _MuiThemeProvider2.default,
-	        null,
+	        'div',
+	        { className: 'folder-container-view' },
+	        this.props.notes.folders.map(this.renderFolder, this),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'folder-container-view' },
-	          _react2.default.createElement(_folderView2.default, { name: 'Item1' })
+	          { className: 'folder-view', onClick: function onClick() {
+	              return _this2.props.newFolder();
+	            } },
+	          'New +'
 	        )
 	      );
 	    }
@@ -34451,71 +34582,11 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var FolderView = function (_React$Component) {
-	  _inherits(FolderView, _React$Component);
-
-	  function FolderView() {
-	    _classCallCheck(this, FolderView);
-
-	    return _possibleConstructorReturn(this, (FolderView.__proto__ || Object.getPrototypeOf(FolderView)).apply(this, arguments));
-	  }
-
-	  _createClass(FolderView, [{
-	    key: 'render',
-	    value: function render() {
-	      return (
-	        // <div className="folder-view">return {this.props.result};</div>
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'folder-view' },
-	          this.props.name
-	        )
-	      );
-	    }
-	  }]);
-
-	  return FolderView;
-	}(_react2.default.Component);
-
-	exports.default = FolderView;
-
-/***/ },
-/* 380 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _MuiThemeProvider = __webpack_require__(177);
-
-	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
-
-	var _getMuiTheme = __webpack_require__(264);
-
-	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
-
-	var _renderer = __webpack_require__(381);
+	var _renderer = __webpack_require__(380);
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _tocNav = __webpack_require__(382);
+	var _tocNav = __webpack_require__(381);
 
 	var _tocNav2 = _interopRequireDefault(_tocNav);
 
@@ -34532,33 +34603,52 @@
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
 
-	  function DualmodeEditor() {
+	  function DualmodeEditor(props) {
 	    _classCallCheck(this, DualmodeEditor);
 
-	    var _this = _possibleConstructorReturn(this, (DualmodeEditor.__proto__ || Object.getPrototypeOf(DualmodeEditor)).call(this));
+	    var _this = _possibleConstructorReturn(this, (DualmodeEditor.__proto__ || Object.getPrototypeOf(DualmodeEditor)).call(this, props));
 
 	    _this.state = {
-	      content: 'Nothing',
-	      rendered_content: 'Nothing'
+	      content: "",
+	      rendered_content: ""
 	    };
 
 	    _this.handleChange = _this.handleChange.bind(_this);
+	    _this.loadCurrentPage = _this.loadCurrentPage.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(DualmodeEditor, [{
-	    key: 'getInitialState',
-	    value: function getInitialState() {
-	      return {
-	        content: 'Nothing',
-	        rendered_content: 'Nothing'
-	      };
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      if (this.props.notes.userid != null) {
+	        this.loadCurrentPage(this.props.state.currentFolderid, this.props.notes);
+	        this.handleChange;
+	      }
+	    }
+	  }, {
+	    key: 'loadCurrentPage',
+	    value: function loadCurrentPage(folderid, notes) {
+	      console.log("Folderid: " + folderid + " Notes: " + JSON.stringify(notes));
+	      var pages = this.findFolderWithId(folderid, notes).pages;
+	      var content = pages[0].content;
+	      this.setState({
+	        content: content
+	      });
+	    }
+	  }, {
+	    key: 'findFolderWithId',
+	    value: function findFolderWithId(folderid, notes) {
+	      var theFolder = notes.folders.filter(function (folder) {
+	        return folder._id == folderid;
+	      });
+	      return theFolder[0];
 	    }
 	  }, {
 	    key: 'handleChange',
 	    value: function handleChange(e) {
 	      this.setState({ content: e.target.value });
-	      this.parse();
+	      this.parse(e.target.value);
 	    }
 	  }, {
 	    key: 'render',
@@ -34582,8 +34672,7 @@
 	    }
 	  }, {
 	    key: 'parse',
-	    value: function parse() {
-	      var content = this.state.content;
+	    value: function parse(content) {
 	      var rendered = '';
 
 	      //Do Render Work
@@ -34599,7 +34688,7 @@
 	exports.default = DualmodeEditor;
 
 /***/ },
-/* 381 */
+/* 380 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34656,7 +34745,7 @@
 	exports.default = Renderer;
 
 /***/ },
-/* 382 */
+/* 381 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34671,7 +34760,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _tocItem = __webpack_require__(396);
+	var _tocItem = __webpack_require__(382);
 
 	var _tocItem2 = _interopRequireDefault(_tocItem);
 
@@ -34689,7 +34778,7 @@
 	  function TocNav() {
 	    _classCallCheck(this, TocNav);
 
-	    return _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).call(this));
 	  }
 
 	  _createClass(TocNav, [{
@@ -34742,6 +34831,88 @@
 	exports.default = TocNav;
 
 /***/ },
+/* 382 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TocNav = function (_React$Component) {
+	  _inherits(TocNav, _React$Component);
+
+	  function TocNav() {
+	    _classCallCheck(this, TocNav);
+
+	    return _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).apply(this, arguments));
+	  }
+
+	  _createClass(TocNav, [{
+	    key: "render",
+	    value: function render() {
+	      return _react2.default.createElement(
+	        "div",
+	        { className: "toc-nav" },
+	        _react2.default.createElement(
+	          "p",
+	          null,
+	          "Chapter 1"
+	        ),
+	        _react2.default.createElement("br", null),
+	        _react2.default.createElement(
+	          "span",
+	          null,
+	          "\xA0\xA0\xA0"
+	        ),
+	        _react2.default.createElement(
+	          "p",
+	          { href: "" },
+	          "Chapter 1.1"
+	        ),
+	        _react2.default.createElement("br", null),
+	        _react2.default.createElement(
+	          "span",
+	          null,
+	          "\xA0\xA0\xA0"
+	        ),
+	        _react2.default.createElement(
+	          "p",
+	          { href: "" },
+	          "Chapter 1.2"
+	        ),
+	        _react2.default.createElement("br", null),
+	        _react2.default.createElement(
+	          "p",
+	          { href: "" },
+	          "Chapter 2"
+	        ),
+	        _react2.default.createElement("br", null)
+	      );
+	    }
+	  }]);
+
+	  return TocNav;
+	}(_react2.default.Component);
+
+	exports.default = TocNav;
+
+/***/ },
 /* 383 */
 /***/ function(module, exports) {
 
@@ -34767,9 +34938,78 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Dialog2 = __webpack_require__(385);
+
+	var _Dialog3 = _interopRequireDefault(_Dialog2);
+
+	var _CircularProgress = __webpack_require__(397);
+
+	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Waiter = function (_Dialog) {
+	  _inherits(Waiter, _Dialog);
+
+	  function Waiter() {
+	    _classCallCheck(this, Waiter);
+
+	    return _possibleConstructorReturn(this, (Waiter.__proto__ || Object.getPrototypeOf(Waiter)).apply(this, arguments));
+	  }
+
+	  _createClass(Waiter, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'waiter-dialog' },
+	        _react2.default.createElement(
+	          _Dialog3.default,
+	          {
+	            open: this.props.open,
+	            style: { width: 120, align: 'center' } },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'waiter' },
+	            _react2.default.createElement(_CircularProgress2.default, {
+	              open: this.props.open
+	            })
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Waiter;
+	}(_Dialog3.default);
+
+	exports.default = Waiter;
+
+/***/ },
+/* 385 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.default = undefined;
 
-	var _Dialog = __webpack_require__(385);
+	var _Dialog = __webpack_require__(386);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -34778,7 +35018,7 @@
 	exports.default = _Dialog2.default;
 
 /***/ },
-/* 385 */
+/* 386 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34839,11 +35079,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _Overlay = __webpack_require__(386);
+	var _Overlay = __webpack_require__(387);
 
 	var _Overlay2 = _interopRequireDefault(_Overlay);
 
-	var _RenderToLayer = __webpack_require__(388);
+	var _RenderToLayer = __webpack_require__(389);
 
 	var _RenderToLayer2 = _interopRequireDefault(_RenderToLayer);
 
@@ -35370,7 +35610,7 @@
 	exports.default = Dialog;
 
 /***/ },
-/* 386 */
+/* 387 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35419,7 +35659,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _AutoLockScrolling = __webpack_require__(387);
+	var _AutoLockScrolling = __webpack_require__(388);
 
 	var _AutoLockScrolling2 = _interopRequireDefault(_AutoLockScrolling);
 
@@ -35515,7 +35755,7 @@
 	exports.default = Overlay;
 
 /***/ },
-/* 387 */
+/* 388 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35640,7 +35880,7 @@
 	exports.default = AutoLockScrolling;
 
 /***/ },
-/* 388 */
+/* 389 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35824,11 +36064,11 @@
 	exports.default = RenderToLayer;
 
 /***/ },
-/* 389 */
+/* 390 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(390);
+	var defaultClickRejectionStrategy = __webpack_require__(391);
 
 	var alreadyInjected = false;
 
@@ -35850,13 +36090,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(391)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(392)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 390 */
+/* 391 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -35867,7 +36107,7 @@
 
 
 /***/ },
-/* 391 */
+/* 392 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -35891,14 +36131,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(392);
+	var EventConstants = __webpack_require__(393);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(393);
+	var TouchEventUtils = __webpack_require__(394);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(394);
+	var keyOf = __webpack_require__(395);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -36044,7 +36284,7 @@
 
 
 /***/ },
-/* 392 */
+/* 393 */
 /***/ function(module, exports) {
 
 	/**
@@ -36140,7 +36380,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 393 */
+/* 394 */
 /***/ function(module, exports) {
 
 	/**
@@ -36188,7 +36428,7 @@
 
 
 /***/ },
-/* 394 */
+/* 395 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -36227,92 +36467,301 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 395 */
+/* 396 */
 /***/ function(module, exports) {
 
 	module.exports = require("electron");
 
 /***/ },
-/* 396 */
+/* 397 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _CircularProgress = __webpack_require__(398);
+
+	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _CircularProgress2.default;
+
+/***/ },
+/* 398 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var _extends2 = __webpack_require__(331);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(336);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(178);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(204);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(205);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(209);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(256);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(337);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _autoPrefix = __webpack_require__(347);
+
+	var _autoPrefix2 = _interopRequireDefault(_autoPrefix);
+
+	var _transitions = __webpack_require__(338);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function getRelativeValue(value, min, max) {
+	  var clampedValue = Math.min(Math.max(min, value), max);
+	  return clampedValue / (max - min);
+	}
 
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	function getArcLength(fraction, props) {
+	  return fraction * Math.PI * (props.size - props.thickness);
+	}
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function getStyles(props, context) {
+	  var max = props.max,
+	      min = props.min,
+	      size = props.size,
+	      value = props.value;
+	  var palette = context.muiTheme.baseTheme.palette;
 
-	var TocNav = function (_React$Component) {
-	  _inherits(TocNav, _React$Component);
 
-	  function TocNav() {
-	    _classCallCheck(this, TocNav);
+	  var styles = {
+	    root: {
+	      position: 'relative',
+	      display: 'inline-block',
+	      width: size,
+	      height: size
+	    },
+	    wrapper: {
+	      width: size,
+	      height: size,
+	      display: 'inline-block',
+	      transition: _transitions2.default.create('transform', '20s', null, 'linear'),
+	      transitionTimingFunction: 'linear'
+	    },
+	    svg: {
+	      width: size,
+	      height: size,
+	      position: 'relative'
+	    },
+	    path: {
+	      stroke: props.color || palette.primary1Color,
+	      strokeLinecap: 'round',
+	      transition: _transitions2.default.create('all', '1.5s', null, 'ease-in-out')
+	    }
+	  };
 
-	    return _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).apply(this, arguments));
+	  if (props.mode === 'determinate') {
+	    var relVal = getRelativeValue(value, min, max);
+	    styles.path.transition = _transitions2.default.create('all', '0.3s', null, 'linear');
+	    styles.path.strokeDasharray = getArcLength(relVal, props) + ', ' + getArcLength(1, props);
 	  }
 
-	  _createClass(TocNav, [{
-	    key: "render",
+	  return styles;
+	}
+
+	var CircularProgress = function (_Component) {
+	  (0, _inherits3.default)(CircularProgress, _Component);
+
+	  function CircularProgress() {
+	    (0, _classCallCheck3.default)(this, CircularProgress);
+	    return (0, _possibleConstructorReturn3.default)(this, (CircularProgress.__proto__ || (0, _getPrototypeOf2.default)(CircularProgress)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(CircularProgress, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.scalePath(this.refs.path);
+	      this.rotateWrapper(this.refs.wrapper);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      clearTimeout(this.scalePathTimer);
+	      clearTimeout(this.rotateWrapperTimer);
+	    }
+	  }, {
+	    key: 'scalePath',
+	    value: function scalePath(path) {
+	      var _this2 = this;
+
+	      var step = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+	      if (this.props.mode !== 'indeterminate') return;
+
+	      step %= 3;
+
+	      if (step === 0) {
+	        path.style.strokeDasharray = getArcLength(0, this.props) + ', ' + getArcLength(1, this.props);
+	        path.style.strokeDashoffset = 0;
+	        path.style.transitionDuration = '0ms';
+	      } else if (step === 1) {
+	        path.style.strokeDasharray = getArcLength(0.7, this.props) + ', ' + getArcLength(1, this.props);
+	        path.style.strokeDashoffset = getArcLength(-0.3, this.props);
+	        path.style.transitionDuration = '750ms';
+	      } else {
+	        path.style.strokeDasharray = getArcLength(0.7, this.props) + ', ' + getArcLength(1, this.props);
+	        path.style.strokeDashoffset = getArcLength(-1, this.props);
+	        path.style.transitionDuration = '850ms';
+	      }
+
+	      this.scalePathTimer = setTimeout(function () {
+	        return _this2.scalePath(path, step + 1);
+	      }, step ? 750 : 250);
+	    }
+	  }, {
+	    key: 'rotateWrapper',
+	    value: function rotateWrapper(wrapper) {
+	      var _this3 = this;
+
+	      if (this.props.mode !== 'indeterminate') return;
+
+	      _autoPrefix2.default.set(wrapper.style, 'transform', 'rotate(0deg)');
+	      _autoPrefix2.default.set(wrapper.style, 'transitionDuration', '0ms');
+
+	      setTimeout(function () {
+	        _autoPrefix2.default.set(wrapper.style, 'transform', 'rotate(1800deg)');
+	        _autoPrefix2.default.set(wrapper.style, 'transitionDuration', '10s');
+	        _autoPrefix2.default.set(wrapper.style, 'transitionTimingFunction', 'linear');
+	      }, 50);
+
+	      this.rotateWrapperTimer = setTimeout(function () {
+	        return _this3.rotateWrapper(wrapper);
+	      }, 10050);
+	    }
+	  }, {
+	    key: 'render',
 	    value: function render() {
+	      var _props = this.props,
+	          style = _props.style,
+	          innerStyle = _props.innerStyle,
+	          size = _props.size,
+	          thickness = _props.thickness,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['style', 'innerStyle', 'size', 'thickness']);
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context);
+
 	      return _react2.default.createElement(
-	        "div",
-	        { className: "toc-nav" },
+	        'div',
+	        (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
 	        _react2.default.createElement(
-	          "p",
-	          null,
-	          "Chapter 1"
-	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement(
-	          "span",
-	          null,
-	          "\xA0\xA0\xA0"
-	        ),
-	        _react2.default.createElement(
-	          "p",
-	          { href: "" },
-	          "Chapter 1.1"
-	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement(
-	          "span",
-	          null,
-	          "\xA0\xA0\xA0"
-	        ),
-	        _react2.default.createElement(
-	          "p",
-	          { href: "" },
-	          "Chapter 1.2"
-	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement(
-	          "p",
-	          { href: "" },
-	          "Chapter 2"
-	        ),
-	        _react2.default.createElement("br", null)
+	          'div',
+	          { ref: 'wrapper', style: prepareStyles((0, _simpleAssign2.default)(styles.wrapper, innerStyle)) },
+	          _react2.default.createElement(
+	            'svg',
+	            {
+	              viewBox: '0 0 ' + size + ' ' + size,
+	              style: prepareStyles(styles.svg)
+	            },
+	            _react2.default.createElement('circle', {
+	              ref: 'path',
+	              style: prepareStyles(styles.path),
+	              cx: size / 2,
+	              cy: size / 2,
+	              r: (size - thickness) / 2,
+	              fill: 'none',
+	              strokeWidth: thickness,
+	              strokeMiterlimit: '20'
+	            })
+	          )
+	        )
 	      );
 	    }
 	  }]);
+	  return CircularProgress;
+	}(_react.Component);
 
-	  return TocNav;
-	}(_react2.default.Component);
-
-	exports.default = TocNav;
+	CircularProgress.defaultProps = {
+	  mode: 'indeterminate',
+	  value: 0,
+	  min: 0,
+	  max: 100,
+	  size: 40,
+	  thickness: 3.5
+	};
+	CircularProgress.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? CircularProgress.propTypes = {
+	  /**
+	   * Override the progress's color.
+	   */
+	  color: _react.PropTypes.string,
+	  /**
+	   * Style for inner wrapper div.
+	   */
+	  innerStyle: _react.PropTypes.object,
+	  /**
+	   * The max value of progress, only works in determinate mode.
+	   */
+	  max: _react.PropTypes.number,
+	  /**
+	   * The min value of progress, only works in determinate mode.
+	   */
+	  min: _react.PropTypes.number,
+	  /**
+	   * The mode of show your progress, indeterminate
+	   * for when there is no value for progress.
+	   */
+	  mode: _react.PropTypes.oneOf(['determinate', 'indeterminate']),
+	  /**
+	   * The diameter of the progress in pixels.
+	   */
+	  size: _react.PropTypes.number,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  /**
+	   * Stroke width in pixels.
+	   */
+	  thickness: _react.PropTypes.number,
+	  /**
+	   * The value of progress, only works in determinate mode.
+	   */
+	  value: _react.PropTypes.number
+	} : void 0;
+	exports.default = CircularProgress;
 
 /***/ }
 /******/ ]);

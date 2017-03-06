@@ -26,6 +26,7 @@ function createWindow () {
   mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
+    client.destroy();
     mainWindow = null
   })
 }
@@ -48,15 +49,6 @@ app.on('activate', function () {
   }
 })
 
-client.on('data', function(data) {
-  console.log('Server Response: ' + data);
-  mainWindow.webContents.send('request-login-reply', 'granted');
-})
-
-client.on('close', function(){
-  console.log('Connection closed');
-});
-
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
@@ -65,17 +57,40 @@ ipcMain.on('request-login', (event, data) => {
 
   client.connect(PORT, HOST, function() {
     console.log('Connected');
-    const event = {event: "request-login", username: data.username + ' ' + data.password};
+    const event = {event: "request-login", data: data};
     client.write(JSON.stringify(event));
   });
 })
 
-ipcMain.on('request-signup', (event, arg) => {
-  console.log('Main Process received signup request: ' + arg);
+ipcMain.on('request-signup', (event, data) => {
+  console.log('Main Process received signup request: ' + data);
+
+  client.connect(PORT, HOST, function() {
+    console.log('Connected');
+    const event = {event: "request-signup", data: data};
+    client.write(JSON.stringify(event));
+  });
 })
 
+ipcMain.on('request-pull-data', (event, arg) => {
+  console.log('Main Process received pull-data request');
+  const data = {event: "request-pull-data", data: arg};
+  client.write(JSON.stringify(data));
+})
 
 process.on('uncaughtException', function (error) {
   console.log("Error occured: " + error);
   mainWindow.webContents.send('error-toast', error.message);
+});
+
+client.on('data', function(data) {
+  console.log('Raw response data: ' + data);
+  var response = JSON.parse(data);
+
+  console.log("Response Event: " + response.event);
+  mainWindow.webContents.send(response.event, response.data);
+})
+
+client.on('close', function(){
+  console.log('Connection closed');
 });

@@ -2,6 +2,10 @@ import React from 'react';
 import TocItem from './tocItem';
 
 class TocNav extends React.Component {
+  constructor() {
+    super();
+  }
+
   render() {
     return (
       <div className="toc-nav">

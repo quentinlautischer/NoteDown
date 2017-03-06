@@ -2,9 +2,7 @@ const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 // create a schema
-const imageSchema = new mongoose.Schema({
-  email: {type: String, unique: true, index: true },
-});
+const imageSchema = new mongoose.Schema();
 
 // create the model
 const imageModel = mongoose.model('Image', imageSchema);

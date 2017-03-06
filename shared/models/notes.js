@@ -6,6 +6,7 @@ const ImageModel = require('./image')
 
 // create a schema
 const notesSchema = new mongoose.Schema({
+  userid: { type: String, unique: true, index: true },
   folders: [FolderModel.schema],
   images: [ImageModel.schema]
 });

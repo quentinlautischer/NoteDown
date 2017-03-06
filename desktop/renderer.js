@@ -11,6 +11,7 @@ import StartMenu from './components/startMenu';
 import FolderContainerView from './components/folderContainerView'
 import DualmodeEditor from './components/dualmodeEditor'
 import NoteDownTitleLogo from './components/notedownTitleLogo';
+import Waiter from './components/waiter';
 
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -27,19 +28,27 @@ class App extends React.Component {
     super();
     this.state = 
     {
-      mode: 'sign-in',
+      mode: 'start-menu',
+      currentFolderid: null,
+      waiting: false,
       exceptionOccured: false,
       exceptionMsg: "No Exception"
     }
 
-    ipc.on('error-toast', (event, arg) => {
-      console.log("error occured: " + arg);
-      this.setState({
-        exceptionOccured: true,
-      });
-      this.setState({
-        exceptionMsg: 'Main Proc Exception Caught: ' + arg,
-      });
+    this.notes = {
+      userid: null,
+      images: [],
+      folders: []
+    };
+
+    this.init_ipc_app();
+  }
+
+  setCurrentFolder(id) {
+    console.log("Setting Current Folder " + id);
+    this.setState({
+      currentFolderid: id,
+      mode: 'editor',
     });
   }
 
@@ -50,68 +59,126 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.mode == 'sign-in') {
+    if (this.state.mode == 'start-menu') {
       return (
         <MuiThemeProvider>
           <div>
            <StartMenu 
-            request_login={() => this.request_login()}
-            request_signu={() => this.request_signup()}
+            request_login={(username, password) => this.request_login(username, password)}
+            request_signup={(username, password, email) => this.request_signup(username, password, email)}
             quickmode={() => this.quickmode()}
-            />
-           <Dialog 
+          />
+          <Dialog 
             open={this.state.exceptionOccured} 
             title={this.state.exceptionMsg}
-            />
+          />
+          <Waiter 
+            open={this.state.waiting}
+            title={"Waiting"} 
+          />
           </div>
         </MuiThemeProvider>
       );  
-    } else if (this.state.mode == 'quickmode') {
+    } else if (this.state.mode == 'editor') {
       return (
-        <DualmodeEditor />
+        <DualmodeEditor state={this.state}  notes={this.notes} />
       );
     } else if (this.state.mode == 'folderview') {
       return (
-        <FolderContainerView />
+        <FolderContainerView newFolder={() => this.newFolder()} openFolder={id => this.setCurrentFolder(id)} notes={this.notes} />
       );
     }
+  }
+
+  newFolder() {
+    console.log("new folder");
+  }
+
+  open_folder(id) {
+    console.log("Open Folder");
+    console.log("Request to open folder: " + id);
+    console.log(id);
+    //Setup some state    
   }
 
   quickmode() {
     console.log("quickmode enabled");
     this.setState({
-      mode: 'quickmode',
+      mode: 'editor',
     });
   }
 
-  request_login() {
-    console.log("received login request");
+  request_login(username, password) {
+    console.log("received login request; Username: " + username + " Password: " + password);
 
-    const data = {username: "stub_user", password: "stub_pass"};
+    const data = {username: username, password: password};
     ipc.send('request-login', data);
 
-    ipc.on('request-login-reply', (event, arg) => {
-      console.log('received login reply: ' + arg);
-      this.setState({
-        mode: 'folderview',
-      });
-    })
+    this.setState({
+      waiting: true,
+    });
   }
 
-  request_sign_up() {
-    console.log("received login request");
-    ipc.send('request-signup', "username"+' '+"password");
-    ipc.on('request-signup-reply', (event, arg) => {
+  request_signup(username, password, email) {
+    console.log("received signup request; Username: " + username + " Password: " + password + " Email: " + email);
+    
+    const data = {username: username, password: password, email: email};
+    ipc.send('request-signup', data);
+
+    this.setState({
+      waiting: true,
+    });
+  }
+
+  request_pull_data() {
+    console.log("requesting data pull");
+    const data = {userid: "lautisch"};
+    ipc.send('request-pull-data', data);
+  }
+
+  init_ipc_app() {
+    ipc.on('error-toast', (event, arg) => {
+      console.log("error occured: " + arg);
+      this.setState({
+        exceptionOccured: true,
+        exceptionMsg: 'Main Proc Exception Caught: ' + arg,
+      });
+    });
+
+    ipc.on('request-login-response', (event, arg) => {
+      console.log('received login response: ' + arg);
+      this.setState({ waiting: false,});
+
+      this.request_pull_data();
+    })
+
+    ipc.on('request-signup-response', (event, arg) => {
       console.log('received signup reply: ' + arg);
       this.setState({
-        mode: 'folderview',
+        waiting: true,
       });
+
+      this.request_pull_data();
+    })
+
+    ipc.on('request-push-data-response', (event, arg) => {
+      console.log('request-push-data-response: ' + arg);
+    })
+
+    ipc.on('request-pull-data-response', (event, arg) => {
+      console.log('request-pull-data-response: ' + arg);
+
+      this.notes = arg.notes;
+
+      console.log(this.notes);
+
+      this.setState({mode: 'folderview',});
+    })
+
+    ipc.on('request-photo-response', (event, arg) => {
+      console.log('request-photo-response: ' + arg);
     })
   }
 
-  start_app() {
-    console.log("toggling app mode");
-    this.setState({mode: 'app'});
-  }
 }
 ReactDOM.render(<App/>,document.getElementById('notedown-app'))

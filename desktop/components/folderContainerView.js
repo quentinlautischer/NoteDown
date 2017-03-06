@@ -4,22 +4,40 @@ import TextField from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
-import FolderView from './folderView';
-
-// {this.props.results.map(function(result) {
-          //  return <FolderView key={result.id} result="item"/>;
-          // })}
-
 class FolderContainerView extends React.Component {
-  render() {
+  constructor(props) {
+    super(props);
+    this.folderid = "0";
+
+    this.selectFolder = this.selectFolder.bind(this);
+    this.renderFolder = this.renderFolder.bind(this)
+  }
+
+  selectFolder(id, e) {
+    console.log("Selected Folder: " + id);
+    this.props.openFolder(id);
+  }
+
+  renderFolder({name, _id}) {
     return (
-      <MuiThemeProvider>
-        <div className="folder-container-view">
-          <FolderView name="Item1" />
-        </div>
-      </MuiThemeProvider>
+      <div key={_id} className="folder-view" onClick={this.selectFolder.bind(this, _id)}>
+        {name}
+      </div>
     );
   }
+
+  render() {
+    return (
+      <div className="folder-container-view">
+        {this.props.notes.folders.map(this.renderFolder, this)}
+        <div className="folder-view" onClick={() => this.props.newFolder()}>New +</div>
+      </div>
+    );
+  }
+
+
+
+
 
 
   
