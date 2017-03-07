@@ -9,13 +9,15 @@ import {
 } from 'react-native';
 import SocketIOClient from 'socket.io-client';
 
+const HOST = '127.0.0.1';
+const PORT = '3000';
 
 export default class LoginScene extends Component {
     constructor(props) {
         super(props);
 
         // Creating the socket-client instance will automatically connect to the server.
-        this.socket = SocketIOClient('127.0.0.1:3000');
+        this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
 
         this.state = {
             usernameText: '',
@@ -27,10 +29,14 @@ export default class LoginScene extends Component {
         // TODO: socket logic
     }
 
-    navigate(){
+    attemptLogin() {
+        this.socket.emit('request-login', {
+            username: this.state.usernameText,
+            password: this.state.passwordText
+        });
         this.props.navigator.push({
             title: 'Main Menu'
-        })
+        });
     }
 
     render() {
@@ -57,7 +63,7 @@ export default class LoginScene extends Component {
                     />
                 </View>
                 <TouchableHighlight style={styles.loginButton}
-                    onPress = {this.navigate.bind(this)}>
+                    onPress = {this.attemptLogin.bind(this)}>
                     <Text>Login</Text>
                 </TouchableHighlight>
             </View>
