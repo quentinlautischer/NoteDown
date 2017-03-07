@@ -3,7 +3,8 @@ import {
     View,
     Text,
     Navigator,
-    TouchableHighlight
+    TouchableHighlight,
+    StyleSheet
 } from 'react-native';
 
 export default class MenuScene extends Component {
@@ -15,19 +16,41 @@ export default class MenuScene extends Component {
 
     render() {
         return (
-            <View>
-                <Text>This is the menu scene.</Text>
-                <TouchableHighlight onPress = {
-                    this.navigate.bind(this, 'Folders')
-                }>
+            <View style={styles.view}>
+                <TouchableHighlight
+                    style={styles.loginButton}
+                    onPress = {
+                        this.navigate.bind(this, 'Folders')
+                    }>
                     <Text>Folders</Text>
                 </TouchableHighlight>
-                <TouchableHighlight onPress = {
-                    this.navigate.bind(this, 'Flashcards Menu')
-                }>
+                <TouchableHighlight
+                    style={styles.loginButton}
+                    onPress = {
+                        this.navigate.bind(this, 'Flashcards Menu')
+                    }>
                     <Text>Flashcards</Text>
                 </TouchableHighlight>
             </View>
         )
     }
 }
+
+var styles = StyleSheet.create({
+    view: {
+        backgroundColor: '#0aaf82',
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    loginButton: {
+        backgroundColor: 'white',
+        borderRadius: 4,
+        width: 200,
+        height: 50,
+        margin: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+});

@@ -36,21 +36,26 @@ export default class LoginScene extends Component {
     render() {
         return (
             <View style={styles.view}>
-                <TextInput
-                    style={styles.textInput}
-                    placeholder='Username'
-                    autoCorrect={false}
-                    onChangeText={(text) => this.setState({usernameText: text})}
-                    value={this.state.usernameText}
-                />
-                <TextInput
-                    style={styles.textInput}
-                    placeholder='Password'
-                    autoCorrect={false}
-                    secureTextEntry={true}
-                    onChangeText={(text) => this.setState({passwordText: text})}
-                    value={this.state.passwordText}
-                />
+                <View style={{flexDirection:'row'}}>
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder='Username'
+                        autoCorrect={false}
+                        onChangeText={(text) => this.setState({usernameText: text})}
+                        value={this.state.usernameText}
+                    />
+                </View>
+                <View style={{flexDirection:'row'}}>
+                    <TextInput
+                        style={styles.textInput}
+                        style={styles.textInput}
+                        placeholder='Password'
+                        autoCorrect={false}
+                        secureTextEntry={true}
+                        onChangeText={(text) => this.setState({passwordText: text})}
+                        value={this.state.passwordText}
+                    />
+                </View>
                 <TouchableHighlight style={styles.loginButton}
                     onPress = {this.navigate.bind(this)}>
                     <Text>Login</Text>
@@ -62,15 +67,14 @@ export default class LoginScene extends Component {
 
 var styles = StyleSheet.create({
     view: {
-        backgroundColor: '#0aaf82',
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
+        flex:1,
+        flexDirection:'column',
+        alignItems:'center',
+        justifyContent:'center'
     },
     textInput: {
         width: 220,
-        height: 50    
+        height: 50
     },
     loginButton: {
         backgroundColor: 'white',

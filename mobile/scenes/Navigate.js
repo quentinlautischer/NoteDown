@@ -60,14 +60,29 @@ export default class Navigate extends Component {
                             if (route.index === 0) {
                                 return null;
                             } else {
-                                return (
-                                <TouchableHighlight onPress={() => navigator.pop()}>
-                                  <Text style={{padding: 10}}>Back</Text>
-                                </TouchableHighlight>
-                            );
-                        }},
-                        RightButton: (route, navigator, index, navState) =>
-                            { return null; },
+                                    return (
+                                    <TouchableHighlight onPress={() => navigator.pop()}>
+                                        <Text style={styles.navButton}>Back</Text>
+                                    </TouchableHighlight>
+                                );
+                            }
+                        },
+                        RightButton: (route, navigator, index, navState) => {
+                            if (route.title === 'View Notes') {
+                                return(
+                                    <TouchableHighlight onPress={() =>
+                                        navigator.push({
+                                            title: 'View Flashcard',
+                                            content: route.content
+                                        })
+                                    }>
+                                        <Text style={styles.navButton}>Go to Flashcards</Text>
+                                    </TouchableHighlight>
+                                );
+                            } else {
+                                return null;
+                            }
+                        },
                         Title: (route, navigator, index, navState) =>
                             { return null; }
                     }}
@@ -81,7 +96,11 @@ export default class Navigate extends Component {
 
 var styles = StyleSheet.create({
     view: {
-        padding: 50,
-        backgroundColor: '#0aaf82',
+        paddingTop: 50, // a smaller number looks better on Android
+        backgroundColor: '#0aaf82'
+    },
+    navButton: {
+        height: 20
+        // padding: 10
     }
 });
