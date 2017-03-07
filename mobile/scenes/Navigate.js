@@ -100,7 +100,7 @@ var styles = StyleSheet.create({
         backgroundColor: '#0aaf82'
     },
     navButton: {
+        margin: 5,
         height: 20
-        // padding: 10
     }
 });

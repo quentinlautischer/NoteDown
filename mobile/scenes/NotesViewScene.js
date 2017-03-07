@@ -4,8 +4,11 @@ import {
     Text,
     Navigator,
     TouchableHighlight,
-    WebView
+    WebView,
+    StyleSheet
 } from 'react-native';
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const HTML = `
 <!DOCTYPE html>\n
@@ -53,28 +56,30 @@ export default class NotesViewScene extends Component {
 
     render() {
         return (
-            // <View>
-            //     <Text>This is the notes view scene.</Text>
-            //     <Text>Viewing {this.props.content}</Text>
-            //     <TouchableHighlight onPress = {
-            //         this.navigate.bind(this, 'Edit Notes')
-            //     }>
-            //         <Text>Edit Notes</Text>
-            //     </TouchableHighlight>
-            //     <TouchableHighlight onPress = {
-            //         this.navigate.bind(this, 'View Flashcard')
-            //     }>
-            //         <Text>View Flashcards</Text>
-            //     </TouchableHighlight>
+            <View style={{flex: 1}}>
                 <WebView
                     style={{
                         backgroundColor: 'white',
                         height: 100,
                     }}
                     source={{html: HTML}}
-                    // scalesPageToFit={true}
                 />
-            // </View>
+                <ActionButton
+                    buttonColor='#0aaf82'
+                    onPress = {
+                        this.navigate.bind(this, 'Edit Notes')
+                    }
+                    icon={<Icon name="md-create" style={styles.actionButtonIcon} />}
+                />
+            </View>
         )
     }
 }
+
+var styles = StyleSheet.create({
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    },
+});
