@@ -169,9 +169,7 @@ class App extends React.Component {
       console.log('request-pull-data-response: ' + arg);
 
       this.notes = arg.notes;
-
       console.log(this.notes);
-
       this.setState({mode: 'folderview',});
     })
 

@@ -28,45 +28,40 @@ server.listen(PORT, HOST, () => console.log('listening on ' + HOST + ":" + PORT)
 websocket.on('connection', (socket) => {
     console.log('A client just joined on', socket.id);
 
-    socket.on('request-login', (credentials) => {
-        console.log("Server got UN:" + credentials.username + " PW: " + credentials.password);
+    socket.on('request-login', (data) => {
+      loginRequest(socket, data);
     });
-});
-/******************************************************************************/
 
-// var server = net.createServer(function(sock) {
-//   console.log('Connected: ' + sock.remoteAddress + ':' + sock.remotePort);
-//
-//   sock.on('data', function(data) {
-//     console.log('Raw request data: ' + data);
-//     var request = JSON.parse(data);
-//
-//     console.log("Request Object: " + request)
-//
-//     console.log("Requested Event: " + request.event);
-//     switch (request.event) {
-//       case 'request-login':
-//         loginRequest(sock, request.data);
-//         break;
-//       case 'request-signup':
-//         signupRequest(sock, request.data);
-//         break;
-//       case 'request-pull-data':
-//         pullDataRequest(sock, request.data);
-//         break;
-//       case 'request-push-data':
-//         pushDataRequest(sock, request.data);
-//         break;
-//       case 'request-photo':
-//         photoRequest(sock, request.data);
-//         break;
-//       case 'request-photo-supply':
-//          photoSupplyRequest(sock, request.data);
-//         break;
-//       default:
-//         break;
-//     }
-//
+    socket.on('request-signup', (data) => {
+        signupRequest(socket, data);
+    });
+
+    socket.on('request-pull-data', (data) => {
+      pullDataRequest(socket, data);
+    });
+
+    socket.on('request-push-data', (data) => {
+      pushDataRequest(socket, data);
+    });
+
+    socket.on('request-photo', (data) => {
+      photoRequest(socket, data);
+    });
+
+    socket.on('request-photo-supply', (data) => {
+      photoSupplyRequest(socket, data);
+    });
+
+});
+
+websocket.on('close', (socket) => {
+  console.log('A client just closed on', socket.id);
+});
+
+db.on('error', console.error.bind(console, 'connection error:'));
+  db.once('open', function(){
+});
+
 //
 //     // var account = new Account({
 //     //   email: 'lalala@gmail.com',
@@ -85,22 +80,9 @@ websocket.on('connection', (socket) => {
 //     //   });
 //     // });
 //   });
-//
-//   sock.on('close', function(data) {
-//     console.log('Closed: ' + sock.remoteAddress + ':' + sock.remotePort)
-//   })
-//
-//   db.on('error', console.error.bind(console, 'connection error:'));
-//   db.once('open', function(){
-//   });
-//
-// }).listen(PORT, HOST);
 
-// server.on('connection', function(data) {
-//     console.log('A client just connected');
-// });
 
-console.log('Server listening on: ' + HOST +':'+ PORT);
+
 
 loginRequest = function(socket, data) {
   console.log('login-request');
@@ -111,7 +93,7 @@ loginRequest = function(socket, data) {
   setTimeout(function() {
     console.log("sending login response");
     const event = {event: "request-login-response", data: {result: true, userid: "lautisch"}};
-    socket.write(JSON.stringify(event));
+    socket.emit('data', event);
   }, 1);
 }
 
@@ -163,7 +145,7 @@ pullDataRequest = function(socket, data) {
   });
 
   const event = {event: "request-pull-data-response", data: {notes: notes}};
-  socket.write(JSON.stringify(event));
+  socket.emit('data', event);
 }
 
 pushDataRequest = function(socket, data) {

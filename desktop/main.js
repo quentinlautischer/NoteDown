@@ -6,11 +6,13 @@ const path = require('path')
 const url = require('url')
 
 const ipcMain = require('electron').ipcMain;
-const net = require('net');
+const http = require('http');
 
 var HOST = '127.0.0.1';
 var PORT = '3000';
-var client = new net.Socket();
+var io = require('socket.io-client');
+
+var socket;
 
 let mainWindow
 
@@ -29,6 +31,8 @@ function createWindow () {
     client.destroy();
     mainWindow = null
   })
+
+  initServerComm();
 }
 
 app.on('ready', createWindow)
@@ -49,48 +53,31 @@ app.on('activate', function () {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+function initServerComm() {
+  socket = io('http://' + HOST + ':' + PORT);
+
+  socket.on('data', (data) => {
+    console.log('received data from server');
+    mainWindow.webContents.send(data.event, data.data);
+  });
+}
 
 ipcMain.on('request-login', (event, data) => {
   console.log('Main Process received login request: ' + data.username + ' ' + data.password);
-
-  client.connect(PORT, HOST, function() {
-    console.log('Connected');
-    const event = {event: "request-login", data: data};
-    client.write(JSON.stringify(event));
-  });
+  socket.emit('request-login', data);
 })
 
 ipcMain.on('request-signup', (event, data) => {
   console.log('Main Process received signup request: ' + data);
-
-  client.connect(PORT, HOST, function() {
-    console.log('Connected');
-    const event = {event: "request-signup", data: data};
-    client.write(JSON.stringify(event));
-  });
+  socket.emit('request-signup', data);
 })
 
-ipcMain.on('request-pull-data', (event, arg) => {
+ipcMain.on('request-pull-data', (event, data) => {
   console.log('Main Process received pull-data request');
-  const data = {event: "request-pull-data", data: arg};
-  client.write(JSON.stringify(data));
+  socket.emit('request-pull-data', data)
 })
 
 process.on('uncaughtException', function (error) {
   console.log("Error occured: " + error);
   mainWindow.webContents.send('error-toast', error.message);
-});
-
-client.on('data', function(data) {
-  console.log('Raw response data: ' + data);
-  var response = JSON.parse(data);
-
-  console.log("Response Event: " + response.event);
-  mainWindow.webContents.send(response.event, response.data);
-})
-
-client.on('close', function(){
-  console.log('Connection closed');
 });
