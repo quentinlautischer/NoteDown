@@ -26,7 +26,20 @@ export default class LoginScene extends Component {
     }
 
     componentDidMount() {
-        // TODO: socket logic
+        this.socket.on('data', (data) => {
+            // check the user exists in the database
+            if (data.event === 'request-login-response') {
+                // TODO: handle if user isn't in database
+
+                console.log("mobile client logged in, recieved data: ", data);
+                // user is in the database; request their note data
+                this.socket.emit('request-pull-data', { userid: data.data.userid });
+
+            // recieve the user's data (to populate their folders)
+            } else if (data.event === 'request-pull-data-response') {
+                console.log("Mobile client pulled data: ", data);
+            }
+        });
     }
 
     attemptLogin() {
