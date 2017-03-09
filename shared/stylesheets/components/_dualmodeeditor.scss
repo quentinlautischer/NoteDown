@@ -13,10 +13,8 @@
   box-shadow: 0 0 30px rgba(0,0,0,0.1);
   resize: none;
   outline: none;
-  font-size: 1.3em;
   color: map-get($colors, dark);
-  font-family: 'Source Code Pro';
-  font-weight: 300;
+  background-color: map-get($colors, light);
 }
 
 .markdown-output-renderer {
@@ -32,10 +30,7 @@
   box-shadow: 0 0 30px rgba(0,0,0,0.1);
   resize: none;
   outline: none;
-  font-size: 1.3em;
   color: map-get($colors, light);
   background-color: map-get($colors, dark);
-  font-family: 'Source Code Pro';
-  font-weight: 300;
   overflow-x: scroll
 }

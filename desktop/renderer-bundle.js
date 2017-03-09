@@ -34662,7 +34662,7 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'render-container' },
-	          _react2.default.createElement(_tocNav2.default, null),
+	          _react2.default.createElement(_tocNav2.default, { info: this.state.content }),
 	          _react2.default.createElement('div', { id: 'renderField', className: 'markdown-output-renderer',
 	            dangerouslySetInnerHTML: { __html: this.state.rendered_content } })
 	        )
@@ -34780,46 +34780,32 @@
 	  }
 
 	  _createClass(TocNav, [{
+	    key: 'generateTableOfContents',
+	    value: function generateTableOfContents(str) {
+	      var match;
+	      var tempText = "<ul>";
+	      var r_atx = /^(#{1,6})\s*(.+?)\s*#*$/gm;
+	      var magnitude;
+	      var bound1, bound2;
+
+	      bound1 = 0;
+	      while ((match = r_atx.exec(str)) != null) {
+	        bound2 = match.index;
+	        magnitude = match[1].length;
+	        tempText += "<li class=\"toc-li-" + magnitude + "\"><span class=\"nd-color2\">" + match[2] + "</span></li>";
+	        bound1 = r_atx.lastIndex;
+	      }
+
+	      return tempText + "</ul>";
+	    }
+
+	    //  //
+
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'toc-nav' },
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          'Chapter 1'
-	        ),
-	        _react2.default.createElement('br', null),
-	        _react2.default.createElement(
-	          'span',
-	          null,
-	          '\xA0\xA0\xA0'
-	        ),
-	        _react2.default.createElement(
-	          'p',
-	          { href: '' },
-	          'Chapter 1.1'
-	        ),
-	        _react2.default.createElement('br', null),
-	        _react2.default.createElement(
-	          'span',
-	          null,
-	          '\xA0\xA0\xA0'
-	        ),
-	        _react2.default.createElement(
-	          'p',
-	          { href: '' },
-	          'Chapter 1.2'
-	        ),
-	        _react2.default.createElement('br', null),
-	        _react2.default.createElement(
-	          'p',
-	          { href: '' },
-	          'Chapter 2'
-	        ),
-	        _react2.default.createElement('br', null)
-	      );
+	      console.log("TOC RE-RENDERING");
+	      return _react2.default.createElement('div', { className: 'toc-nav', dangerouslySetInnerHTML: { __html: this.generateTableOfContents(this.props.info) } });
 	    }
 	  }]);
 

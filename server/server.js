@@ -123,7 +123,7 @@ pullDataRequest = function(socket, data) {
         name: "Folder 1",
         pages: [
           new Page({
-            content: "# Page 1 Content \n* Item 1\n* Item 2\n \n \n ## Header 2 \n ### Header 3"
+            content: "# Page 1 Content \n* Item 1\n* Item 2\n \n \n## Header 2 \n### Header 3\n#Header11\n"
           }),
           new Page({
             content: "Page 2 Content"
@@ -137,7 +137,7 @@ pullDataRequest = function(socket, data) {
         name: "Folder 2",
         pages: [
           new Page({
-            content: "Page Content"
+            content: "#H0\n#H1\n#H2\n#H3\n#H4\n#H5\n#H6\n#H7\n#H8\n#H9\n#H10\n#H11\n#H12\n#H13\n#H14\n#H15\n#H16\n#H17\n#H18\n#H19\n#H20\n#H21\n#H22\n#H23\n#H24\n#H25\n#H26\n#H27\n#H28\n#H29\n#H30\n#H31\n#H32\n#H33\n#H34\n#H35\n#H36\n#H37\n#H38\n#H39\n#H40\n#H41\n#H42\n#H43\n#H44\n#H45\n#H46\n#H47\n#H48\n#H49\n"
           })
         ]
       }),

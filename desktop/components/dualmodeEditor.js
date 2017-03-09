@@ -55,7 +55,7 @@ class DualmodeEditor extends React.Component {
           {this.state.content}
         </textarea>
         <div className="render-container">
-          <TocNav />
+          <TocNav info={this.state.content}/>
           <div id="renderField" className="markdown-output-renderer" 
             dangerouslySetInnerHTML= {{__html: this.state.rendered_content}}>
           </div>
