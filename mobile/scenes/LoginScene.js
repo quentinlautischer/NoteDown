@@ -29,15 +29,19 @@ export default class LoginScene extends Component {
         this.socket.on('data', (data) => {
             // check the user exists in the database
             if (data.event === 'request-login-response') {
-                // TODO: handle if user isn't in database
-
                 console.log("mobile client logged in, recieved data: ", data);
-                // user is in the database; request their note data
-                this.socket.emit('request-pull-data', { userid: data.data.userid });
+
+                if (data.data.userid.length > 0) { // TODO: this is a placeholder way of verifying the user was in the db
+                    this.socket.emit('request-pull-data', { userid: data.data.userid });
+                }
 
             // recieve the user's data (to populate their folders)
             } else if (data.event === 'request-pull-data-response') {
                 console.log("Mobile client pulled data: ", data);
+                this.props.navigator.push({
+                    title: 'Main Menu',
+                    content: data
+                });
             }
         });
     }
@@ -46,9 +50,6 @@ export default class LoginScene extends Component {
         this.socket.emit('request-login', {
             username: this.state.usernameText,
             password: this.state.passwordText
-        });
-        this.props.navigator.push({
-            title: 'Main Menu'
         });
     }
 
@@ -60,7 +61,7 @@ export default class LoginScene extends Component {
                         style={styles.textInput}
                         placeholder='Username'
                         autoCorrect={false}
-                        onChangeText={(text) => this.setState({usernameText: text})}
+                        onChangeText={(text) => this.setState({ usernameText: text })}
                         value={this.state.usernameText}
                     />
                 </View>
@@ -71,7 +72,7 @@ export default class LoginScene extends Component {
                         placeholder='Password'
                         autoCorrect={false}
                         secureTextEntry={true}
-                        onChangeText={(text) => this.setState({passwordText: text})}
+                        onChangeText={(text) => this.setState({ passwordText: text })}
                         value={this.state.passwordText}
                     />
                 </View>

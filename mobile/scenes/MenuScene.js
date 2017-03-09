@@ -11,6 +11,7 @@ export default class MenuScene extends Component {
     navigate(){
         this.props.navigator.push({
             title: arguments[0],
+            content: this.props.content
         })
     }
 
