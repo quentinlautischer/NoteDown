@@ -38,9 +38,9 @@ export default class Navigate extends Component {
                     if (route.title == 'Login') {
                         return <LoginScene navigator={navigator} />
                     } else if (route.title == 'Main Menu') {
-                        return <MenuScene navigator={navigator} />
+                        return <MenuScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'Folders') {
-                        return <FoldersScene navigator={navigator} />
+                        return <FoldersScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'Flashcards Menu') {
                         return <FlashcardsMenuScene navigator={navigator} />
                     } else if (route.title === 'View Notes') {
