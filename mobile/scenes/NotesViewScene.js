@@ -56,13 +56,10 @@ export default class NotesViewScene extends Component {
 
     render() {
         return (
-            <View style={{flex: 1}}>
+            <View style={styles.view}>
                 <WebView
-                    style={{
-                        backgroundColor: 'white',
-                        height: 100,
-                    }}
-                    source={{html: HTML}}
+                    // source={{html: HTML}} // uncomment (and comment line below) for a prettier example
+                    source={{html: this.props.content.pages[0].content}}
                 />
                 <ActionButton
                     buttonColor='#0aaf82'
@@ -77,9 +74,14 @@ export default class NotesViewScene extends Component {
 }
 
 var styles = StyleSheet.create({
+    view: {
+        flex: 1,
+        backgroundColor: 'white',
+        padding: 15
+    },
     actionButtonIcon: {
         fontSize: 20,
         height: 22,
         color: 'white',
-    },
+    }
 });

@@ -42,7 +42,7 @@ export default class Navigate extends Component {
                     } else if (route.title === 'Folders') {
                         return <FoldersScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'Flashcards Menu') {
-                        return <FlashcardsMenuScene navigator={navigator} />
+                        return <FlashcardsMenuScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'View Notes') {
                         return <NotesViewScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'Edit Notes') {

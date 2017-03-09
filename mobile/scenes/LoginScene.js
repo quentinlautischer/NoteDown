@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import SocketIOClient from 'socket.io-client';
 
-const HOST = '127.0.0.1';
+// const HOST = '127.0.0.1';
+var HOST = "localhost"; // allows me to test on android
 const PORT = '3000';
 
 export default class LoginScene extends Component {
@@ -31,7 +32,7 @@ export default class LoginScene extends Component {
             if (data.event === 'request-login-response') {
                 console.log("mobile client logged in, recieved data: ", data);
 
-                if (data.data.userid.length > 0) { // TODO: this is a placeholder way of verifying the user was in the db
+                if (data.data.result) {
                     this.socket.emit('request-pull-data', { userid: data.data.userid });
                 }
 

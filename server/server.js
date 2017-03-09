@@ -10,7 +10,8 @@ const net  = require('net');
 mongoose.connect('mongodb://localhost/test');
 var db = mongoose.connection;
 
-var HOST = '127.0.0.1';
+// var HOST = '127.0.0.1';
+var HOST = "localhost"; // allows me to test on android
 var PORT = 3000;
 
 

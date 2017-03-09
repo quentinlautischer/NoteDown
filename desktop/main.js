@@ -8,7 +8,8 @@ const url = require('url')
 const ipcMain = require('electron').ipcMain;
 const http = require('http');
 
-var HOST = '127.0.0.1';
+// var HOST = '127.0.0.1';
+var HOST = 'localhost'; // allows me to test on android
 var PORT = '3000';
 var io = require('socket.io-client');
 
