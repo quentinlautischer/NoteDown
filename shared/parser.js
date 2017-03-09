@@ -42,7 +42,7 @@ function p_header_atx(fullText) {
     bound2 = match.index;
     tempText += fullText.substr(bound1,bound2-bound1);
     magnitude = match[1].length;
-    tempText += "<h" + magnitude + '>' + match[2] + "</h" + magnitude + '>';
+    tempText += "<h" + magnitude + " id=\""+ match[2] + "\">" + match[2] + "</h" + magnitude + '>';
     bound1 = r_atx.lastIndex;
   }
   bound2 = fullText.length;

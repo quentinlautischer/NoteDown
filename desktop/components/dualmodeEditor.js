@@ -48,6 +48,14 @@ class DualmodeEditor extends React.Component {
     this.parse(e.target.value);
   }
 
+  scrollTo(id) {
+    console.log("scrolling to id: " + id);
+    var element_to_scroll_to = document.getElementById(id);
+    if (element_to_scroll_to) {
+      element_to_scroll_to.scrollIntoView();
+    }
+  }
+
   render() {
     return (
       <div className="dualMode-container">
@@ -55,7 +63,7 @@ class DualmodeEditor extends React.Component {
           {this.state.content}
         </textarea>
         <div className="render-container">
-          <TocNav info={this.state.content}/>
+          <TocNav info={this.state.content} scrollTo={id => this.scrollTo(id)}/>
           <div id="renderField" className="markdown-output-renderer" 
             dangerouslySetInnerHTML= {{__html: this.state.rendered_content}}>
           </div>

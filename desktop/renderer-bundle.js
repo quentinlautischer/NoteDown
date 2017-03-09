@@ -34482,14 +34482,6 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _MuiThemeProvider = __webpack_require__(177);
-
-	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
-
-	var _getMuiTheme = __webpack_require__(264);
-
-	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34649,8 +34641,19 @@
 	      this.parse(e.target.value);
 	    }
 	  }, {
+	    key: 'scrollTo',
+	    value: function scrollTo(id) {
+	      console.log("scrolling to id: " + id);
+	      var element_to_scroll_to = document.getElementById(id);
+	      if (element_to_scroll_to) {
+	        element_to_scroll_to.scrollIntoView();
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'dualMode-container' },
@@ -34662,7 +34665,9 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'render-container' },
-	          _react2.default.createElement(_tocNav2.default, { info: this.state.content }),
+	          _react2.default.createElement(_tocNav2.default, { info: this.state.content, scrollTo: function scrollTo(id) {
+	              return _this2.scrollTo(id);
+	            } }),
 	          _react2.default.createElement('div', { id: 'renderField', className: 'markdown-output-renderer',
 	            dangerouslySetInnerHTML: { __html: this.state.rendered_content } })
 	        )
@@ -34776,14 +34781,20 @@
 	  function TocNav() {
 	    _classCallCheck(this, TocNav);
 
-	    return _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).call(this));
+	    var _this = _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).call(this));
+
+	    _this.array = [];
+
+	    _this.scrollTo = _this.scrollTo.bind(_this);
+	    _this.renderTocItem = _this.renderTocItem.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(TocNav, [{
-	    key: 'generateTableOfContents',
-	    value: function generateTableOfContents(str) {
+	    key: 'generateHeaderArray',
+	    value: function generateHeaderArray(str) {
 	      var match;
-	      var tempText = "<ul>";
+	      var array = [];
 	      var r_atx = /^(#{1,6})\s*(.+?)\s*#*$/gm;
 	      var magnitude;
 	      var bound1, bound2;
@@ -34792,20 +34803,46 @@
 	      while ((match = r_atx.exec(str)) != null) {
 	        bound2 = match.index;
 	        magnitude = match[1].length;
-	        tempText += "<li class=\"toc-li-" + magnitude + "\"><span class=\"nd-color2\">" + match[2] + "</span></li>";
+	        var item = { name: match[2], mag: magnitude };
+	        array.push(item);
 	        bound1 = r_atx.lastIndex;
 	      }
-
-	      return tempText + "</ul>";
+	      return array;
 	    }
+	  }, {
+	    key: 'scrollTo',
+	    value: function scrollTo(id, e) {
+	      this.props.scrollTo(id);
+	    }
+	  }, {
+	    key: 'renderTocItem',
+	    value: function renderTocItem(_ref) {
+	      var name = _ref.name,
+	          mag = _ref.mag;
 
-	    //  //
-
+	      return _react2.default.createElement(
+	        'li',
+	        { key: name, className: "toc-li-" + mag, onClick: this.scrollTo.bind(this, name) },
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'nd-color2' },
+	          name
+	        )
+	      );
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      console.log("TOC RE-RENDERING");
-	      return _react2.default.createElement('div', { className: 'toc-nav', dangerouslySetInnerHTML: { __html: this.generateTableOfContents(this.props.info) } });
+	      this.array = this.generateHeaderArray(this.props.info);
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'toc-nav' },
+	        _react2.default.createElement(
+	          'ul',
+	          null,
+	          this.array.map(this.renderTocItem, this)
+	        )
+	      );
 	    }
 	  }]);
 
@@ -34946,7 +34983,7 @@
 	    bound2 = match.index;
 	    tempText += fullText.substr(bound1, bound2 - bound1);
 	    magnitude = match[1].length;
-	    tempText += "<h" + magnitude + '>' + match[2] + "</h" + magnitude + '>';
+	    tempText += "<h" + magnitude + " id=\"" + match[2] + "\">" + match[2] + "</h" + magnitude + '>';
 	    bound1 = r_atx.lastIndex;
 	  }
 	  bound2 = fullText.length;

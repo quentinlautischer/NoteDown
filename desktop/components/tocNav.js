@@ -4,11 +4,15 @@ import TocItem from './tocItem';
 class TocNav extends React.Component {
   constructor() {
     super();
+    this.array = [];
+
+    this.scrollTo  = this.scrollTo  .bind(this);
+    this.renderTocItem = this.renderTocItem.bind(this)
   }
 
-  generateTableOfContents(str) {
+  generateHeaderArray(str) {
     var match;
-    var tempText = "<ul>";
+    var array = [];
     var r_atx = /^(#{1,6})\s*(.+?)\s*#*$/gm;
     var magnitude;
     var bound1, bound2;
@@ -17,18 +21,32 @@ class TocNav extends React.Component {
     while ((match = r_atx.exec(str)) != null) {
       bound2 = match.index;
       magnitude = match[1].length;
-      tempText += "<li class=\"toc-li-" + magnitude + "\"><span class=\"nd-color2\">" + match[2] + "</span></li>";
+      var item = {name: match[2], mag: magnitude };
+      array.push(item);
       bound1 = r_atx.lastIndex;
     }
-      
-    return tempText + "</ul>";
+    return array;
   }
   
-  //  //
-  render() {
-    console.log("TOC RE-RENDERING");
+  scrollTo(id, e) {
+    this.props.scrollTo(id);
+  }
+
+  renderTocItem({name, mag}) {
     return (
-      <div className="toc-nav" dangerouslySetInnerHTML= {{__html: this.generateTableOfContents(this.props.info)}}>
+      <li key={name} className={"toc-li-" + mag } onClick={this.scrollTo.bind(this, name)}>
+          <span className="nd-color2">{name}</span>
+      </li>
+    );
+  }
+
+  render() {
+    this.array = this.generateHeaderArray(this.props.info);
+    return (
+      <div className="toc-nav">
+          <ul>
+              {this.array.map(this.renderTocItem, this)}
+          </ul>
       </div>
     );
   }
