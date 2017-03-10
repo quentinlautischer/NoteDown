@@ -3,7 +3,8 @@ import {
     View,
     Text,
     Navigator,
-    TouchableHighlight
+    TouchableHighlight,
+    StyleSheet
 } from 'react-native';
 
 var Orientation = require('react-native-orientation');
@@ -15,22 +16,32 @@ export default class FlashcardViewScene extends Component {
             console.log("Current Device Orientation: ", orientation);
         });
 
-        // Orientation.lockToPortrait(); //this will lock the view to Portrait
         Orientation.lockToLandscape(); //this will lock the view to Landscape
-        //Orientation.unlockAllOrientations(); //this will unlock the view to all Orientations
-
-
     }
 
     componentWillUnmount() {
-        Orientation.lockToPortrait();
+        Orientation.unlockAllOrientations();
     }
 
     render() {
         return (
-            <View>
+            <View style={styles.view}>
                 <Text>Viewing flashcard for {this.props.content.name}</Text>
             </View>
         )
     }
 }
+
+var styles = StyleSheet.create({
+    view: {
+        flex:1,
+        backgroundColor:'white',
+        flexDirection:'column',
+        alignItems:'center',
+        justifyContent:'center',
+        marginLeft:20,
+        marginRight:20,
+        marginBottom:20,
+        borderRadius:5
+    }
+});
