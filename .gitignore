@@ -4,3 +4,4 @@ mobile/android/build
 **/.sass-cache/
 
 **/*.log
+*.DS_Store
