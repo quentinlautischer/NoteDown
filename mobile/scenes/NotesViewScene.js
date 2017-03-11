@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
-import parse from './parser.js';
+import parse from '../shared/parser.js';
 
 export default class NotesViewScene extends Component {
     navigate(){
