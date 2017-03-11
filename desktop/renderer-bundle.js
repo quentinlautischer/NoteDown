@@ -68,6 +68,10 @@
 
 	var _startMenu2 = _interopRequireDefault(_startMenu);
 
+	var _menubar = __webpack_require__(399);
+
+	var _menubar2 = _interopRequireDefault(_menubar);
+
 	var _folderContainerView = __webpack_require__(378);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
@@ -119,6 +123,11 @@
 
 	var ipc = __webpack_require__(398).ipcRenderer;
 
+	var _require = __webpack_require__(398),
+	    remote = _require.remote;
+
+	var Menu = remote.Menu;
+
 	var App = function (_React$Component) {
 	  _inherits(App, _React$Component);
 
@@ -142,6 +151,8 @@
 	    };
 
 	    _this.init_ipc_app();
+	    var menubar = Menu.buildFromTemplate(_menubar2.default);
+	    Menu.setApplicationMenu(menubar);
 	    return _this;
 	  }
 
@@ -36888,6 +36899,172 @@
 /***/ function(module, exports) {
 
 	module.exports = require("electron");
+
+/***/ },
+/* 399 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _require = __webpack_require__(398),
+	    app = _require.app,
+	    Menu = _require.Menu;
+
+	var menubar_template = [{
+	  label: 'File',
+	  submenu: [{
+	    role: 'Open',
+	    label: 'Open'
+	  }, {
+	    role: 'Save',
+	    label: 'Save'
+	  }, {
+	    role: 'Save As',
+	    label: 'Save As'
+	  }, {
+	    role: 'FolderView',
+	    label: 'FolderView'
+	  }, {
+	    role: 'Flashcards',
+	    label: 'Flashcards'
+	  }]
+	}, {
+	  label: 'Edit',
+	  submenu: [{
+	    role: 'undo'
+	  }, {
+	    role: 'redo'
+	  }, {
+	    type: 'separator'
+	  }, {
+	    role: 'cut'
+	  }, {
+	    role: 'copy'
+	  }, {
+	    role: 'paste'
+	  }, {
+	    role: 'pasteandmatchstyle'
+	  }, {
+	    role: 'delete'
+	  }, {
+	    role: 'selectall'
+	  }]
+	}, {
+	  label: 'View',
+	  submenu: [{
+	    role: 'reload'
+	  }, {
+	    role: 'forcereload'
+	  }, {
+	    role: 'toggledevtools'
+	  }, {
+	    type: 'separator'
+	  }, {
+	    role: 'resetzoom'
+	  }, {
+	    role: 'zoomin'
+	  }, {
+	    role: 'zoomout'
+	  }, {
+	    type: 'separator'
+	  }, {
+	    role: 'togglefullscreen'
+	  }]
+	}, {
+	  label: 'Sync',
+	  submenu: [{
+	    role: 'Push To Cloud',
+	    label: 'Push To Cloud'
+	  }, {
+	    role: 'Pull From Cloud',
+	    label: 'Pull From Cloud'
+	  }]
+	}, {
+	  label: 'Account',
+	  submenu: [{
+	    role: 'Login',
+	    label: 'Login'
+	  }, {
+	    role: 'Logout',
+	    label: 'Logout'
+	  }]
+	}, {
+	  role: 'window',
+	  submenu: [{
+	    role: 'minimize'
+	  }, {
+	    role: 'close'
+	  }]
+	}, {
+	  role: 'help',
+	  submenu: [{
+	    label: 'Learn More',
+	    click: function click() {
+	      __webpack_require__(398).shell.openExternal('http://electron.atom.io');
+	    }
+	  }]
+	}];
+
+	if (process.platform === 'darwin') {
+	  menubar_template.unshift({
+	    label: app.getName(),
+	    submenu: [{
+	      role: 'about'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      role: 'services',
+	      submenu: []
+	    }, {
+	      type: 'separator'
+	    }, {
+	      role: 'hide'
+	    }, {
+	      role: 'hideothers'
+	    }, {
+	      role: 'unhide'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      role: 'quit'
+	    }]
+	  });
+	  // Edit menu.
+	  menubar_template[1].submenu.push({
+	    type: 'separator'
+	  }, {
+	    label: 'Speech',
+	    submenu: [{
+	      role: 'startspeaking'
+	    }, {
+	      role: 'stopspeaking'
+	    }]
+	  });
+	  // Window menu.
+	  menubar_template[3].submenu = [{
+	    label: 'Close',
+	    accelerator: 'CmdOrCtrl+W',
+	    role: 'close'
+	  }, {
+	    label: 'Minimize',
+	    accelerator: 'CmdOrCtrl+M',
+	    role: 'minimize'
+	  }, {
+	    label: 'Zoom',
+	    role: 'zoom'
+	  }, {
+	    type: 'separator'
+	  }, {
+	    label: 'Bring All to Front',
+	    role: 'front'
+	  }];
+	}
+
+	exports.default = menubar_template;
 
 /***/ }
 /******/ ]);
