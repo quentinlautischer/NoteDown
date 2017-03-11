@@ -11,6 +11,7 @@
     "react-native": "0.41.2",
     "react-native-action-button": "^2.6.3",
     "react-native-orientation": "yamill/react-native-orientation",
+    "react-native-swipe-gestures": "^1.0.2",
     "react-native-vector-icons": "^4.0.0",
     "socket.io-client": "^1.7.3"
   },

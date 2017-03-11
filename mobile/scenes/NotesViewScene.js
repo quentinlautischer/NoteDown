@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 const HTML = `
 <!DOCTYPE html>\n
@@ -54,9 +55,28 @@ export default class NotesViewScene extends Component {
         })
     }
 
+    onSwipeLeft(gestureState) {
+        // this.setState({myText: 'You swiped left!'});
+        console.log('You swiped left!');
+    }
+
+    onSwipeRight(gestureState) {
+        // this.setState({myText: 'You swiped right!'});
+        console.log('You swiped right!');
+    }
+
     render() {
+        const config = {
+            velocityThreshold: 0.3,
+            directionalOffsetThreshold: 80
+        };
+
         return (
-            <View style={styles.view}>
+            <GestureRecognizer
+                onSwipeLeft={(state) => this.onSwipeLeft(state)}
+                onSwipeRight={(state) => this.onSwipeRight(state)}
+                config={config}
+                style={styles.view}>
                 <WebView
                     // source={{html: HTML}} // uncomment (and comment line below) for a prettier example
                     source={{html: this.props.content.pages[0].content}}
@@ -68,7 +88,7 @@ export default class NotesViewScene extends Component {
                     }
                     icon={<Icon name="md-create" style={styles.actionButtonIcon} />}
                 />
-            </View>
+            </GestureRecognizer>
         )
     }
 }
