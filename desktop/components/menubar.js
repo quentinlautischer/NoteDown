@@ -140,7 +140,7 @@ const menubar_template = [
 
 if (process.platform === 'darwin') {
   menubar_template.unshift({
-    label: app.getName(),
+    label: "NoteDown",
     submenu: [
       {
         role: 'about'

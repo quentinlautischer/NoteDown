@@ -68,15 +68,15 @@
 
 	var _startMenu2 = _interopRequireDefault(_startMenu);
 
-	var _menubar = __webpack_require__(399);
+	var _menubar = __webpack_require__(378);
 
 	var _menubar2 = _interopRequireDefault(_menubar);
 
-	var _folderContainerView = __webpack_require__(378);
+	var _folderContainerView = __webpack_require__(380);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _dualmodeEditor = __webpack_require__(379);
+	var _dualmodeEditor = __webpack_require__(381);
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
@@ -84,11 +84,11 @@
 
 	var _notedownTitleLogo2 = _interopRequireDefault(_notedownTitleLogo);
 
-	var _waiter = __webpack_require__(384);
+	var _waiter = __webpack_require__(386);
 
 	var _waiter2 = _interopRequireDefault(_waiter);
 
-	var _Dialog = __webpack_require__(385);
+	var _Dialog = __webpack_require__(387);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -104,7 +104,7 @@
 
 	var _Paper2 = _interopRequireDefault(_Paper);
 
-	var _reactTapEventPlugin = __webpack_require__(392);
+	var _reactTapEventPlugin = __webpack_require__(394);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -121,9 +121,9 @@
 
 	(0, _reactTapEventPlugin2.default)();
 
-	var ipc = __webpack_require__(398).ipcRenderer;
+	var ipc = __webpack_require__(379).ipcRenderer;
 
-	var _require = __webpack_require__(398),
+	var _require = __webpack_require__(379),
 	    remote = _require.remote;
 
 	var Menu = remote.Menu;
@@ -34487,6 +34487,178 @@
 	  value: true
 	});
 
+	var _require = __webpack_require__(379),
+	    app = _require.app,
+	    Menu = _require.Menu;
+
+	var menubar_template = [{
+	  label: 'File',
+	  submenu: [{
+	    role: 'Open',
+	    label: 'Open'
+	  }, {
+	    role: 'Save',
+	    label: 'Save'
+	  }, {
+	    role: 'Save As',
+	    label: 'Save As'
+	  }, {
+	    role: 'FolderView',
+	    label: 'FolderView'
+	  }, {
+	    role: 'Flashcards',
+	    label: 'Flashcards'
+	  }]
+	}, {
+	  label: 'Edit',
+	  submenu: [{
+	    role: 'undo'
+	  }, {
+	    role: 'redo'
+	  }, {
+	    type: 'separator'
+	  }, {
+	    role: 'cut'
+	  }, {
+	    role: 'copy'
+	  }, {
+	    role: 'paste'
+	  }, {
+	    role: 'pasteandmatchstyle'
+	  }, {
+	    role: 'delete'
+	  }, {
+	    role: 'selectall'
+	  }]
+	}, {
+	  label: 'View',
+	  submenu: [{
+	    role: 'reload'
+	  }, {
+	    role: 'forcereload'
+	  }, {
+	    role: 'toggledevtools'
+	  }, {
+	    type: 'separator'
+	  }, {
+	    role: 'resetzoom'
+	  }, {
+	    role: 'zoomin'
+	  }, {
+	    role: 'zoomout'
+	  }, {
+	    type: 'separator'
+	  }, {
+	    role: 'togglefullscreen'
+	  }]
+	}, {
+	  label: 'Sync',
+	  submenu: [{
+	    role: 'Push To Cloud',
+	    label: 'Push To Cloud'
+	  }, {
+	    role: 'Pull From Cloud',
+	    label: 'Pull From Cloud'
+	  }]
+	}, {
+	  label: 'Account',
+	  submenu: [{
+	    role: 'Login',
+	    label: 'Login'
+	  }, {
+	    role: 'Logout',
+	    label: 'Logout'
+	  }]
+	}, {
+	  role: 'window',
+	  submenu: [{
+	    role: 'minimize'
+	  }, {
+	    role: 'close'
+	  }]
+	}, {
+	  role: 'help',
+	  submenu: [{
+	    label: 'Learn More',
+	    click: function click() {
+	      __webpack_require__(379).shell.openExternal('http://electron.atom.io');
+	    }
+	  }]
+	}];
+
+	if (process.platform === 'darwin') {
+	  menubar_template.unshift({
+	    label: "NoteDown",
+	    submenu: [{
+	      role: 'about'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      role: 'services',
+	      submenu: []
+	    }, {
+	      type: 'separator'
+	    }, {
+	      role: 'hide'
+	    }, {
+	      role: 'hideothers'
+	    }, {
+	      role: 'unhide'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      role: 'quit'
+	    }]
+	  });
+	  // Edit menu.
+	  menubar_template[1].submenu.push({
+	    type: 'separator'
+	  }, {
+	    label: 'Speech',
+	    submenu: [{
+	      role: 'startspeaking'
+	    }, {
+	      role: 'stopspeaking'
+	    }]
+	  });
+	  // Window menu.
+	  menubar_template[3].submenu = [{
+	    label: 'Close',
+	    accelerator: 'CmdOrCtrl+W',
+	    role: 'close'
+	  }, {
+	    label: 'Minimize',
+	    accelerator: 'CmdOrCtrl+M',
+	    role: 'minimize'
+	  }, {
+	    label: 'Zoom',
+	    role: 'zoom'
+	  }, {
+	    type: 'separator'
+	  }, {
+	    label: 'Bring All to Front',
+	    role: 'front'
+	  }];
+	}
+
+	exports.default = menubar_template;
+
+/***/ },
+/* 379 */
+/***/ function(module, exports) {
+
+	module.exports = require("electron");
+
+/***/ },
+/* 380 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
@@ -34560,7 +34732,7 @@
 	exports.default = FolderContainerView;
 
 /***/ },
-/* 379 */
+/* 381 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34583,11 +34755,11 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	var _renderer = __webpack_require__(380);
+	var _renderer = __webpack_require__(382);
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _tocNav = __webpack_require__(381);
+	var _tocNav = __webpack_require__(383);
 
 	var _tocNav2 = _interopRequireDefault(_tocNav);
 
@@ -34599,7 +34771,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var shared = __webpack_require__(383);
+	var shared = __webpack_require__(385);
 
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
@@ -34702,7 +34874,7 @@
 	exports.default = DualmodeEditor;
 
 /***/ },
-/* 380 */
+/* 382 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34759,7 +34931,7 @@
 	exports.default = Renderer;
 
 /***/ },
-/* 381 */
+/* 383 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34774,7 +34946,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _tocItem = __webpack_require__(382);
+	var _tocItem = __webpack_require__(384);
 
 	var _tocItem2 = _interopRequireDefault(_tocItem);
 
@@ -34795,6 +34967,16 @@
 	    var _this = _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).call(this));
 
 	    _this.array = [];
+
+	    // All Data
+	    _this.data = {
+	      previousPages: [], //List of Pages Identified by first Header
+	      currentPage: [], //List of (Headers, Mag) on current page
+	      nextPages: [] //List of Pages Identified by Header that are after
+	    };
+	    // this.scope // Some tracker of current zoom
+
+	    // Going to need a return to folder button or something
 
 	    _this.scrollTo = _this.scrollTo.bind(_this);
 	    _this.renderTocItem = _this.renderTocItem.bind(_this);
@@ -34863,7 +35045,7 @@
 	exports.default = TocNav;
 
 /***/ },
-/* 382 */
+/* 384 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -34945,7 +35127,7 @@
 	exports.default = TocNav;
 
 /***/ },
-/* 383 */
+/* 385 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -35067,7 +35249,7 @@
 	console.log("Shared module loaded");
 
 /***/ },
-/* 384 */
+/* 386 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35082,11 +35264,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog2 = __webpack_require__(385);
+	var _Dialog2 = __webpack_require__(387);
 
 	var _Dialog3 = _interopRequireDefault(_Dialog2);
 
-	var _CircularProgress = __webpack_require__(390);
+	var _CircularProgress = __webpack_require__(392);
 
 	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
 
@@ -35136,7 +35318,7 @@
 	exports.default = Waiter;
 
 /***/ },
-/* 385 */
+/* 387 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35146,7 +35328,7 @@
 	});
 	exports.default = undefined;
 
-	var _Dialog = __webpack_require__(386);
+	var _Dialog = __webpack_require__(388);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -35155,7 +35337,7 @@
 	exports.default = _Dialog2.default;
 
 /***/ },
-/* 386 */
+/* 388 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35216,11 +35398,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _Overlay = __webpack_require__(387);
+	var _Overlay = __webpack_require__(389);
 
 	var _Overlay2 = _interopRequireDefault(_Overlay);
 
-	var _RenderToLayer = __webpack_require__(389);
+	var _RenderToLayer = __webpack_require__(391);
 
 	var _RenderToLayer2 = _interopRequireDefault(_RenderToLayer);
 
@@ -35747,7 +35929,7 @@
 	exports.default = Dialog;
 
 /***/ },
-/* 387 */
+/* 389 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35796,7 +35978,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _AutoLockScrolling = __webpack_require__(388);
+	var _AutoLockScrolling = __webpack_require__(390);
 
 	var _AutoLockScrolling2 = _interopRequireDefault(_AutoLockScrolling);
 
@@ -35892,7 +36074,7 @@
 	exports.default = Overlay;
 
 /***/ },
-/* 388 */
+/* 390 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36017,7 +36199,7 @@
 	exports.default = AutoLockScrolling;
 
 /***/ },
-/* 389 */
+/* 391 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36201,7 +36383,7 @@
 	exports.default = RenderToLayer;
 
 /***/ },
-/* 390 */
+/* 392 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36211,7 +36393,7 @@
 	});
 	exports.default = undefined;
 
-	var _CircularProgress = __webpack_require__(391);
+	var _CircularProgress = __webpack_require__(393);
 
 	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
 
@@ -36220,7 +36402,7 @@
 	exports.default = _CircularProgress2.default;
 
 /***/ },
-/* 391 */
+/* 393 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36492,11 +36674,11 @@
 	exports.default = CircularProgress;
 
 /***/ },
-/* 392 */
+/* 394 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(393);
+	var defaultClickRejectionStrategy = __webpack_require__(395);
 
 	var alreadyInjected = false;
 
@@ -36518,13 +36700,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(394)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(396)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 393 */
+/* 395 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -36535,7 +36717,7 @@
 
 
 /***/ },
-/* 394 */
+/* 396 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -36559,14 +36741,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(395);
+	var EventConstants = __webpack_require__(397);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(396);
+	var TouchEventUtils = __webpack_require__(398);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(397);
+	var keyOf = __webpack_require__(399);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -36712,7 +36894,7 @@
 
 
 /***/ },
-/* 395 */
+/* 397 */
 /***/ function(module, exports) {
 
 	/**
@@ -36808,7 +36990,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 396 */
+/* 398 */
 /***/ function(module, exports) {
 
 	/**
@@ -36856,7 +37038,7 @@
 
 
 /***/ },
-/* 397 */
+/* 399 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -36893,178 +37075,6 @@
 	};
 
 	module.exports = keyOf;
-
-/***/ },
-/* 398 */
-/***/ function(module, exports) {
-
-	module.exports = require("electron");
-
-/***/ },
-/* 399 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _require = __webpack_require__(398),
-	    app = _require.app,
-	    Menu = _require.Menu;
-
-	var menubar_template = [{
-	  label: 'File',
-	  submenu: [{
-	    role: 'Open',
-	    label: 'Open'
-	  }, {
-	    role: 'Save',
-	    label: 'Save'
-	  }, {
-	    role: 'Save As',
-	    label: 'Save As'
-	  }, {
-	    role: 'FolderView',
-	    label: 'FolderView'
-	  }, {
-	    role: 'Flashcards',
-	    label: 'Flashcards'
-	  }]
-	}, {
-	  label: 'Edit',
-	  submenu: [{
-	    role: 'undo'
-	  }, {
-	    role: 'redo'
-	  }, {
-	    type: 'separator'
-	  }, {
-	    role: 'cut'
-	  }, {
-	    role: 'copy'
-	  }, {
-	    role: 'paste'
-	  }, {
-	    role: 'pasteandmatchstyle'
-	  }, {
-	    role: 'delete'
-	  }, {
-	    role: 'selectall'
-	  }]
-	}, {
-	  label: 'View',
-	  submenu: [{
-	    role: 'reload'
-	  }, {
-	    role: 'forcereload'
-	  }, {
-	    role: 'toggledevtools'
-	  }, {
-	    type: 'separator'
-	  }, {
-	    role: 'resetzoom'
-	  }, {
-	    role: 'zoomin'
-	  }, {
-	    role: 'zoomout'
-	  }, {
-	    type: 'separator'
-	  }, {
-	    role: 'togglefullscreen'
-	  }]
-	}, {
-	  label: 'Sync',
-	  submenu: [{
-	    role: 'Push To Cloud',
-	    label: 'Push To Cloud'
-	  }, {
-	    role: 'Pull From Cloud',
-	    label: 'Pull From Cloud'
-	  }]
-	}, {
-	  label: 'Account',
-	  submenu: [{
-	    role: 'Login',
-	    label: 'Login'
-	  }, {
-	    role: 'Logout',
-	    label: 'Logout'
-	  }]
-	}, {
-	  role: 'window',
-	  submenu: [{
-	    role: 'minimize'
-	  }, {
-	    role: 'close'
-	  }]
-	}, {
-	  role: 'help',
-	  submenu: [{
-	    label: 'Learn More',
-	    click: function click() {
-	      __webpack_require__(398).shell.openExternal('http://electron.atom.io');
-	    }
-	  }]
-	}];
-
-	if (process.platform === 'darwin') {
-	  menubar_template.unshift({
-	    label: app.getName(),
-	    submenu: [{
-	      role: 'about'
-	    }, {
-	      type: 'separator'
-	    }, {
-	      role: 'services',
-	      submenu: []
-	    }, {
-	      type: 'separator'
-	    }, {
-	      role: 'hide'
-	    }, {
-	      role: 'hideothers'
-	    }, {
-	      role: 'unhide'
-	    }, {
-	      type: 'separator'
-	    }, {
-	      role: 'quit'
-	    }]
-	  });
-	  // Edit menu.
-	  menubar_template[1].submenu.push({
-	    type: 'separator'
-	  }, {
-	    label: 'Speech',
-	    submenu: [{
-	      role: 'startspeaking'
-	    }, {
-	      role: 'stopspeaking'
-	    }]
-	  });
-	  // Window menu.
-	  menubar_template[3].submenu = [{
-	    label: 'Close',
-	    accelerator: 'CmdOrCtrl+W',
-	    role: 'close'
-	  }, {
-	    label: 'Minimize',
-	    accelerator: 'CmdOrCtrl+M',
-	    role: 'minimize'
-	  }, {
-	    label: 'Zoom',
-	    role: 'zoom'
-	  }, {
-	    type: 'separator'
-	  }, {
-	    label: 'Bring All to Front',
-	    role: 'front'
-	  }];
-	}
-
-	exports.default = menubar_template;
 
 /***/ }
 /******/ ]);
