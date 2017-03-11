@@ -7,6 +7,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import StartMenu from './components/startMenu';
+import menubar_template from './components/menubar';
 
 import FolderContainerView from './components/folderContainerView'
 import DualmodeEditor from './components/dualmodeEditor'
@@ -22,6 +23,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 var ipc = require('electron').ipcRenderer;
+const {remote} = require('electron');
+const {Menu} = remote;
 
 class App extends React.Component {
   constructor() {
@@ -42,6 +45,8 @@ class App extends React.Component {
     };
 
     this.init_ipc_app();
+    const menubar = Menu.buildFromTemplate(menubar_template);
+    Menu.setApplicationMenu(menubar);
   }
 
   setCurrentFolder(id) {
