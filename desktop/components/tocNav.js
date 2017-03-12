@@ -6,6 +6,16 @@ class TocNav extends React.Component {
     super();
     this.array = [];
 
+    // All Data
+    this.data = {
+      previousPages: [], //List of Pages Identified by first Header
+      currentPage: [], //List of (Headers, Mag) on current page
+      nextPages: [] //List of Pages Identified by Header that are after
+    }
+    // this.scope // Some tracker of current zoom
+
+    // Going to need a return to folder button or something
+
     this.scrollTo  = this.scrollTo  .bind(this);
     this.renderTocItem = this.renderTocItem.bind(this)
   }

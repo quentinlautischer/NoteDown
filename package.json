@@ -17,7 +17,8 @@
     "ios": "cd mobile && react-native run-ios && cd ..",
     "android": "cd mobile && react-native run-android && cd ..",
     "watch_sass": "cd shared && sass --watch stylesheets && cd ..",
-    "mobile_watch_css": "cd mobile && node_modules/.bin/react-native-css -i ../shared/stylesheets/utils/main.css -o styles.js --watch --pretty && cd .."
+    "mobile_watch_css": "cd mobile && node_modules/.bin/react-native-css -i ../shared/stylesheets/utils/main.css -o styles.js --watch --pretty && cd ..",
+    "mobile_watch_shared": "cpx \"shared/parser.js\" \"mobile/shared\" --watch"
   },
   "babel": {
     "presets": [
@@ -26,6 +27,7 @@
     ]
   },
   "dependencies": {
+    "cpx": "^1.5.0",
     "mongoose": "^4.8.2"
   },
   "devDependencies": {
