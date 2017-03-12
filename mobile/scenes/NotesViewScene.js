@@ -11,9 +11,9 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
-import parse from '../shared/parser.js';
+import NotesView from '../components/NotesView.js';
 
-var WEBVIEW_REF = 'webview';
+var PAGE_NAV_REF = 'page_nav';
 
 export default class NotesViewScene extends Component {
     constructor(props) {
@@ -24,6 +24,7 @@ export default class NotesViewScene extends Component {
         };
     }
 
+    // external navigation (to completely different scenes)
     navigate() {
         this.props.navigator.push({
             title: arguments[0],
@@ -34,16 +35,18 @@ export default class NotesViewScene extends Component {
     onSwipeLeft(gestureState) {
         // go to next page
         if (this.state.index < this.props.content.pages.length - 1) {
+            this.refs[PAGE_NAV_REF].push({
+                content: this.props.content.pages[this.state.index + 1].content
+            });
             this.setState({index: this.state.index + 1});
-            this.refs[WEBVIEW_REF].reload();
         }
     }
 
     onSwipeRight(gestureState) {
         // go to previous page
         if (this.state.index > 0) {
+            this.refs[PAGE_NAV_REF].pop();
             this.setState({index: this.state.index - 1});
-            this.refs[WEBVIEW_REF].reload();
         }
     }
 
@@ -53,17 +56,24 @@ export default class NotesViewScene extends Component {
             directionalOffsetThreshold: 80
         };
 
+        const routes = this.props.content.pages;
+
         return (
             <GestureRecognizer
                 onSwipeLeft={(state) => this.onSwipeLeft(state)}
                 onSwipeRight={(state) => this.onSwipeRight(state)}
                 config={config}
                 style={styles.view}>
-                <WebView
-                ref={WEBVIEW_REF}
-                    source={{html: parse.parse(this.props.content.pages[this.state.index].content)}}
+
+                <Navigator // this is where the WebView that shows the rendered notes lives
+                    ref={PAGE_NAV_REF}
+                    initialRoute={routes[0]}
+                    renderScene={(route, navigator) => {
+                        return <NotesView navigator={navigator} content={route.content} />
+                    }}
                 />
-                <ActionButton
+
+                <ActionButton // floating action button (to edit notes)
                     buttonColor='#0aaf82'
                     onPress = {
                         this.navigate.bind(this, "Edit Notes")
