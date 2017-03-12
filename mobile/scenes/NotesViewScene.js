@@ -66,7 +66,7 @@ export default class NotesViewScene extends Component {
                 <ActionButton
                     buttonColor='#0aaf82'
                     onPress = {
-                        this.navigate.bind(this)
+                        this.navigate.bind(this, "Edit Notes")
                     }
                     icon={<Icon name="md-create" style={styles.actionButtonIcon} />}
                 />
