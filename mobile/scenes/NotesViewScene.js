@@ -13,8 +13,18 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 import parse from '../shared/parser.js';
 
+var WEBVIEW_REF = 'webview';
+
 export default class NotesViewScene extends Component {
-    navigate(){
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            index: 0
+        };
+    }
+
+    navigate() {
         this.props.navigator.push({
             title: arguments[0],
             content: this.props.content
@@ -22,13 +32,19 @@ export default class NotesViewScene extends Component {
     }
 
     onSwipeLeft(gestureState) {
-        // this.setState({myText: 'You swiped left!'});
-        console.log('You swiped left!');
+        // go to next page
+        if (this.state.index < this.props.content.pages.length - 1) {
+            this.setState({index: this.state.index + 1});
+            this.refs[WEBVIEW_REF].reload();
+        }
     }
 
     onSwipeRight(gestureState) {
-        // this.setState({myText: 'You swiped right!'});
-        console.log('You swiped right!');
+        // go to previous page
+        if (this.state.index > 0) {
+            this.setState({index: this.state.index - 1});
+            this.refs[WEBVIEW_REF].reload();
+        }
     }
 
     render() {
@@ -44,12 +60,13 @@ export default class NotesViewScene extends Component {
                 config={config}
                 style={styles.view}>
                 <WebView
-                    source={{html: parse.parse(this.props.content.pages[0].content)}}
+                ref={WEBVIEW_REF}
+                    source={{html: parse.parse(this.props.content.pages[this.state.index].content)}}
                 />
                 <ActionButton
                     buttonColor='#0aaf82'
                     onPress = {
-                        this.navigate.bind(this, 'Edit Notes')
+                        this.navigate.bind(this)
                     }
                     icon={<Icon name="md-create" style={styles.actionButtonIcon} />}
                 />
