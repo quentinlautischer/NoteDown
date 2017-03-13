@@ -1,4 +1,7 @@
 import React from 'react';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
 import NoteDownTitleLogo from './notedownTitleLogo';
 import MenuButton from './menuButton';
 import FlatButton from 'material-ui/FlatButton'
@@ -13,12 +16,12 @@ class StartMenu extends React.Component {
       mode: 'main',
       username: '',
       password: '',
-      email: ''
+      name: ''
     }
 
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -35,9 +38,9 @@ class StartMenu extends React.Component {
     });
   }
 
-  handleEmailChange(event) {
+  handleNameChange(event) {
     this.setState({
-      email: event.target.value,
+      name: event.target.value,
     });
   }
 
@@ -49,9 +52,10 @@ class StartMenu extends React.Component {
   render() {
     if (this.state.mode == "login") {  
       return (
+        <MuiThemeProvider>
         <div className="start-menu">
           <NoteDownTitleLogo />
-          <MenuTextField value={this.state.username}  className="username" hintText="Username" onChange={this.handleUsernameChange}/>
+          <MenuTextField value={this.state.username}  className="username" hintText="Username/Email" onChange={this.handleUsernameChange}/>
           <MenuTextField value={this.state.password} className="password-field" hintText="Password" onChange={this.handlePasswordChange}/>
           <div className="login-signup-toggle">
             <MenuButton className="login-btn" label="Login" onClick={() => this.props.request_login(this.state.username, this.state.password)} /> 
@@ -60,24 +64,28 @@ class StartMenu extends React.Component {
             <FlatButton label="Quickmode" onClick={() => this.props.quickmode()} />
           </div>
         </div>
+        </MuiThemeProvider>
       );
     } else if (this.state.mode == "sign-up") {
       return (
+        <MuiThemeProvider>
         <div className="start-menu">
           <NoteDownTitleLogo />
-          <MenuTextField value={this.state.username}  className="username" hintText="Username" onChange={this.handleUsernameChange}/>
+          <MenuTextField value={this.state.username}  className="username" hintText="Username/Email" onChange={this.handleUsernameChange}/>
           <MenuTextField value={this.state.password} className="password-field" hintText="Password" onChange={this.handlePasswordChange}/>
-          <MenuTextField value={this.state.email} className="email" hintText="Email" onChange={this.handleEmailChange}/>
+          <MenuTextField value={this.state.name} className="name" hintText="Name" onChange={this.handleNameChange}/>
           <div className="login-signup-toggle">
-            <MenuButton label="Sign-Up" onClick={() => this.props.request_signup(this.state.username, this.state.password, this.state.email)} />              
+            <MenuButton label="Sign-Up" onClick={() => this.props.request_signup(this.state.username, this.state.password, this.state.name)} />              
             <br/><br/><br/><br/><br/><br/><br/><br/><br/>
             <FlatButton className="menu-button" label="Login" onClick={() => this.enterLoginForm()} />
             <FlatButton label="Quickmode" onClick={() => this.props.quickmode()} />
           </div>
         </div>
+        </MuiThemeProvider>
       );
     } else {
       return (
+        <MuiThemeProvider>
         <div className="start-menu">
           <NoteDownTitleLogo />
           <MenuButton className="login-btn" label="Login" onClick={() => this.enterLoginForm()} /> 
@@ -85,6 +93,7 @@ class StartMenu extends React.Component {
             <MenuButton label="Quickmode" onClick={() => this.props.quickmode()} />
           </div>
         </div>
+        </MuiThemeProvider>
       );
     }
   }

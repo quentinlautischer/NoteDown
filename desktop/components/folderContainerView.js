@@ -1,13 +1,35 @@
 import React from 'react';
 import TextField from 'react';
+import DialogFolderCreate from './dialogFolderCreate'
+import { connect } from 'react-redux';
 
 class FolderContainerView extends React.Component {
   constructor(props) {
     super(props);
-    this.folderid = "0";
 
+    this.state = {
+      createFolderDialogOpen: false
+    }
+
+    this.folderid = "0";
     this.selectFolder = this.selectFolder.bind(this);
     this.renderFolder = this.renderFolder.bind(this)
+  }
+
+  openCreateFolderDialog() {
+    console.log("Opening Create Folder Dialog");
+    this.setState({createFolderDialogOpen: true,});
+  }
+
+  createNewFolder(name) {
+    console.log(`Creating New Folder with name: ${name}`);
+    this.props.createFolder(name);
+    this.closeCreateFolderDialog();
+  }
+
+  closeCreateFolderDialog() {
+    console.log("Closing Create Folder Dialog");
+    this.setState({createFolderDialogOpen: false,});
   }
 
   selectFolder(id, e) {
@@ -26,18 +48,16 @@ class FolderContainerView extends React.Component {
   render() {
     return (
       <div className="folder-container-view">
-        {this.props.notes.folders.map(this.renderFolder, this)}
-        <div className="folder-view" onClick={() => this.props.newFolder()}>New +</div>
+        {this.props.folders.map(this.renderFolder, this)}
+        <div className="folder-view" onClick={() => this.openCreateFolderDialog()}>New +</div>
+        <DialogFolderCreate 
+          open={this.state.createFolderDialogOpen} 
+          close={() => this.closeCreateFolderDialog()}
+          createFolder={(name) => this.createNewFolder(name)}
+        />
       </div>
     );
   }
-
-
-
-
-
-
-  
 }
 
-export default FolderContainerView;
+export default connect()(FolderContainerView);

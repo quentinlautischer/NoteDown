@@ -13,12 +13,20 @@ var HOST = 'localhost'; // allows me to test on android
 var PORT = '3000';
 var io = require('socket.io-client');
 
+
+var mongoose = require('mongoose');
+var Account = require('../shared/models/account')
+var Notes = require('../shared/models/notes')
+var Image = require('../shared/models/image')
+var Folder = require('../shared/models/folder')
+var Page = require('../shared/models/page')
+
 var socket;
 
 let mainWindow
 
 function createWindow () {
-  mainWindow = new BrowserWindow({width: 1200, height: 800})
+  mainWindow = new BrowserWindow({width: 1500, height: 1100})
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
@@ -29,7 +37,7 @@ function createWindow () {
   mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
-    client.destroy();
+    socket.destroy();
     mainWindow = null
   })
 
@@ -63,6 +71,19 @@ function initServerComm() {
   });
 }
 
+ipcMain.on('create-folder-request', (event, data) => {
+  const folder = new Folder({
+    name: data.name,
+    pages: [
+      new Page({
+        content: ""
+      })
+    ]
+  });
+  console.log(folder);  
+  mainWindow.webContents.send('create-folder-response', {data: JSON.stringify(folder) });
+});
+
 ipcMain.on('request-login', (event, data) => {
   console.log('Main Process received login request: ' + data.username + ' ' + data.password);
   socket.emit('request-login', data);
@@ -76,6 +97,16 @@ ipcMain.on('request-signup', (event, data) => {
 ipcMain.on('request-pull-data', (event, data) => {
   console.log('Main Process received pull-data request');
   socket.emit('request-pull-data', data)
+})
+
+ipcMain.on('request-push-data', (event, data) => {
+  console.log('Main Process received pull-data request');
+  socket.emit('request-push-data', data)
+})
+
+ipcMain.on('server-error', (event, data) => {
+  console.log(`ServerError: ${data.msg}`);
+  mainWindow.webContents.send('error-toast', data);
 })
 
 process.on('uncaughtException', function (error) {

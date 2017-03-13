@@ -3,6 +3,11 @@
 // All of the Node.js APIs are available in this process.
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import update from 'react-addons-update'; 
+
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
@@ -24,30 +29,31 @@ injectTapEventPlugin();
 
 var ipc = require('electron').ipcRenderer;
 const {remote} = require('electron');
-const {Menu} = remote;
+const {Menu, MenuItem} = remote;
+const {dialog} = remote;
 
 class App extends React.Component {
   constructor() {
     super();
-    this.state = 
-    {
-      mode: 'start-menu',
-      currentFolderid: null,
-      waiting: false,
-      exceptionOccured: false,
-      exceptionMsg: "No Exception"
-    }
 
-    this.notes = {
-      userid: null,
-      images: [],
-      folders: []
+    this.state = {
+      open: false
     };
 
     this.init_ipc_app();
     const menubar = Menu.buildFromTemplate(menubar_template);
     Menu.setApplicationMenu(menubar);
   }
+
+  // This is temp for now --- Cant figure out how to have the DOM update on store subs.
+  componentDidMount(){
+    store.subscribe( this.storeDidUpdate.bind(this) );
+  }
+
+  storeDidUpdate(){
+    this.setState({open: store.getState().sessionActive});
+  }
+  //
 
   setCurrentFolder(id) {
     console.log("Setting Current Folder " + id);
@@ -64,124 +70,216 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.mode == 'start-menu') {
+    console.log(store.getState());
+    if (store.getState().mode == 'menu') {
       return (
-        <MuiThemeProvider>
-          <div>
-           <StartMenu 
-            request_login={(username, password) => this.request_login(username, password)}
-            request_signup={(username, password, email) => this.request_signup(username, password, email)}
-            quickmode={() => this.quickmode()}
-          />
-          <Dialog 
-            open={this.state.exceptionOccured} 
-            title={this.state.exceptionMsg}
-          />
-          <Waiter 
-            open={this.state.waiting}
-            title={"Waiting"} 
-          />
-          </div>
-        </MuiThemeProvider>
+        <StartMenu 
+          request_login={(username, password) => this.request_login(username, password)}
+          request_signup={(username, password, name) => this.request_signup(username, password, name)}
+          quickmode={() => store.dispatch({type: 'EDITOR_MODE'})}
+        />
       );  
-    } else if (this.state.mode == 'editor') {
+    } else if (store.getState().mode == 'editor') {
+      console.log(`Content: ${store.getState().notes.folders[store.getState().folderIndex].pages[store.getState().pageIndex].content}`);
       return (
-        <DualmodeEditor state={this.state}  notes={this.notes} />
+        <DualmodeEditor 
+            content={store.getState().notes.folders[store.getState().folderIndex].pages[store.getState().pageIndex].content}
+            updateContent={(content) => this.updateContent(content)}
+        />
       );
-    } else if (this.state.mode == 'folderview') {
+
+    } else if (store.getState().mode == 'folderview') {
       return (
-        <FolderContainerView newFolder={() => this.newFolder()} openFolder={id => this.setCurrentFolder(id)} notes={this.notes} />
+        <FolderContainerView
+            folders={store.getState().notes.folders}
+            createFolder={(name) => this.createFolder(name)} 
+            openFolder={id => this.open_folder(id)} 
+        />
       );
     }
   }
 
-  newFolder() {
-    console.log("new folder");
+  updateContent(content){
+    store.dispatch({type: 'PAGE_CONTENT_CHANGE', content: content});
+    this.request_push_data();
+  }
+
+  createFolder(name) {
+    console.log(`creating new folder with name: ${name}`);
+    const data = {name: name};
+    ipc.send('create-folder-request', data);
+
+    ipc.on('create-folder-response', (event, data) => {
+      console.log(`create folder reponse: ${data.data}`);
+      var folder = JSON.parse(data.data);
+
+      store.dispatch({type: 'ADD_FOLDER', folder: folder});
+      this.request_push_data();
+    });
   }
 
   open_folder(id) {
     console.log("Open Folder");
     console.log("Request to open folder: " + id);
     console.log(id);
-    //Setup some state    
+    var index = this.findIndexOfFolder(id);
+    store.dispatch({type: 'SELECT_FOLDER', index: index});
+    store.dispatch({type: 'EDITOR_MODE'});
   }
 
-  quickmode() {
-    console.log("quickmode enabled");
-    this.setState({
-      mode: 'editor',
+  findIndexOfFolder(folderid) {
+    const folders = store.getState().notes.folders;
+    const length = folders.length;
+    var i;
+    for(i = 0; i < length; i++) {
+      if (folders[i]._id == folderid)
+        return i;
+    }
+    return null;
+  }
+
+  findFolderWithId(folderid) {
+    var theFolder = this.notes.folders.filter(function( folder ) {
+      return folder._id == folderid;
     });
+    return theFolder[0];
   }
 
   request_login(username, password) {
     console.log("received login request; Username: " + username + " Password: " + password);
-
     const data = {username: username, password: password};
     ipc.send('request-login', data);
-
-    this.setState({
-      waiting: true,
-    });
   }
 
-  request_signup(username, password, email) {
-    console.log("received signup request; Username: " + username + " Password: " + password + " Email: " + email);
-    
-    const data = {username: username, password: password, email: email};
+  request_signup(username, password, name) {
+    console.log(`received signup request; Username: ${username} Password: ${password} Name: ${name}`);
+    const data = {username: username, password: password, name: name};
     ipc.send('request-signup', data);
-
-    this.setState({
-      waiting: true,
-    });
   }
 
   request_pull_data() {
     console.log("requesting data pull");
-    const data = {userid: "lautisch"};
+    const data = {userid: store.getState().userid};
     ipc.send('request-pull-data', data);
   }
 
+  request_push_data() {
+    console.log("requesting data push");
+    const data = {userid: store.getState().userid, notes: store.getState().notes};
+    ipc.send('request-push-data', data);
+  }
+
   init_ipc_app() {
-    ipc.on('error-toast', (event, arg) => {
-      console.log("error occured: " + arg);
+    ipc.on('error-toast', (event, data) => {
+      console.log("error occured: " + data);
       this.setState({
         exceptionOccured: true,
-        exceptionMsg: 'Main Proc Exception Caught: ' + arg,
+        exceptionMsg: 'Main Proc Exception Caught: ' + data,
       });
     });
 
-    ipc.on('request-login-response', (event, arg) => {
-      console.log('received login response: ' + arg);
-      this.setState({ waiting: false,});
+    ipc.on('request-login-response', (event, data) => {
+      console.log('received login response: ' + data);
+      if (data.result == true) {
+        store.dispatch({type: 'SET_USER', userid: data.userid});
+        this.request_pull_data();
+      } else {
+        dialog.showErrorBox('error', data.msg);
+      }
+    })
 
+    ipc.on('request-signup-response', (event, data) => {
+      console.log('received signup reply: ' + data);
       this.request_pull_data();
     })
 
-    ipc.on('request-signup-response', (event, arg) => {
-      console.log('received signup reply: ' + arg);
-      this.setState({
-        waiting: true,
-      });
-
-      this.request_pull_data();
+    ipc.on('request-push-data-response', (event, data) => {
+      console.log('request-push-data-response: ' + data);
     })
 
-    ipc.on('request-push-data-response', (event, arg) => {
-      console.log('request-push-data-response: ' + arg);
+    ipc.on('request-pull-data-response', (event, data) => {
+      console.log('request-pull-data-response: ' + data);
+
+      if (data.result == true){
+        store.dispatch({type: 'SET_NOTES', notes: data.notes});
+        store.dispatch({type: 'FOLDER_MODE'});
+      } else {
+        dialog.showErrorBox('error', data.msg);
+      }
     })
 
-    ipc.on('request-pull-data-response', (event, arg) => {
-      console.log('request-pull-data-response: ' + arg);
-
-      this.notes = arg.notes;
-      console.log(this.notes);
-      this.setState({mode: 'folderview',});
-    })
-
-    ipc.on('request-photo-response', (event, arg) => {
-      console.log('request-photo-response: ' + arg);
+    ipc.on('request-photo-response', (event, data) => {
+      console.log('request-photo-response: ' + data);
     })
   }
 
 }
-ReactDOM.render(<App/>,document.getElementById('notedown-app'))
+
+const initial_state = { 
+  mode: 'menu',
+  userid: null,
+  folderIndex: null,
+  pageIndex: 0,
+  notes: { 
+    userid: null, 
+    images: [], 
+    folders: []
+  } 
+}
+
+const reducer = (state = initial_state, action) => {
+  switch (action.type) {
+    // App State
+    case 'EDITOR_MODE':
+      return Object.assign({}, state, {mode: 'editor'});
+    case 'FOLDER_MODE':
+      return Object.assign({}, state, {mode: 'folderview'});
+    case 'MENU_MODE':
+     return Object.assign({}, state, {mode: 'menu'});
+    // Notes State
+    case 'SET_USER':
+      return Object.assign({}, state, {userid: action.userid});
+    case 'SET_NOTES':
+      return Object.assign({}, state, {notes: action.notes});
+    case 'ADD_FOLDER':
+      console.log(`adding folder: ${action.folder}`);
+      return update(state, {
+        notes: {
+          folders: {$push: [action.folder]}
+        }
+      });
+    case 'SELECT_FOLDER':
+      return Object.assign({}, state, {folderIndex: action.index});
+    case 'DELETE_FOLDER':
+      return state;
+    case 'ADD_PAGE':
+      return state;
+    case 'REMOVE_PAGE':
+      return state;
+    case 'PAGE_CONTENT_CHANGE':
+      return update(state, {
+        notes: {
+          folders: {
+            [state.folderIndex]:{
+              pages: {
+                [state.pageIndex]:{
+                  content: {$set : action.content}
+                }
+              }
+            }
+          }
+        }
+      });
+    default:
+      return state;
+  }
+}
+
+const store = createStore(reducer);
+
+ReactDOM.render(
+  <Provider store={ store }>
+    <App/>
+  </Provider>,
+  document.getElementById('notedown-app')
+);

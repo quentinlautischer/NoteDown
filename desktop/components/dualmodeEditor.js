@@ -1,16 +1,16 @@
 import React from 'react';
 import TextField from 'react';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-
 import Renderer from './renderer';
 import TocNav from './tocNav';
 
+import { connect } from 'react-redux';
+
 var shared = require('../../shared/parser.js');
 class DualmodeEditor extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
+
     this.state = {
       content: "",
       rendered_content: ""
@@ -21,30 +21,24 @@ class DualmodeEditor extends React.Component {
   }
 
   componentWillMount() {
-    if (this.props.notes.userid != null) {
-      this.loadCurrentPage(this.props.state.currentFolderid, this.props.notes);
+    console.log('DualmodeEditor ComponentWillMount');
+    if (null) {
+      this.loadCurrentPage(this.props.state.currentFolderid);
       this.handleChange;
     }
   }
 
-  loadCurrentPage(folderid, notes) {
+  loadCurrentPage(folderid) {
     console.log("Folderid: " + folderid + " Notes: " + JSON.stringify(notes));
-    var pages = this.findFolderWithId(folderid, notes).pages;
+    var pages = this.props.findFolderWithId(folderid).pages;
     var content = pages[0].content;
     this.setState({
       content: content,
     });
   }
 
-  findFolderWithId(folderid, notes) {
-    var theFolder = notes.folders.filter(function( folder ) {
-      return folder._id == folderid;
-    });
-    return theFolder[0];
-  }
-
   handleChange(e) {
-    this.setState({ content: e.target.value });
+    this.props.updateContent(e.target.value);
     this.parse(e.target.value);
   }
 
@@ -57,13 +51,14 @@ class DualmodeEditor extends React.Component {
   }
 
   render() {
+    console.log("rendering dual mode");
     return (
       <div className="dualMode-container">
-        <textarea id="userText" value={this.state.content} className="markdown-input-editor" onChange={this.handleChange}>
-          {this.state.content}
+        <textarea id="userText" value={this.props.content} className="markdown-input-editor" onChange={this.handleChange}>
+          {this.props.content}
         </textarea>
         <div className="render-container">
-          <TocNav info={this.state.content} scrollTo={id => this.scrollTo(id)}/>
+          <TocNav info={this.props.content} scrollTo={id => this.scrollTo(id)}/>
           <div id="renderField" className="markdown-output-renderer" 
             dangerouslySetInnerHTML= {{__html: this.state.rendered_content}}>
           </div>
@@ -74,14 +69,11 @@ class DualmodeEditor extends React.Component {
 
   parse(content) {
     var rendered = '';
-
-    //Do Render Work
     rendered = shared.parse(content);
-
     this.setState({ rendered_content: rendered });
   }
 
   
 }
 
-export default DualmodeEditor;
+export default connect()(DualmodeEditor);

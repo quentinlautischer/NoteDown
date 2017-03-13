@@ -5,7 +5,7 @@ const NotesModel = require('./notes')
 
 // create a schema
 const accountSchema = new mongoose.Schema({
-  email: {type: String, unique: true, index: true },
+  email: {type: String, unique: true},
   name: String,
   password: String,
   notes: NotesModel.schema
