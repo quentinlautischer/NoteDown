@@ -53,6 +53,13 @@ export default class Navigate extends Component {
                         return null;
                     }
                 }}
+                configureScene={(route, routeStack) => {
+                    if (route.title == 'Main Menu') {
+                        return Navigator.SceneConfigs.VerticalUpSwipeJump
+                    } else {
+                        return Navigator.SceneConfigs.PushFromRight
+                    }
+                }}
                 navigationBar={
                     <Navigator.NavigationBar
                     routeMapper={{

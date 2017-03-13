@@ -19,10 +19,9 @@ export default class FoldersScene extends Component {
     }
 
     navigate(){
-        console.log(arguments[0]);
         this.props.navigator.push({
             title: 'View Notes',
-            content: arguments[0]
+            content: arguments[0],
         })
     }
 
