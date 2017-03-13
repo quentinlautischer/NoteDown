@@ -6,4 +6,4 @@ mobile/android/build
 **/*.log
 *.DS_Store
 
-server/db/data/db/*
+server/db/data/db/

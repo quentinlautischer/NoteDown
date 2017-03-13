@@ -189,8 +189,13 @@ class App extends React.Component {
     })
 
     ipc.on('request-signup-response', (event, data) => {
-      console.log('received signup reply: ' + data);
-      this.request_pull_data();
+      console.log('received signup reply: ' + JSON.stringify(data));
+      if (data.result == true) {
+        store.dispatch({type: 'SET_USER', userid: data.userid});
+        this.request_pull_data();
+      } else {
+        dialog.showErrorBox('error', data.msg);
+      }
     })
 
     ipc.on('request-push-data-response', (event, data) => {

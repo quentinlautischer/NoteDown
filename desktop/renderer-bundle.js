@@ -331,8 +331,13 @@
 	      });
 
 	      ipc.on('request-signup-response', function (event, data) {
-	        console.log('received signup reply: ' + data);
-	        _this4.request_pull_data();
+	        console.log('received signup reply: ' + JSON.stringify(data));
+	        if (data.result == true) {
+	          store.dispatch({ type: 'SET_USER', userid: data.userid });
+	          _this4.request_pull_data();
+	        } else {
+	          dialog.showErrorBox('error', data.msg);
+	        }
 	      });
 
 	      ipc.on('request-push-data-response', function (event, data) {

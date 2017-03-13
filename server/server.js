@@ -163,7 +163,7 @@ signupRequest = function(socket, data) {
            console.error(`MongooseSaveError: ${err}`);
            socket.emit('server-error', { msg: 'Server Encountered An Error' });
         } else {
-          const event = {event: "request-signup-response", data: {result: true, userid: account.username}};
+          const event = {event: "request-signup-response", data: {result: true, userid: account.email}};
           socket.emit('data', event);
           this.printRegisteredUsers();
         }
