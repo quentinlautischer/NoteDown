@@ -260,4 +260,5 @@ photoSupplyRequest = function(data) {
   console.log('photo-supply-request');
 }
 
+console.log("server running");
 printRegisteredUsers();
