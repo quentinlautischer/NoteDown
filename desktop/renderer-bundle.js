@@ -239,19 +239,9 @@
 	  }, {
 	    key: 'createFolder',
 	    value: function createFolder(name) {
-	      var _this3 = this;
-
 	      console.log('creating new folder with name: ' + name);
 	      var data = { name: name };
 	      ipc.send('create-folder-request', data);
-
-	      ipc.on('create-folder-response', function (event, data) {
-	        console.log('create folder reponse: ' + data.data);
-	        var folder = JSON.parse(data.data);
-
-	        store.dispatch({ type: 'ADD_FOLDER', folder: folder });
-	        _this3.request_push_data();
-	      });
 	    }
 	  }, {
 	    key: 'open_folder',
@@ -318,11 +308,11 @@
 	  }, {
 	    key: 'init_ipc_app',
 	    value: function init_ipc_app() {
-	      var _this4 = this;
+	      var _this3 = this;
 
 	      ipc.on('error-toast', function (event, data) {
 	        console.log("error occured: " + data);
-	        _this4.setState({
+	        _this3.setState({
 	          exceptionOccured: true,
 	          exceptionMsg: 'Main Proc Exception Caught: ' + data
 	        });
@@ -332,7 +322,7 @@
 	        console.log('received login response: ' + data);
 	        if (data.result == true) {
 	          store.dispatch({ type: 'SET_USER', userid: data.userid });
-	          _this4.request_pull_data();
+	          _this3.request_pull_data();
 	        } else {
 	          dialog.showErrorBox('error', data.msg);
 	        }
@@ -342,7 +332,7 @@
 	        console.log('received signup reply: ' + JSON.stringify(data));
 	        if (data.result == true) {
 	          store.dispatch({ type: 'SET_USER', userid: data.userid });
-	          _this4.request_pull_data();
+	          _this3.request_pull_data();
 	        } else {
 	          dialog.showErrorBox('error', data.msg);
 	        }
@@ -365,6 +355,14 @@
 
 	      ipc.on('request-photo-response', function (event, data) {
 	        console.log('request-photo-response: ' + data);
+	      });
+
+	      ipc.on('create-folder-response', function (event, data) {
+	        console.log('create folder reponse: ' + data.data);
+	        var folder = JSON.parse(data.data);
+
+	        store.dispatch({ type: 'ADD_FOLDER', folder: folder });
+	        _this3.request_push_data();
 	      });
 	    }
 	  }]);

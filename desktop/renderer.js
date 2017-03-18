@@ -109,14 +109,6 @@ class App extends React.Component {
     console.log(`creating new folder with name: ${name}`);
     const data = {name: name};
     ipc.send('create-folder-request', data);
-
-    ipc.on('create-folder-response', (event, data) => {
-      console.log(`create folder reponse: ${data.data}`);
-      var folder = JSON.parse(data.data);
-
-      store.dispatch({type: 'ADD_FOLDER', folder: folder});
-      this.request_push_data();
-    });
   }
 
   open_folder(id) {
@@ -221,6 +213,14 @@ class App extends React.Component {
     ipc.on('request-photo-response', (event, data) => {
       console.log('request-photo-response: ' + data);
     })
+
+    ipc.on('create-folder-response', (event, data) => {
+      console.log(`create folder reponse: ${data.data}`);
+      var folder = JSON.parse(data.data);
+
+      store.dispatch({type: 'ADD_FOLDER', folder: folder});
+      this.request_push_data();
+    });
   }
 
 }
