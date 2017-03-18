@@ -9,6 +9,7 @@ import {
     Alert
 } from 'react-native';
 import SocketIOClient from 'socket.io-client';
+import MenuButton from '../components/MenuButton';
 
 // const HOST = '127.0.0.1';
 var HOST = "localhost"; // allows me to test on android
@@ -62,19 +63,20 @@ export default class LoginScene extends Component {
     render() {
         return (
             <View style={styles.view}>
-                <View style={{flexDirection:'row'}}>
+                <View style={styles.textInputContainer}>
                     <TextInput
                         style={styles.textInput}
+                        underlineColorAndroid='transparent'
                         placeholder='Username'
                         autoCorrect={false}
                         onChangeText={(text) => this.setState({ usernameText: text })}
                         value={this.state.usernameText}
                     />
                 </View>
-                <View style={{flexDirection:'row'}}>
+                <View style={styles.textInputContainer}>
                     <TextInput
                         style={styles.textInput}
-                        style={styles.textInput}
+                        underlineColorAndroid='transparent'
                         placeholder='Password'
                         autoCorrect={false}
                         secureTextEntry={true}
@@ -82,9 +84,9 @@ export default class LoginScene extends Component {
                         value={this.state.passwordText}
                     />
                 </View>
-                <TouchableHighlight style={styles.loginButton}
+                <TouchableHighlight
                     onPress = {this.attemptLogin.bind(this)}>
-                    <Text>Login</Text>
+                    <MenuButton text='Login' />
                 </TouchableHighlight>
             </View>
         )
@@ -99,16 +101,13 @@ var styles = StyleSheet.create({
         justifyContent:'center'
     },
     textInput: {
-        width: 220,
-        height: 50
+        width:220,
+        height:50,
     },
-    loginButton: {
-        backgroundColor: 'white',
-        borderRadius: 4,
-        width: 80,
-        height:30,
-        marginTop: 20,
-        justifyContent: 'center',
-        alignItems: 'center'
+    textInputContainer: {
+        flexDirection:'row',
+        borderBottomWidth:1,
+        borderColor:'white',
+        marginBottom:10
     }
 });

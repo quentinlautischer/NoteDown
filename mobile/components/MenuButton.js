@@ -24,7 +24,7 @@ var styles = StyleSheet.create({
     button: {
         backgroundColor: 'white',
         borderRadius: 4,
-        width: 200,
+        width: 220,
         height: 50,
         margin: 10,
         justifyContent: 'center',
