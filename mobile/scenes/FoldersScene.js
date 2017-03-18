@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import {
-    View,
-    Text,
     Navigator,
     TouchableHighlight,
-    ListView,
-    StyleSheet
+    ListView
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Entypo';
+import ListItem from '../components/ListItem';
 
 export default class FoldersScene extends Component {
     constructor(props) {
@@ -27,40 +24,15 @@ export default class FoldersScene extends Component {
     }
 
     render() {
-        let pic = {
-            uri: 'https://openclipart.org/image/300px/svg_to_png/133813/NOTEBOOK.png&disposition=attachment'
-        };
         return (
             <ListView
                 dataSource={this.state.dataSource}
                 renderRow={(rowData) =>
-                  <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
-                      <View style={styles.listItem}>
-                          <Icon name="folder" size={30} color='#000000' />
-                          <Text style={styles.listItemText}>{rowData.name}</Text>
-                      </View>
-                  </TouchableHighlight>
+                    <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
+                        <ListItem iconName='folder' text={rowData.name} />
+                    </TouchableHighlight>
                 }
             />
         );
     }
 }
-
-const styles = StyleSheet.create({
-    listItem: {
-        backgroundColor: 'white',
-        marginTop: 4,
-        marginBottom: 4,
-        marginRight: 8,
-        marginLeft: 8,
-        alignItems: 'center',
-        flexDirection: 'row',
-        flex: 1,
-        padding: 20,
-        padding: 20,
-        borderRadius: 5
-    },
-    listItemText: {
-        marginLeft: 20
-    }
-});
