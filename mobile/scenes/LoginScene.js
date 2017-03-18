@@ -38,10 +38,7 @@ export default class LoginScene extends Component {
                 if (data.data.result) {
                     this.socket.emit('request-pull-data', { userid: data.data.userid });
                 } else {
-                    Alert.alert(
-                        'Error',
-                        LOGIN_ERR,
-                    )
+                    Alert.alert('Error', LOGIN_ERR)
                 }
 
             // recieve the user's data (to populate their folders)

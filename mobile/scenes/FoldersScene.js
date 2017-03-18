@@ -5,8 +5,9 @@ import {
     Navigator,
     TouchableHighlight,
     ListView,
-    Image
+    StyleSheet
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo';
 
 export default class FoldersScene extends Component {
     constructor(props) {
@@ -34,9 +35,9 @@ export default class FoldersScene extends Component {
                 dataSource={this.state.dataSource}
                 renderRow={(rowData) =>
                   <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
-                      <View style={{alignItems: 'center', flexDirection: 'row', flex: 1, paddingTop: 20, paddingBottom: 20}}>
-                          <Image source={pic} style={{width: 40, height: 30, marginLeft: 10, marginRight: 10}} />
-                          <Text>{rowData.name}</Text>
+                      <View style={styles.listItem}>
+                          <Icon name="folder" size={30} color='#000000' />
+                          <Text style={styles.listItemText}>{rowData.name}</Text>
                       </View>
                   </TouchableHighlight>
                 }
@@ -44,3 +45,22 @@ export default class FoldersScene extends Component {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    listItem: {
+        backgroundColor: 'white',
+        marginTop: 4,
+        marginBottom: 4,
+        marginRight: 8,
+        marginLeft: 8,
+        alignItems: 'center',
+        flexDirection: 'row',
+        flex: 1,
+        padding: 20,
+        padding: 20,
+        borderRadius: 5
+    },
+    listItemText: {
+        marginLeft: 20
+    }
+});
