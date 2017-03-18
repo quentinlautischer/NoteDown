@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     listItemText: {
+        fontSize: 20,
         marginLeft: 20
     }
 });
