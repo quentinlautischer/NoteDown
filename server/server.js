@@ -236,6 +236,8 @@ pullDataRequest = function(socket, data) {
 
 pushDataRequest = function(socket, data) {
   console.log(`push-data-request from user: ${data.userid}`);
+  console.log(`push-data-request data: ${data.notes}`);
+  console.log(`push-data-request folders: ${data.notes.folders}`);
 
   Account.findOneAndUpdate({ email: data.userid }, { notes: data.notes }, function (err, results) {
     if (err) {

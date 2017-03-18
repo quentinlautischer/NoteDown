@@ -60,9 +60,9 @@
 
 	var _redux = __webpack_require__(188);
 
-	var _reactAddonsUpdate = __webpack_require__(215);
+	var _immutabilityHelper = __webpack_require__(440);
 
-	var _reactAddonsUpdate2 = _interopRequireDefault(_reactAddonsUpdate);
+	var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
 
 	var _MuiThemeProvider = __webpack_require__(217);
 
@@ -223,6 +223,9 @@
 	          },
 	          openFolder: function openFolder(id) {
 	            return _this2.open_folder(id);
+	          },
+	          deleteFolder: function deleteFolder(id) {
+	            return _this2.delete_folder(id);
 	          }
 	        });
 	      }
@@ -236,29 +239,24 @@
 	  }, {
 	    key: 'createFolder',
 	    value: function createFolder(name) {
-	      var _this3 = this;
-
 	      console.log('creating new folder with name: ' + name);
 	      var data = { name: name };
 	      ipc.send('create-folder-request', data);
-
-	      ipc.on('create-folder-response', function (event, data) {
-	        console.log('create folder reponse: ' + data.data);
-	        var folder = JSON.parse(data.data);
-
-	        store.dispatch({ type: 'ADD_FOLDER', folder: folder });
-	        _this3.request_push_data();
-	      });
 	    }
 	  }, {
 	    key: 'open_folder',
 	    value: function open_folder(id) {
-	      console.log("Open Folder");
 	      console.log("Request to open folder: " + id);
-	      console.log(id);
 	      var index = this.findIndexOfFolder(id);
 	      store.dispatch({ type: 'SELECT_FOLDER', index: index });
 	      store.dispatch({ type: 'EDITOR_MODE' });
+	    }
+	  }, {
+	    key: 'delete_folder',
+	    value: function delete_folder(id) {
+	      console.log("Request to delete folder: " + id);
+	      var index = this.findIndexOfFolder(id);
+	      store.dispatch({ type: 'DELETE_FOLDER', index: index });
 	    }
 	  }, {
 	    key: 'findIndexOfFolder',
@@ -310,11 +308,11 @@
 	  }, {
 	    key: 'init_ipc_app',
 	    value: function init_ipc_app() {
-	      var _this4 = this;
+	      var _this3 = this;
 
 	      ipc.on('error-toast', function (event, data) {
 	        console.log("error occured: " + data);
-	        _this4.setState({
+	        _this3.setState({
 	          exceptionOccured: true,
 	          exceptionMsg: 'Main Proc Exception Caught: ' + data
 	        });
@@ -324,7 +322,7 @@
 	        console.log('received login response: ' + data);
 	        if (data.result == true) {
 	          store.dispatch({ type: 'SET_USER', userid: data.userid });
-	          _this4.request_pull_data();
+	          _this3.request_pull_data();
 	        } else {
 	          dialog.showErrorBox('error', data.msg);
 	        }
@@ -334,7 +332,7 @@
 	        console.log('received signup reply: ' + JSON.stringify(data));
 	        if (data.result == true) {
 	          store.dispatch({ type: 'SET_USER', userid: data.userid });
-	          _this4.request_pull_data();
+	          _this3.request_pull_data();
 	        } else {
 	          dialog.showErrorBox('error', data.msg);
 	        }
@@ -357,6 +355,14 @@
 
 	      ipc.on('request-photo-response', function (event, data) {
 	        console.log('request-photo-response: ' + data);
+	      });
+
+	      ipc.on('create-folder-response', function (event, data) {
+	        console.log('create folder reponse: ' + data.data);
+	        var folder = JSON.parse(data.data);
+
+	        store.dispatch({ type: 'ADD_FOLDER', folder: folder });
+	        _this3.request_push_data();
 	      });
 	    }
 	  }]);
@@ -395,7 +401,7 @@
 	      return Object.assign({}, state, { notes: action.notes });
 	    case 'ADD_FOLDER':
 	      console.log('adding folder: ' + action.folder);
-	      return (0, _reactAddonsUpdate2.default)(state, {
+	      return (0, _immutabilityHelper2.default)(state, {
 	        notes: {
 	          folders: { $push: [action.folder] }
 	        }
@@ -403,13 +409,18 @@
 	    case 'SELECT_FOLDER':
 	      return Object.assign({}, state, { folderIndex: action.index });
 	    case 'DELETE_FOLDER':
-	      return state;
+	      console.log('deleting folder at index: ' + action.index);
+	      return (0, _immutabilityHelper2.default)(state, {
+	        notes: {
+	          folders: { $splice: [[action.index, 1]] }
+	        }
+	      });
 	    case 'ADD_PAGE':
 	      return state;
 	    case 'REMOVE_PAGE':
 	      return state;
 	    case 'PAGE_CONTENT_CHANGE':
-	      return (0, _reactAddonsUpdate2.default)(state, {
+	      return (0, _immutabilityHelper2.default)(state, {
 	        notes: {
 	          folders: _defineProperty({}, state.folderIndex, {
 	            pages: _defineProperty({}, state.pageIndex, {
@@ -23852,128 +23863,8 @@
 	}
 
 /***/ },
-/* 215 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(216);
-
-/***/ },
-/* 216 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	/* global hasOwnProperty:true */
-
-	'use strict';
-
-	var _prodInvariant = __webpack_require__(6),
-	    _assign = __webpack_require__(3);
-
-	var invariant = __webpack_require__(7);
-	var hasOwnProperty = {}.hasOwnProperty;
-
-	function shallowCopy(x) {
-	  if (Array.isArray(x)) {
-	    return x.concat();
-	  } else if (x && typeof x === 'object') {
-	    return _assign(new x.constructor(), x);
-	  } else {
-	    return x;
-	  }
-	}
-
-	var COMMAND_PUSH = '$push';
-	var COMMAND_UNSHIFT = '$unshift';
-	var COMMAND_SPLICE = '$splice';
-	var COMMAND_SET = '$set';
-	var COMMAND_MERGE = '$merge';
-	var COMMAND_APPLY = '$apply';
-
-	var ALL_COMMANDS_LIST = [COMMAND_PUSH, COMMAND_UNSHIFT, COMMAND_SPLICE, COMMAND_SET, COMMAND_MERGE, COMMAND_APPLY];
-
-	var ALL_COMMANDS_SET = {};
-
-	ALL_COMMANDS_LIST.forEach(function (command) {
-	  ALL_COMMANDS_SET[command] = true;
-	});
-
-	function invariantArrayCase(value, spec, command) {
-	  !Array.isArray(value) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected target of %s to be an array; got %s.', command, value) : _prodInvariant('1', command, value) : void 0;
-	  var specValue = spec[command];
-	  !Array.isArray(specValue) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be an array; got %s. Did you forget to wrap your parameter in an array?', command, specValue) : _prodInvariant('2', command, specValue) : void 0;
-	}
-
-	/**
-	 * Returns a updated shallow copy of an object without mutating the original.
-	 * See https://facebook.github.io/react/docs/update.html for details.
-	 */
-	function update(value, spec) {
-	  !(typeof spec === 'object') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): You provided a key path to update() that did not contain one of %s. Did you forget to include {%s: ...}?', ALL_COMMANDS_LIST.join(', '), COMMAND_SET) : _prodInvariant('3', ALL_COMMANDS_LIST.join(', '), COMMAND_SET) : void 0;
-
-	  if (hasOwnProperty.call(spec, COMMAND_SET)) {
-	    !(Object.keys(spec).length === 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Cannot have more than one key in an object with %s', COMMAND_SET) : _prodInvariant('4', COMMAND_SET) : void 0;
-
-	    return spec[COMMAND_SET];
-	  }
-
-	  var nextValue = shallowCopy(value);
-
-	  if (hasOwnProperty.call(spec, COMMAND_MERGE)) {
-	    var mergeObj = spec[COMMAND_MERGE];
-	    !(mergeObj && typeof mergeObj === 'object') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): %s expects a spec of type \'object\'; got %s', COMMAND_MERGE, mergeObj) : _prodInvariant('5', COMMAND_MERGE, mergeObj) : void 0;
-	    !(nextValue && typeof nextValue === 'object') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): %s expects a target of type \'object\'; got %s', COMMAND_MERGE, nextValue) : _prodInvariant('6', COMMAND_MERGE, nextValue) : void 0;
-	    _assign(nextValue, spec[COMMAND_MERGE]);
-	  }
-
-	  if (hasOwnProperty.call(spec, COMMAND_PUSH)) {
-	    invariantArrayCase(value, spec, COMMAND_PUSH);
-	    spec[COMMAND_PUSH].forEach(function (item) {
-	      nextValue.push(item);
-	    });
-	  }
-
-	  if (hasOwnProperty.call(spec, COMMAND_UNSHIFT)) {
-	    invariantArrayCase(value, spec, COMMAND_UNSHIFT);
-	    spec[COMMAND_UNSHIFT].forEach(function (item) {
-	      nextValue.unshift(item);
-	    });
-	  }
-
-	  if (hasOwnProperty.call(spec, COMMAND_SPLICE)) {
-	    !Array.isArray(value) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Expected %s target to be an array; got %s', COMMAND_SPLICE, value) : _prodInvariant('7', COMMAND_SPLICE, value) : void 0;
-	    !Array.isArray(spec[COMMAND_SPLICE]) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be an array of arrays; got %s. Did you forget to wrap your parameters in an array?', COMMAND_SPLICE, spec[COMMAND_SPLICE]) : _prodInvariant('8', COMMAND_SPLICE, spec[COMMAND_SPLICE]) : void 0;
-	    spec[COMMAND_SPLICE].forEach(function (args) {
-	      !Array.isArray(args) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be an array of arrays; got %s. Did you forget to wrap your parameters in an array?', COMMAND_SPLICE, spec[COMMAND_SPLICE]) : _prodInvariant('8', COMMAND_SPLICE, spec[COMMAND_SPLICE]) : void 0;
-	      nextValue.splice.apply(nextValue, args);
-	    });
-	  }
-
-	  if (hasOwnProperty.call(spec, COMMAND_APPLY)) {
-	    !(typeof spec[COMMAND_APPLY] === 'function') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'update(): expected spec of %s to be a function; got %s.', COMMAND_APPLY, spec[COMMAND_APPLY]) : _prodInvariant('9', COMMAND_APPLY, spec[COMMAND_APPLY]) : void 0;
-	    nextValue = spec[COMMAND_APPLY](nextValue);
-	  }
-
-	  for (var k in spec) {
-	    if (!(ALL_COMMANDS_SET.hasOwnProperty(k) && ALL_COMMANDS_SET[k])) {
-	      nextValue[k] = update(value[k], spec[k]);
-	    }
-	  }
-
-	  return nextValue;
-	}
-
-	module.exports = update;
-
-/***/ },
+/* 215 */,
+/* 216 */,
 /* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -37210,6 +37101,12 @@
 	      this.props.openFolder(id);
 	    }
 	  }, {
+	    key: 'deleteFolder',
+	    value: function deleteFolder(id, e) {
+	      console.log("Deleting Folder: " + id);
+	      this.props.deleteFolder(id);
+	    }
+	  }, {
 	    key: 'renderFolder',
 	    value: function renderFolder(_ref) {
 	      var name = _ref.name,
@@ -37218,7 +37115,12 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { key: _id, className: 'folder-view', onClick: this.selectFolder.bind(this, _id) },
-	        name
+	        name,
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'folder-delete-btn', onClick: this.deleteFolder.bind(this, _id) },
+	          'X'
+	        )
 	      );
 	    }
 	  }, {
@@ -39714,6 +39616,255 @@
 	};
 
 	module.exports = keyOf;
+
+/***/ },
+/* 440 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var invariant = __webpack_require__(441);
+
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	var splice = Array.prototype.splice;
+
+	var assign = Object.assign || function assign(target, source) {
+	  var keys = getAllKeys(source);
+	  for (var i = 0; i < keys.length; i++) {
+	    var key = keys[i];
+	    if (hasOwnProperty.call(source, key)) {
+	      target[key] = source[key];
+	    }
+	  }
+	  return target;
+	}
+
+	var getAllKeys = typeof Object.getOwnPropertySymbols === 'function' ?
+	  function(obj) { return Object.keys(obj).concat(Object.getOwnPropertySymbols(obj)) } :
+	  function(obj) { return Object.keys(obj) }
+	;
+
+	function copy(object) {
+	  if (object instanceof Array) {
+	    return object.slice();
+	  } else if (object && typeof object === 'object') {
+	    return assign(new object.constructor(), object);
+	  } else {
+	    return object;
+	  }
+	}
+
+
+	function newContext() {
+	  var commands = assign({}, defaultCommands);
+	  update.extend = function(directive, fn) {
+	    commands[directive] = fn;
+	  }
+
+	  return update;
+
+	  function update(object, spec) {
+	    invariant(
+	      !Array.isArray(spec),
+	      'update(): You provided an invalid spec to update(). The spec may ' +
+	      'not contain an array except as the value of $set, $push, $unshift, ' +
+	      '$splice or any custom command allowing an array value.'
+	    );
+
+	    invariant(
+	      typeof spec === 'object' && spec !== null,
+	      'update(): You provided an invalid spec to update(). The spec and ' +
+	      'every included key path must be plain objects containing one of the ' +
+	      'following commands: %s.',
+	      Object.keys(commands).join(', ')
+	    );
+
+	    var nextObject = object;
+	    var specKeys = getAllKeys(spec)
+	    var index, key;
+	    for (index = 0; index < specKeys.length; index++) {
+	      var key = specKeys[index];
+	      if (hasOwnProperty.call(commands, key)) {
+	        nextObject = commands[key](spec[key], nextObject, spec, object);
+	      } else {
+	        var nextValueForKey = update(object[key], spec[key]);
+	        if (nextValueForKey !== nextObject[key]) {
+	          if (nextObject === object) {
+	            nextObject = copy(object);
+	          }
+	          nextObject[key] = nextValueForKey;
+	        }
+	      }
+	    }
+	    return nextObject;
+	  }
+
+	}
+
+	var defaultCommands = {
+	  $push: function(value, original, spec) {
+	    invariantPushAndUnshift(original, spec, '$push');
+	    return original.concat(value);
+	  },
+	  $unshift: function(value, original, spec) {
+	    invariantPushAndUnshift(original, spec, '$unshift');
+	    return value.concat(original);
+	  },
+	  $splice: function(value, nextObject, spec, object) {
+	    var originalValue = nextObject === object ? copy(object) : nextObject;
+	    invariantSplices(originalValue, spec);
+	    value.forEach(function(args) {
+	      invariantSplice(args);
+	      splice.apply(originalValue, args);
+	    });
+	    return originalValue;
+	  },
+	  $set: function(value, original, spec) {
+	    invariantSet(spec);
+	    return value;
+	  },
+	  $merge: function(value, nextObject, spec, object) {
+	    var originalValue = nextObject === object ? copy(object) : nextObject;
+	    invariantMerge(originalValue, value);
+	    getAllKeys(value).forEach(function(key) {
+	      originalValue[key] = value[key];
+	    });
+	    return originalValue;
+	  },
+	  $apply: function(value, original) {
+	    invariantApply(value);
+	    return value(original);
+	  }
+	};
+
+
+
+	module.exports = newContext();
+	module.exports.newContext = newContext;
+
+
+	// invariants
+
+	function invariantPushAndUnshift(value, spec, command) {
+	  invariant(
+	    Array.isArray(value),
+	    'update(): expected target of %s to be an array; got %s.',
+	    command,
+	    value
+	  );
+	  var specValue = spec[command];
+	  invariant(
+	    Array.isArray(specValue),
+	    'update(): expected spec of %s to be an array; got %s. ' +
+	    'Did you forget to wrap your parameter in an array?',
+	    command,
+	    specValue
+	  );
+	}
+
+	function invariantSplices(value, spec) {
+	  invariant(
+	    Array.isArray(value),
+	    'Expected $splice target to be an array; got %s',
+	    value
+	  );
+	  invariantSplice(spec['$splice']);
+	}
+
+	function invariantSplice(value) {
+	  invariant(
+	    Array.isArray(value),
+	    'update(): expected spec of $splice to be an array of arrays; got %s. ' +
+	    'Did you forget to wrap your parameters in an array?',
+	    value
+	  );
+	}
+
+	function invariantApply(fn) {
+	  invariant(
+	    typeof fn === 'function',
+	    'update(): expected spec of $apply to be a function; got %s.',
+	    fn
+	  );
+	}
+
+	function invariantSet(spec) {
+	  invariant(
+	    Object.keys(spec).length === 1,
+	    'Cannot have more than one key in an object with $set'
+	  );
+	}
+
+	function invariantMerge(target, specValue) {
+	  invariant(
+	    specValue && typeof specValue === 'object',
+	    'update(): $merge expects a spec of type \'object\'; got %s',
+	    specValue
+	  );
+	  invariant(
+	    target && typeof target === 'object',
+	    'update(): $merge expects a target of type \'object\'; got %s',
+	    target
+	  );
+	}
+
+
+/***/ },
+/* 441 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	'use strict';
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var NODE_ENV = process.env.NODE_ENV;
+
+	var invariant = function(condition, format, a, b, c, d, e, f) {
+	  if (NODE_ENV !== 'production') {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  }
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error(
+	        'Minified exception occurred; use the non-minified dev environment ' +
+	        'for the full error message and additional helpful warnings.'
+	      );
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(
+	        format.replace(/%s/g, function() { return args[argIndex++]; })
+	      );
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	};
+
+	module.exports = invariant;
+
 
 /***/ }
 /******/ ]);
