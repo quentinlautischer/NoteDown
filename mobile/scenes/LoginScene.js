@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text,
     Navigator,
     TouchableHighlight,
-    TextInput,
     StyleSheet,
     Alert
 } from 'react-native';
 import SocketIOClient from 'socket.io-client';
 import MenuButton from '../components/MenuButton';
+import LoginInput from '../components/LoginInput';
 
 // const HOST = '127.0.0.1';
 var HOST = "localhost"; // allows me to test on android
 const PORT = '3000';
+
+const USERNAME_REF="un";
+const PASSWORD_REF="pw";
 
 const LOGIN_ERR = "Could not login.  Please verify your username and password";
 
@@ -23,11 +25,6 @@ export default class LoginScene extends Component {
 
         // Creating the socket-client instance will automatically connect to the server.
         this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
-
-        this.state = {
-            usernameText: '',
-            passwordText: ''
-        };
     }
 
     componentDidMount() {
@@ -55,35 +52,26 @@ export default class LoginScene extends Component {
 
     attemptLogin() {
         this.socket.emit('request-login', {
-            username: this.state.usernameText,
-            password: this.state.passwordText
+            username: this.refs[USERNAME_REF].state.inputText,
+            password: this.refs[PASSWORD_REF].state.inputText,
         });
     }
 
     render() {
         return (
             <View style={styles.view}>
-                <View style={styles.textInputContainer}>
-                    <TextInput
-                        style={styles.textInput}
-                        underlineColorAndroid='transparent'
-                        placeholder='Username'
-                        autoCorrect={false}
-                        onChangeText={(text) => this.setState({ usernameText: text })}
-                        value={this.state.usernameText}
-                    />
-                </View>
-                <View style={styles.textInputContainer}>
-                    <TextInput
-                        style={styles.textInput}
-                        underlineColorAndroid='transparent'
-                        placeholder='Password'
-                        autoCorrect={false}
-                        secureTextEntry={true}
-                        onChangeText={(text) => this.setState({ passwordText: text })}
-                        value={this.state.passwordText}
-                    />
-                </View>
+                <LoginInput
+                    ref={USERNAME_REF}
+                    placeholder='Username'
+                    autoFocus={true}
+                    secure={false}
+                />
+                <LoginInput
+                    ref={PASSWORD_REF}
+                    placeholder='Password'
+                    autoFocus={false}
+                    secure={true}
+                />
                 <TouchableHighlight
                     onPress = {this.attemptLogin.bind(this)}>
                     <MenuButton text='Login' />
@@ -99,15 +87,5 @@ var styles = StyleSheet.create({
         flexDirection:'column',
         alignItems:'center',
         justifyContent:'center'
-    },
-    textInput: {
-        width:220,
-        height:50,
-    },
-    textInputContainer: {
-        flexDirection:'row',
-        borderBottomWidth:1,
-        borderColor:'white',
-        marginBottom:10
     }
 });
