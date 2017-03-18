@@ -5,7 +5,8 @@ import {
   View,
   Navigator,
   TouchableHighlight,
-  StyleSheet
+  StyleSheet,
+  Platform
 } from 'react-native';
 
 import LoginScene from './LoginScene';
@@ -109,11 +110,11 @@ export default class Navigate extends Component {
 
 var styles = StyleSheet.create({
     view: {
-        paddingTop: 50, // a smaller number looks better on Android
+        paddingTop: (Platform.OS === 'ios') ? 50 : 30, // a smaller number looks better on Android
         backgroundColor: '#0aaf82'
     },
     navButton: {
-        margin: 5,
+        margin: 8,
         height: 20
     }
 });
