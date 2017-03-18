@@ -5,7 +5,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import update from 'react-addons-update'; 
+import update from 'immutability-helper'; 
 
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -93,7 +93,8 @@ class App extends React.Component {
         <FolderContainerView
             folders={store.getState().notes.folders}
             createFolder={(name) => this.createFolder(name)} 
-            openFolder={id => this.open_folder(id)} 
+            openFolder={id => this.open_folder(id)}
+            deleteFolder={id => this.delete_folder(id)} 
         />
       );
     }
@@ -119,12 +120,16 @@ class App extends React.Component {
   }
 
   open_folder(id) {
-    console.log("Open Folder");
     console.log("Request to open folder: " + id);
-    console.log(id);
     var index = this.findIndexOfFolder(id);
     store.dispatch({type: 'SELECT_FOLDER', index: index});
     store.dispatch({type: 'EDITOR_MODE'});
+  }
+
+  delete_folder(id) {
+    console.log("Request to delete folder: " + id);
+    var index = this.findIndexOfFolder(id);
+    store.dispatch({type: 'DELETE_FOLDER', index: index});
   }
 
   findIndexOfFolder(folderid) {
@@ -256,7 +261,12 @@ const reducer = (state = initial_state, action) => {
     case 'SELECT_FOLDER':
       return Object.assign({}, state, {folderIndex: action.index});
     case 'DELETE_FOLDER':
-      return state;
+      console.log(`deleting folder at index: ${action.index}`)
+      return update(state, {
+        notes: {
+          folders: {$splice: [[action.index, 1]]}
+        }
+      });
     case 'ADD_PAGE':
       return state;
     case 'REMOVE_PAGE':

@@ -37,10 +37,16 @@ class FolderContainerView extends React.Component {
     this.props.openFolder(id);
   }
 
+  deleteFolder(id, e) {
+    console.log("Deleting Folder: " + id);
+    this.props.deleteFolder(id);
+  }
+
   renderFolder({name, _id}) {
     return (
       <div key={_id} className="folder-view" onClick={this.selectFolder.bind(this, _id)}>
         {name}
+        <div className="folder-delete-btn" onClick={this.deleteFolder.bind(this, _id)}>X</div>
       </div>
     );
   }

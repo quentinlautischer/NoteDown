@@ -7,8 +7,8 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 class FolderView extends React.Component {
   render() {
     return (
-      // <div className="folder-view">return {this.props.result};</div>
-      <div className="folder-view">{this.props.name}</div>
+      <div className="folder-view">{this.props.name}
+      </div>
     );
   }
 }
