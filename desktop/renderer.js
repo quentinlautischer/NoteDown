@@ -76,7 +76,7 @@ class App extends React.Component {
         <StartMenu 
           request_login={(username, password) => this.request_login(username, password)}
           request_signup={(username, password, name) => this.request_signup(username, password, name)}
-          quickmode={() => store.dispatch({type: 'EDITOR_MODE'})}
+          quickmode={() => this.enter_quickmode()}
         />
       );  
     } else if (store.getState().mode == 'editor') {
@@ -140,6 +140,24 @@ class App extends React.Component {
       return folder._id == folderid;
     });
     return theFolder[0];
+  }
+
+  enter_quickmode() {
+    var notes = {
+      userid: "",
+      folders: [
+        {
+          name: "Folder 1",
+          pages: [
+            {
+              content: "# Page 1 Content \n* Item 1\n* Item 2\n \n \n## Header 2 \n### Header 3\n#Header11\n"
+            }
+          ]
+        }
+      ]
+    };
+    store.dispatch({type: 'SET_NOTES', notes: notes});
+    store.dispatch({type: 'EDITOR_MODE'})
   }
 
   request_login(username, password) {
@@ -228,7 +246,7 @@ class App extends React.Component {
 const initial_state = { 
   mode: 'menu',
   userid: null,
-  folderIndex: null,
+  folderIndex: 0,
   pageIndex: 0,
   notes: { 
     userid: null, 
@@ -250,6 +268,7 @@ const reducer = (state = initial_state, action) => {
     case 'SET_USER':
       return Object.assign({}, state, {userid: action.userid});
     case 'SET_NOTES':
+      console.log("Setting Notes");
       return Object.assign({}, state, {notes: action.notes});
     case 'ADD_FOLDER':
       console.log(`adding folder: ${action.folder}`);

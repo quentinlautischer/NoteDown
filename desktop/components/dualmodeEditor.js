@@ -12,29 +12,14 @@ class DualmodeEditor extends React.Component {
     super();
 
     this.state = {
-      content: "",
       rendered_content: ""
     }
 
     this.handleChange = this.handleChange.bind(this);
-    this.loadCurrentPage = this.loadCurrentPage.bind(this);
   }
 
   componentWillMount() {
     console.log('DualmodeEditor ComponentWillMount');
-    if (null) {
-      this.loadCurrentPage(this.props.state.currentFolderid);
-      this.handleChange;
-    }
-  }
-
-  loadCurrentPage(folderid) {
-    console.log("Folderid: " + folderid + " Notes: " + JSON.stringify(notes));
-    var pages = this.props.findFolderWithId(folderid).pages;
-    var content = pages[0].content;
-    this.setState({
-      content: content,
-    });
   }
 
   handleChange(e) {
