@@ -64,10 +64,16 @@ export default class Navigate extends Component {
                     <Navigator.NavigationBar
                     routeMapper={{
                         LeftButton: (route, navigator, index, navState) => {
-                            if (route.index === 0) {
+                            if (route.title === 'Login') {
                                 return null;
+                            } else if (route.title === 'Main Menu') {
+                                return (
+                                    <TouchableHighlight onPress={() => navigator.pop()}>
+                                        <Text style={styles.navButton}>Logout</Text>
+                                    </TouchableHighlight>
+                                );
                             } else {
-                                    return (
+                                return (
                                     <TouchableHighlight onPress={() => navigator.pop()}>
                                         <Text style={styles.navButton}>Back</Text>
                                     </TouchableHighlight>
