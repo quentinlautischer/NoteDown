@@ -5,13 +5,16 @@ import {
     Navigator,
     TouchableHighlight,
     TextInput,
-    StyleSheet
+    StyleSheet,
+    Alert
 } from 'react-native';
 import SocketIOClient from 'socket.io-client';
 
 // const HOST = '127.0.0.1';
 var HOST = "localhost"; // allows me to test on android
 const PORT = '3000';
+
+const LOGIN_ERR = "Could not login.  Please verify your username and password";
 
 export default class LoginScene extends Component {
     constructor(props) {
@@ -34,6 +37,11 @@ export default class LoginScene extends Component {
 
                 if (data.data.result) {
                     this.socket.emit('request-pull-data', { userid: data.data.userid });
+                } else {
+                    Alert.alert(
+                        'Error',
+                        LOGIN_ERR,
+                    )
                 }
 
             // recieve the user's data (to populate their folders)
