@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-    View,
-    Text,
     Navigator,
     TouchableHighlight,
-    ListView,
-    Image
+    View,
+    Text,
+    ListView
 } from 'react-native';
+import ListItem from '../components/ListItem';
+import TitleText from '../components/TitleText';
 
 export default class FoldersScene extends Component {
     constructor(props) {
@@ -26,21 +27,18 @@ export default class FoldersScene extends Component {
     }
 
     render() {
-        let pic = {
-            uri: 'https://openclipart.org/image/300px/svg_to_png/133813/NOTEBOOK.png&disposition=attachment'
-        };
         return (
-            <ListView
-                dataSource={this.state.dataSource}
-                renderRow={(rowData) =>
-                  <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
-                      <View style={{alignItems: 'center', flexDirection: 'row', flex: 1, paddingTop: 20, paddingBottom: 20}}>
-                          <Image source={pic} style={{width: 40, height: 30, marginLeft: 10, marginRight: 10}} />
-                          <Text>{rowData.name}</Text>
-                      </View>
-                  </TouchableHighlight>
-                }
-            />
+            <View>
+                <TitleText text='My Folders'/>
+                <ListView
+                    dataSource={this.state.dataSource}
+                    renderRow={(rowData) =>
+                        <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
+                            <ListItem iconName='folder' text={rowData.name} />
+                        </TouchableHighlight>
+                    }
+                />
+            </View>
         );
     }
 }

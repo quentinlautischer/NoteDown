@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text,
     Navigator,
     TouchableHighlight,
     StyleSheet
 } from 'react-native';
+import MenuButton from '../components/MenuButton';
 
 export default class MenuScene extends Component {
     navigate(){
@@ -18,19 +18,11 @@ export default class MenuScene extends Component {
     render() {
         return (
             <View style={styles.view}>
-                <TouchableHighlight
-                    style={styles.loginButton}
-                    onPress = {
-                        this.navigate.bind(this, 'Folders')
-                    }>
-                    <Text>Folders</Text>
+                <TouchableHighlight onPress = {this.navigate.bind(this, 'Folders')}>
+                    <MenuButton text='Folders' />
                 </TouchableHighlight>
-                <TouchableHighlight
-                    style={styles.loginButton}
-                    onPress = {
-                        this.navigate.bind(this, 'Flashcards Menu')
-                    }>
-                    <Text>Flashcards</Text>
+                <TouchableHighlight onPress = {this.navigate.bind(this, 'Flashcards Menu')}>
+                    <MenuButton text='Flashcards' />
                 </TouchableHighlight>
             </View>
         )
@@ -42,15 +34,6 @@ var styles = StyleSheet.create({
         backgroundColor: '#0aaf82',
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    loginButton: {
-        backgroundColor: 'white',
-        borderRadius: 4,
-        width: 200,
-        height: 50,
-        margin: 10,
         justifyContent: 'center',
         alignItems: 'center'
     }

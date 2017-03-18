@@ -5,7 +5,8 @@ import {
   View,
   Navigator,
   TouchableHighlight,
-  StyleSheet
+  StyleSheet,
+  Platform
 } from 'react-native';
 
 import LoginScene from './LoginScene';
@@ -64,10 +65,16 @@ export default class Navigate extends Component {
                     <Navigator.NavigationBar
                     routeMapper={{
                         LeftButton: (route, navigator, index, navState) => {
-                            if (route.index === 0) {
+                            if (route.title === 'Login') {
                                 return null;
+                            } else if (route.title === 'Main Menu') {
+                                return (
+                                    <TouchableHighlight onPress={() => navigator.pop()}>
+                                        <Text style={styles.navButton}>Logout</Text>
+                                    </TouchableHighlight>
+                                );
                             } else {
-                                    return (
+                                return (
                                     <TouchableHighlight onPress={() => navigator.pop()}>
                                         <Text style={styles.navButton}>Back</Text>
                                     </TouchableHighlight>
@@ -103,11 +110,11 @@ export default class Navigate extends Component {
 
 var styles = StyleSheet.create({
     view: {
-        paddingTop: 50, // a smaller number looks better on Android
+        paddingTop: (Platform.OS === 'ios') ? 50 : 30, // a smaller number looks better on Android
         backgroundColor: '#0aaf82'
     },
     navButton: {
-        margin: 5,
+        margin: 8,
         height: 20
     }
 });

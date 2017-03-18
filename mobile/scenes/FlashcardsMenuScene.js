@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-    View,
-    Text,
     Navigator,
     TouchableHighlight,
+    View,
     ListView
 } from 'react-native';
+import ListItem from '../components/ListItem';
+import TitleText from '../components/TitleText';
 
 export default class FlashcardsMenuScene extends Component {
     constructor(props) {
@@ -25,16 +26,17 @@ export default class FlashcardsMenuScene extends Component {
 
     render() {
         return (
-            <ListView
-                dataSource={this.state.dataSource}
-                renderRow={(rowData) =>
-                  <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
-                      <View style={{alignItems: 'center', flexDirection: 'row', flex: 1, paddingTop: 20, paddingBottom: 20}}>
-                          <Text>{rowData.name}</Text>
-                      </View>
-                  </TouchableHighlight>
-                }
-            />
+            <View>
+                <TitleText text='My Decks'/>
+                <ListView
+                    dataSource={this.state.dataSource}
+                    renderRow={(rowData) =>
+                        <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
+                            <ListItem iconName='cards' text={rowData.name} />
+                        </TouchableHighlight>
+                    }
+                />
+            </View>
         )
     }
 }
