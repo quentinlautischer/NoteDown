@@ -12,3 +12,17 @@ test('blockhtml test 2', () => {
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });
+
+test('blockhtml test 3', () => {
+  const raw_str = '<div></div>test';
+  const rendered = '<p><div></div>test</p>';
+
+  expect(parser.parse(raw_str)).toBe(rendered);
+});
+
+test('blockhtml test 4', () => {
+  const raw_str = 'test<div></div>';
+  const rendered = '<p>test<div></div></p>';
+
+  expect(parser.parse(raw_str)).toBe(rendered);
+});

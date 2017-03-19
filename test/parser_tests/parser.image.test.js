@@ -41,3 +41,10 @@ test('image test 6', () => {
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });
+
+test('image test 6', () => {
+  const raw_str = '![image]\n\n\n[image]: url';
+  const rendered = '<p><img src="url" alt="image" /></p>';
+
+  expect(parser.parse(raw_str)).toBe(rendered);
+});
