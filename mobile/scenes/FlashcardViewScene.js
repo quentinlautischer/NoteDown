@@ -4,7 +4,8 @@ import {
     Text,
     Navigator,
     TouchableHighlight,
-    StyleSheet
+    StyleSheet,
+    WebView
 } from 'react-native';
 
 var Orientation = require('react-native-orientation');
@@ -25,9 +26,10 @@ export default class FlashcardViewScene extends Component {
 
     render() {
         return (
-            <View style={styles.view}>
-                <Text>Viewing flashcard for {this.props.content.name}</Text>
-            </View>
+            <WebView
+                source={require('../shared/models/flashcard.html')}
+                style={styles.view}
+            />
         )
     }
 }
@@ -35,14 +37,13 @@ export default class FlashcardViewScene extends Component {
 var styles = StyleSheet.create({
     view: {
         flex:1,
-        backgroundColor:'white',
-        flexDirection:'column',
-        alignItems:'center',
-        justifyContent:'center',
         marginTop:40,
-        marginLeft:20,
-        marginRight:20,
-        marginBottom:20,
-        borderRadius:5
+        // flexDirection:'column',
+        // alignItems:'center',
+        // justifyContent:'center',
+        // marginLeft:20,
+        // marginRight:20,
+        // marginBottom:20,
+        // borderRadius:5
     }
 });

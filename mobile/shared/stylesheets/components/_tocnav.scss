@@ -1,0 +1,50 @@
+.toc-nav {
+  position: absolute;
+  box-sizing: border-box;
+  top: 1%;
+  left: 50%;
+  width: 48%;
+  height: 20%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.1);
+  resize: none;
+  outline: none;
+  font-size: 1.3em;
+  color: map-get($colors, dark);
+  background-color: map-get($colors, light);;
+  font-weight: 300;
+  overflow-y: scroll;
+
+  li {
+    list-style: none;
+  }
+
+  ul {
+    list-style: none;
+  }
+}
+
+.toc-li-1 { 
+  margin-left:0px;
+}
+
+.toc-li-2 {
+  margin-left:20px;
+}
+
+.toc-li-3 {
+  margin-left:40px;
+}
+
+.toc-li-4 {
+  margin-left:60px;
+}
+
+.toc-li-5 {
+  margin-left:80px;
+}
+
+.toc-li-6 {
+  margin-left:100px;
+}

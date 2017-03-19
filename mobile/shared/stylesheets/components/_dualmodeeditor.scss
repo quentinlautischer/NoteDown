@@ -1,0 +1,36 @@
+@import 'utils/all';
+
+.markdown-input-editor {
+  position: absolute;
+  box-sizing: border-box;
+  top: 1%;
+  left: 1%;
+  width: 48%;
+  height: 97%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.1);
+  resize: none;
+  outline: none;
+  color: map-get($colors, dark);
+  background-color: map-get($colors, light);
+}
+
+.markdown-output-renderer {
+  position: absolute;
+  box-sizing: border-box;
+  top: 21%;
+  left: 50%;
+  width: 48%;
+  height: 77%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.1);
+  resize: none;
+  outline: none;
+  color: map-get($colors, light);
+  background-color: map-get($colors, dark);
+  overflow-x: scroll
+}
