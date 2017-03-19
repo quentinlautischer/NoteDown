@@ -39,6 +39,7 @@ var styles = StyleSheet.create({
         flexDirection:'column',
         alignItems:'center',
         justifyContent:'center',
+        marginTop:40,
         marginLeft:20,
         marginRight:20,
         marginBottom:20,

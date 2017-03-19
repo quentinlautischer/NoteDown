@@ -3,8 +3,10 @@ import {
     Navigator,
     TouchableHighlight,
     View,
-    ListView
+    ListView,
+    StyleSheet
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
 
@@ -26,17 +28,25 @@ export default class FlashcardsMenuScene extends Component {
 
     render() {
         return (
-            <View>
-                <TitleText text='My Decks'/>
-                <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={(rowData) =>
-                        <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
-                            <ListItem iconName='cards' text={rowData.name} />
-                        </TouchableHighlight>
-                    }
-                />
-            </View>
+            <LinearGradient colors={['#0aaf82', '#0dd9a2', '#26f2bc']} style={styles.linearGradient}>
+                <View>
+                    <TitleText text='My Decks'/>
+                    <ListView
+                        dataSource={this.state.dataSource}
+                        renderRow={(rowData) =>
+                            <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
+                                <ListItem iconName='cards' text={rowData.name} />
+                            </TouchableHighlight>
+                        }
+                    />
+                </View>
+            </LinearGradient>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    linearGradient: {
+        flex: 1
+    }
+});

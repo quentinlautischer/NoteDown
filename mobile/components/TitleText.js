@@ -15,11 +15,11 @@ export default class TitleText extends Component {
 const styles = StyleSheet.create({
     text: {
         textAlign:'center',
-        fontSize: 40,
-        textShadowColor:'white',
-        textShadowOffset: {width: 1, height: 1},
-        textShadowRadius: 1,
-        paddingBottom:10,
+        fontSize: 20,
+        // textShadowColor:'white',
+        // textShadowOffset: {width: 1, height: 1},
+        // textShadowRadius: 1,
+        padding:10,
         color:'black'
     }
 });

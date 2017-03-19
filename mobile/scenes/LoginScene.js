@@ -81,7 +81,7 @@ export default class LoginScene extends Component {
     }
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
     view: {
         flex:1,
         flexDirection:'column',

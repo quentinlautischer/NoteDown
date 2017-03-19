@@ -88,6 +88,7 @@ export default class NotesViewScene extends Component {
 var styles = StyleSheet.create({
     view: {
         flex: 1,
+        marginTop:40,
         backgroundColor: 'white',
         padding: 15
     },
