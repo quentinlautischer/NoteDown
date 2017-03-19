@@ -9,6 +9,10 @@ import MenuTextField from './menuTextField';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 
+import { connect } from 'react-redux';
+
+var ipc = require('electron').ipcRenderer;
+
 class StartMenu extends React.Component {
   constructor() {
     super();
@@ -24,6 +28,35 @@ class StartMenu extends React.Component {
     this.handleNameChange = this.handleNameChange.bind(this);
 
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  request_login(username, password) {
+    console.log("received login request; Username: " + username + " Password: " + password);
+    const data = {username: username, password: password};
+    ipc.send('request-login', data);
+  }
+
+  request_signup(username, password, name) {
+    console.log(`received signup request; Username: ${username} Password: ${password} Name: ${name}`);
+    const data = {username: username, password: password, name: name};
+    ipc.send('request-signup', data);
+  }
+
+  quickmode() {
+    this.props.store.dispatch({type: 'SET_NOTES', notes: {
+      userid: null, 
+      images: [], 
+      folders: [ {
+          name: "Folder",
+          pages: [
+            {
+              content: ""
+            }
+          ]
+        }
+      ]
+    }});
+    this.props.store.dispatch({type: 'EDITOR_MODE'})
   }
 
   handleUsernameChange(event) {
@@ -58,10 +91,10 @@ class StartMenu extends React.Component {
           <MenuTextField value={this.state.username}  className="username" hintText="Username/Email" onChange={this.handleUsernameChange}/>
           <MenuTextField value={this.state.password} className="password-field" hintText="Password" onChange={this.handlePasswordChange}/>
           <div className="login-signup-toggle">
-            <MenuButton className="login-btn" label="Login" onClick={() => this.props.request_login(this.state.username, this.state.password)} /> 
+            <MenuButton className="login-btn" label="Login" onClick={() => this.request_login(this.state.username, this.state.password)} /> 
             <br/><br/><br/><br/><br/><br/><br/><br/><br/>
             <FlatButton className="menu-button" label="Sign-Up" onClick={() => this.enterSignUpForm()} /> 
-            <FlatButton label="Quickmode" onClick={() => this.props.quickmode()} />
+            <FlatButton label="Quickmode" onClick={() => this.quickmode()} />
           </div>
         </div>
         </MuiThemeProvider>
@@ -75,10 +108,10 @@ class StartMenu extends React.Component {
           <MenuTextField value={this.state.password} className="password-field" hintText="Password" onChange={this.handlePasswordChange}/>
           <MenuTextField value={this.state.name} className="name" hintText="Name" onChange={this.handleNameChange}/>
           <div className="login-signup-toggle">
-            <MenuButton label="Sign-Up" onClick={() => this.props.request_signup(this.state.username, this.state.password, this.state.name)} />              
+            <MenuButton label="Sign-Up" onClick={() => this.request_signup(this.state.username, this.state.password, this.state.name)} />              
             <br/><br/><br/><br/><br/><br/><br/><br/><br/>
             <FlatButton className="menu-button" label="Login" onClick={() => this.enterLoginForm()} />
-            <FlatButton label="Quickmode" onClick={() => this.props.quickmode()} />
+            <FlatButton label="Quickmode" onClick={() => this.quickmode()} />
           </div>
         </div>
         </MuiThemeProvider>
@@ -90,7 +123,7 @@ class StartMenu extends React.Component {
           <NoteDownTitleLogo />
           <MenuButton className="login-btn" label="Login" onClick={() => this.enterLoginForm()} /> 
           <div className="quickmode-btn">
-            <MenuButton label="Quickmode" onClick={() => this.props.quickmode()} />
+            <MenuButton label="Quickmode" onClick={() => this.quickmode()} />
           </div>
         </div>
         </MuiThemeProvider>
@@ -111,4 +144,4 @@ class StartMenu extends React.Component {
   }
 }
 
-export default StartMenu;
+export default connect()(StartMenu);
