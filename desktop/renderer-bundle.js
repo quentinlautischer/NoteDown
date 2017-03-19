@@ -39293,6 +39293,7 @@
 	  //Updates block array. Returns whether match was successful
 
 	  var patt = /^(=+|-+)\s*$/;
+	  var match;
 	  var lastBlock = blocks[blocks.length - 1];
 	  if (lastBlock != null && (match = patt.exec(line)) != null) {
 	    lastBlock.content.pop(); //The last block would have incorrectly registered this header's content as one of its lines.
@@ -39341,6 +39342,7 @@
 	  }
 
 	  var patt = /^\s*(.+)$/;
+	  var match;
 	  if ((match = patt.exec(line)) != null) {
 	    if (lastBlock != null && lastBlock.type == 'paragraph' && lastBlock.open) {
 	      lastBlock.content.push(line);
