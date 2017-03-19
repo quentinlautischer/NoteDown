@@ -1,28 +1,68 @@
 const {app, Menu} = require('electron')
 
-const menubar_template = [
+const is_quickmode = function(state) {
+  return (state.mode == 'editor' && state.userid == null);
+}
+
+const is_editor = function(state) {
+  return (state.mode == 'editor');
+}
+
+const is_logged_in = function(state) {
+  return (state.userid != null);
+}
+
+const menubar_template_builder = function(store) {
+  var state = store.getState();
+  const menubar_template = [
   {
     label: 'File',
-    submenu: [
+    submenu: [      
       {
         role: 'Open',
-        label: 'Open'
+        label: 'Open',
+        visible: (state.mode == 'editor' && store.getState().userid == null) ? true : false,
+        click () { store.dispatch({type: "MENU_CMD", cmd: 'OPEN'}) }
       },
       {
         role: 'Save',
-        label: 'Save'
+        label: 'Save',
+        accelerator: 'CmdOrCtrl+S',
+        visible: is_quickmode(state),
+        click () { store.dispatch({type: "MENU_CMD", cmd: 'SAVE'}) }
       },
       {
         role: 'Save As',
-        label: 'Save As'
+        label: 'Save As',
+        visible: is_quickmode(state),
+        click () { store.dispatch({type: "MENU_CMD", cmd: 'SAVEAS'}) }
       },
       {
         role: 'FolderView',
-        label: 'FolderView'
+        label: 'FolderView',
+        visible: is_logged_in(state),
+        click () { store.dispatch({type: "MENU_CMD", cmd: 'FOLDERVIEW'}) }
       },
       {
         role: 'Flashcards',
-        label: 'Flashcards'
+        label: 'Flashcards',
+        visible: is_logged_in(state),
+        click () { store.dispatch({type: "MENU_CMD", cmd: 'FLASHCARDS'}) }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        role: 'Login',
+        label: 'Login',
+        visible: !is_logged_in(state),
+        click () { store.dispatch({type: "MENU_CMD", cmd: 'LOGIN'}) }
+      },
+      {
+        role: 'Logout',
+        label: 'Logout',
+        visible: is_logged_in(state),
+        click () { store.dispatch({type: "MENU_CMD", cmd: 'LOGOUT'}) }
       }
     ]
   },
@@ -95,24 +135,19 @@ const menubar_template = [
     submenu: [
       {
         role: 'Push To Cloud',
-        label: 'Push To Cloud'
+        label: 'Push To Cloud',
+        visible: is_logged_in(state),
+        enabled: false, // until I figure it out
+        click () { store.dispatch({type: "MENU_CMD", cmd: 'PUSHTOCLOUD'}) }
+
       },
       {
         role: 'Pull From Cloud',
-        label: 'Pull From Cloud'
-      }
-    ]
-  },
-  {
-    label: 'Account',
-    submenu: [
-      {
-        role: 'Login',
-        label: 'Login'
-      },
-      {
-        role: 'Logout',
-        label: 'Logout'
+        label: 'Pull From Cloud',
+        visible: is_logged_in(state),
+        enabled: false, // until I figure it out
+        click () { store.dispatch({type: "MENU_CMD", cmd: 'PULLFROMCLOUD'}) }
+
       }
     ]
   },
@@ -130,6 +165,10 @@ const menubar_template = [
   {
     role: 'help',
     submenu: [
+      {
+        label: 'Debug',
+        click () { store.dispatch({type: "DEBUG"}) }
+      },
       {
         label: 'Learn More',
         click () { require('electron').shell.openExternal('http://electron.atom.io') }
@@ -215,4 +254,8 @@ if (process.platform === 'darwin') {
   ]
 }
 
-export default menubar_template;
+  return menubar_template;
+}
+
+
+export default menubar_template_builder;

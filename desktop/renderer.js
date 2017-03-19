@@ -5,14 +5,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import update from 'immutability-helper'; 
-
+import update from 'immutability-helper';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import StartMenu from './components/startMenu';
-import menubar_template from './components/menubar';
+import menubuilder from './components/menubar';
 
 import FolderContainerView from './components/folderContainerView'
 import DualmodeEditor from './components/dualmodeEditor'
@@ -29,6 +28,7 @@ injectTapEventPlugin();
 
 var ipc = require('electron').ipcRenderer;
 const {remote} = require('electron');
+var fs = require('fs')
 const {Menu, MenuItem} = remote;
 const {dialog} = remote;
 
@@ -41,8 +41,6 @@ class App extends React.Component {
     };
 
     this.init_ipc_app();
-    const menubar = Menu.buildFromTemplate(menubar_template);
-    Menu.setApplicationMenu(menubar);
   }
 
   // This is temp for now --- Cant figure out how to have the DOM update on store subs.
@@ -70,6 +68,8 @@ class App extends React.Component {
   }
 
   render() {
+    const menubar = Menu.buildFromTemplate(menubuilder(store));
+    Menu.setApplicationMenu(menubar);
     console.log(store.getState());
     if (store.getState().mode == 'menu') {
       return (
@@ -142,21 +142,8 @@ class App extends React.Component {
     return theFolder[0];
   }
 
-  enter_quickmode() {
-    var notes = {
-      userid: "",
-      folders: [
-        {
-          name: "Folder 1",
-          pages: [
-            {
-              content: "# Page 1 Content \n* Item 1\n* Item 2\n \n \n## Header 2 \n### Header 3\n#Header11\n"
-            }
-          ]
-        }
-      ]
-    };
-    store.dispatch({type: 'SET_NOTES', notes: notes});
+  enter_quickmode(content) {
+    store.dispatch({type: 'SET_NOTES', notes: create_notes("# Page 1 Content \n* Item 1\n* Item 2\n \n \n## Header 2 \n### Header 3\n#Header11\n")});
     store.dispatch({type: 'EDITOR_MODE'})
   }
 
@@ -248,6 +235,7 @@ const initial_state = {
   userid: null,
   folderIndex: 0,
   pageIndex: 0,
+  quickmode_filepath: null,
   notes: { 
     userid: null, 
     images: [], 
@@ -255,21 +243,128 @@ const initial_state = {
   } 
 }
 
+
+function create_notes(content) {
+  var notes = {
+    userid: "",
+    folders: [
+      {
+        name: "Folder 1",
+        pages: [
+          {
+            content: content
+          }
+        ]
+      }
+    ]
+  };
+  return notes;
+}
+
+function get_quickmode_file_contents() {
+  return store.getState().notes.folders[0].pages[0].content;
+}
+
+function readFile(filepath){
+  fs.readFile(filepath, 'utf-8', function (err, data) {
+    if(err){
+      alert("An error ocurred reading the file :" + err.message);
+      return;
+    }
+    store.dispatch({type: 'SET_QUICK_FILEPATH', path: filepath})
+    store.dispatch({type: 'PAGE_CONTENT_CHANGE', content: data});
+  });
+}
+
+function saveas() {
+  dialog.showSaveDialog({
+    filters: [
+      {name: 'Markdown', extensions: ['md']},
+      {name: 'All Files', extensions: ['*']}
+    ]
+  }, function (fileName) {
+    if (fileName === undefined){
+      console.log("You didn't save the file");
+      return;
+    }
+    // fileName is a string that contains the path and filename created in the save file dialog.
+    store.dispatch({type: 'SET_QUICK_FILEPATH', path: fileName});  
+    fs.writeFile(fileName, get_quickmode_file_contents(), function (err) {
+      if(err){
+        alert("An error ocurred creating the file "+ err.message)
+      }        
+      alert("The file has been succesfully saved");
+    });
+  }); 
+}
+
 const reducer = (state = initial_state, action) => {
   switch (action.type) {
+    // menu
+    case 'MENU_CMD':
+      switch (action.cmd) {
+        case 'OPEN':
+          var filename = dialog.showOpenDialog({
+            filters: [
+              {name: 'Markdown', extensions: ['md']},
+              {name: 'All Files', extensions: ['*']}
+            ]
+          }, function(fileName) {
+            readFile(fileName[0]);
+          });
+          return state;
+        case 'SAVE':
+          if (store.getState().quickmode_filepath == null) {
+            saveas();
+          } else {
+            fs.writeFile(store.getState().quickmode_filepath, get_quickmode_file_contents(), function (err) {
+            if(err){
+              alert("An error ocurred updating the file"+ err.message);
+              console.log(err);
+              return;
+            }
+            alert("The file has been succesfully saved");
+            }); 
+          }
+          return state;
+        case 'SAVEAS':
+          saveas();
+          return state;
+        case 'FOLDERVIEW':
+          return reducer(state, {type: 'FOLDER_MODE'});
+        case 'FLASHCARDS':
+          return reducer(state, {type: 'FLASHCARD_MODE'});
+        case 'LOGIN':
+          return reducer(state, {type: 'MENU_MODE'});
+        case 'LOGOUT':
+          return reducer(reducer(reducer(state, {type: 'MENU_MODE'}), {type: 'SET_USER', userid: null}), {type: 'SET_NOTES', notes: null});
+        case 'PUSHTOCLOUD':
+          this.request_push_data();
+          return state;
+        case 'PULLFROMCLOUD':
+          this.request_pull_data();  
+          return state;
+        default:
+          return state;
+      }
+      break;
     // App State
     case 'EDITOR_MODE':
       return Object.assign({}, state, {mode: 'editor'});
     case 'FOLDER_MODE':
       return Object.assign({}, state, {mode: 'folderview'});
+    case 'FLASHCARD_MODE':
+      return Object.assign({}, state, {mode: 'flashcardview'});
     case 'MENU_MODE':
      return Object.assign({}, state, {mode: 'menu'});
     // Notes State
     case 'SET_USER':
       return Object.assign({}, state, {userid: action.userid});
     case 'SET_NOTES':
-      console.log("Setting Notes");
+      console.log(`Setting Notes: ${action.notes}`);
       return Object.assign({}, state, {notes: action.notes});
+    case 'SET_QUICK_FILEPATH':
+      return Object.assign({}, state, {quickmode_filepath: action.path});
     case 'ADD_FOLDER':
       console.log(`adding folder: ${action.folder}`);
       return update(state, {
@@ -304,6 +399,9 @@ const reducer = (state = initial_state, action) => {
           }
         }
       });
+    case 'DEBUG':
+      console.log("debug");
+      return state;
     default:
       return state;
   }

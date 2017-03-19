@@ -136,6 +136,7 @@
 	var _require = __webpack_require__(418),
 	    remote = _require.remote;
 
+	var fs = __webpack_require__(440);
 	var Menu = remote.Menu,
 	    MenuItem = remote.MenuItem;
 	var dialog = remote.dialog;
@@ -153,8 +154,6 @@
 	    };
 
 	    _this.init_ipc_app();
-	    var menubar = Menu.buildFromTemplate(_menubar2.default);
-	    Menu.setApplicationMenu(menubar);
 	    return _this;
 	  }
 
@@ -194,6 +193,8 @@
 	    value: function render() {
 	      var _this2 = this;
 
+	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(store));
+	      Menu.setApplicationMenu(menubar);
 	      console.log(store.getState());
 	      if (store.getState().mode == 'menu') {
 	        return _react2.default.createElement(_startMenu2.default, {
@@ -279,17 +280,8 @@
 	    }
 	  }, {
 	    key: 'enter_quickmode',
-	    value: function enter_quickmode() {
-	      var notes = {
-	        userid: "",
-	        folders: [{
-	          name: "Folder 1",
-	          pages: [{
-	            content: "# Page 1 Content \n* Item 1\n* Item 2\n \n \n## Header 2 \n### Header 3\n#Header11\n"
-	          }]
-	        }]
-	      };
-	      store.dispatch({ type: 'SET_NOTES', notes: notes });
+	    value: function enter_quickmode(content) {
+	      store.dispatch({ type: 'SET_NOTES', notes: create_notes("# Page 1 Content \n* Item 1\n* Item 2\n \n \n## Header 2 \n### Header 3\n#Header11\n") });
 	      store.dispatch({ type: 'EDITOR_MODE' });
 	    }
 	  }, {
@@ -390,6 +382,7 @@
 	  userid: null,
 	  folderIndex: 0,
 	  pageIndex: 0,
+	  quickmode_filepath: null,
 	  notes: {
 	    userid: null,
 	    images: [],
@@ -397,24 +390,120 @@
 	  }
 	};
 
+	function create_notes(content) {
+	  var notes = {
+	    userid: "",
+	    folders: [{
+	      name: "Folder 1",
+	      pages: [{
+	        content: content
+	      }]
+	    }]
+	  };
+	  return notes;
+	}
+
+	function get_quickmode_file_contents() {
+	  return store.getState().notes.folders[0].pages[0].content;
+	}
+
+	function readFile(filepath) {
+	  fs.readFile(filepath, 'utf-8', function (err, data) {
+	    if (err) {
+	      alert("An error ocurred reading the file :" + err.message);
+	      return;
+	    }
+	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: filepath });
+	    store.dispatch({ type: 'PAGE_CONTENT_CHANGE', content: data });
+	  });
+	}
+
+	function saveas() {
+	  dialog.showSaveDialog({
+	    filters: [{ name: 'Markdown', extensions: ['md'] }, { name: 'All Files', extensions: ['*'] }]
+	  }, function (fileName) {
+	    if (fileName === undefined) {
+	      console.log("You didn't save the file");
+	      return;
+	    }
+	    // fileName is a string that contains the path and filename created in the save file dialog.
+	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: fileName });
+	    fs.writeFile(fileName, get_quickmode_file_contents(), function (err) {
+	      if (err) {
+	        alert("An error ocurred creating the file " + err.message);
+	      }
+	      alert("The file has been succesfully saved");
+	    });
+	  });
+	}
+
 	var reducer = function reducer() {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initial_state;
 	  var action = arguments[1];
 
 	  switch (action.type) {
+	    // menu
+	    case 'MENU_CMD':
+	      switch (action.cmd) {
+	        case 'OPEN':
+	          var filename = dialog.showOpenDialog({
+	            filters: [{ name: 'Markdown', extensions: ['md'] }, { name: 'All Files', extensions: ['*'] }]
+	          }, function (fileName) {
+	            readFile(fileName[0]);
+	          });
+	          return state;
+	        case 'SAVE':
+	          if (store.getState().quickmode_filepath == null) {
+	            saveas();
+	          } else {
+	            fs.writeFile(store.getState().quickmode_filepath, get_quickmode_file_contents(), function (err) {
+	              if (err) {
+	                alert("An error ocurred updating the file" + err.message);
+	                console.log(err);
+	                return;
+	              }
+	              alert("The file has been succesfully saved");
+	            });
+	          }
+	          return state;
+	        case 'SAVEAS':
+	          saveas();
+	          return state;
+	        case 'FOLDERVIEW':
+	          return reducer(state, { type: 'FOLDER_MODE' });
+	        case 'FLASHCARDS':
+	          return reducer(state, { type: 'FLASHCARD_MODE' });
+	        case 'LOGIN':
+	          return reducer(state, { type: 'MENU_MODE' });
+	        case 'LOGOUT':
+	          return reducer(reducer(reducer(state, { type: 'MENU_MODE' }), { type: 'SET_USER', userid: null }), { type: 'SET_NOTES', notes: null });
+	        case 'PUSHTOCLOUD':
+	          undefined.request_push_data();
+	          return state;
+	        case 'PULLFROMCLOUD':
+	          undefined.request_pull_data();
+	          return state;
+	        default:
+	          return state;
+	      }
+	      break;
 	    // App State
 	    case 'EDITOR_MODE':
 	      return Object.assign({}, state, { mode: 'editor' });
 	    case 'FOLDER_MODE':
 	      return Object.assign({}, state, { mode: 'folderview' });
+	    case 'FLASHCARD_MODE':
+	      return Object.assign({}, state, { mode: 'flashcardview' });
 	    case 'MENU_MODE':
 	      return Object.assign({}, state, { mode: 'menu' });
 	    // Notes State
 	    case 'SET_USER':
 	      return Object.assign({}, state, { userid: action.userid });
 	    case 'SET_NOTES':
-	      console.log("Setting Notes");
+	      console.log('Setting Notes: ' + action.notes);
 	      return Object.assign({}, state, { notes: action.notes });
+	    case 'SET_QUICK_FILEPATH':
+	      return Object.assign({}, state, { quickmode_filepath: action.path });
 	    case 'ADD_FOLDER':
 	      console.log('adding folder: ' + action.folder);
 	      return (0, _immutabilityHelper2.default)(state, {
@@ -445,6 +534,9 @@
 	          })
 	        }
 	      });
+	    case 'DEBUG':
+	      console.log("debug");
+	      return state;
 	    default:
 	      return state;
 	  }
@@ -37132,157 +37224,217 @@
 	    app = _require.app,
 	    Menu = _require.Menu;
 
-	var menubar_template = [{
-	  label: 'File',
-	  submenu: [{
-	    role: 'Open',
-	    label: 'Open'
-	  }, {
-	    role: 'Save',
-	    label: 'Save'
-	  }, {
-	    role: 'Save As',
-	    label: 'Save As'
-	  }, {
-	    role: 'FolderView',
-	    label: 'FolderView'
-	  }, {
-	    role: 'Flashcards',
-	    label: 'Flashcards'
-	  }]
-	}, {
-	  label: 'Edit',
-	  submenu: [{
-	    role: 'undo'
-	  }, {
-	    role: 'redo'
-	  }, {
-	    type: 'separator'
-	  }, {
-	    role: 'cut'
-	  }, {
-	    role: 'copy'
-	  }, {
-	    role: 'paste'
-	  }, {
-	    role: 'pasteandmatchstyle'
-	  }, {
-	    role: 'delete'
-	  }, {
-	    role: 'selectall'
-	  }]
-	}, {
-	  label: 'View',
-	  submenu: [{
-	    role: 'reload'
-	  }, {
-	    role: 'forcereload'
-	  }, {
-	    role: 'toggledevtools'
-	  }, {
-	    type: 'separator'
-	  }, {
-	    role: 'resetzoom'
-	  }, {
-	    role: 'zoomin'
-	  }, {
-	    role: 'zoomout'
-	  }, {
-	    type: 'separator'
-	  }, {
-	    role: 'togglefullscreen'
-	  }]
-	}, {
-	  label: 'Sync',
-	  submenu: [{
-	    role: 'Push To Cloud',
-	    label: 'Push To Cloud'
-	  }, {
-	    role: 'Pull From Cloud',
-	    label: 'Pull From Cloud'
-	  }]
-	}, {
-	  label: 'Account',
-	  submenu: [{
-	    role: 'Login',
-	    label: 'Login'
-	  }, {
-	    role: 'Logout',
-	    label: 'Logout'
-	  }]
-	}, {
-	  role: 'window',
-	  submenu: [{
-	    role: 'minimize'
-	  }, {
-	    role: 'close'
-	  }]
-	}, {
-	  role: 'help',
-	  submenu: [{
-	    label: 'Learn More',
-	    click: function click() {
-	      __webpack_require__(418).shell.openExternal('http://electron.atom.io');
-	    }
-	  }]
-	}];
+	var is_quickmode = function is_quickmode(state) {
+	  return state.mode == 'editor' && state.userid == null;
+	};
 
-	if (process.platform === 'darwin') {
-	  menubar_template.unshift({
-	    label: "NoteDown",
+	var is_editor = function is_editor(state) {
+	  return state.mode == 'editor';
+	};
+
+	var is_logged_in = function is_logged_in(state) {
+	  return state.userid != null;
+	};
+
+	var menubar_template_builder = function menubar_template_builder(store) {
+	  var state = store.getState();
+	  var menubar_template = [{
+	    label: 'File',
 	    submenu: [{
-	      role: 'about'
+	      role: 'Open',
+	      label: 'Open',
+	      visible: state.mode == 'editor' && store.getState().userid == null ? true : false,
+	      click: function click() {
+	        store.dispatch({ type: "MENU_CMD", cmd: 'OPEN' });
+	      }
+	    }, {
+	      role: 'Save',
+	      label: 'Save',
+	      accelerator: 'CmdOrCtrl+S',
+	      visible: is_quickmode(state),
+	      click: function click() {
+	        store.dispatch({ type: "MENU_CMD", cmd: 'SAVE' });
+	      }
+	    }, {
+	      role: 'Save As',
+	      label: 'Save As',
+	      visible: is_quickmode(state),
+	      click: function click() {
+	        store.dispatch({ type: "MENU_CMD", cmd: 'SAVEAS' });
+	      }
+	    }, {
+	      role: 'FolderView',
+	      label: 'FolderView',
+	      visible: is_logged_in(state),
+	      click: function click() {
+	        store.dispatch({ type: "MENU_CMD", cmd: 'FOLDERVIEW' });
+	      }
+	    }, {
+	      role: 'Flashcards',
+	      label: 'Flashcards',
+	      visible: is_logged_in(state),
+	      click: function click() {
+	        store.dispatch({ type: "MENU_CMD", cmd: 'FLASHCARDS' });
+	      }
 	    }, {
 	      type: 'separator'
 	    }, {
-	      role: 'services',
-	      submenu: []
+	      role: 'Login',
+	      label: 'Login',
+	      visible: !is_logged_in(state),
+	      click: function click() {
+	        store.dispatch({ type: "MENU_CMD", cmd: 'LOGIN' });
+	      }
 	    }, {
-	      type: 'separator'
-	    }, {
-	      role: 'hide'
-	    }, {
-	      role: 'hideothers'
-	    }, {
-	      role: 'unhide'
-	    }, {
-	      type: 'separator'
-	    }, {
-	      role: 'quit'
+	      role: 'Logout',
+	      label: 'Logout',
+	      visible: is_logged_in(state),
+	      click: function click() {
+	        store.dispatch({ type: "MENU_CMD", cmd: 'LOGOUT' });
+	      }
 	    }]
-	  });
-	  // Edit menu.
-	  menubar_template[1].submenu.push({
-	    type: 'separator'
 	  }, {
-	    label: 'Speech',
+	    label: 'Edit',
 	    submenu: [{
-	      role: 'startspeaking'
+	      role: 'undo'
 	    }, {
-	      role: 'stopspeaking'
+	      role: 'redo'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      role: 'cut'
+	    }, {
+	      role: 'copy'
+	    }, {
+	      role: 'paste'
+	    }, {
+	      role: 'pasteandmatchstyle'
+	    }, {
+	      role: 'delete'
+	    }, {
+	      role: 'selectall'
 	    }]
-	  });
-	  // Window menu.
-	  menubar_template[3].submenu = [{
-	    label: 'Close',
-	    accelerator: 'CmdOrCtrl+W',
-	    role: 'close'
 	  }, {
-	    label: 'Minimize',
-	    accelerator: 'CmdOrCtrl+M',
-	    role: 'minimize'
+	    label: 'View',
+	    submenu: [{
+	      role: 'reload'
+	    }, {
+	      role: 'forcereload'
+	    }, {
+	      role: 'toggledevtools'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      role: 'resetzoom'
+	    }, {
+	      role: 'zoomin'
+	    }, {
+	      role: 'zoomout'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      role: 'togglefullscreen'
+	    }]
 	  }, {
-	    label: 'Zoom',
-	    role: 'zoom'
+	    label: 'Sync',
+	    submenu: [{
+	      role: 'Push To Cloud',
+	      label: 'Push To Cloud',
+	      visible: is_logged_in(state),
+	      enabled: false, // until I figure it out
+	      click: function click() {
+	        store.dispatch({ type: "MENU_CMD", cmd: 'PUSHTOCLOUD' });
+	      }
+	    }, {
+	      role: 'Pull From Cloud',
+	      label: 'Pull From Cloud',
+	      visible: is_logged_in(state),
+	      enabled: false, // until I figure it out
+	      click: function click() {
+	        store.dispatch({ type: "MENU_CMD", cmd: 'PULLFROMCLOUD' });
+	      }
+	    }]
 	  }, {
-	    type: 'separator'
+	    role: 'window',
+	    submenu: [{
+	      role: 'minimize'
+	    }, {
+	      role: 'close'
+	    }]
 	  }, {
-	    label: 'Bring All to Front',
-	    role: 'front'
+	    role: 'help',
+	    submenu: [{
+	      label: 'Debug',
+	      click: function click() {
+	        store.dispatch({ type: "DEBUG" });
+	      }
+	    }, {
+	      label: 'Learn More',
+	      click: function click() {
+	        __webpack_require__(418).shell.openExternal('http://electron.atom.io');
+	      }
+	    }]
 	  }];
-	}
 
-	exports.default = menubar_template;
+	  if (process.platform === 'darwin') {
+	    menubar_template.unshift({
+	      label: "NoteDown",
+	      submenu: [{
+	        role: 'about'
+	      }, {
+	        type: 'separator'
+	      }, {
+	        role: 'services',
+	        submenu: []
+	      }, {
+	        type: 'separator'
+	      }, {
+	        role: 'hide'
+	      }, {
+	        role: 'hideothers'
+	      }, {
+	        role: 'unhide'
+	      }, {
+	        type: 'separator'
+	      }, {
+	        role: 'quit'
+	      }]
+	    });
+	    // Edit menu.
+	    menubar_template[1].submenu.push({
+	      type: 'separator'
+	    }, {
+	      label: 'Speech',
+	      submenu: [{
+	        role: 'startspeaking'
+	      }, {
+	        role: 'stopspeaking'
+	      }]
+	    });
+	    // Window menu.
+	    menubar_template[3].submenu = [{
+	      label: 'Close',
+	      accelerator: 'CmdOrCtrl+W',
+	      role: 'close'
+	    }, {
+	      label: 'Minimize',
+	      accelerator: 'CmdOrCtrl+M',
+	      role: 'minimize'
+	    }, {
+	      label: 'Zoom',
+	      role: 'zoom'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      label: 'Bring All to Front',
+	      role: 'front'
+	    }];
+	  }
+
+	  return menubar_template;
+	};
+
+	exports.default = menubar_template_builder;
 
 /***/ },
 /* 418 */
@@ -39863,6 +40015,12 @@
 	};
 
 	module.exports = keyOf;
+
+/***/ },
+/* 440 */
+/***/ function(module, exports) {
+
+	module.exports = require("fs");
 
 /***/ }
 /******/ ]);
