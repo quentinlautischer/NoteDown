@@ -1,11 +1,12 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
 import React from 'react'
 import ReactDOM from 'react-dom'
+
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+
 import update from 'immutability-helper';
+// import appReducer from '.reducers/appReducer';
+// import notesReducer from '.reducers/notesReducer';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -24,6 +25,7 @@ import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
+
 injectTapEventPlugin();
 
 var ipc = require('electron').ipcRenderer;
@@ -230,20 +232,6 @@ class App extends React.Component {
 
 }
 
-const initial_state = { 
-  mode: 'menu',
-  userid: null,
-  folderIndex: 0,
-  pageIndex: 0,
-  quickmode_filepath: null,
-  notes: { 
-    userid: null, 
-    images: [], 
-    folders: []
-  } 
-}
-
-
 function create_notes(content) {
   var notes = {
     userid: "",
@@ -261,94 +249,29 @@ function create_notes(content) {
   return notes;
 }
 
-function get_quickmode_file_contents() {
-  return store.getState().notes.folders[0].pages[0].content;
-}
 
-function readFile(filepath){
-  fs.readFile(filepath, 'utf-8', function (err, data) {
-    if(err){
-      alert("An error ocurred reading the file :" + err.message);
-      return;
-    }
-    store.dispatch({type: 'SET_QUICK_FILEPATH', path: filepath})
-    store.dispatch({type: 'PAGE_CONTENT_CHANGE', content: data});
-  });
-}
+// const reducer = combineReducers({
+//   appState: appReducer,
+//   menubar: menubarReducer,
+//   notes: notesReducer
+// });
 
-function saveas() {
-  dialog.showSaveDialog({
-    filters: [
-      {name: 'Markdown', extensions: ['md']},
-      {name: 'All Files', extensions: ['*']}
-    ]
-  }, function (fileName) {
-    if (fileName === undefined){
-      console.log("You didn't save the file");
-      return;
-    }
-    // fileName is a string that contains the path and filename created in the save file dialog.
-    store.dispatch({type: 'SET_QUICK_FILEPATH', path: fileName});  
-    fs.writeFile(fileName, get_quickmode_file_contents(), function (err) {
-      if(err){
-        alert("An error ocurred creating the file "+ err.message)
-      }        
-      alert("The file has been succesfully saved");
-    });
-  }); 
+const initial_state = { 
+  mode: 'menu',
+  userid: null,
+  folderIndex: 0,
+  pageIndex: 0,
+  quickmode_filepath: null,
+  notes: { 
+    userid: null, 
+    images: [], 
+    folders: []
+  } 
 }
 
 const reducer = (state = initial_state, action) => {
   switch (action.type) {
-    // menu
-    case 'MENU_CMD':
-      switch (action.cmd) {
-        case 'OPEN':
-          var filename = dialog.showOpenDialog({
-            filters: [
-              {name: 'Markdown', extensions: ['md']},
-              {name: 'All Files', extensions: ['*']}
-            ]
-          }, function(fileName) {
-            readFile(fileName[0]);
-          });
-          return state;
-        case 'SAVE':
-          if (store.getState().quickmode_filepath == null) {
-            saveas();
-          } else {
-            fs.writeFile(store.getState().quickmode_filepath, get_quickmode_file_contents(), function (err) {
-            if(err){
-              alert("An error ocurred updating the file"+ err.message);
-              console.log(err);
-              return;
-            }
-            alert("The file has been succesfully saved");
-            }); 
-          }
-          return state;
-        case 'SAVEAS':
-          saveas();
-          return state;
-        case 'FOLDERVIEW':
-          return reducer(state, {type: 'FOLDER_MODE'});
-        case 'FLASHCARDS':
-          return reducer(state, {type: 'FLASHCARD_MODE'});
-        case 'LOGIN':
-          return reducer(state, {type: 'MENU_MODE'});
-        case 'LOGOUT':
-          return reducer(reducer(reducer(state, {type: 'MENU_MODE'}), {type: 'SET_USER', userid: null}), {type: 'SET_NOTES', notes: null});
-        case 'PUSHTOCLOUD':
-          this.request_push_data();
-          return state;
-        case 'PULLFROMCLOUD':
-          this.request_pull_data();  
-          return state;
-        default:
-          return state;
-      }
-      break;
-    // App State
+    // App State Actions
     case 'EDITOR_MODE':
       return Object.assign({}, state, {mode: 'editor'});
     case 'FOLDER_MODE':
@@ -357,7 +280,7 @@ const reducer = (state = initial_state, action) => {
       return Object.assign({}, state, {mode: 'flashcardview'});
     case 'MENU_MODE':
      return Object.assign({}, state, {mode: 'menu'});
-    // Notes State
+    // Notes State Actions
     case 'SET_USER':
       return Object.assign({}, state, {userid: action.userid});
     case 'SET_NOTES':

@@ -124,10 +124,9 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // This file is required by the index.html file and will
-	// be executed in the renderer process for that window.
-	// All of the Node.js APIs are available in this process.
-
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	// import appReducer from '.reducers/appReducer';
+	// import notesReducer from '.reducers/notesReducer';
 
 	(0, _reactTapEventPlugin2.default)();
 
@@ -377,19 +376,6 @@
 	  return App;
 	}(_react2.default.Component);
 
-	var initial_state = {
-	  mode: 'menu',
-	  userid: null,
-	  folderIndex: 0,
-	  pageIndex: 0,
-	  quickmode_filepath: null,
-	  notes: {
-	    userid: null,
-	    images: [],
-	    folders: []
-	  }
-	};
-
 	function create_notes(content) {
 	  var notes = {
 	    userid: "",
@@ -403,91 +389,31 @@
 	  return notes;
 	}
 
-	function get_quickmode_file_contents() {
-	  return store.getState().notes.folders[0].pages[0].content;
-	}
+	// const reducer = combineReducers({
+	//   appState: appReducer,
+	//   menubar: menubarReducer,
+	//   notes: notesReducer
+	// });
 
-	function readFile(filepath) {
-	  fs.readFile(filepath, 'utf-8', function (err, data) {
-	    if (err) {
-	      alert("An error ocurred reading the file :" + err.message);
-	      return;
-	    }
-	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: filepath });
-	    store.dispatch({ type: 'PAGE_CONTENT_CHANGE', content: data });
-	  });
-	}
-
-	function saveas() {
-	  dialog.showSaveDialog({
-	    filters: [{ name: 'Markdown', extensions: ['md'] }, { name: 'All Files', extensions: ['*'] }]
-	  }, function (fileName) {
-	    if (fileName === undefined) {
-	      console.log("You didn't save the file");
-	      return;
-	    }
-	    // fileName is a string that contains the path and filename created in the save file dialog.
-	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: fileName });
-	    fs.writeFile(fileName, get_quickmode_file_contents(), function (err) {
-	      if (err) {
-	        alert("An error ocurred creating the file " + err.message);
-	      }
-	      alert("The file has been succesfully saved");
-	    });
-	  });
-	}
+	var initial_state = {
+	  mode: 'menu',
+	  userid: null,
+	  folderIndex: 0,
+	  pageIndex: 0,
+	  quickmode_filepath: null,
+	  notes: {
+	    userid: null,
+	    images: [],
+	    folders: []
+	  }
+	};
 
 	var reducer = function reducer() {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initial_state;
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    // menu
-	    case 'MENU_CMD':
-	      switch (action.cmd) {
-	        case 'OPEN':
-	          var filename = dialog.showOpenDialog({
-	            filters: [{ name: 'Markdown', extensions: ['md'] }, { name: 'All Files', extensions: ['*'] }]
-	          }, function (fileName) {
-	            readFile(fileName[0]);
-	          });
-	          return state;
-	        case 'SAVE':
-	          if (store.getState().quickmode_filepath == null) {
-	            saveas();
-	          } else {
-	            fs.writeFile(store.getState().quickmode_filepath, get_quickmode_file_contents(), function (err) {
-	              if (err) {
-	                alert("An error ocurred updating the file" + err.message);
-	                console.log(err);
-	                return;
-	              }
-	              alert("The file has been succesfully saved");
-	            });
-	          }
-	          return state;
-	        case 'SAVEAS':
-	          saveas();
-	          return state;
-	        case 'FOLDERVIEW':
-	          return reducer(state, { type: 'FOLDER_MODE' });
-	        case 'FLASHCARDS':
-	          return reducer(state, { type: 'FLASHCARD_MODE' });
-	        case 'LOGIN':
-	          return reducer(state, { type: 'MENU_MODE' });
-	        case 'LOGOUT':
-	          return reducer(reducer(reducer(state, { type: 'MENU_MODE' }), { type: 'SET_USER', userid: null }), { type: 'SET_NOTES', notes: null });
-	        case 'PUSHTOCLOUD':
-	          undefined.request_push_data();
-	          return state;
-	        case 'PULLFROMCLOUD':
-	          undefined.request_pull_data();
-	          return state;
-	        default:
-	          return state;
-	      }
-	      break;
-	    // App State
+	    // App State Actions
 	    case 'EDITOR_MODE':
 	      return Object.assign({}, state, { mode: 'editor' });
 	    case 'FOLDER_MODE':
@@ -496,7 +422,7 @@
 	      return Object.assign({}, state, { mode: 'flashcardview' });
 	    case 'MENU_MODE':
 	      return Object.assign({}, state, { mode: 'menu' });
-	    // Notes State
+	    // Notes State Actions
 	    case 'SET_USER':
 	      return Object.assign({}, state, { userid: action.userid });
 	    case 'SET_NOTES':
@@ -37224,6 +37150,15 @@
 	    app = _require.app,
 	    Menu = _require.Menu;
 
+	var _require2 = __webpack_require__(418),
+	    remote = _require2.remote;
+
+	var fs = __webpack_require__(440);
+	var dialog = remote.dialog;
+
+	////////////////////////////////////////////////////////
+	/// Bool Queries
+
 	var is_quickmode = function is_quickmode(state) {
 	  return state.mode == 'editor' && state.userid == null;
 	};
@@ -37236,6 +37171,94 @@
 	  return state.userid != null;
 	};
 
+	////////////////////////////////////////////////////////
+	/// FS utils
+
+	function readFile(filepath, store) {
+	  fs.readFile(filepath, 'utf-8', function (err, data) {
+	    if (err) {
+	      alert("An error ocurred reading the file :" + err.message);
+	      return;
+	    }
+	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: filepath });
+	    store.dispatch({ type: 'PAGE_CONTENT_CHANGE', content: data });
+	  });
+	}
+
+	function saveas() {
+	  dialog.showSaveDialog({
+	    filters: [{ name: 'Markdown', extensions: ['md'] }, { name: 'All Files', extensions: ['*'] }]
+	  }, function (fileName) {
+	    if (fileName === undefined) {
+	      console.log("You didn't save the file");
+	      return;
+	    }
+	    // fileName is a string that contains the path and filename created in the save file dialog.
+	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: fileName });
+	    fs.writeFile(fileName, get_quickmode_file_contents(), function (err) {
+	      if (err) {
+	        alert("An error ocurred creating the file " + err.message);
+	      }
+	      alert("The file has been succesfully saved");
+	    });
+	  });
+	}
+
+	////////////////////////////////////////////////////////
+	/// Menubar Click Actions
+
+	function menuOpen(store) {
+	  var filename = dialog.showOpenDialog({
+	    filters: [{ name: 'Markdown', extensions: ['md'] }, { name: 'All Files', extensions: ['*'] }]
+	  }, function (fileName) {
+	    readFile(fileName[0], store);
+	  });
+	}
+
+	function menuSave(store) {
+	  if (store.getState().quickmode_filepath == null) {
+	    saveas();
+	  } else {
+	    fs.writeFile(store.getState().quickmode_filepath, store.getState().notes.folders[0].pages[0].content, function (err) {
+	      if (err) {
+	        alert("An error ocurred updating the file" + err.message);
+	        console.log(err);
+	        return;
+	      }
+	      alert("The file has been succesfully saved");
+	    });
+	  }
+	}
+
+	function menuSaveas(store) {
+	  saveas();
+	}
+
+	function menuFolderview(store) {
+	  store.dispatch({ type: 'FOLDER_MODE' });
+	}
+
+	function menuFlashcards(store) {
+	  store.dispatch({ type: 'FLASHCARD_MODE' });
+	}
+
+	function menuLogin(store) {
+	  store.dispatch({ type: 'MENU_MODE' });
+	}
+
+	function menuLogout(store) {
+	  store.dispatch({ type: 'MENU_MODE' });
+	  store.dispatch({ type: 'SET_USER', userid: null });
+	  store.dispatch({ type: 'SET_NOTES', notes: null });
+	}
+
+	function menuPushToCloud(store) {}
+
+	function menuPullFromCloud(store) {}
+
+	////////////////////////////////////////////////////////
+	/// Menubar Template Builder
+
 	var menubar_template_builder = function menubar_template_builder(store) {
 	  var state = store.getState();
 	  var menubar_template = [{
@@ -37245,7 +37268,7 @@
 	      label: 'Open',
 	      visible: state.mode == 'editor' && store.getState().userid == null ? true : false,
 	      click: function click() {
-	        store.dispatch({ type: "MENU_CMD", cmd: 'OPEN' });
+	        menuOpen(store);
 	      }
 	    }, {
 	      role: 'Save',
@@ -37253,28 +37276,28 @@
 	      accelerator: 'CmdOrCtrl+S',
 	      visible: is_quickmode(state),
 	      click: function click() {
-	        store.dispatch({ type: "MENU_CMD", cmd: 'SAVE' });
+	        menuSave(store);
 	      }
 	    }, {
 	      role: 'Save As',
 	      label: 'Save As',
 	      visible: is_quickmode(state),
 	      click: function click() {
-	        store.dispatch({ type: "MENU_CMD", cmd: 'SAVEAS' });
+	        menuSaveas(store);
 	      }
 	    }, {
 	      role: 'FolderView',
 	      label: 'FolderView',
 	      visible: is_logged_in(state),
 	      click: function click() {
-	        store.dispatch({ type: "MENU_CMD", cmd: 'FOLDERVIEW' });
+	        menuFolderview(store);
 	      }
 	    }, {
 	      role: 'Flashcards',
 	      label: 'Flashcards',
 	      visible: is_logged_in(state),
 	      click: function click() {
-	        store.dispatch({ type: "MENU_CMD", cmd: 'FLASHCARDS' });
+	        menuFlashcards(store);
 	      }
 	    }, {
 	      type: 'separator'
@@ -37283,14 +37306,14 @@
 	      label: 'Login',
 	      visible: !is_logged_in(state),
 	      click: function click() {
-	        store.dispatch({ type: "MENU_CMD", cmd: 'LOGIN' });
+	        menuLogin(store);
 	      }
 	    }, {
 	      role: 'Logout',
 	      label: 'Logout',
 	      visible: is_logged_in(state),
 	      click: function click() {
-	        store.dispatch({ type: "MENU_CMD", cmd: 'LOGOUT' });
+	        menuLogout(store);
 	      }
 	    }]
 	  }, {
@@ -37343,7 +37366,7 @@
 	      visible: is_logged_in(state),
 	      enabled: false, // until I figure it out
 	      click: function click() {
-	        store.dispatch({ type: "MENU_CMD", cmd: 'PUSHTOCLOUD' });
+	        menuPushToCloud(store);
 	      }
 	    }, {
 	      role: 'Pull From Cloud',
@@ -37351,7 +37374,7 @@
 	      visible: is_logged_in(state),
 	      enabled: false, // until I figure it out
 	      click: function click() {
-	        store.dispatch({ type: "MENU_CMD", cmd: 'PULLFROMCLOUD' });
+	        menuPullFromCloud(store);
 	      }
 	    }]
 	  }, {
