@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Platform
 } from 'react-native';
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScene from './LoginScene';
 import MenuScene from './MenuScene';
 import FoldersScene from './FoldersScene';
@@ -78,7 +78,7 @@ export default class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={() => navigator.pop()}>
-                                        <Text>Back</Text>
+                                        <Icon name='arrow-left' size={28} color='#000000' />
                                     </TouchableHighlight>
                                 );
                             }
@@ -118,7 +118,6 @@ var styles = StyleSheet.create({
         backgroundColor: '#0aaf82'
     },
     navButton: {
-        margin:10, // keeps the button off the edge of the page
-        height:20
+        margin:7 // keeps the button off the edge of the page
     }
 });
