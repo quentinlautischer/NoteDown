@@ -18,10 +18,6 @@ class DualmodeEditor extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  componentWillMount() {
-    console.log('DualmodeEditor ComponentWillMount');
-  }
-
   handleChange(e) {
     this.props.updateContent(e.target.value);
     this.parse(e.target.value);
@@ -57,7 +53,6 @@ class DualmodeEditor extends React.Component {
     rendered = shared.parse(content);
     this.setState({ rendered_content: rendered });
   }
-
   
 }
 

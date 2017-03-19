@@ -7,15 +7,15 @@ const {dialog} = remote;
 ////////////////////////////////////////////////////////
 /// Bool Queries
 const is_quickmode = function(state) {
-  return (state.mode == 'editor' && state.userid == null);
+  return (state.state.mode == 'editor' && state.state.userid == null);
 }
 
 const is_editor = function(state) {
-  return (state.mode == 'editor');
+  return (state.state.mode == 'editor');
 }
 
 const is_logged_in = function(state) {
-  return (state.userid != null);
+  return (state.state.userid != null);
 }
 
 ////////////////////////////////////////////////////////
@@ -28,11 +28,15 @@ function readFile(filepath, store){
       return;
     }
     store.dispatch({type: 'SET_QUICK_FILEPATH', path: filepath})
-    store.dispatch({type: 'PAGE_CONTENT_CHANGE', content: data});
+    store.dispatch({type: 'PAGE_CONTENT_CHANGE', 
+      content: data, 
+      folderIndex: store.getState().state.folderIndex,
+      pageIndex: store.getState().state.pageIndex
+    });
   });
 }
 
-function saveas() {
+function saveas(store) {
   dialog.showSaveDialog({
     filters: [
       {name: 'Markdown', extensions: ['md']},
@@ -45,7 +49,7 @@ function saveas() {
     }
     // fileName is a string that contains the path and filename created in the save file dialog.
     store.dispatch({type: 'SET_QUICK_FILEPATH', path: fileName});  
-    fs.writeFile(fileName, get_quickmode_file_contents(), function (err) {
+    fs.writeFile(fileName, store.getState().notes.folders[0].pages[0].content, function (err) {
       if(err){
         alert("An error ocurred creating the file "+ err.message)
       }        
@@ -69,10 +73,10 @@ function menuOpen(store) {
 }
 
 function menuSave(store) {
-  if (store.getState().quickmode_filepath == null) {
-    saveas();
+  if (store.getState().state.quickmode_filepath == null) {
+    saveas(store);
   } else {
-    fs.writeFile(store.getState().quickmode_filepath, store.getState().notes.folders[0].pages[0].content, function (err) {
+    fs.writeFile(store.getState().state.quickmode_filepath, store.getState().notes.folders[0].pages[0].content, function (err) {
     if(err){
       alert("An error ocurred updating the file"+ err.message);
       console.log(err);
@@ -84,7 +88,7 @@ function menuSave(store) {
 }
 
 function menuSaveas(store) {
-  saveas();
+  saveas(store);
 }
 
 function menuFolderview(store) {
@@ -124,19 +128,23 @@ const menubar_template_builder = function(store) {
       {
         role: 'Open',
         label: 'Open',
-        visible: (state.mode == 'editor' && store.getState().userid == null) ? true : false,
+        accelerator: 'CmdOrCtrl+O',
+        enabled: is_quickmode(state),
+        visible: is_quickmode(state),
         click () { menuOpen(store) }
       },
       {
         role: 'Save',
         label: 'Save',
         accelerator: 'CmdOrCtrl+S',
+        enabled: is_quickmode(state),
         visible: is_quickmode(state),
         click () { menuSave(store) }
       },
       {
         role: 'Save As',
         label: 'Save As',
+        enabled: is_quickmode(state),
         visible: is_quickmode(state),
         click () { menuSaveas(store) }
       },

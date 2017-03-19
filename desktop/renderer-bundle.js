@@ -60,9 +60,13 @@
 
 	var _redux = __webpack_require__(188);
 
-	var _immutabilityHelper = __webpack_require__(215);
+	var _appReducer = __webpack_require__(441);
 
-	var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+	var _appReducer2 = _interopRequireDefault(_appReducer);
+
+	var _notesReducer = __webpack_require__(443);
+
+	var _notesReducer2 = _interopRequireDefault(_notesReducer);
 
 	var _MuiThemeProvider = __webpack_require__(217);
 
@@ -118,15 +122,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	// import appReducer from '.reducers/appReducer';
-	// import notesReducer from '.reducers/notesReducer';
 
 	(0, _reactTapEventPlugin2.default)();
 
@@ -195,7 +195,7 @@
 	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(store));
 	      Menu.setApplicationMenu(menubar);
 	      console.log(store.getState());
-	      if (store.getState().mode == 'menu') {
+	      if (store.getState().state.mode == 'menu') {
 	        return _react2.default.createElement(_startMenu2.default, {
 	          request_login: function request_login(username, password) {
 	            return _this2.request_login(username, password);
@@ -207,15 +207,14 @@
 	            return _this2.enter_quickmode();
 	          }
 	        });
-	      } else if (store.getState().mode == 'editor') {
-	        console.log('Content: ' + store.getState().notes.folders[store.getState().folderIndex].pages[store.getState().pageIndex].content);
+	      } else if (store.getState().state.mode == 'editor') {
 	        return _react2.default.createElement(_dualmodeEditor2.default, {
-	          content: store.getState().notes.folders[store.getState().folderIndex].pages[store.getState().pageIndex].content,
+	          content: store.getState().notes.folders[store.getState().state.folderIndex].pages[store.getState().state.pageIndex].content,
 	          updateContent: function updateContent(content) {
 	            return _this2.updateContent(content);
 	          }
 	        });
-	      } else if (store.getState().mode == 'folderview') {
+	      } else if (store.getState().state.mode == 'folderview') {
 	        return _react2.default.createElement(_folderContainerView2.default, {
 	          folders: store.getState().notes.folders,
 	          createFolder: function createFolder(name) {
@@ -233,7 +232,11 @@
 	  }, {
 	    key: 'updateContent',
 	    value: function updateContent(content) {
-	      store.dispatch({ type: 'PAGE_CONTENT_CHANGE', content: content });
+	      store.dispatch({ type: 'PAGE_CONTENT_CHANGE',
+	        content: content,
+	        folderIndex: store.getState().state.folderIndex,
+	        pageIndex: store.getState().state.pageIndex
+	      });
 	      this.request_push_data();
 	    }
 	  }, {
@@ -280,7 +283,16 @@
 	  }, {
 	    key: 'enter_quickmode',
 	    value: function enter_quickmode(content) {
-	      store.dispatch({ type: 'SET_NOTES', notes: create_notes("# Page 1 Content \n* Item 1\n* Item 2\n \n \n## Header 2 \n### Header 3\n#Header11\n") });
+	      store.dispatch({ type: 'SET_NOTES', notes: {
+	          userid: null,
+	          images: [],
+	          folders: [{
+	            name: "Folder",
+	            pages: [{
+	              content: ""
+	            }]
+	          }]
+	        } });
 	      store.dispatch({ type: 'EDITOR_MODE' });
 	    }
 	  }, {
@@ -301,14 +313,14 @@
 	    key: 'request_pull_data',
 	    value: function request_pull_data() {
 	      console.log("requesting data pull");
-	      var data = { userid: store.getState().userid };
+	      var data = { userid: store.getState().state.userid };
 	      ipc.send('request-pull-data', data);
 	    }
 	  }, {
 	    key: 'request_push_data',
 	    value: function request_push_data() {
 	      console.log("requesting data push");
-	      var data = { userid: store.getState().userid, notes: store.getState().notes };
+	      var data = { userid: store.getState().state.userid, notes: store.getState().notes };
 	      ipc.send('request-push-data', data);
 	    }
 	  }, {
@@ -376,97 +388,10 @@
 	  return App;
 	}(_react2.default.Component);
 
-	function create_notes(content) {
-	  var notes = {
-	    userid: "",
-	    folders: [{
-	      name: "Folder 1",
-	      pages: [{
-	        content: content
-	      }]
-	    }]
-	  };
-	  return notes;
-	}
-
-	// const reducer = combineReducers({
-	//   appState: appReducer,
-	//   menubar: menubarReducer,
-	//   notes: notesReducer
-	// });
-
-	var initial_state = {
-	  mode: 'menu',
-	  userid: null,
-	  folderIndex: 0,
-	  pageIndex: 0,
-	  quickmode_filepath: null,
-	  notes: {
-	    userid: null,
-	    images: [],
-	    folders: []
-	  }
-	};
-
-	var reducer = function reducer() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initial_state;
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    // App State Actions
-	    case 'EDITOR_MODE':
-	      return Object.assign({}, state, { mode: 'editor' });
-	    case 'FOLDER_MODE':
-	      return Object.assign({}, state, { mode: 'folderview' });
-	    case 'FLASHCARD_MODE':
-	      return Object.assign({}, state, { mode: 'flashcardview' });
-	    case 'MENU_MODE':
-	      return Object.assign({}, state, { mode: 'menu' });
-	    // Notes State Actions
-	    case 'SET_USER':
-	      return Object.assign({}, state, { userid: action.userid });
-	    case 'SET_NOTES':
-	      console.log('Setting Notes: ' + action.notes);
-	      return Object.assign({}, state, { notes: action.notes });
-	    case 'SET_QUICK_FILEPATH':
-	      return Object.assign({}, state, { quickmode_filepath: action.path });
-	    case 'ADD_FOLDER':
-	      console.log('adding folder: ' + action.folder);
-	      return (0, _immutabilityHelper2.default)(state, {
-	        notes: {
-	          folders: { $push: [action.folder] }
-	        }
-	      });
-	    case 'SELECT_FOLDER':
-	      return Object.assign({}, state, { folderIndex: action.index });
-	    case 'DELETE_FOLDER':
-	      console.log('deleting folder at index: ' + action.index);
-	      return (0, _immutabilityHelper2.default)(state, {
-	        notes: {
-	          folders: { $splice: [[action.index, 1]] }
-	        }
-	      });
-	    case 'ADD_PAGE':
-	      return state;
-	    case 'REMOVE_PAGE':
-	      return state;
-	    case 'PAGE_CONTENT_CHANGE':
-	      return (0, _immutabilityHelper2.default)(state, {
-	        notes: {
-	          folders: _defineProperty({}, state.folderIndex, {
-	            pages: _defineProperty({}, state.pageIndex, {
-	              content: { $set: action.content }
-	            })
-	          })
-	        }
-	      });
-	    case 'DEBUG':
-	      console.log("debug");
-	      return state;
-	    default:
-	      return state;
-	  }
-	};
+	var reducer = (0, _redux.combineReducers)({
+	  state: _appReducer2.default,
+	  notes: _notesReducer2.default
+	});
 
 	var store = (0, _redux.createStore)(reducer);
 
@@ -37160,15 +37085,15 @@
 	/// Bool Queries
 
 	var is_quickmode = function is_quickmode(state) {
-	  return state.mode == 'editor' && state.userid == null;
+	  return state.state.mode == 'editor' && state.state.userid == null;
 	};
 
 	var is_editor = function is_editor(state) {
-	  return state.mode == 'editor';
+	  return state.state.mode == 'editor';
 	};
 
 	var is_logged_in = function is_logged_in(state) {
-	  return state.userid != null;
+	  return state.state.userid != null;
 	};
 
 	////////////////////////////////////////////////////////
@@ -37181,11 +37106,15 @@
 	      return;
 	    }
 	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: filepath });
-	    store.dispatch({ type: 'PAGE_CONTENT_CHANGE', content: data });
+	    store.dispatch({ type: 'PAGE_CONTENT_CHANGE',
+	      content: data,
+	      folderIndex: store.getState().state.folderIndex,
+	      pageIndex: store.getState().state.pageIndex
+	    });
 	  });
 	}
 
-	function saveas() {
+	function saveas(store) {
 	  dialog.showSaveDialog({
 	    filters: [{ name: 'Markdown', extensions: ['md'] }, { name: 'All Files', extensions: ['*'] }]
 	  }, function (fileName) {
@@ -37195,7 +37124,7 @@
 	    }
 	    // fileName is a string that contains the path and filename created in the save file dialog.
 	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: fileName });
-	    fs.writeFile(fileName, get_quickmode_file_contents(), function (err) {
+	    fs.writeFile(fileName, store.getState().notes.folders[0].pages[0].content, function (err) {
 	      if (err) {
 	        alert("An error ocurred creating the file " + err.message);
 	      }
@@ -37216,10 +37145,10 @@
 	}
 
 	function menuSave(store) {
-	  if (store.getState().quickmode_filepath == null) {
-	    saveas();
+	  if (store.getState().state.quickmode_filepath == null) {
+	    saveas(store);
 	  } else {
-	    fs.writeFile(store.getState().quickmode_filepath, store.getState().notes.folders[0].pages[0].content, function (err) {
+	    fs.writeFile(store.getState().state.quickmode_filepath, store.getState().notes.folders[0].pages[0].content, function (err) {
 	      if (err) {
 	        alert("An error ocurred updating the file" + err.message);
 	        console.log(err);
@@ -37231,7 +37160,7 @@
 	}
 
 	function menuSaveas(store) {
-	  saveas();
+	  saveas(store);
 	}
 
 	function menuFolderview(store) {
@@ -37266,7 +37195,9 @@
 	    submenu: [{
 	      role: 'Open',
 	      label: 'Open',
-	      visible: state.mode == 'editor' && store.getState().userid == null ? true : false,
+	      accelerator: 'CmdOrCtrl+O',
+	      enabled: is_quickmode(state),
+	      visible: is_quickmode(state),
 	      click: function click() {
 	        menuOpen(store);
 	      }
@@ -37274,6 +37205,7 @@
 	      role: 'Save',
 	      label: 'Save',
 	      accelerator: 'CmdOrCtrl+S',
+	      enabled: is_quickmode(state),
 	      visible: is_quickmode(state),
 	      click: function click() {
 	        menuSave(store);
@@ -37281,6 +37213,7 @@
 	    }, {
 	      role: 'Save As',
 	      label: 'Save As',
+	      enabled: is_quickmode(state),
 	      visible: is_quickmode(state),
 	      click: function click() {
 	        menuSaveas(store);
@@ -38843,11 +38776,6 @@
 	  }
 
 	  _createClass(DualmodeEditor, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      console.log('DualmodeEditor ComponentWillMount');
-	    }
-	  }, {
 	    key: 'handleChange',
 	    value: function handleChange(e) {
 	      this.props.updateContent(e.target.value);
@@ -40044,6 +39972,201 @@
 /***/ function(module, exports) {
 
 	module.exports = require("fs");
+
+/***/ },
+/* 441 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _immutabilityHelper = __webpack_require__(215);
+
+	var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+
+	var _reducerUtilities = __webpack_require__(442);
+
+	var _reducerUtilities2 = _interopRequireDefault(_reducerUtilities);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function editorMode(state, action) {
+	  return Object.assign({}, state, { mode: 'editor' });
+	}
+
+	function folderMode(state, action) {
+	  return Object.assign({}, state, { mode: 'folderview' });
+	}
+
+	function flashcardMode(state, action) {
+	  return Object.assign({}, state, { mode: 'flashcardview' });
+	}
+
+	function menuMode(state, action) {
+	  return Object.assign({}, state, { mode: 'menu' });
+	}
+
+	function setQuickFilepath(state, action) {
+	  return Object.assign({}, state, { quickmode_filepath: action.path });
+	}
+
+	function setUser(state, action) {
+	  return Object.assign({}, state, { userid: action.userid });
+	}
+
+	function selectFolder(state, action) {
+	  return Object.assign({}, state, { folderIndex: action.index });
+	}
+
+	function selectPage(state, action) {
+	  return Object.assign({}, state, { pageIndex: action.index });
+	}
+
+	var initial_state = {
+	  mode: 'menu',
+	  userid: null,
+	  folderIndex: 0,
+	  pageIndex: 0,
+	  quickmode_filepath: null
+	};
+
+	var appReducer = (0, _reducerUtilities2.default)(initial_state, {
+	  'EDITOR_MODE': editorMode,
+	  'FOLDER_MODE': folderMode,
+	  'FLASHCARD_MODE': flashcardMode,
+	  'MENU_MODE': menuMode,
+	  'SET_QUICK_FILEPATH': setQuickFilepath,
+	  'SET_USER': setUser,
+	  'SELECT_FOLDER': selectFolder,
+	  'SELECT_PAGE': selectPage
+	});
+
+	exports.default = appReducer;
+
+/***/ },
+/* 442 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = createReducer;
+	exports.updateObject = updateObject;
+	function createReducer(initialState, handlers) {
+	    return function reducer() {
+	        var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+	        var action = arguments[1];
+
+	        if (handlers.hasOwnProperty(action.type)) {
+	            return handlers[action.type](state, action);
+	        } else {
+	            return state;
+	        }
+	    };
+	}
+
+	function updateItemInArray(array, itemId, updateItemCallback) {
+	    var updatedItems = array.map(function (item) {
+	        if (item.id !== itemId) {
+	            // Since we only want to update one item, preserve all others as they are now
+	            return item;
+	        }
+
+	        // Use the provided callback to create an updated item
+	        var updatedItem = updateItemCallback(item);
+	        return updatedItem;
+	    });
+
+	    return updatedItems;
+	}
+
+	function updateObject(oldObject, newValues) {
+	    // Encapsulate the idea of passing a new object as the first parameter
+	    // to Object.assign to ensure we correctly copy data instead of mutating
+	    return Object.assign({}, oldObject, newValues);
+	}
+
+/***/ },
+/* 443 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _immutabilityHelper = __webpack_require__(215);
+
+	var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+
+	var _reducerUtilities = __webpack_require__(442);
+
+	var _reducerUtilities2 = _interopRequireDefault(_reducerUtilities);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	function setNotes(state, action) {
+	  console.log('Setting Notes: ' + action.notes);
+	  return action.notes;
+	}
+
+	function addFolder(state, action) {
+	  console.log('adding folder: ' + action.folder);
+	  return (0, _immutabilityHelper2.default)(state, { folders: { $push: [action.folder] } });
+	}
+
+	function deleteFolder(state, action) {
+	  console.log('deleting folder at index: ' + action.index);
+	  return (0, _immutabilityHelper2.default)(state, { folders: { $splice: [[action.index, 1]] } });
+	}
+
+	function addPage(state, action) {
+	  return state;
+	}
+
+	function removePage(state, action) {
+	  return state;
+	}
+
+	function pageContentChange(state, action) {
+	  return (0, _immutabilityHelper2.default)(state, {
+	    folders: _defineProperty({}, action.folderIndex, {
+	      pages: _defineProperty({}, action.pageIndex, {
+	        content: { $set: action.content }
+	      })
+	    })
+	  });
+	}
+
+	var initial_state = {
+	  userid: null,
+	  images: [],
+	  folders: [{
+	    name: "Folder",
+	    pages: [{
+	      content: ""
+	    }]
+	  }]
+	};
+
+	var notesReducer = (0, _reducerUtilities2.default)(initial_state, {
+	  'SET_NOTES': setNotes,
+	  'ADD_FOLDER': addFolder,
+	  'DELETE_FOLDER': deleteFolder,
+	  'ADD_PAGE': addPage,
+	  'REMOVE_PAGE': removePage,
+	  'PAGE_CONTENT_CHANGE': pageContentChange
+	});
+
+	exports.default = notesReducer;
 
 /***/ }
 /******/ ]);

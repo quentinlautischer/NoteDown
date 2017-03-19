@@ -16,7 +16,7 @@ class TocNav extends React.Component {
 
     // Going to need a return to folder button or something
 
-    this.scrollTo  = this.scrollTo  .bind(this);
+    this.scrollTo  = this.scrollTo.bind(this);
     this.renderTocItem = this.renderTocItem.bind(this)
   }
 
