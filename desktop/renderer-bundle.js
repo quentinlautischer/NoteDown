@@ -80,11 +80,11 @@
 
 	var _menubar2 = _interopRequireDefault(_menubar);
 
-	var _folderContainerView = __webpack_require__(419);
+	var _folderContainerView = __webpack_require__(420);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _dualmodeEditor = __webpack_require__(426);
+	var _dualmodeEditor = __webpack_require__(427);
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
@@ -92,11 +92,11 @@
 
 	var _notedownTitleLogo2 = _interopRequireDefault(_notedownTitleLogo);
 
-	var _waiter = __webpack_require__(431);
+	var _waiter = __webpack_require__(432);
 
 	var _waiter2 = _interopRequireDefault(_waiter);
 
-	var _Dialog = __webpack_require__(421);
+	var _Dialog = __webpack_require__(422);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -112,7 +112,7 @@
 
 	var _Paper2 = _interopRequireDefault(_Paper);
 
-	var _reactTapEventPlugin = __webpack_require__(434);
+	var _reactTapEventPlugin = __webpack_require__(435);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -135,7 +135,7 @@
 	var _require = __webpack_require__(418),
 	    remote = _require.remote;
 
-	var fs = __webpack_require__(440);
+	var fs = __webpack_require__(419);
 	var Menu = remote.Menu,
 	    MenuItem = remote.MenuItem;
 	var dialog = remote.dialog;
@@ -37153,7 +37153,7 @@
 	var _require2 = __webpack_require__(418),
 	    remote = _require2.remote;
 
-	var fs = __webpack_require__(440);
+	var fs = __webpack_require__(419);
 	var dialog = remote.dialog;
 
 	////////////////////////////////////////////////////////
@@ -37467,6 +37467,12 @@
 
 /***/ },
 /* 419 */
+/***/ function(module, exports) {
+
+	module.exports = require("fs");
+
+/***/ },
+/* 420 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37481,7 +37487,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _dialogFolderCreate = __webpack_require__(420);
+	var _dialogFolderCreate = __webpack_require__(421);
 
 	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
 
@@ -37596,7 +37602,7 @@
 	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
 
 /***/ },
-/* 420 */
+/* 421 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37611,7 +37617,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog = __webpack_require__(421);
+	var _Dialog = __webpack_require__(422);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -37726,7 +37732,7 @@
 	exports.default = DialogFolderCreate;
 
 /***/ },
-/* 421 */
+/* 422 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37736,7 +37742,7 @@
 	});
 	exports.default = undefined;
 
-	var _Dialog = __webpack_require__(422);
+	var _Dialog = __webpack_require__(423);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -37745,7 +37751,7 @@
 	exports.default = _Dialog2.default;
 
 /***/ },
-/* 422 */
+/* 423 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37806,11 +37812,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _Overlay = __webpack_require__(423);
+	var _Overlay = __webpack_require__(424);
 
 	var _Overlay2 = _interopRequireDefault(_Overlay);
 
-	var _RenderToLayer = __webpack_require__(425);
+	var _RenderToLayer = __webpack_require__(426);
 
 	var _RenderToLayer2 = _interopRequireDefault(_RenderToLayer);
 
@@ -38337,7 +38343,7 @@
 	exports.default = Dialog;
 
 /***/ },
-/* 423 */
+/* 424 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38386,7 +38392,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _AutoLockScrolling = __webpack_require__(424);
+	var _AutoLockScrolling = __webpack_require__(425);
 
 	var _AutoLockScrolling2 = _interopRequireDefault(_AutoLockScrolling);
 
@@ -38482,7 +38488,7 @@
 	exports.default = Overlay;
 
 /***/ },
-/* 424 */
+/* 425 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38607,7 +38613,7 @@
 	exports.default = AutoLockScrolling;
 
 /***/ },
-/* 425 */
+/* 426 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38791,7 +38797,7 @@
 	exports.default = RenderToLayer;
 
 /***/ },
-/* 426 */
+/* 427 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38806,11 +38812,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _renderer = __webpack_require__(427);
+	var _renderer = __webpack_require__(428);
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _tocNav = __webpack_require__(428);
+	var _tocNav = __webpack_require__(429);
 
 	var _tocNav2 = _interopRequireDefault(_tocNav);
 
@@ -38824,7 +38830,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var shared = __webpack_require__(430);
+	var shared = __webpack_require__(431);
 
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
@@ -38902,7 +38908,7 @@
 	exports.default = (0, _reactRedux.connect)()(DualmodeEditor);
 
 /***/ },
-/* 427 */
+/* 428 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38959,7 +38965,7 @@
 	exports.default = Renderer;
 
 /***/ },
-/* 428 */
+/* 429 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38974,7 +38980,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _tocItem = __webpack_require__(429);
+	var _tocItem = __webpack_require__(430);
 
 	var _tocItem2 = _interopRequireDefault(_tocItem);
 
@@ -39073,7 +39079,7 @@
 	exports.default = TocNav;
 
 /***/ },
-/* 429 */
+/* 430 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -39155,129 +39161,135 @@
 	exports.default = TocNav;
 
 /***/ },
-/* 430 */
+/* 431 */
 /***/ function(module, exports) {
 
 	'use strict';
 
 	function parse(str) {
-	  var rendered = str;
+	  //The main parsing function. Calls all other functions.
 
-	  rendered = p_header_setext(rendered);
-	  rendered = p_header_atx(rendered);
-	  rendered = p_links(rendered);
+	  //Make all newlines consistent, then split string into lines
+	  str = str.replace(/\r\n/g, '\n');
+	  str = str.replace(/\r/g, '\n');
+	  var line_array = str.split('\n');
 
-	  return rendered;
+	  //Block-level elements
+	  var block_array = [];
+
+	  for (var i = 0; i < line_array.length; i++) {
+	    check_blocks(line_array[i], block_array);
+	  }
+
+	  return render_block(block_array);
 	}
 
-	function p_header_setext(fullText) {
-	  //A line followed by a line of '=' or '-' characters, for h1 or h2
-	  var match;
-	  var tempText = "";
-	  var r_setext = /^(.*?)\n(-|=)+$/gm;
-	  var magnitude;
-	  var bound1, bound2;
-
-	  bound1 = 0;
-	  while ((match = r_setext.exec(fullText)) != null) {
-	    bound2 = match.index;
-	    tempText += fullText.substr(bound1, bound2 - bound1);
-	    magnitude = match[2].charAt(0) == '=' ? '1' : '2';
-	    tempText += "<h" + magnitude + '>' + match[1] + "</h" + magnitude + '>';
-	    bound1 = r_setext.lastIndex;
-	  }
-	  bound2 = fullText.length;
-	  tempText += fullText.substr(bound1, bound2 - bound1);
-	  return tempText;
-	}
-
-	function p_header_atx(fullText) {
-	  //A line preceded by 1-6 '#' characters, for h1-h6
-	  var match;
-	  var tempText = "";
-	  var r_atx = /^(#{1,6})\s*(.+?)\s*#*$/gm;
-	  var magnitude;
-	  var bound1, bound2;
-
-	  bound1 = 0;
-	  while ((match = r_atx.exec(fullText)) != null) {
-	    bound2 = match.index;
-	    tempText += fullText.substr(bound1, bound2 - bound1);
-	    magnitude = match[1].length;
-	    tempText += "<h" + magnitude + " id=\"" + match[2] + "\">" + match[2] + "</h" + magnitude + '>';
-	    bound1 = r_atx.lastIndex;
-	  }
-	  bound2 = fullText.length;
-	  tempText += fullText.substr(bound1, bound2 - bound1);
-
-	  return tempText;
-	}
-
-	function p_links(fullText) {
-	  var match;
-	  var tempText = "";
-	  var r_refs = /^\s{0,3}\[(.+?)\]:\s*(.*?)\s*$/gm;
-	  var r_links = /!?\[(.*?)\](\(.*?\)|\[.*?\])/gm;
-	  var isImage, address;
-	  var refs = [];
-	  var bound1, bound2;
-
-	  bound1 = 0;
-	  while ((match = r_refs.exec(fullText)) != null) {
-	    bound2 = match.index;
-	    tempText += fullText.substr(bound1, bound2 - bound1);
-	    refs.push([match[1], match[2]]);
-	    bound1 = r_refs.lastIndex;
-	  }
-	  bound2 = fullText.length;
-	  tempText += fullText.substr(bound1, bound2 - bound1);
-	  fullText = tempText;
-	  tempText = "";
-
-	  bound1 = 0;
-	  while ((match = r_links.exec(fullText)) != null) {
-	    bound2 = match.index;
-	    tempText += fullText.substr(bound1, bound2 - bound1);
-
-	    isImage = match[0].charAt(0) == '!';
-	    if (match[2].charAt(0) == '[') {
-	      var key = match[2].substr(1, match[2].length - 2);
-	      if (key.length == 0) {
-	        key = match[1];
-	      }
-	      var key_index = -1;
-	      for (var i = 0; i < refs.length; i++) {
-	        if (refs[i][0] == key) {
-	          key_index = i;
-	          break;
-	        }
-	      }
-	      if (key_index >= 0) {
-	        address = refs[key_index][1];
-	      } else {
-	        //No link, just print
-	        bound1 = r_links.lastIndex;
-	        tempText += fullText.substr(bound2, bound1 - bound2);
-	        continue;
-	      }
-	    } else {
-	      address = match[2].substr(1, match[2].length - 2);
+	function render_block(blocks) {
+	  var result = '';
+	  for (var i = 0; i < blocks.length; i++) {
+	    if (i > 0) {
+	      result += '\n\n';
 	    }
-	    tempText += '<' + (isImage ? "img src" : "a href") + "=\"" + address + "\">" + match[1] + "</" + (isImage ? "img" : "a") + '>';
-	    bound1 = r_links.lastIndex;
+	    var block = blocks[i];
+	    for (var t = 0; t < block.tags.length; t++) {
+	      result += '<' + block.tags[t] + '>';
+	    }
+	    for (var t = 0; t < block.content.length; t++) {
+	      if (t > 0) {
+	        result += '\n';
+	      }
+	      result += block.content[t];
+	    }
+	    for (var t = block.tags.length - 1; t >= 0; t--) {
+	      result += '</' + block.tags[t] + '>';
+	    }
 	  }
-	  bound2 = fullText.length;
-	  tempText += fullText.substr(bound1, bound2 - bound1);
-	  fullText = tempText;
+	  return result;
+	}
 
-	  return fullText;
+	function check_blocks(line, blocks) {
+	  //Once it finds a match, it moves on
+
+	  if (check_header_setext(line, blocks)) {
+	    return;
+	  }
+	  if (check_header_atx(line, blocks)) {
+	    return;
+	  }
+	  if (check_paragraph(line, blocks)) {
+	    return;
+	  }
+	}
+
+	function check_header_setext(line, blocks) {
+	  //Updates block array. Returns whether match was successful
+
+	  var patt = /^(=+|-+)\s*$/;
+	  var lastBlock = blocks[blocks.length - 1];
+	  if (lastBlock != null && (match = patt.exec(line)) != null) {
+	    lastBlock.content.pop(); //The last block would have incorrectly registered this header's content as one of its lines.
+	    var content = lastBlock.rawLines[lastBlock.rawLines.length - 1];
+
+	    lastBlock.open = false;
+	    if (lastBlock.content.length == 0) {
+	      blocks.pop();
+	    } //No sense keeping the last block if it doesn't represent anything
+
+	    var mag = match[1].charAt(0) == '=' ? 1 : 2;
+	    blocks.push({ type: 'header_setext', tags: ['h' + mag], open: false, content: [content], rawLine: [line] });
+	    return true;
+	  }
+	  return false;
+	}
+
+	function check_header_atx(line, blocks) {
+	  //Updates block array. Returns whether match was successful
+
+	  var lastBlock = blocks[blocks.length - 1];
+	  if (lastBlock != null && lastBlock.type == 'header_atx') {
+	    lastBlock.open = false;
+	  }
+
+	  var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
+	  var match;
+	  if ((match = patt.exec(line)) != null) {
+	    if (lastBlock != null) {
+	      lastBlock.open = false;
+	    }
+	    blocks.push({ type: 'header_atx', tags: ['h' + match[1].length], open: true, content: [match[2]], rawLines: [line] });
+	    return true;
+	  }
+	  return false;
+	}
+
+	function check_paragraph(line, blocks) {
+	  //Updates block array. Returns whether match was successful
+
+	  var lastBlock = blocks[blocks.length - 1];
+	  //Empty line after a paragraph means that paragraph is done
+	  if (line.trim().length == 0 && lastBlock != null && lastBlock.type == 'paragraph') {
+	    lastBlock.open = false;
+	    return true;
+	  }
+
+	  var patt = /^\s*(.+)$/;
+	  if ((match = patt.exec(line)) != null) {
+	    if (lastBlock != null && lastBlock.type == 'paragraph' && lastBlock.open) {
+	      lastBlock.content.push(line);
+	      lastBlock.rawLines.push(line);
+	    } else {
+	      blocks.push({ type: 'paragraph', tags: ['p'], open: true, content: [match[1]], rawLines: [line] });
+	    }
+	    return true;
+	  }
+	  return false;
 	}
 
 	module.exports.parse = parse;
 	console.log("Shared module loaded");
 
 /***/ },
-/* 431 */
+/* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39292,11 +39304,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog2 = __webpack_require__(421);
+	var _Dialog2 = __webpack_require__(422);
 
 	var _Dialog3 = _interopRequireDefault(_Dialog2);
 
-	var _CircularProgress = __webpack_require__(432);
+	var _CircularProgress = __webpack_require__(433);
 
 	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
 
@@ -39346,7 +39358,7 @@
 	exports.default = Waiter;
 
 /***/ },
-/* 432 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39356,7 +39368,7 @@
 	});
 	exports.default = undefined;
 
-	var _CircularProgress = __webpack_require__(433);
+	var _CircularProgress = __webpack_require__(434);
 
 	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
 
@@ -39365,7 +39377,7 @@
 	exports.default = _CircularProgress2.default;
 
 /***/ },
-/* 433 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39637,11 +39649,11 @@
 	exports.default = CircularProgress;
 
 /***/ },
-/* 434 */
+/* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(435);
+	var defaultClickRejectionStrategy = __webpack_require__(436);
 
 	var alreadyInjected = false;
 
@@ -39663,13 +39675,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(436)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(437)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 435 */
+/* 436 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -39680,7 +39692,7 @@
 
 
 /***/ },
-/* 436 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -39704,14 +39716,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(437);
+	var EventConstants = __webpack_require__(438);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(438);
+	var TouchEventUtils = __webpack_require__(439);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(439);
+	var keyOf = __webpack_require__(440);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -39857,7 +39869,7 @@
 
 
 /***/ },
-/* 437 */
+/* 438 */
 /***/ function(module, exports) {
 
 	/**
@@ -39953,7 +39965,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 438 */
+/* 439 */
 /***/ function(module, exports) {
 
 	/**
@@ -40001,7 +40013,7 @@
 
 
 /***/ },
-/* 439 */
+/* 440 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -40038,12 +40050,6 @@
 	};
 
 	module.exports = keyOf;
-
-/***/ },
-/* 440 */
-/***/ function(module, exports) {
-
-	module.exports = require("fs");
 
 /***/ }
 /******/ ]);
