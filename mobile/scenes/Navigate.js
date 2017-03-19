@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Platform
 } from 'react-native';
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScene from './LoginScene';
 import MenuScene from './MenuScene';
 import FoldersScene from './FoldersScene';
@@ -75,8 +75,10 @@ export default class Navigate extends Component {
                                 );
                             } else {
                                 return (
-                                    <TouchableHighlight onPress={() => navigator.pop()}>
-                                        <Text style={styles.navButton}>Back</Text>
+                                    <TouchableHighlight
+                                        style={styles.navButton}
+                                        onPress={() => navigator.pop()}>
+                                        <Icon name='arrow-left' size={28} color='#000000' />
                                     </TouchableHighlight>
                                 );
                             }
@@ -84,13 +86,15 @@ export default class Navigate extends Component {
                         RightButton: (route, navigator, index, navState) => {
                             if (route.title === 'View Notes') {
                                 return(
-                                    <TouchableHighlight onPress={() =>
-                                        navigator.push({
-                                            title: 'View Flashcard',
-                                            content: route.content
-                                        })
-                                    }>
-                                        <Text style={styles.navButton}>Go to Flashcards</Text>
+                                    <TouchableHighlight
+                                        style={styles.navButton}
+                                        onPress={() =>
+                                            navigator.push({
+                                                title: 'View Flashcard',
+                                                content: route.content
+                                            })
+                                        }>
+                                        <Text>Go to Flashcards</Text>
                                     </TouchableHighlight>
                                 );
                             } else {
@@ -110,11 +114,10 @@ export default class Navigate extends Component {
 
 var styles = StyleSheet.create({
     view: {
-        paddingTop: (Platform.OS === 'ios') ? 50 : 30, // a smaller number looks better on Android
+        paddingTop: (Platform.OS === 'ios') ? 20 : 0, // pushes the content down the page
         backgroundColor: '#0aaf82'
     },
     navButton: {
-        margin: 8,
-        height: 20
+        margin:7 // keeps the button off the edge of the page
     }
 });
