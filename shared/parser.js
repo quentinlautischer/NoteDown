@@ -4,16 +4,36 @@ function parse(str) {
   //Make all newlines consistent, then split string into lines
   str = str.replace (/\r\n/g, '\n');
   str = str.replace (/\r/g, '\n');
-  var line_array = str.split('\n');
   
   //Block-level elements
-  var block_array = [];
+  var block_array = [{type:'raw', tag:'', content:str.split('\n')}];
   
-  for (var i = 0; i < line_array.length; i++) {
-    check_blocks(line_array[i], block_array);
-  }
-  
+  check_blocks(block_array);
+  remove_raw(block_array);
   return render_block(block_array);
+}
+
+function check_blocks(blocks) {
+  check_block_html(blocks);
+  check_header_setext(blocks);
+  check_header_atx(blocks);
+  check_blockquote(blocks);
+  check_hrule(blocks);
+  check_flashcard(blocks);
+  check_table(blocks);
+  check_paragraph(blocks);
+  check_list_ordered(blocks);
+  check_list_unordered(blocks);
+  check_block_code(blocks);
+}
+
+function remove_raw(blocks) { //Get rid of the remaining raw text (mostly whitespace)
+  var b = 0;
+  while (true) {
+    if (blocks[b].type == 'raw') { blocks.splice(b,1); }
+    else { b++; }
+    if (b >= blocks.length) { break; }
+  }
 }
 
 function render_block(blocks) {
@@ -21,86 +41,160 @@ function render_block(blocks) {
   for (var i = 0; i < blocks.length; i++) {
     if (i > 0) { result += '\n\n'; }
     var block = blocks[i];
-    for (var t = 0; t < block.tags.length; t++) {
-      result += '<' + block.tags[t] + '>';
-    }
-    for (var t = 0; t < block.content.length; t++) {
-      if (t > 0) { result += '\n'; }
-      result += block.content[t];
-    }
-    for (var t = block.tags.length-1; t >= 0; t--) {
-      result += '</' + block.tags[t] + '>';
-    }
+    result += '<' + block.tag + '>';
+    result += block.content;
+    result += '</' + block.tag + '>';
   }
   return result;
 }
 
-function check_blocks(line, blocks){
-  //Once it finds a match, it moves on
-  
-  if (check_header_setext(line, blocks)) { return; }
-  if (check_header_atx(line, blocks)) { return; }
-  if (check_paragraph(line, blocks)) { return; }
+function check_block_html(blocks) {
 }
 
-function check_header_setext(line, blocks) {
-  //Updates block array. Returns whether match was successful
-  
+function check_header_setext(blocks) {
   var patt = /^(=+|-+)\s*$/;
   var match;
-  var lastBlock = blocks[blocks.length-1];
-  if (lastBlock != null && (match = patt.exec(line)) != null) {
-    lastBlock.content.pop(); //The last block would have incorrectly registered this header's content as one of its lines.
-    var content = lastBlock.rawLines[lastBlock.rawLines.length-1];
-    
-    lastBlock.open = false;
-    if (lastBlock.content.length == 0) { blocks.pop(); } //No sense keeping the last block if it doesn't represent anything
-    
-    var mag = (match[1].charAt(0) == '=') ? 1 : 2;
-    blocks.push({type:'header_setext', tags:['h'+mag], open:false, content:[content], rawLine:[line]});
-    return true;
+  var b = 0; //block iterator
+  while (true) {
+    if (blocks[b].type == 'raw') {
+      var content = blocks[b].content;
+      for (var l = 1; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null) {
+          var mag = (match[1].charAt(0) == '=') ? 1 : 2;
+          
+          var raw1 = {type:'raw', tag:'', content:content.slice(0,l-1)};
+          var header_setext = {type:'header_setext', tag:'h'+mag, content:content[l-1]};
+          var raw2 = {type:'raw', tag:'', content:content.slice(l+1,content.length)};
+          
+          blocks.splice(b, 1, raw1, header_setext, raw2);
+          b++;
+          break;
+        }
+      }
+      b++;
+    } else { b++; }
+    if (b >= blocks.length) { break; }
   }
-  return false;
 }
 
-function check_header_atx(line, blocks) {
-  //Updates block array. Returns whether match was successful
-  
-  var lastBlock = blocks[blocks.length-1];
-  if (lastBlock != null && lastBlock.type == 'header_atx') { lastBlock.open = false; }
-  
+function check_header_atx(blocks) {
   var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
   var match;
-  if ((match = patt.exec(line)) != null) {
-    if (lastBlock != null) { lastBlock.open = false; }
-    blocks.push({type: 'header_atx', tags:['h'+match[1].length], open:true, content:[match[2]], rawLines:[line]});
-    return true;
+  
+  var b = 0; //block iterator
+  while (true) {
+    if (blocks[b].type == 'raw') {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null) {
+          
+          var raw1 = {type:'raw', tag:'', content:content.slice(0,l)};
+          var header_atx = {type:'header_setext', tag:'h'+match[1].length, content:match[2]};
+          var raw2 = {type:'raw', tag:'', content:content.slice(l+1,content.length)};
+          
+          blocks.splice(b, 1, raw1, header_atx, raw2);
+          b++;
+          break;
+        }
+      }
+      b++;
+    } else { b++; }
+    if (b >= blocks.length) { break; }
   }
-  return false;
 }
 
-function check_paragraph(line, blocks) {
-  //Updates block array. Returns whether match was successful
+function check_blockquote(blocks) {
+  var patt = /^>\s(.*)$/;
+  var match;
   
-  var lastBlock = blocks[blocks.length-1];
-  //Empty line after a paragraph means that paragraph is done
-  if (line.trim().length == 0 && lastBlock != null && lastBlock.type == 'paragraph') {
-    lastBlock.open = false;
-    return true;
+  var b = 0; //block iterator
+  while (true) {
+    if (blocks[b].type == 'raw') {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null) {
+          var inner_content = '';
+          var end = l;
+          var same_block = true; //Keeps track of inner blockquote blocks
+          while (true) {
+            if ((match = patt.exec(content[end])) != null) {
+              inner_content += match[1] + '\n';
+              same_block = true;
+            }
+            else if (content[end].trim().length == 0) { //End of block may mean end of blockquote
+              inner_content += '\n';
+              same_block = false;
+            } else if (same_block) { inner_content += content[end] + '\n'; }
+            else { break; }
+            end++;
+            if (end >= content.length) { break; }
+          }
+          inner_content = parse(inner_content);
+          
+          var raw1 = {type:'raw', tag:'', content:content.slice(0,l)};
+          var blockquote = {type:'blockquote', tag:'blockquote', content:inner_content};
+          var raw2 = {type:'raw', tag:'', content:content.slice(end,content.length)};
+          
+          blocks.splice(b, 1, raw1, blockquote, raw2);
+          b++;
+          break;
+        }
+      }
+      b++;
+    } else { b++; }
+    if (b >= blocks.length) { break; }
   }
-  
+}
+
+function check_hrule(blocks) {
+}
+
+function check_flashcard(blocks) {
+}
+
+function check_table(blocks) {
+}
+
+function check_paragraph(blocks) {
   var patt = /^\s*(.+)$/;
   var match;
-  if ((match = patt.exec(line)) != null) {
-    if (lastBlock != null && lastBlock.type == 'paragraph' && lastBlock.open) {
-      lastBlock.content.push(line);
-      lastBlock.rawLines.push(line);
-    } else {
-      blocks.push({type: 'paragraph', tags:['p'], open:true, content:[match[1]], rawLines:[line]});
-    }
-    return true;
+  
+  var b = 0; //block iterator
+  while (true) {
+    if (blocks[b].type == 'raw') {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null) {
+          var end = l+1;
+          while (end < content.length && content[end].trim().length > 0) { end++; }
+          var p_content_array = content.slice(l,end);
+          var inner_content = '';
+          for (var i = 0; i < p_content_array.length; i++) {
+            inner_content += (i > 0 ? '\n' : '') + p_content_array[i];
+          }
+          
+          var raw1 = {type:'raw', tag:'', content:content.slice(0,l)};
+          var paragraph = {type:'paragraph', tag:'p', content:inner_content};
+          var raw2 = {type:'raw', tag:'', content:content.slice(end,content.length)};
+          
+          blocks.splice(b, 1, raw1, paragraph, raw2);
+          b++;
+          break;
+        }
+      }
+      b++;
+    } else { b++; }
+    if (b >= blocks.length) { break; }
   }
-  return false;
+}
+
+function check_list_ordered(blocks) {
+}
+
+function check_list_unordered(blocks) {
+}
+
+function check_block_code(blocks) {
 }
 
 module.exports.parse = parse;
