@@ -1,10 +1,24 @@
+.toc-nav-show {
+  position: relative;
+  float: right;
+  margin-top: 5%;
+  margin-right: 5%;
+  color: map-get($colors, primary2);
+  z-index: 4;
+}
+
+.toc-nav-show:hover + .toc-nav{
+  display: block;
+}
+
 .toc-nav {
-  position: absolute;
+  display: none;
+  position: relative;
   box-sizing: border-box;
-  top: 1%;
-  left: 50%;
-  width: 48%;
-  height: 20%;
+  top: 3%;
+  left: 55%;
+  width: 43%;
+  height: 30%;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 0 30px rgba(0,0,0,0.1);
@@ -12,9 +26,10 @@
   outline: none;
   font-size: 1.3em;
   color: map-get($colors, dark);
-  background-color: map-get($colors, light);;
+  background-color: map-get($colors, secondary1);
   font-weight: 300;
   overflow-y: scroll;
+  z-index: 5;
 
   li {
     list-style: none;
@@ -25,11 +40,15 @@
   }
 }
 
+.toc-nav:hover {
+  display: block;
+}
+
 .toc-li {
-  color: #f2be24;
+  color: map-get($colors, primary2);
 
   &:hover {
-    color: #37e5a2;
+    color: map-get($colors, secondary2);
   }
 }
 
@@ -58,10 +77,10 @@
 }
 
 .toc-btn {
-  color: #4286f4;
+  color: map-get($colors, primary2);
 
   &:hover {
-    color: #012051;
+    color: map-get($colors, secondary2);
   }
 }
 
