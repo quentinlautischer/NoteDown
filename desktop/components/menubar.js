@@ -60,6 +60,15 @@ function saveas(store) {
 
 ////////////////////////////////////////////////////////
 /// Menubar Click Actions
+function menuNew(store) {
+  store.dispatch({type: 'SET_QUICK_FILEPATH', path: ""})
+  store.dispatch({type: 'PAGE_CONTENT_CHANGE', 
+    content: "", 
+    folderIndex: store.getState().state.folderIndex,
+    pageIndex: store.getState().state.pageIndex
+  });
+}
+
 
 function menuOpen(store) {
   var filename = dialog.showOpenDialog({
@@ -124,7 +133,15 @@ const menubar_template_builder = function(store) {
   const menubar_template = [
   {
     label: 'File',
-    submenu: [      
+    submenu: [
+      {
+        role: 'New',
+        label: 'New',
+        accelerator: 'CmdOrCtrl+N',
+        enabled: is_quickmode(state),
+        visible: is_quickmode(state),
+        click () { menuNew(store) }
+      },      
       {
         role: 'Open',
         label: 'Open',
