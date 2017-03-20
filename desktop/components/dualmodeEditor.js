@@ -70,14 +70,13 @@ class DualmodeEditor extends React.Component {
   }
 
   render() {
-    console.log("rendering dual mode");
     return (
       <div className="dualMode-container">
         <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
           {this.getContent()}
         </textarea>
         <div className="render-container">
-          <TocNav info={this.getContent()} scrollTo={id => this.scrollTo(id)}/>
+          <TocNav store={this.props.store} info={this.getContent()} scrollTo={id => this.scrollTo(id)}/>
           <div id="renderField" className="markdown-output-renderer" 
             dangerouslySetInnerHTML= {{__html: this.state.rendered_content}}>
           </div>

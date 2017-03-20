@@ -18,11 +18,24 @@ function deleteFolder(state, action){
 }
 
 function addPage(state, action){
-  return state;
+  const page = { content: "" };
+  return update(state, { 
+    folders: { 
+      [action.folderIndex]: {
+        pages: {$splice: [[action.index, 0, page]]}
+      }
+    }
+  });
 }
 
-function removePage(state, action){
- return state;
+function deletePage(state, action){
+  return update(state, { 
+    folders: { 
+      [action.folderIndex]: {
+        pages: {$splice: [[action.index, 1]]}
+      }
+    }
+  });
 }
 
 function pageContentChange(state, action){
@@ -58,7 +71,7 @@ const notesReducer = createReducer(initial_state, {
   'ADD_FOLDER': addFolder,
   'DELETE_FOLDER': deleteFolder,
   'ADD_PAGE': addPage,
-  'REMOVE_PAGE': removePage,
+  'DELETE_PAGE': deletePage,
   'PAGE_CONTENT_CHANGE': pageContentChange
 });
 
