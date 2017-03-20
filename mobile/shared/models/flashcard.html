@@ -16,12 +16,10 @@
       <div id='front-content' class='content'>
         <div class='middle'>
           <div id='front-inner-content' class='inner'>
-            <p>This is the Front</p>
+            ${getFrontContent(front)}
           </div>
           <div id='hints' class='inner hints'>
-            <p id="hint0">Hint 1</p>
-            <p id="hint1">Hint 2</p>
-            <p id="hint2">Last hint</p>
+            ${getContentLines(hints, 'hint')}
           </div>
         </div>
       </div>
@@ -30,9 +28,7 @@
       <div id='back-content' class='content'>
         <div class='middle'>
           <div id='back-inner-content' class='solution inner'>
-            <p id="solution0">Solution point 1</p>
-            <p id="solution1">Solution point 2</p>
-            <p id="solution2">Last point</p>
+            ${getContentLines(back, 'solution')}
           </div>
           <div id='ranking' class=footer>
             <table>
@@ -51,8 +47,11 @@
 
 <style>
     html {
-        width: 400px;
-        height: 250px;
+        background-color: #0aaf82;
+    }
+
+    body {
+        font-size: 22px;
     }
 
     .flashcard-container {
@@ -65,8 +64,8 @@
     .flashcard-container,
     .front,
     .back {
-        width: 400px;
-        height: 250px;
+        width: 800px;
+        height: 400px;
         border-radius: 10px;
     }
 
@@ -146,7 +145,7 @@
     }
 
     .fa {
-      font-size: 1.5em;
+      font-size: 40px;
     }
 
     .fa-arrow-left {
@@ -172,12 +171,12 @@
     by Jawad
     accessed 03/18/17 */
     .circle {
-        width: 30px;
-        height: 30px;
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
-        font-size: 12px;
+        font-size: 22px;
         color: #fff;
-        line-height: 30px;
+        line-height: 45px;
         text-align: center;
         background: #0aaf82;
     }

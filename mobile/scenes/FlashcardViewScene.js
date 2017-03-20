@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 var Orientation = require('react-native-orientation');
+import makeFlashcard from '../shared/models/flashcardTemplate.js';
 
 export default class FlashcardViewScene extends Component {
     componentDidMount() {
@@ -26,24 +27,28 @@ export default class FlashcardViewScene extends Component {
 
     render() {
         return (
-            <WebView
-                source={require('../shared/models/flashcard.html')}
-                style={styles.view}
-            />
+            <View style={styles.container}>
+                <WebView
+                    style={{
+                        backgroundColor: '#0aaf82',
+                        height: 200,
+                    }}
+                    source={{html: makeFlashcard.makeFlashcard("What are some of the features of NoteDown", ["Editing", "Camera Mode", "Flashcards", "Cloud Sync"], ["One is for making/changing notes", "One uses mobile and desktop apps together", "One helps you study", "One is for device sharing"])}}
+                    scalesPageToFit={true}
+                />
+            </View>
         )
     }
 }
 
 var styles = StyleSheet.create({
+    container: {
+        flex:1,
+        backgroundColor: '#0aaf82',
+        marginTop:40
+    },
     view: {
         flex:1,
-        marginTop:40,
-        // flexDirection:'column',
-        // alignItems:'center',
-        // justifyContent:'center',
-        // marginLeft:20,
-        // marginRight:20,
-        // marginBottom:20,
-        // borderRadius:5
+        backgroundColor: '#0aaf82'
     }
 });
