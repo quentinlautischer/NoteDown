@@ -15,15 +15,16 @@
   outline: none;
   color: map-get($colors, dark);
   background-color: map-get($colors, light);
+  z-index: 1;
 }
 
 .markdown-output-renderer {
   position: absolute;
   box-sizing: border-box;
-  top: 21%;
+  top: 1%;
   left: 50%;
   width: 48%;
-  height: 77%;
+  height: 97%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -32,5 +33,6 @@
   outline: none;
   color: map-get($colors, light);
   background-color: map-get($colors, dark);
-  overflow-x: scroll
+  overflow-x: scroll;
+  z-index: 1;
 }

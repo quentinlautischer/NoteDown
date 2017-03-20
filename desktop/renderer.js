@@ -2,46 +2,29 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 
-import update from 'immutability-helper';
-// import appReducer from '.reducers/appReducer';
-// import notesReducer from '.reducers/notesReducer';
+import appReducer from './reducers/appReducer';
+import notesReducer from './reducers/notesReducer';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-
-import StartMenu from './components/startMenu';
 import menubuilder from './components/menubar';
-
-import FolderContainerView from './components/folderContainerView'
+import StartMenu from './components/startMenu';
 import DualmodeEditor from './components/dualmodeEditor'
-import NoteDownTitleLogo from './components/notedownTitleLogo';
-import Waiter from './components/waiter';
-
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
-import Paper from 'material-ui/Paper';
+import FolderContainerView from './components/folderContainerView'
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
 injectTapEventPlugin();
 
-var ipc = require('electron').ipcRenderer;
+const ipc = require('electron').ipcRenderer;
 const {remote} = require('electron');
-var fs = require('fs')
+const fs = require('fs')
 const {Menu, MenuItem} = remote;
 const {dialog} = remote;
 
 class App extends React.Component {
   constructor() {
     super();
-
-    this.state = {
-      open: false
-    };
-
+    this.state = { open: false  };
     this.init_ipc_app();
   }
 
@@ -53,123 +36,33 @@ class App extends React.Component {
   storeDidUpdate(){
     this.setState({open: store.getState().sessionActive});
   }
-  //
-
-  setCurrentFolder(id) {
-    console.log("Setting Current Folder " + id);
-    this.setState({
-      currentFolderid: id,
-      mode: 'editor',
-    });
-  }
-
-  handleRequestClose() {
-    this.setState({
-      exceptionOccured: false,
-    });
-  }
 
   render() {
     const menubar = Menu.buildFromTemplate(menubuilder(store));
     Menu.setApplicationMenu(menubar);
     console.log(store.getState());
-    if (store.getState().mode == 'menu') {
-      return (
-        <StartMenu 
-          request_login={(username, password) => this.request_login(username, password)}
-          request_signup={(username, password, name) => this.request_signup(username, password, name)}
-          quickmode={() => this.enter_quickmode()}
-        />
-      );  
-    } else if (store.getState().mode == 'editor') {
-      console.log(`Content: ${store.getState().notes.folders[store.getState().folderIndex].pages[store.getState().pageIndex].content}`);
-      return (
-        <DualmodeEditor 
-            content={store.getState().notes.folders[store.getState().folderIndex].pages[store.getState().pageIndex].content}
-            updateContent={(content) => this.updateContent(content)}
-        />
-      );
 
-    } else if (store.getState().mode == 'folderview') {
-      return (
-        <FolderContainerView
-            folders={store.getState().notes.folders}
-            createFolder={(name) => this.createFolder(name)} 
-            openFolder={id => this.open_folder(id)}
-            deleteFolder={id => this.delete_folder(id)} 
-        />
-      );
+    switch (store.getState().state.mode) {
+      case 'menu':
+        return (<StartMenu store={store}/>);
+      case 'editor':
+        return (<DualmodeEditor store={store}/>);
+      case 'folderview':
+        return (<FolderContainerView store={store}/>);
+      default: 
+        return (<div>Error</div>); // Make an error view?
     }
-  }
-
-  updateContent(content){
-    store.dispatch({type: 'PAGE_CONTENT_CHANGE', content: content});
-    this.request_push_data();
-  }
-
-  createFolder(name) {
-    console.log(`creating new folder with name: ${name}`);
-    const data = {name: name};
-    ipc.send('create-folder-request', data);
-  }
-
-  open_folder(id) {
-    console.log("Request to open folder: " + id);
-    var index = this.findIndexOfFolder(id);
-    store.dispatch({type: 'SELECT_FOLDER', index: index});
-    store.dispatch({type: 'EDITOR_MODE'});
-  }
-
-  delete_folder(id) {
-    console.log("Request to delete folder: " + id);
-    var index = this.findIndexOfFolder(id);
-    store.dispatch({type: 'DELETE_FOLDER', index: index});
-  }
-
-  findIndexOfFolder(folderid) {
-    const folders = store.getState().notes.folders;
-    const length = folders.length;
-    var i;
-    for(i = 0; i < length; i++) {
-      if (folders[i]._id == folderid)
-        return i;
-    }
-    return null;
-  }
-
-  findFolderWithId(folderid) {
-    var theFolder = this.notes.folders.filter(function( folder ) {
-      return folder._id == folderid;
-    });
-    return theFolder[0];
-  }
-
-  enter_quickmode(content) {
-    store.dispatch({type: 'SET_NOTES', notes: create_notes("# Page 1 Content \n* Item 1\n* Item 2\n \n \n## Header 2 \n### Header 3\n#Header11\n")});
-    store.dispatch({type: 'EDITOR_MODE'})
-  }
-
-  request_login(username, password) {
-    console.log("received login request; Username: " + username + " Password: " + password);
-    const data = {username: username, password: password};
-    ipc.send('request-login', data);
-  }
-
-  request_signup(username, password, name) {
-    console.log(`received signup request; Username: ${username} Password: ${password} Name: ${name}`);
-    const data = {username: username, password: password, name: name};
-    ipc.send('request-signup', data);
   }
 
   request_pull_data() {
     console.log("requesting data pull");
-    const data = {userid: store.getState().userid};
+    const data = {userid: store.getState().state.userid};
     ipc.send('request-pull-data', data);
   }
 
   request_push_data() {
     console.log("requesting data push");
-    const data = {userid: store.getState().userid, notes: store.getState().notes};
+    const data = {userid: store.getState().state.userid, notes: store.getState().notes};
     ipc.send('request-push-data', data);
   }
 
@@ -229,106 +122,12 @@ class App extends React.Component {
       this.request_push_data();
     });
   }
-
 }
 
-function create_notes(content) {
-  var notes = {
-    userid: "",
-    folders: [
-      {
-        name: "Folder 1",
-        pages: [
-          {
-            content: content
-          }
-        ]
-      }
-    ]
-  };
-  return notes;
-}
-
-
-// const reducer = combineReducers({
-//   appState: appReducer,
-//   menubar: menubarReducer,
-//   notes: notesReducer
-// });
-
-const initial_state = { 
-  mode: 'menu',
-  userid: null,
-  folderIndex: 0,
-  pageIndex: 0,
-  quickmode_filepath: null,
-  notes: { 
-    userid: null, 
-    images: [], 
-    folders: []
-  } 
-}
-
-const reducer = (state = initial_state, action) => {
-  switch (action.type) {
-    // App State Actions
-    case 'EDITOR_MODE':
-      return Object.assign({}, state, {mode: 'editor'});
-    case 'FOLDER_MODE':
-      return Object.assign({}, state, {mode: 'folderview'});
-    case 'FLASHCARD_MODE':
-      return Object.assign({}, state, {mode: 'flashcardview'});
-    case 'MENU_MODE':
-     return Object.assign({}, state, {mode: 'menu'});
-    // Notes State Actions
-    case 'SET_USER':
-      return Object.assign({}, state, {userid: action.userid});
-    case 'SET_NOTES':
-      console.log(`Setting Notes: ${action.notes}`);
-      return Object.assign({}, state, {notes: action.notes});
-    case 'SET_QUICK_FILEPATH':
-      return Object.assign({}, state, {quickmode_filepath: action.path});
-    case 'ADD_FOLDER':
-      console.log(`adding folder: ${action.folder}`);
-      return update(state, {
-        notes: {
-          folders: {$push: [action.folder]}
-        }
-      });
-    case 'SELECT_FOLDER':
-      return Object.assign({}, state, {folderIndex: action.index});
-    case 'DELETE_FOLDER':
-      console.log(`deleting folder at index: ${action.index}`)
-      return update(state, {
-        notes: {
-          folders: {$splice: [[action.index, 1]]}
-        }
-      });
-    case 'ADD_PAGE':
-      return state;
-    case 'REMOVE_PAGE':
-      return state;
-    case 'PAGE_CONTENT_CHANGE':
-      return update(state, {
-        notes: {
-          folders: {
-            [state.folderIndex]:{
-              pages: {
-                [state.pageIndex]:{
-                  content: {$set : action.content}
-                }
-              }
-            }
-          }
-        }
-      });
-    case 'DEBUG':
-      console.log("debug");
-      return state;
-    default:
-      return state;
-  }
-}
+const reducer = combineReducers({
+  state: appReducer,
+  notes: notesReducer
+});
 
 const store = createStore(reducer);
 
