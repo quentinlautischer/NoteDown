@@ -25,6 +25,14 @@
   }
 }
 
+.toc-li {
+  color: #f2be24;
+
+  &:hover {
+    color: #37e5a2;
+  }
+}
+
 .toc-li-1 { 
   margin-left:0px;
 }
@@ -48,3 +56,12 @@
 .toc-li-6 {
   margin-left:100px;
 }
+
+.toc-btn {
+  color: #4286f4;
+
+  &:hover {
+    color: #012051;
+  }
+}
+

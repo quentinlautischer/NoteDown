@@ -15,8 +15,15 @@ test('code test 2', () => {
 });
 
 test('code test 3', () => {
-  const raw_str = '    this\n    is\n    code';
-  const rendered = '<pre><code>this\nis\ncode</code></pre>';
+  const raw_str = 'a`b``a`b``a`b``';
+  const rendered = '<p>a<code>b``a</code>b<code>a`b</code></p>';
+  
+  expect(parser.parse(raw_str)).toBe(rendered);
+});
+
+test('code test 4', () => {
+  const raw_str = '    this\n    is\n\n    code';
+  const rendered = '<pre><code>this\nis\n\ncode</code></pre>';
   
   expect(parser.parse(raw_str)).toBe(rendered);
 });
