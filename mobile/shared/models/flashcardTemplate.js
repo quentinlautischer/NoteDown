@@ -201,121 +201,136 @@ var css = `
 `;
 
 var js = `
-    <script>
-        var viewingHints = false;
-        var solutionIndex = 0;
-        var hintIndex = 0;
+<script>
+    var viewingHints = false;
+    var solutionIndex = 0;
+    var hintIndex = 0;
 
-        document.getElementById('hints-button').onclick = function() {
-            viewingHints = true;
-            document.getElementById('flipper').classList.toggle('rotateHint');
-        };
+    document.getElementById('hints-button').onclick = function() {
+        document.getElementById('front-inner-content').style.display = 'none';
+        document.getElementById('hints-button').style.display = 'none';
 
-        document.getElementById('front-button').onclick = function() {
-          hideChildren(document.getElementById('hints'), 'hint');
-          viewingHints = false;
-          document.getElementById('flipper').classList.toggle('rotateHint');
-        };
+        viewingHints = true;
+        document.getElementById('flipper').classList.toggle('rotateHint');
+    };
 
-        function toggleHintFront() {
-            var displayHints = viewingHints ? 'inline' : 'none';
-            var displayFront = !viewingHints ? 'inline' : 'none';
-                showHintSide(displayHints);
-                showFrontSide(displayFront);
-        }
+    document.getElementById('front-button').onclick = function() {
+      hideChildren(document.getElementById('hints'), 'hint');
+      document.getElementById('hints').style.display = 'none';
+      document.getElementById('front-button').style.display = 'none';
 
-        function showHintSide(display) {
-            document.getElementById('hints').style.display = display;
-            document.getElementById('front-button').style.display = display;
+      viewingHints = false;
+      hintIndex = 0;
+      document.getElementById('flipper').classList.toggle('rotateHint');
+    };
 
+    function toggleHintFront() {
+        if (viewingHints) {
+            document.getElementById('hints').style.display = 'inline';
+            document.getElementById('front-button').style.display = 'inline';
             if(document.getElementById('hints').childElementCount > 0) {
                 document.getElementById('hint0').style.visibility = 'visible';
                 hintIndex += 1;
             }
-        };
+        } else {
+            document.getElementById('front-inner-content').style.display = 'inline';
+            document.getElementById('hints-button').style.display = 'inline';
+        }
+    }
 
-        function showFrontSide(display) {
-            document.getElementById('front-inner-content').style.display = display;
-            document.getElementById('hints-button').style.display = display;
+    function showHintSide(display) {
+        document.getElementById('hints').style.display = display;
+        document.getElementById('front-button').style.display = display;
+
+        if(document.getElementById('hints').childElementCount > 0) {
+            document.getElementById('hint0').style.visibility = 'visible';
+            hintIndex += 1;
+        }
+    };
+
+    // function showFrontSide(display) {
+    //     document.getElementById('front-inner-content').style.display = display;
+    //     document.getElementById('hints-button').style.display = display;
+    // }
+
+    function hideChildren(ele, id) {
+        for (var index = 0; index < ele.childElementCount; index++) {
+          document.getElementById(id + index).style.visibility = 'hidden';
+        }
+    }
+
+    function showNextHint() {
+        var hintsDiv = document.getElementById('hints');
+        if (hintIndex < hintsDiv.childElementCount) {
+          document.getElementById('hint' + hintIndex).style.visibility = 'visible';
+          hintIndex += 1;
+        }
+    }
+
+    function resetCard() {
+        solutionIndex = 0;
+        viewingHints = false;
+        hideChildren(document.getElementById('back-inner-content'), 'solution');
+        document.getElementById('ranking').style.visibility = 'hidden';
+        document.getElementById('flipper').classList.toggle('rotateBack');
+    }
+
+    function revealBack() {
+        document.getElementById('flipper').classList.toggle('rotateBack');
+    }
+
+    function showNextPiece() {
+        document.getElementById('solution' + solutionIndex).style.visibility = 'visible';
+        solutionIndex += 1;
+    }
+
+    function updateSolution() {
+        var solutionElementCount = document.getElementById('back-inner-content').childElementCount;
+        if (solutionIndex == solutionElementCount) {
+            resetCard();
+            return;
         }
 
-        function hideChildren(ele, id) {
-            for (var index = 0; index < ele.childElementCount; index++) {
-              document.getElementById(id + index).style.visibility = 'hidden';
+        if (solutionIndex === 0) { // flip to back!
+            revealBack();
+        } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution
+            document.getElementById('ranking').style.visibility = 'visible';
+        }
+        showNextPiece();
+    }
+
+    function handleClick() {
+        if (viewingHints) {
+          showNextHint();
+          return;
+        }
+        updateSolution();
+    }
+
+    document.getElementById('front-content').onclick = handleClick;
+    document.getElementById('back-content').onclick = handleClick;
+
+    /* From Modernizr */
+    function whichTransitionEvent(){
+        var t;
+        var el = document.createElement('fakeelement');
+        var transitions = {
+            'transition':'transitionend',
+            'OTransition':'oTransitionEnd',
+            'MozTransition':'transitionend',
+            'WebkitTransition':'webkitTransitionEnd'
+        }
+
+        for(t in transitions){
+            if( el.style[t] !== undefined ){
+                return transitions[t];
             }
         }
+    }
 
-        function showNextHint() {
-            var hintsDiv = document.getElementById('hints');
-            if (hintIndex < hintsDiv.childElementCount) {
-              document.getElementById('hint' + hintIndex).style.visibility = 'visible';
-              hintIndex += 1;
-            }
-        }
+    /* Listen for a transition! */
+    var transitionEvent = whichTransitionEvent();
+    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, toggleHintFront);
+</script>
 
-        function resetCard() {
-            solutionIndex = 0;
-            viewingHints = false;
-            hideChildren(document.getElementById('back-inner-content'), 'solution');
-            document.getElementById('ranking').style.visibility = 'hidden';
-            document.getElementById('flipper').classList.toggle('rotateBack');
-        }
-
-        function revealBack() {
-            document.getElementById('flipper').classList.toggle('rotateBack');
-        }
-
-        function showNextPiece() {
-            document.getElementById('solution' + solutionIndex).style.visibility = 'visible';
-            solutionIndex += 1;
-        }
-
-        function updateSolution() {
-            var solutionElementCount = document.getElementById('back-inner-content').childElementCount;
-            if (solutionIndex == solutionElementCount) {
-                resetCard();
-                return;
-            }
-
-            if (solutionIndex === 0) { // flip to back!
-                revealBack();
-            } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution
-                document.getElementById('ranking').style.visibility = 'visible';
-            }
-            showNextPiece();
-        }
-
-        function handleClick() {
-            if (viewingHints) {
-              showNextHint();
-              return;
-            }
-            updateSolution();
-        }
-
-        document.getElementById('front-content').onclick = handleClick;
-        document.getElementById('back-content').onclick = handleClick;
-
-        /* From Modernizr */
-        function whichTransitionEvent(){
-            var t;
-            var el = document.createElement('fakeelement');
-            var transitions = {
-                'transition':'transitionend',
-                'OTransition':'oTransitionEnd',
-                'MozTransition':'transitionend',
-                'WebkitTransition':'webkitTransitionEnd'
-            }
-
-            for(t in transitions){
-                if( el.style[t] !== undefined ){
-                    return transitions[t];
-                }
-            }
-        }
-
-        /* Listen for a transition! */
-        var transitionEvent = whichTransitionEvent();
-        transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, toggleHintFront);
-    </script>
 `;

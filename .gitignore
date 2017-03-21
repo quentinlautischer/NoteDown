@@ -11,4 +11,4 @@ server/db/data/db/*
 server/db/data/db/*.wt
 server/db/data/db/*.turtle
 
-mobile/shared/
+mobile/shared/*
