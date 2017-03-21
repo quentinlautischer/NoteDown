@@ -69,135 +69,135 @@ var html4 = `
 `;
 
 var css = `
-    <style>
-        .flashcard-container {
-            font-family: Tahoma, Geneva, sans-serif;
-            perspective: 1000px; /* adds realistic-looking perspective to flip action */
-            background-color: transparent;
-            width: 80%;
-            font-size: 12px;
-        }
+<style>
+    .flashcard-container {
+        font-family: Tahoma, Geneva, sans-serif;
+        perspective: 1000px; /* adds realistic-looking perspective to flip action */
+        background-color: transparent;
+        width: 80%;
+        font-size: 1em;
+    }
 
-        #flipper {
-            transition: width 1s, height 1s, transform 1s;
-            transform-style: preserve-3d;
-            position: relative;
-            width: 100%;
-            padding: 25%;
-            box-sizing: border-box;
-        }
+    #flipper {
+        transition: width 1s, height 1s, transform 1s;
+        transform-style: preserve-3d;
+        position: relative;
+        width: 100%;
+        padding: 25%;
+        box-sizing: border-box;
+    }
 
-        .front,
-        .back {
-            /* not sure how much of this is needed for Electron */
-            -webkit-backface-visibility: hidden;
-            -moz-backface-visibility: hidden;
-            -o-backface-visibility: hidden;
-            backface-visibility: hidden;
+    .front,
+    .back {
+        /* not sure how much of this is needed for Electron */
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        -o-backface-visibility: hidden;
+        backface-visibility: hidden;
 
-            width: 100%;
-            height: 100%;
-            color: black;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #e7fef8;
-            border: thick solid black;
-            border-radius: 5px;
-        }
+        width: 100%;
+        height: 100%;
+        color: black;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #e7fef8;
+        border: thick solid black;
+        border-radius: 5px;
+    }
 
-        .front {
-            z-index: 2; /* moves the front forward */
-        }
+    .front {
+        z-index: 2; /* moves the front forward */
+    }
 
-        .back {
-            transform: rotateY(180deg);
-        }
+    .back {
+        transform: rotateY(180deg);
+    }
 
-        /* flip the pane when clicked */
-        .rotateBack {
-            transform: rotateY(-180deg);
-        }
+    /* flip the pane when clicked */
+    .rotateBack {
+        transform: rotateY(-180deg);
+    }
 
-        .rotateHint {
-            transform: rotateX(-360deg);
-        }
+    .rotateHint {
+        transform: rotateX(-360deg);
+    }
 
-        /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */
-        .content {
-            display: table;
-            position: absolute;
-            height: 100%;
-            width: 100%;
-        }
+    /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */
+    .content {
+        display: table;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+    }
 
-        .middle {
-            display: table-cell;
-            vertical-align: middle;
-            text-align: center;
-        }
+    .middle {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+    }
 
-        .inner {
-            margin-left: auto;
-            margin-right: auto;
-        }
+    .inner {
+        margin-left: auto;
+        margin-right: auto;
+    }
 
-        .hints {
-            display: none;
-        }
+    .hints {
+        display: none;
+    }
 
-        .hints p,
-        .solution p {
-            border-bottom: thin solid #0aaf82;
-            text-align: center;
-            visibility: hidden;
-            margin-left: 20px;
-            margin-right: 20px;
-        }
+    .hints p,
+    .solution p {
+        border-bottom: thin solid #0aaf82;
+        text-align: center;
+        visibility: hidden;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
 
-        i {
-          position: absolute;
-          padding: 10px;
-          z-index: 3; /* in front of everything so it can be clicked on */
-        }
+    i {
+      position: absolute;
+      padding: 10px;
+      z-index: 3; /* in front of everything so it can be clicked on */
+    }
 
-        .fa {
-          font-size: 1.5em;
-        }
+    .fa {
+      font-size: 1.5em;
+    }
 
-        .fa-arrow-left {
-          display: none;
-        }
+    .fa-arrow-left {
+      display: none;
+    }
 
-        .footer {
-          width: 100%;
-          position: absolute;
-          bottom: 5px;
-          visibility: hidden; /* don't allow ranking til all the solution is visible */
-        }
+    .footer {
+      width: 100%;
+      position: absolute;
+      bottom: 5px;
+      visibility: hidden; /* don't allow ranking til all the solution is visible */
+    }
 
-        table {
-          display: inline; /* allows it to be centred */
-        }
+    table {
+      display: inline; /* allows it to be centred */
+    }
 
-        td p {
-          margin: 0 30px; /* space between cells */
-        }
+    td p {
+      margin: 0 30px; /* space between cells */
+    }
 
-        /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle
-        by Jawad
-        accessed 03/18/17 */
-        .circle {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            font-size: 22px;
-            color: #fff;
-            line-height: 45px;
-            text-align: center;
-            background: #0aaf82;
-        }
-    </style>
+    /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle
+    by Jawad
+    accessed 03/18/17 */
+    .circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        font-size: 22px;
+        color: #fff;
+        line-height: 45px;
+        text-align: center;
+        background: #0aaf82;
+    }
+</style>
 `;
 
 var js = `
@@ -248,11 +248,6 @@ var js = `
         }
     };
 
-    // function showFrontSide(display) {
-    //     document.getElementById('front-inner-content').style.display = display;
-    //     document.getElementById('hints-button').style.display = display;
-    // }
-
     function hideChildren(ele, id) {
         for (var index = 0; index < ele.childElementCount; index++) {
           document.getElementById(id + index).style.visibility = 'hidden';
@@ -272,6 +267,9 @@ var js = `
         viewingHints = false;
         hideChildren(document.getElementById('back-inner-content'), 'solution');
         document.getElementById('ranking').style.visibility = 'hidden';
+        document.getElementById('front-inner-content').style.display = 'none';
+        document.getElementById('hints-button').style.display = 'none';
+
         document.getElementById('flipper').classList.toggle('rotateBack');
     }
 

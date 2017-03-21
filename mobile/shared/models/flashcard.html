@@ -1,3 +1,6 @@
+<!-- This file is for testing purposes.  Copy the code from flashcardTemplate.js to here if you want to render it in a browser -->
+
+
 <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
   <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->
 <div class='flashcard-container'>
@@ -44,7 +47,7 @@
         perspective: 1000px; /* adds realistic-looking perspective to flip action */
         background-color: transparent;
         width: 80%;
-        font-size: 12px;
+        font-size: 1em;
     }
 
     #flipper {
@@ -214,11 +217,6 @@
         }
     };
 
-    // function showFrontSide(display) {
-    //     document.getElementById('front-inner-content').style.display = display;
-    //     document.getElementById('hints-button').style.display = display;
-    // }
-
     function hideChildren(ele, id) {
         for (var index = 0; index < ele.childElementCount; index++) {
           document.getElementById(id + index).style.visibility = 'hidden';
@@ -238,6 +236,9 @@
         viewingHints = false;
         hideChildren(document.getElementById('back-inner-content'), 'solution');
         document.getElementById('ranking').style.visibility = 'hidden';
+        document.getElementById('front-inner-content').style.display = 'none';
+        document.getElementById('hints-button').style.display = 'none';
+
         document.getElementById('flipper').classList.toggle('rotateBack');
     }
 
