@@ -41,9 +41,16 @@ function render_block(blocks) {
   for (var i = 0; i < blocks.length; i++) {
     if (i > 0) { result += '\n\n'; }
     var block = blocks[i];
-    result += '<' + block.tag + '>';
-    result += block.content;
-    result += '</' + block.tag + '>';
+    var attrs = '';
+    if (block.attributes != null) {
+      //TODO
+    }
+    if (block.content == null) { result += '<' + block.tag + attrs + ' />' }
+    else {
+      result += '<' + block.tag +  attrs + '>';
+      result += block.content;
+      result += '</' + block.tag + '>';
+    }
   }
   return result;
 }
@@ -147,6 +154,30 @@ function check_blockquote(blocks) {
 }
 
 function check_hrule(blocks) {
+  var patt1 = /^[ ]{0,3}(?:\*[ ]{0,2})+\s*$/;
+  var patt2 = /^[ ]{0,3}(?:-[ ]{0,2})+\s*$/;
+  var match;
+  
+  var b = 0; //block iterator
+  while (true) {
+    if (blocks[b].type == 'raw') {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt1.exec(content[l])) != null || (match = patt2.exec(content[l])) != null) {
+          
+          var raw1 = {type:'raw', tag:'', content:content.slice(0,l)};
+          var header_atx = {type:'hrule', tag:'hr'};
+          var raw2 = {type:'raw', tag:'', content:content.slice(l+1,content.length)};
+          
+          blocks.splice(b, 1, raw1, header_atx, raw2);
+          b++;
+          break;
+        }
+      }
+      b++;
+    } else { b++; }
+    if (b >= blocks.length) { break; }
+  }
 }
 
 function check_flashcard(blocks) {
@@ -156,7 +187,7 @@ function check_table(blocks) {
 }
 
 function check_paragraph(blocks) {
-  var patt = /^\s*(.+)$/;
+  var patt = /^[ ]{0,3}(.+)$/;
   var match;
   
   var b = 0; //block iterator
