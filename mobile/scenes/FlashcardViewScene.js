@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 var Orientation = require('react-native-orientation');
-import makeFlashcard from '../shared/models/flashcardTemplate.js';
+import makeFlashcard from '../shared/parser.js';
 
 export default class FlashcardViewScene extends Component {
     componentDidMount() {

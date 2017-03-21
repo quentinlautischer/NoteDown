@@ -1,25 +1,3 @@
-function getFrontContent(front) {
-    return '<p>' + front + '</p>';
-}
-
-function getContentLines(arr, name) {
-    var lines = '';
-    var i = 0;
-    arr.forEach(function(line) {
-        lines += '<p id=' + name + i++ + '>' + line + '</p>';
-    });
-    console.log(lines);
-    return lines;
-}
-
-function makeFlashcard(front, back, hints) {
-    return html1 + getFrontContent(front)
-        + html2 + getContentLines(hints, 'hint')
-        + html3 + getContentLines(back, 'solution')
-        + html4 + css + js;
-}
-
-module.exports.makeFlashcard = makeFlashcard;
 
 var html1 = `
     <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
@@ -333,3 +311,12 @@ var js = `
     transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);
 </script>
 `;
+
+module.exports = {
+    html1: html1,
+    html2: html2,
+    html3: html3,
+    html4: html4,
+    css: css,
+    js: js
+}
