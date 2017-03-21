@@ -13,81 +13,78 @@ function getContentLines(arr, name) {
 }
 
 function makeFlashcard(front, back, hints) {
-    var myHtml = `<!DOCTYPE html>
-    <html >
-    <head>
-      <meta charset="UTF-8">
-      <title>Flashcard</title>
-      <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
-    </head>
+    return html1 + getFrontContent(front)
+        + html2 + getContentLines(hints, 'hint')
+        + html3 + getContentLines(back, 'solution')
+        + html4 + css + js;
+}
 
-    <body>
+module.exports.makeFlashcard = makeFlashcard;
+
+var html1 = `
+    <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
       <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->
     <div class='flashcard-container'>
-      <div id='flipper' class='flashcard-flipper'>
-        <div class='front'>
-          <i id='hints-button' class="fa fa-question-circle-o"></i>
-          <i id='front-button' class="fa fa-arrow-left"></i>
-          <div id='front-content' class='content'>
-            <div class='middle'>
-              <div id='front-inner-content' class='inner'>
-                ${getFrontContent(front)}
-              </div>
-              <div id='hints' class='inner hints'>
-                ${getContentLines(hints, 'hint')}
-              </div>
+        <div id='flipper' class='flashcard-flipper'>
+            <div class='front'>
+                <i id='hints-button' class="fa fa-question-circle-o"></i>
+                <i id='front-button' class="fa fa-arrow-left"></i>
+                <div id='front-content' class='content'>
+                    <div class='middle'>
+                        <div id='front-inner-content' class='inner'>
+`;
+
+var html2 = `
+                        </div>
+                        <div id='hints' class='inner hints'>
+`;
+
+var html3 = `
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class='back'>
-          <div id='back-content' class='content'>
-            <div class='middle'>
-              <div id='back-inner-content' class='solution inner'>
-                ${getContentLines(back, 'solution')}
-              </div>
-              <div id='ranking' class=footer>
-                <table>
-                  <tr>
-                    <td><p class='circle'>1</p></td>
-                    <td><p class='circle'>2</p></td>
-                    <td><p class='circle'>3</p></td>
-                  </tr>
-                </table>
-              </div>
+            <div class='back'>
+                <div id='back-content' class='content'>
+                    <div class='middle'>
+                        <div id='back-inner-content' class='solution inner'>
+`;
+
+var html4 = `
+                        </div>
+                        <div id='ranking' class=footer>
+                            <table>
+                                <tr>
+                                    <td><p class='circle'>1</p></td>
+                                    <td><p class='circle'>2</p></td>
+                                    <td><p class='circle'>3</p></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
+`;
 
+var css = `
     <style>
-        html {
-            background-color: #0aaf82;
-        }
-
-        body {
-            font-size: 22px;
-        }
-
         .flashcard-container {
             font-family: Tahoma, Geneva, sans-serif;
             perspective: 1000px; /* adds realistic-looking perspective to flip action */
-            padding: 5px;
-            background-color: black;
-        }
-
-        .flashcard-container,
-        .front,
-        .back {
-            width: 800px;
-            height: 400px;
-            border-radius: 10px;
+            background-color: transparent;
+            width: 80%;
+            font-size: 12px;
         }
 
         #flipper {
             transition: width 1s, height 1s, transform 1s;
             transform-style: preserve-3d;
             position: relative;
+            width: 100%;
+            padding: 25%;
+            box-sizing: border-box;
         }
 
         .front,
@@ -98,10 +95,15 @@ function makeFlashcard(front, back, hints) {
             -o-backface-visibility: hidden;
             backface-visibility: hidden;
 
+            width: 100%;
+            height: 100%;
+            color: black;
             position: absolute;
             top: 0;
             left: 0;
             background-color: #e7fef8;
+            border: thick solid black;
+            border-radius: 5px;
         }
 
         .front {
@@ -160,7 +162,7 @@ function makeFlashcard(front, back, hints) {
         }
 
         .fa {
-          font-size: 40px;
+          font-size: 1.5em;
         }
 
         .fa-arrow-left {
@@ -196,48 +198,45 @@ function makeFlashcard(front, back, hints) {
             background: #0aaf82;
         }
     </style>
+`;
 
+var js = `
     <script>
         var viewingHints = false;
         var solutionIndex = 0;
         var hintIndex = 0;
 
         document.getElementById('hints-button').onclick = function() {
-            toggleHintFront(true, 'rotateHint', 500);
-            showFirstHint();
+            viewingHints = true;
+            document.getElementById('flipper').classList.toggle('rotateHint');
         };
 
         document.getElementById('front-button').onclick = function() {
           hideChildren(document.getElementById('hints'), 'hint');
-          toggleHintFront(false, 'rotateHint', 500);
+          viewingHints = false;
+          document.getElementById('flipper').classList.toggle('rotateHint');
         };
 
-        function toggleHintFront(showHints, rotate, timeout=0) {
-            document.getElementById('flipper').classList.toggle(rotate);
-            viewingHints = showHints;
-
-            var displayHints = showHints ? 'inline' : 'none';
-            var displayFront = !showHints ? 'inline' : 'none';
-            window.setTimeout(function() {
-                showHintSide(displayHints, timeout);
-                showFrontSide(displayFront, timeout);
-            }, timeout);
-
+        function toggleHintFront() {
+            var displayHints = viewingHints ? 'inline' : 'none';
+            var displayFront = !viewingHints ? 'inline' : 'none';
+                showHintSide(displayHints);
+                showFrontSide(displayFront);
         }
 
-        function showHintSide(display, timeout=0) {
+        function showHintSide(display) {
             document.getElementById('hints').style.display = display;
             document.getElementById('front-button').style.display = display;
+
+            if(document.getElementById('hints').childElementCount > 0) {
+                document.getElementById('hint0').style.visibility = 'visible';
+                hintIndex += 1;
+            }
         };
 
-        function showFrontSide(display, timeout=0) {
+        function showFrontSide(display) {
             document.getElementById('front-inner-content').style.display = display;
             document.getElementById('hints-button').style.display = display;
-        }
-
-        function showFirstHint() {
-            document.getElementById('hint0').style.visibility = 'visible';
-            hintIndex = 1;
         }
 
         function hideChildren(ele, id) {
@@ -256,9 +255,10 @@ function makeFlashcard(front, back, hints) {
 
         function resetCard() {
             solutionIndex = 0;
-            toggleHintFront(false, 'rotateBack');
+            viewingHints = false;
             hideChildren(document.getElementById('back-inner-content'), 'solution');
             document.getElementById('ranking').style.visibility = 'hidden';
+            document.getElementById('flipper').classList.toggle('rotateBack');
         }
 
         function revealBack() {
@@ -295,28 +295,27 @@ function makeFlashcard(front, back, hints) {
 
         document.getElementById('front-content').onclick = handleClick;
         document.getElementById('back-content').onclick = handleClick;
+
+        /* From Modernizr */
+        function whichTransitionEvent(){
+            var t;
+            var el = document.createElement('fakeelement');
+            var transitions = {
+                'transition':'transitionend',
+                'OTransition':'oTransitionEnd',
+                'MozTransition':'transitionend',
+                'WebkitTransition':'webkitTransitionEnd'
+            }
+
+            for(t in transitions){
+                if( el.style[t] !== undefined ){
+                    return transitions[t];
+                }
+            }
+        }
+
+        /* Listen for a transition! */
+        var transitionEvent = whichTransitionEvent();
+        transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, toggleHintFront);
     </script>
-
-    </body>
-    </html>
 `;
-
-    // console.log('front:');
-    // console.log(front);
-    // console.log("\n");
-    //
-    // console.log("back:")
-    // back.forEach(function(step) {
-    //     console.log(step);
-    // });
-    // console.log("\n");
-    //
-    // console.log("hints:")
-    // hints.forEach(function(hint) {
-    //     console.log(hint);
-    // });
-    console.log(myHtml);
-    return myHtml;
-}
-
-module.exports.makeFlashcard = makeFlashcard;
