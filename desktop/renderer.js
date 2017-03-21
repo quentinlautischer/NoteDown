@@ -7,10 +7,11 @@ import { createStore, combineReducers } from 'redux';
 import appReducer from './reducers/appReducer';
 import notesReducer from './reducers/notesReducer';
 
-import menubuilder from './components/menubar';
+ import menubuilder from './components/menubar';
 import StartMenu from './components/startMenu';
-import DualmodeEditor from './components/dualmodeEditor'
-import FolderContainerView from './components/folderContainerView'
+import DualmodeEditor from './components/dualmodeEditor';
+import FolderContainerView from './components/folderContainerView';
+import MenubarTile from './components/menubarTile';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
@@ -38,17 +39,33 @@ class App extends React.Component {
   }
 
   render() {
+    // May be invisible but this keep the accelerator keybinds active.
     const menubar = Menu.buildFromTemplate(menubuilder(store));
     Menu.setApplicationMenu(menubar);
     console.log(store.getState());
 
     switch (store.getState().state.mode) {
       case 'menu':
-        return (<StartMenu store={store}/>);
+        return (
+          <div>
+            <MenubarTile store={store}/>
+            <StartMenu store={store}/>
+          </div>
+        );
       case 'editor':
-        return (<DualmodeEditor store={store}/>);
+        return (
+          <div>
+            <MenubarTile store={store}/>
+            <DualmodeEditor store={store}/>
+          </div>
+        );
       case 'folderview':
-        return (<FolderContainerView store={store}/>);
+        return (
+          <div>
+            <MenubarTile store={store}/>
+            <FolderContainerView store={store}/>
+          </div>
+        );
       default: 
         return (<div>Error</div>); // Make an error view?
     }

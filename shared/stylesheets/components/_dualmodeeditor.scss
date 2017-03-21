@@ -3,10 +3,10 @@
 .markdown-input-editor {
   position: absolute;
   box-sizing: border-box;
-  top: 1%;
+  top: 3%;
   left: 1%;
   width: 48%;
-  height: 97%;
+  height: 96%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -16,15 +16,22 @@
   color: map-get($colors, dark);
   background-color: map-get($colors, light);
   z-index: 1;
+  -webkit-app-region: no-drag;
+
+  ::-webkit-scrollbar-track
+  {
+    background-color: map-get($colors, light);
+  }
+
 }
 
 .markdown-output-renderer {
   position: absolute;
   box-sizing: border-box;
-  top: 1%;
+  top: 3%;
   left: 50%;
   width: 48%;
-  height: 97%;
+  height: 96%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -35,4 +42,15 @@
   background-color: map-get($colors, dark);
   overflow-x: scroll;
   z-index: 1;
+  -webkit-app-region: no-drag;
+
+  ::-webkit-scrollbar-track
+  {
+    background-color: map-get($colors, dark);
+  }
+
+  ::-webkit-scrollbar-corner
+  {
+    background-color: map-get($colors, dark);
+  }
 }

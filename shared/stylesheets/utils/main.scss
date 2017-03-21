@@ -46,12 +46,23 @@ $fa-font-path:"../../node_modules/font-awesome/fonts";
 }
 
 .app-container {
+  -webkit-app-region: no-drag;
 }
 
 .start-menu {
   position: relative;
   margin-top: 20%;
   align: center;
+  -webkit-app-region: no-drag;
+}
+
+.menubar-tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  color: map-get($colors, primary2);
+  -webkit-app-region: no-drag;
 }
 
 body {
@@ -64,4 +75,24 @@ body {
   background-color: map-get($colors, primary1);
 
   overflow: hidden;
+  -webkit-app-region: drag;
+
+  ::-webkit-scrollbar
+  {
+    width: 6px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb
+  {
+    border-radius: 10px;
+    background-image: -webkit-gradient(linear,
+      left bottom,
+      left top,
+      color-stop(0.44, map-get($colors, primary1)),
+      color-stop(0.72, map-get($colors, primary1))
+    );
+  }
+
 }
+

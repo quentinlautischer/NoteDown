@@ -80,11 +80,15 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _folderContainerView = __webpack_require__(427);
+	var _folderContainerView = __webpack_require__(428);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _reactTapEventPlugin = __webpack_require__(434);
+	var _menubarTile = __webpack_require__(435);
+
+	var _menubarTile2 = _interopRequireDefault(_menubarTile);
+
+	var _reactTapEventPlugin = __webpack_require__(436);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -137,17 +141,33 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      // May be invisible but this keep the accelerator keybinds active.
 	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(store));
 	      Menu.setApplicationMenu(menubar);
 	      console.log(store.getState());
 
 	      switch (store.getState().state.mode) {
 	        case 'menu':
-	          return _react2.default.createElement(_startMenu2.default, { store: store });
+	          return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(_menubarTile2.default, { store: store }),
+	            _react2.default.createElement(_startMenu2.default, { store: store })
+	          );
 	        case 'editor':
-	          return _react2.default.createElement(_dualmodeEditor2.default, { store: store });
+	          return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(_menubarTile2.default, { store: store }),
+	            _react2.default.createElement(_dualmodeEditor2.default, { store: store })
+	          );
 	        case 'folderview':
-	          return _react2.default.createElement(_folderContainerView2.default, { store: store });
+	          return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(_menubarTile2.default, { store: store }),
+	            _react2.default.createElement(_folderContainerView2.default, { store: store })
+	          );
 	        default:
 	          return _react2.default.createElement(
 	            'div',
@@ -24141,9 +24161,11 @@
 	var fs = __webpack_require__(222);
 	var dialog = remote.dialog;
 
+
+	var ipc = __webpack_require__(221).ipcRenderer;
+
 	////////////////////////////////////////////////////////
 	/// Bool Queries
-
 	var is_quickmode = function is_quickmode(state) {
 	  return state.state.mode == 'editor' && state.state.userid == null;
 	};
@@ -24324,6 +24346,12 @@
 	      visible: is_logged_in(state),
 	      click: function click() {
 	        menuLogout(store);
+	      }
+	    }, {
+	      role: 'Quit',
+	      label: 'Quit',
+	      click: function click() {
+	        ipc.send('quit');
 	      }
 	    }]
 	  }, {
@@ -37541,7 +37569,7 @@
 
 	var ipc = __webpack_require__(221).ipcRenderer;
 
-	var shared = __webpack_require__(426);
+	var shared = __webpack_require__(427);
 
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
@@ -37725,7 +37753,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _tocItem = __webpack_require__(440);
+	var _tocItem = __webpack_require__(426);
 
 	var _tocItem2 = _interopRequireDefault(_tocItem);
 
@@ -37880,25 +37908,25 @@
 	        { className: 'toc-nav' },
 	        _react2.default.createElement(
 	          'span',
-	          { style: { textAlign: 'center' } },
+	          null,
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'toc-btn', onClick: this.createNewPage },
 	            _react2.default.createElement('i', { className: 'icon-file-text', 'aria-hidden': 'true' })
 	          ),
-	          '\xA0',
+	          '\xA0\xA0\xA0',
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'toc-btn', onClick: this.deletePage },
 	            _react2.default.createElement('i', { className: 'icon-trash', 'aria-hidden': 'true' })
 	          ),
-	          '\xA0',
+	          '\xA0\xA0\xA0',
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'toc-btn', onClick: this.pageContentView },
 	            _react2.default.createElement('i', { className: 'icon-search-plus', 'aria-hidden': 'true' })
 	          ),
-	          '\xA0',
+	          '\xA0\xA0\xA0',
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'toc-btn', onClick: this.pagesView },
@@ -37913,6 +37941,7 @@
 	            'span',
 	            { style: { float: 'left' }, className: 'toc-btn', onClick: this.selectPreviousPage },
 	            _react2.default.createElement('i', { className: 'icon-arrow-left', 'aria-hidden': 'true' }),
+	            '\xA0\xA0',
 	            this.extractLastPageHeader(),
 	            ' '
 	          ),
@@ -37920,14 +37949,19 @@
 	            'span',
 	            { style: { float: 'right' }, className: 'toc-btn', onClick: this.selectNextPage },
 	            this.extractNextPageHeader(),
+	            '\xA0\xA0',
 	            _react2.default.createElement('i', { className: 'icon-arrow-right', 'aria-hidden': 'true' })
 	          )
 	        ),
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement(
-	          'ul',
-	          null,
-	          this.array.map(this.renderTocItem, this)
+	          'div',
+	          { className: 'toc-nav-content' },
+	          _react2.default.createElement(
+	            'ul',
+	            null,
+	            this.array.map(this.renderTocItem, this)
+	          )
 	        )
 	      );
 	    }
@@ -37940,6 +37974,88 @@
 
 /***/ },
 /* 426 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TocNav = function (_React$Component) {
+	  _inherits(TocNav, _React$Component);
+
+	  function TocNav() {
+	    _classCallCheck(this, TocNav);
+
+	    return _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).apply(this, arguments));
+	  }
+
+	  _createClass(TocNav, [{
+	    key: "render",
+	    value: function render() {
+	      return _react2.default.createElement(
+	        "div",
+	        { className: "toc-nav" },
+	        _react2.default.createElement(
+	          "p",
+	          null,
+	          "Chapter 1"
+	        ),
+	        _react2.default.createElement("br", null),
+	        _react2.default.createElement(
+	          "span",
+	          null,
+	          "\xA0\xA0\xA0"
+	        ),
+	        _react2.default.createElement(
+	          "p",
+	          { href: "" },
+	          "Chapter 1.1"
+	        ),
+	        _react2.default.createElement("br", null),
+	        _react2.default.createElement(
+	          "span",
+	          null,
+	          "\xA0\xA0\xA0"
+	        ),
+	        _react2.default.createElement(
+	          "p",
+	          { href: "" },
+	          "Chapter 1.2"
+	        ),
+	        _react2.default.createElement("br", null),
+	        _react2.default.createElement(
+	          "p",
+	          { href: "" },
+	          "Chapter 2"
+	        ),
+	        _react2.default.createElement("br", null)
+	      );
+	    }
+	  }]);
+
+	  return TocNav;
+	}(_react2.default.Component);
+
+	exports.default = TocNav;
+
+/***/ },
+/* 427 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -38069,7 +38185,7 @@
 	console.log("Shared module loaded");
 
 /***/ },
-/* 427 */
+/* 428 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38084,7 +38200,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _dialogFolderCreate = __webpack_require__(428);
+	var _dialogFolderCreate = __webpack_require__(429);
 
 	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
 
@@ -38227,7 +38343,7 @@
 	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
 
 /***/ },
-/* 428 */
+/* 429 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38242,7 +38358,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog = __webpack_require__(429);
+	var _Dialog = __webpack_require__(430);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -38357,7 +38473,7 @@
 	exports.default = DialogFolderCreate;
 
 /***/ },
-/* 429 */
+/* 430 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38367,7 +38483,7 @@
 	});
 	exports.default = undefined;
 
-	var _Dialog = __webpack_require__(430);
+	var _Dialog = __webpack_require__(431);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -38376,7 +38492,7 @@
 	exports.default = _Dialog2.default;
 
 /***/ },
-/* 430 */
+/* 431 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38437,11 +38553,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _Overlay = __webpack_require__(431);
+	var _Overlay = __webpack_require__(432);
 
 	var _Overlay2 = _interopRequireDefault(_Overlay);
 
-	var _RenderToLayer = __webpack_require__(433);
+	var _RenderToLayer = __webpack_require__(434);
 
 	var _RenderToLayer2 = _interopRequireDefault(_RenderToLayer);
 
@@ -38968,7 +39084,7 @@
 	exports.default = Dialog;
 
 /***/ },
-/* 431 */
+/* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39017,7 +39133,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _AutoLockScrolling = __webpack_require__(432);
+	var _AutoLockScrolling = __webpack_require__(433);
 
 	var _AutoLockScrolling2 = _interopRequireDefault(_AutoLockScrolling);
 
@@ -39113,7 +39229,7 @@
 	exports.default = Overlay;
 
 /***/ },
-/* 432 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39238,7 +39354,7 @@
 	exports.default = AutoLockScrolling;
 
 /***/ },
-/* 433 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39422,11 +39538,83 @@
 	exports.default = RenderToLayer;
 
 /***/ },
-/* 434 */
+/* 435 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _menubar = __webpack_require__(220);
+
+	var _menubar2 = _interopRequireDefault(_menubar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _require = __webpack_require__(221),
+	    remote = _require.remote;
+
+	var Menu = remote.Menu,
+	    MenuItem = remote.MenuItem;
+
+
+	var ipc = __webpack_require__(221).ipcRenderer;
+
+	var MenubarTile = function (_React$Component) {
+	  _inherits(MenubarTile, _React$Component);
+
+	  function MenubarTile() {
+	    _classCallCheck(this, MenubarTile);
+
+	    var _this = _possibleConstructorReturn(this, (MenubarTile.__proto__ || Object.getPrototypeOf(MenubarTile)).call(this));
+
+	    _this.handleClick = _this.handleClick.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(MenubarTile, [{
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(this.props.store));
+	      menubar.popup();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'menubar-tile', onClick: this.handleClick },
+	        _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
+	      );
+	    }
+	  }]);
+
+	  return MenubarTile;
+	}(_react2.default.Component);
+
+	exports.default = MenubarTile;
+
+/***/ },
+/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(435);
+	var defaultClickRejectionStrategy = __webpack_require__(437);
 
 	var alreadyInjected = false;
 
@@ -39448,13 +39636,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(436)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(438)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 435 */
+/* 437 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -39465,7 +39653,7 @@
 
 
 /***/ },
-/* 436 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -39489,14 +39677,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(437);
+	var EventConstants = __webpack_require__(439);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(438);
+	var TouchEventUtils = __webpack_require__(440);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(439);
+	var keyOf = __webpack_require__(441);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -39642,7 +39830,7 @@
 
 
 /***/ },
-/* 437 */
+/* 439 */
 /***/ function(module, exports) {
 
 	/**
@@ -39738,7 +39926,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 438 */
+/* 440 */
 /***/ function(module, exports) {
 
 	/**
@@ -39786,7 +39974,7 @@
 
 
 /***/ },
-/* 439 */
+/* 441 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -39823,88 +40011,6 @@
 	};
 
 	module.exports = keyOf;
-
-/***/ },
-/* 440 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var TocNav = function (_React$Component) {
-	  _inherits(TocNav, _React$Component);
-
-	  function TocNav() {
-	    _classCallCheck(this, TocNav);
-
-	    return _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).apply(this, arguments));
-	  }
-
-	  _createClass(TocNav, [{
-	    key: "render",
-	    value: function render() {
-	      return _react2.default.createElement(
-	        "div",
-	        { className: "toc-nav" },
-	        _react2.default.createElement(
-	          "p",
-	          null,
-	          "Chapter 1"
-	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement(
-	          "span",
-	          null,
-	          "\xA0\xA0\xA0"
-	        ),
-	        _react2.default.createElement(
-	          "p",
-	          { href: "" },
-	          "Chapter 1.1"
-	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement(
-	          "span",
-	          null,
-	          "\xA0\xA0\xA0"
-	        ),
-	        _react2.default.createElement(
-	          "p",
-	          { href: "" },
-	          "Chapter 1.2"
-	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement(
-	          "p",
-	          { href: "" },
-	          "Chapter 2"
-	        ),
-	        _react2.default.createElement("br", null)
-	      );
-	    }
-	  }]);
-
-	  return TocNav;
-	}(_react2.default.Component);
-
-	exports.default = TocNav;
 
 /***/ }
 /******/ ]);

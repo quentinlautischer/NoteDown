@@ -13,9 +13,9 @@
 
 .toc-nav {
   display: none;
-  position: relative;
+  position: fixed;
   box-sizing: border-box;
-  top: 3%;
+  top: 5%;
   left: 55%;
   width: 43%;
   height: 30%;
@@ -28,7 +28,6 @@
   color: map-get($colors, dark);
   background-color: map-get($colors, secondary1);
   font-weight: 300;
-  overflow-y: scroll;
   z-index: 5;
 
   li {
@@ -38,6 +37,12 @@
   ul {
     list-style: none;
   }
+}
+
+.toc-nav-content {
+  max-height: 75%;
+  overflow-y: auto;
+  z-index: 5;
 }
 
 .toc-nav:hover {

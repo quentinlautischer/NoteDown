@@ -26,7 +26,7 @@ var socket;
 let mainWindow
 
 function createWindow () {
-  mainWindow = new BrowserWindow({width: 1500, height: 1100})
+  mainWindow = new BrowserWindow({width: 1500, height: 1100, minWidth: 500, minHeight: 450, frame: false})
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
@@ -108,6 +108,10 @@ ipcMain.on('server-error', (event, data) => {
   console.log(`ServerError: ${data.msg}`);
   mainWindow.webContents.send('error-toast', data);
 })
+
+ipcMain.on('quit', (event, data) => {
+  app.quit();
+});
 
 process.on('uncaughtException', function (error) {
   console.log("Error occured: " + error);

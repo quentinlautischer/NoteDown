@@ -17,10 +17,10 @@
 .markdown-input-editor {
   position: absolute;
   box-sizing: border-box;
-  top: 1%;
+  top: 3%;
   left: 1%;
   width: 48%;
-  height: 97%;
+  height: 96%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -29,15 +29,18 @@
   outline: none;
   color: #434146;
   background-color: #EDEDEE;
-  z-index: 1; }
+  z-index: 1;
+  -webkit-app-region: no-drag; }
+  .markdown-input-editor ::-webkit-scrollbar-track {
+    background-color: #EDEDEE; }
 
 .markdown-output-renderer {
   position: absolute;
   box-sizing: border-box;
-  top: 1%;
+  top: 3%;
   left: 50%;
   width: 48%;
-  height: 97%;
+  height: 96%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -47,7 +50,12 @@
   color: #EDEDEE;
   background-color: #434146;
   overflow-x: scroll;
-  z-index: 1; }
+  z-index: 1;
+  -webkit-app-region: no-drag; }
+  .markdown-output-renderer ::-webkit-scrollbar-track {
+    background-color: #434146; }
+  .markdown-output-renderer ::-webkit-scrollbar-corner {
+    background-color: #434146; }
 
 .notedown-title-logo {
   font-family: Chalkduster;
@@ -101,7 +109,8 @@
   display: inline-block;
   width: 100%;
   height: 100%;
-  overflow-y: scroll; }
+  overflow-y: scroll;
+  -webkit-app-region: no-drag; }
 
 .menu-text-field {
   font-family: Chalkduster;
@@ -129,9 +138,9 @@
 
 .toc-nav {
   display: none;
-  position: relative;
+  position: fixed;
   box-sizing: border-box;
-  top: 3%;
+  top: 5%;
   left: 55%;
   width: 43%;
   height: 30%;
@@ -144,12 +153,16 @@
   color: #434146;
   background-color: #284059;
   font-weight: 300;
-  overflow-y: scroll;
   z-index: 5; }
   .toc-nav li {
     list-style: none; }
   .toc-nav ul {
     list-style: none; }
+
+.toc-nav-content {
+  max-height: 75%;
+  overflow-y: auto;
+  z-index: 5; }
 
 .toc-nav:hover {
   display: block; }
@@ -2512,10 +2525,22 @@
   overflow: visible;
   clip: auto; }
 
+.app-container {
+  -webkit-app-region: no-drag; }
+
 .start-menu {
   position: relative;
   margin-top: 20%;
-  align: center; }
+  align: center;
+  -webkit-app-region: no-drag; }
+
+.menubar-tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  color: #fed75e;
+  -webkit-app-region: no-drag; }
 
 body {
   position: absolute;
@@ -2525,6 +2550,13 @@ body {
   height: 100%;
   font-family: "Roboto", sans-serif;
   background-color: #8bbf9f;
-  overflow: hidden; }
+  overflow: hidden;
+  -webkit-app-region: drag; }
+  body ::-webkit-scrollbar {
+    width: 6px;
+    background-color: transparent; }
+  body ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, #8bbf9f), color-stop(0.72, #8bbf9f)); }
 
 /*# sourceMappingURL=main.css.map */

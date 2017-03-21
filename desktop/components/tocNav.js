@@ -115,24 +115,26 @@ class TocNav extends React.Component {
     this.array = this.generateHeaderArray(this.props.info);
     return (      
       <div className="toc-nav">
-          <span style={{textAlign: 'center'}}>
-              <span className="toc-btn" onClick={this.createNewPage}><i className="icon-file-text" aria-hidden="true"></i></span>
-              &nbsp;
-              <span className="toc-btn" onClick={this.deletePage}><i className="icon-trash" aria-hidden="true"></i></span>
-              &nbsp;
-              <span className="toc-btn" onClick={this.pageContentView}><i className="icon-search-plus" aria-hidden="true"></i></span>
-              &nbsp;
-              <span className="toc-btn" onClick={this.pagesView}><i className="icon-search-minus" aria-hidden="true"></i></span>
+          <span>
+            <span className="toc-btn" onClick={this.createNewPage}><i className="icon-file-text" aria-hidden="true"></i></span>
+            &nbsp;&nbsp;&nbsp;
+            <span className="toc-btn" onClick={this.deletePage}><i className="icon-trash" aria-hidden="true"></i></span>
+            &nbsp;&nbsp;&nbsp;
+            <span className="toc-btn" onClick={this.pageContentView}><i className="icon-search-plus" aria-hidden="true"></i></span>
+            &nbsp;&nbsp;&nbsp;
+            <span className="toc-btn" onClick={this.pagesView}><i className="icon-search-minus" aria-hidden="true"></i></span>
           </span>
           <br/>
           <div>
-            <span style={{float: 'left'}} className="toc-btn" onClick={this.selectPreviousPage}><i className="icon-arrow-left" aria-hidden="true"></i>{this.extractLastPageHeader()} </span>  
-            <span style={{float: 'right'}}  className="toc-btn" onClick={this.selectNextPage}>{this.extractNextPageHeader()}<i className="icon-arrow-right" aria-hidden="true"></i></span>
+            <span style={{float: 'left'}} className="toc-btn" onClick={this.selectPreviousPage}><i className="icon-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;{this.extractLastPageHeader()} </span>  
+            <span style={{float: 'right'}}  className="toc-btn" onClick={this.selectNextPage}>{this.extractNextPageHeader()}&nbsp;&nbsp;<i className="icon-arrow-right" aria-hidden="true"></i></span>
           </div>
           <br/>
-          <ul>
-            {this.array.map(this.renderTocItem, this)}
-          </ul>
+          <div className="toc-nav-content">
+            <ul>
+              {this.array.map(this.renderTocItem, this)}
+            </ul>
+          </div>
       </div>
     );
   }
