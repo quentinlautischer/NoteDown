@@ -1,49 +1,53 @@
 
 var html1 = `
-    <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
-      <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->
-    <div class='flashcard-container'>
-        <div id='flipper' class='flashcard-flipper'>
-            <div class='front'>
-                <i id='hints-button' class="fa fa-question-circle-o"></i>
-                <i id='front-button' class="fa fa-arrow-left"></i>
-                <div id='front-content' class='content'>
-                    <div class='middle'>
-                        <div id='front-inner-content' class='inner'>
+<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+  <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->
+<div class='flashcard-container'>
+    <div id='flipper' class='flashcard-flipper'>
+        <div class='front'>
+            <i id='hints-button' class="fa fa-question-circle-o"></i>
+            <div id='front-content' class='content'>
+                <div class='middle'>
+                    <div id='front-inner-content' class='inner'>
 `;
 
 var html2 = `
-                        </div>
-                        <div id='hints' class='inner hints'>
+</div>
+</div>
+</div>
+</div>
+<div class='back'>
+<i id='front-button' class="fa fa-arrow-left"></i>
+<div id='back-content' class='content'>
+<div class='middle'>
+<div id='solution' class='inner'>
+    <div id='back-inner-content'>
 `;
 
 var html3 = `
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class='back'>
-                <div id='back-content' class='content'>
-                    <div class='middle'>
-                        <div id='back-inner-content' class='solution inner'>
+</div>
+<div id='ranking'>
+    <table>
+        <tr id='ranking-row'>
+            <td><p class='circle'>1</p></td>
+            <td><p class='circle'>2</p></td>
+            <td><p class='circle'>3</p></td>
+        </tr>
+    </table>
+</div>
+</div>
+<div id='hints' class='inner'>
+<div id='hints-inner-content'>
 `;
 
 var html4 = `
-                        </div>
-                        <div id='ranking' class=footer>
-                            <table>
-                                <tr>
-                                    <td><p class='circle'>1</p></td>
-                                    <td><p class='circle'>2</p></td>
-                                    <td><p class='circle'>3</p></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 `;
 
 var css = `
@@ -54,6 +58,7 @@ var css = `
         background-color: transparent;
         width: 80%;
         font-size: 1em;
+        color: black;
     }
 
     #flipper {
@@ -75,7 +80,6 @@ var css = `
 
         width: 100%;
         height: 100%;
-        color: black;
         position: absolute;
         top: 0;
         left: 0;
@@ -86,6 +90,7 @@ var css = `
 
     .front {
         z-index: 2; /* moves the front forward */
+        transform: rotateY(0deg);
     }
 
     .back {
@@ -98,7 +103,7 @@ var css = `
     }
 
     .rotateHint {
-        transform: rotateX(-360deg);
+        transform: rotateY(180deg);
     }
 
     /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */
@@ -120,34 +125,34 @@ var css = `
         margin-right: auto;
     }
 
-    .hints {
-        display: none;
-    }
-
-    .hints p,
-    .solution p {
+    #back-inner-content p,
+    #hints-inner-content p {
         border-bottom: thin solid #0aaf82;
         text-align: center;
-        visibility: hidden;
         margin-left: 20px;
         margin-right: 20px;
+        visibility: hidden;
     }
 
     i {
       position: absolute;
       padding: 10px;
-      z-index: 3; /* in front of everything so it can be clicked on */
     }
 
     .fa {
       font-size: 1.5em;
     }
 
-    .fa-arrow-left {
-      display: none;
+    #hints-button {
+        z-index: 3; /* in front of everything so it can be clicked on */
     }
 
-    .footer {
+    #front-button {
+        z-index: 3; /* in front of everything so it can be clicked on */
+        display: none;
+    }
+
+    #ranking {
       width: 100%;
       position: absolute;
       bottom: 5px;
@@ -170,10 +175,15 @@ var css = `
         height: 2em;
         border-radius: 50%;
         font-size: 1em;
-        color: #fff;
+        color: white;
         line-height: 2em;
         text-align: center;
         background: #0aaf82;
+    }
+
+    .circle:hover {
+        color: #0aaf82;
+        background-color: black;
     }
 </style>
 `;
@@ -186,6 +196,7 @@ var js = `
     document.getElementById('front-button').onclick = clickedShowFront;
 
     var viewingHints = false;
+    var viewingSolution = false;
     var solutionIndex = 0;
     var hintIndex = 0;
 
@@ -198,15 +209,20 @@ var js = `
     }
 
     function clickedShowHints() {
-        remove('front-inner-content','hints-button');
+        remove('solution', 'hints-button');
+        display('hints');
+        if(document.getElementById('hints').childElementCount > 0) {
+            document.getElementById('hint0').style.visibility = 'visible';
+            hintIndex += 1;
+        }
 
         viewingHints = true;
         document.getElementById('flipper').classList.toggle('rotateHint');
     }
 
     function clickedShowFront() {
-        hideChildren(document.getElementById('hints'), 'hint');
-        remove('hints', 'front-button');
+        remove('front-button');
+        display('hints-button');
 
         viewingHints = false;
         hintIndex = 0;
@@ -231,13 +247,12 @@ var js = `
 
     function flipFinished() { // called after a flip event to update what's displayed
         if (viewingHints) {
-            display('hints', 'front-button');
-            if(document.getElementById('hints').childElementCount > 0) {
-                document.getElementById('hint0').style.visibility = 'visible';
-                hintIndex += 1;
-            }
-        } else {
-            display('front-inner-content', 'hints-button');
+            display('front-button');
+        } else if (!viewingSolution) {
+            hideChildren(document.getElementById('back-inner-content'), 'solution');
+            hideChildren(document.getElementById('hints-inner-content'), 'hint');
+            document.getElementById('ranking').style.visibility = 'hidden';
+            display('hints-button');
         }
     }
 
@@ -248,7 +263,7 @@ var js = `
     }
 
     function showNextHint() {
-        var hintsDiv = document.getElementById('hints');
+        var hintsDiv = document.getElementById('hints-inner-content');
         if (hintIndex < hintsDiv.childElementCount) {
           document.getElementById('hint' + hintIndex).style.visibility = 'visible';
           hintIndex += 1;
@@ -258,10 +273,7 @@ var js = `
     function resetCard() { // flips back to front after solution viewed, resetting everything
         solutionIndex = 0;
         viewingHints = false;
-        hideChildren(document.getElementById('back-inner-content'), 'solution');
-        document.getElementById('ranking').style.visibility = 'hidden';
-        remove('front-inner-content', 'hints-button');
-
+        viewingSolution = false;
         document.getElementById('flipper').classList.toggle('rotateBack');
     }
 
@@ -270,6 +282,9 @@ var js = `
     }
 
     function showSolutionSide() {
+        remove('hints', 'hints-button', 'front-button');
+        display('solution');
+
         var solutionElementCount = document.getElementById('back-inner-content').childElementCount;
         if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point
             resetCard();
@@ -277,6 +292,7 @@ var js = `
         }
 
         if (solutionIndex === 0) { // flip to back!
+            viewingSolution = true;
             document.getElementById('flipper').classList.toggle('rotateBack');
         } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution
             document.getElementById('ranking').style.visibility = 'visible';
