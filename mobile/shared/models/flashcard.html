@@ -160,62 +160,77 @@
     by Jawad
     accessed 03/18/17 */
     .circle {
-        width: 45px;
-        height: 45px;
+        width: 2em;
+        height: 2em;
         border-radius: 50%;
-        font-size: 22px;
+        font-size: 1em;
         color: #fff;
-        line-height: 45px;
+        line-height: 2em;
         text-align: center;
         background: #0aaf82;
     }
 </style>
 <script>
+    document.getElementById('front-content').onclick = handleClick;
+    document.getElementById('back-content').onclick = handleClick;
+    document.getElementById('hints-button').onclick = clickedShowHints;
+    document.getElementById('front-button').onclick = clickedShowFront;
+
     var viewingHints = false;
     var solutionIndex = 0;
     var hintIndex = 0;
 
-    document.getElementById('hints-button').onclick = function() {
-        document.getElementById('front-inner-content').style.display = 'none';
-        document.getElementById('hints-button').style.display = 'none';
+    function handleClick() {
+        if (viewingHints) {
+          showNextHint();
+          return;
+        }
+        showSolutionSide();
+    }
+
+    function clickedShowHints() {
+        remove('front-inner-content','hints-button');
 
         viewingHints = true;
         document.getElementById('flipper').classList.toggle('rotateHint');
-    };
+    }
 
-    document.getElementById('front-button').onclick = function() {
-      hideChildren(document.getElementById('hints'), 'hint');
-      document.getElementById('hints').style.display = 'none';
-      document.getElementById('front-button').style.display = 'none';
+    function clickedShowFront() {
+        hideChildren(document.getElementById('hints'), 'hint');
+        remove('hints', 'front-button');
 
-      viewingHints = false;
-      hintIndex = 0;
-      document.getElementById('flipper').classList.toggle('rotateHint');
-    };
+        viewingHints = false;
+        hintIndex = 0;
+        document.getElementById('flipper').classList.toggle('rotateHint');
+    }
 
-    function toggleHintFront() {
+    function remove() { // sets display of args (ids) to 'none'
+        for (var i = 0; i < arguments.length; i++) {
+            setDisplay(arguments[i], 'none');
+        }
+    }
+
+    function display() { // sets display of args (ids) to 'inline'
+        for (var i = 0; i < arguments.length; i++) {
+            setDisplay(arguments[i], 'inline');
+        }
+    }
+
+    function setDisplay(id, display) { // sets element 'id' to display 'display'
+        document.getElementById(id).style.display = display;
+    }
+
+    function flipFinished() { // called after a flip event to update what's displayed
         if (viewingHints) {
-            document.getElementById('hints').style.display = 'inline';
-            document.getElementById('front-button').style.display = 'inline';
+            display('hints', 'front-button');
             if(document.getElementById('hints').childElementCount > 0) {
                 document.getElementById('hint0').style.visibility = 'visible';
                 hintIndex += 1;
             }
         } else {
-            document.getElementById('front-inner-content').style.display = 'inline';
-            document.getElementById('hints-button').style.display = 'inline';
+            display('front-inner-content', 'hints-button');
         }
     }
-
-    function showHintSide(display) {
-        document.getElementById('hints').style.display = display;
-        document.getElementById('front-button').style.display = display;
-
-        if(document.getElementById('hints').childElementCount > 0) {
-            document.getElementById('hint0').style.visibility = 'visible';
-            hintIndex += 1;
-        }
-    };
 
     function hideChildren(ele, id) {
         for (var index = 0; index < ele.childElementCount; index++) {
@@ -231,56 +246,43 @@
         }
     }
 
-    function resetCard() {
+    function resetCard() { // flips back to front after solution viewed, resetting everything
         solutionIndex = 0;
         viewingHints = false;
         hideChildren(document.getElementById('back-inner-content'), 'solution');
         document.getElementById('ranking').style.visibility = 'hidden';
-        document.getElementById('front-inner-content').style.display = 'none';
-        document.getElementById('hints-button').style.display = 'none';
+        remove('front-inner-content', 'hints-button');
 
         document.getElementById('flipper').classList.toggle('rotateBack');
     }
 
-    function revealBack() {
-        document.getElementById('flipper').classList.toggle('rotateBack');
+    function showNextSolutionStep() {
+        document.getElementById('solution' + solutionIndex++).style.visibility = 'visible';
     }
 
-    function showNextPiece() {
-        document.getElementById('solution' + solutionIndex).style.visibility = 'visible';
-        solutionIndex += 1;
-    }
-
-    function updateSolution() {
+    function showSolutionSide() {
         var solutionElementCount = document.getElementById('back-inner-content').childElementCount;
-        if (solutionIndex == solutionElementCount) {
+        if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point
             resetCard();
             return;
         }
 
         if (solutionIndex === 0) { // flip to back!
-            revealBack();
+            document.getElementById('flipper').classList.toggle('rotateBack');
         } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution
             document.getElementById('ranking').style.visibility = 'visible';
         }
-        showNextPiece();
+        showNextSolutionStep();
     }
 
-    function handleClick() {
-        if (viewingHints) {
-          showNextHint();
-          return;
-        }
-        updateSolution();
-    }
-
-    document.getElementById('front-content').onclick = handleClick;
-    document.getElementById('back-content').onclick = handleClick;
-
+    // The following is used to help with flashcard content display during card rotations.
+    // It allows the display to be updated when the rotation (flip) completes.
     /* From Modernizr */
     function whichTransitionEvent(){
         var t;
         var el = document.createElement('fakeelement');
+
+        // allows it to work on many browsers
         var transitions = {
             'transition':'transitionend',
             'OTransition':'oTransitionEnd',
@@ -295,7 +297,7 @@
         }
     }
 
-    /* Listen for a transition! */
+    // listen for transition to end
     var transitionEvent = whichTransitionEvent();
-    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, toggleHintFront);
+    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);
 </script>

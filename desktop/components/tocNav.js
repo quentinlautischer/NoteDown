@@ -113,20 +113,28 @@ class TocNav extends React.Component {
     var state = this.props.store.getState();
     console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
     this.array = this.generateHeaderArray(this.props.info);
-    return (
+    return (      
       <div className="toc-nav">
+          <span>
+            <span className="toc-btn" onClick={this.createNewPage}><i className="icon-file-text" aria-hidden="true"></i></span>
+            &nbsp;&nbsp;&nbsp;
+            <span className="toc-btn" onClick={this.deletePage}><i className="icon-trash" aria-hidden="true"></i></span>
+            &nbsp;&nbsp;&nbsp;
+            <span className="toc-btn" onClick={this.pageContentView}><i className="icon-search-plus" aria-hidden="true"></i></span>
+            &nbsp;&nbsp;&nbsp;
+            <span className="toc-btn" onClick={this.pagesView}><i className="icon-search-minus" aria-hidden="true"></i></span>
+          </span>
+          <br/>
           <div>
-            <span className="toc-btn" onClick={this.createNewPage}>  P+  </span>
-            <span className="toc-btn" onClick={this.deletePage}>  P-  </span>
-            <br/>
-            <span className="toc-btn" onClick={this.pageContentView}>  Z+  </span>
-            <span className="toc-btn" onClick={this.pagesView}>  Z-  </span>
+            <span style={{float: 'left'}} className="toc-btn" onClick={this.selectPreviousPage}><i className="icon-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;{this.extractLastPageHeader()} </span>  
+            <span style={{float: 'right'}}  className="toc-btn" onClick={this.selectNextPage}>{this.extractNextPageHeader()}&nbsp;&nbsp;<i className="icon-arrow-right" aria-hidden="true"></i></span>
           </div>
-          <span className="toc-btn" onClick={this.selectPreviousPage}> Last Page: {this.extractLastPageHeader()} </span>
-          <ul>
-            {this.array.map(this.renderTocItem, this)}
-          </ul>
-          <span className="toc-btn" onClick={this.selectNextPage}> Next Page: {this.extractNextPageHeader()} </span>
+          <br/>
+          <div className="toc-nav-content">
+            <ul>
+              {this.array.map(this.renderTocItem, this)}
+            </ul>
+          </div>
       </div>
     );
   }

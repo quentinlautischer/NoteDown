@@ -12,3 +12,5 @@ server/db/data/db/*.wt
 server/db/data/db/*.turtle
 
 mobile/shared/*
+
+desktop/renderer-bundle.js

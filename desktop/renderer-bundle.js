@@ -84,7 +84,11 @@
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _reactTapEventPlugin = __webpack_require__(435);
+	var _menubarTile = __webpack_require__(435);
+
+	var _menubarTile2 = _interopRequireDefault(_menubarTile);
+
+	var _reactTapEventPlugin = __webpack_require__(436);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -137,17 +141,33 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      // May be invisible but this keep the accelerator keybinds active.
 	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(store));
 	      Menu.setApplicationMenu(menubar);
 	      console.log(store.getState());
 
 	      switch (store.getState().state.mode) {
 	        case 'menu':
-	          return _react2.default.createElement(_startMenu2.default, { store: store });
+	          return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(_menubarTile2.default, { store: store }),
+	            _react2.default.createElement(_startMenu2.default, { store: store })
+	          );
 	        case 'editor':
-	          return _react2.default.createElement(_dualmodeEditor2.default, { store: store });
+	          return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(_menubarTile2.default, { store: store }),
+	            _react2.default.createElement(_dualmodeEditor2.default, { store: store })
+	          );
 	        case 'folderview':
-	          return _react2.default.createElement(_folderContainerView2.default, { store: store });
+	          return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(_menubarTile2.default, { store: store }),
+	            _react2.default.createElement(_folderContainerView2.default, { store: store })
+	          );
 	        default:
 	          return _react2.default.createElement(
 	            'div',
@@ -24141,9 +24161,11 @@
 	var fs = __webpack_require__(222);
 	var dialog = remote.dialog;
 
+
+	var ipc = __webpack_require__(221).ipcRenderer;
+
 	////////////////////////////////////////////////////////
 	/// Bool Queries
-
 	var is_quickmode = function is_quickmode(state) {
 	  return state.state.mode == 'editor' && state.state.userid == null;
 	};
@@ -24195,6 +24217,14 @@
 
 	////////////////////////////////////////////////////////
 	/// Menubar Click Actions
+	function menuNew(store) {
+	  store.dispatch({ type: 'SET_QUICK_FILEPATH', path: "" });
+	  store.dispatch({ type: 'PAGE_CONTENT_CHANGE',
+	    content: "",
+	    folderIndex: store.getState().state.folderIndex,
+	    pageIndex: store.getState().state.pageIndex
+	  });
+	}
 
 	function menuOpen(store) {
 	  var filename = dialog.showOpenDialog({
@@ -24253,6 +24283,15 @@
 	  var menubar_template = [{
 	    label: 'File',
 	    submenu: [{
+	      role: 'New',
+	      label: 'New',
+	      accelerator: 'CmdOrCtrl+N',
+	      enabled: is_quickmode(state),
+	      visible: is_quickmode(state),
+	      click: function click() {
+	        menuNew(store);
+	      }
+	    }, {
 	      role: 'Open',
 	      label: 'Open',
 	      accelerator: 'CmdOrCtrl+O',
@@ -24307,6 +24346,12 @@
 	      visible: is_logged_in(state),
 	      click: function click() {
 	        menuLogout(store);
+	      }
+	    }, {
+	      role: 'Quit',
+	      label: 'Quit',
+	      click: function click() {
+	        ipc.send('quit');
 	      }
 	    }]
 	  }, {
@@ -37615,6 +37660,11 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'render-container' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'toc-nav-show' },
+	            _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
+	          ),
 	          _react2.default.createElement(_tocNav2.default, { store: this.props.store, info: this.getContent(), scrollTo: function scrollTo(id) {
 	              return _this2.scrollTo(id);
 	            } }),
@@ -37857,48 +37907,61 @@
 	        'div',
 	        { className: 'toc-nav' },
 	        _react2.default.createElement(
-	          'div',
+	          'span',
 	          null,
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'toc-btn', onClick: this.createNewPage },
-	            '  P+  '
+	            _react2.default.createElement('i', { className: 'icon-file-text', 'aria-hidden': 'true' })
 	          ),
+	          '\xA0\xA0\xA0',
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'toc-btn', onClick: this.deletePage },
-	            '  P-  '
+	            _react2.default.createElement('i', { className: 'icon-trash', 'aria-hidden': 'true' })
 	          ),
-	          _react2.default.createElement('br', null),
+	          '\xA0\xA0\xA0',
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'toc-btn', onClick: this.pageContentView },
-	            '  Z+  '
+	            _react2.default.createElement('i', { className: 'icon-search-plus', 'aria-hidden': 'true' })
 	          ),
+	          '\xA0\xA0\xA0',
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'toc-btn', onClick: this.pagesView },
-	            '  Z-  '
+	            _react2.default.createElement('i', { className: 'icon-search-minus', 'aria-hidden': 'true' })
 	          )
 	        ),
+	        _react2.default.createElement('br', null),
 	        _react2.default.createElement(
-	          'span',
-	          { className: 'toc-btn', onClick: this.selectPreviousPage },
-	          ' Last Page: ',
-	          this.extractLastPageHeader(),
-	          ' '
-	        ),
-	        _react2.default.createElement(
-	          'ul',
+	          'div',
 	          null,
-	          this.array.map(this.renderTocItem, this)
+	          _react2.default.createElement(
+	            'span',
+	            { style: { float: 'left' }, className: 'toc-btn', onClick: this.selectPreviousPage },
+	            _react2.default.createElement('i', { className: 'icon-arrow-left', 'aria-hidden': 'true' }),
+	            '\xA0\xA0',
+	            this.extractLastPageHeader(),
+	            ' '
+	          ),
+	          _react2.default.createElement(
+	            'span',
+	            { style: { float: 'right' }, className: 'toc-btn', onClick: this.selectNextPage },
+	            this.extractNextPageHeader(),
+	            '\xA0\xA0',
+	            _react2.default.createElement('i', { className: 'icon-arrow-right', 'aria-hidden': 'true' })
+	          )
 	        ),
+	        _react2.default.createElement('br', null),
 	        _react2.default.createElement(
-	          'span',
-	          { className: 'toc-btn', onClick: this.selectNextPage },
-	          ' Next Page: ',
-	          this.extractNextPageHeader(),
-	          ' '
+	          'div',
+	          { className: 'toc-nav-content' },
+	          _react2.default.createElement(
+	            'ul',
+	            null,
+	            this.array.map(this.renderTocItem, this)
+	          )
 	        )
 	      );
 	    }
@@ -38003,16 +38066,42 @@
 	  //Make all newlines consistent, then split string into lines
 	  str = str.replace(/\r\n/g, '\n');
 	  str = str.replace(/\r/g, '\n');
-	  var line_array = str.split('\n');
 
 	  //Block-level elements
-	  var block_array = [];
+	  var block_array = [{ type: 'raw', tag: '', content: str.split('\n') }];
 
-	  for (var i = 0; i < line_array.length; i++) {
-	    check_blocks(line_array[i], block_array);
-	  }
-
+	  check_blocks(block_array);
+	  remove_raw(block_array);
 	  return render_block(block_array);
+	}
+
+	function check_blocks(blocks) {
+	  check_block_html(blocks);
+	  check_header_setext(blocks);
+	  check_header_atx(blocks);
+	  check_blockquote(blocks);
+	  check_hrule(blocks);
+	  check_flashcard(blocks);
+	  check_table(blocks);
+	  check_paragraph(blocks);
+	  check_list_ordered(blocks);
+	  check_list_unordered(blocks);
+	  check_block_code(blocks);
+	}
+
+	function remove_raw(blocks) {
+	  //Get rid of the remaining raw text (mostly whitespace)
+	  var b = 0;
+	  while (true) {
+	    if (blocks[b].type == 'raw') {
+	      blocks.splice(b, 1);
+	    } else {
+	      b++;
+	    }
+	    if (b >= blocks.length) {
+	      break;
+	    }
+	  }
 	}
 
 	function render_block(blocks) {
@@ -38022,101 +38111,214 @@
 	      result += '\n\n';
 	    }
 	    var block = blocks[i];
-	    for (var t = 0; t < block.tags.length; t++) {
-	      result += '<' + block.tags[t] + '>';
+	    var attrs = '';
+	    if (block.attributes != null) {
+	      //TODO
 	    }
-	    for (var t = 0; t < block.content.length; t++) {
-	      if (t > 0) {
-	        result += '\n';
-	      }
-	      result += block.content[t];
-	    }
-	    for (var t = block.tags.length - 1; t >= 0; t--) {
-	      result += '</' + block.tags[t] + '>';
+	    if (block.content == null) {
+	      result += '<' + block.tag + attrs + ' />';
+	    } else {
+	      result += '<' + block.tag + attrs + '>';
+	      result += block.content;
+	      result += '</' + block.tag + '>';
 	    }
 	  }
 	  return result;
 	}
 
-	function check_blocks(line, blocks) {
-	  //Once it finds a match, it moves on
+	function check_block_html(blocks) {}
 
-	  if (check_header_setext(line, blocks)) {
-	    return;
-	  }
-	  if (check_header_atx(line, blocks)) {
-	    return;
-	  }
-	  if (check_paragraph(line, blocks)) {
-	    return;
-	  }
-	}
-
-	function check_header_setext(line, blocks) {
-	  //Updates block array. Returns whether match was successful
-
+	function check_header_setext(blocks) {
 	  var patt = /^(=+|-+)\s*$/;
 	  var match;
-	  var lastBlock = blocks[blocks.length - 1];
-	  if (lastBlock != null && (match = patt.exec(line)) != null) {
-	    lastBlock.content.pop(); //The last block would have incorrectly registered this header's content as one of its lines.
-	    var content = lastBlock.rawLines[lastBlock.rawLines.length - 1];
+	  var b = 0; //block iterator
+	  while (true) {
+	    if (blocks[b].type == 'raw') {
+	      var content = blocks[b].content;
+	      for (var l = 1; l < content.length; l++) {
+	        if ((match = patt.exec(content[l])) != null) {
+	          var mag = match[1].charAt(0) == '=' ? 1 : 2;
 
-	    lastBlock.open = false;
-	    if (lastBlock.content.length == 0) {
-	      blocks.pop();
-	    } //No sense keeping the last block if it doesn't represent anything
+	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l - 1) };
+	          var header_setext = { type: 'header_setext', tag: 'h' + mag, content: content[l - 1] };
+	          var raw2 = { type: 'raw', tag: '', content: content.slice(l + 1, content.length) };
 
-	    var mag = match[1].charAt(0) == '=' ? 1 : 2;
-	    blocks.push({ type: 'header_setext', tags: ['h' + mag], open: false, content: [content], rawLine: [line] });
-	    return true;
+	          blocks.splice(b, 1, raw1, header_setext, raw2);
+	          b++;
+	          break;
+	        }
+	      }
+	      b++;
+	    } else {
+	      b++;
+	    }
+	    if (b >= blocks.length) {
+	      break;
+	    }
 	  }
-	  return false;
 	}
 
-	function check_header_atx(line, blocks) {
-	  //Updates block array. Returns whether match was successful
-
-	  var lastBlock = blocks[blocks.length - 1];
-	  if (lastBlock != null && lastBlock.type == 'header_atx') {
-	    lastBlock.open = false;
-	  }
-
+	function check_header_atx(blocks) {
 	  var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
 	  var match;
-	  if ((match = patt.exec(line)) != null) {
-	    if (lastBlock != null) {
-	      lastBlock.open = false;
-	    }
-	    blocks.push({ type: 'header_atx', tags: ['h' + match[1].length], open: true, content: [match[2]], rawLines: [line] });
-	    return true;
-	  }
-	  return false;
-	}
 
-	function check_paragraph(line, blocks) {
-	  //Updates block array. Returns whether match was successful
+	  var b = 0; //block iterator
+	  while (true) {
+	    if (blocks[b].type == 'raw') {
+	      var content = blocks[b].content;
+	      for (var l = 0; l < content.length; l++) {
+	        if ((match = patt.exec(content[l])) != null) {
 
-	  var lastBlock = blocks[blocks.length - 1];
-	  //Empty line after a paragraph means that paragraph is done
-	  if (line.trim().length == 0 && lastBlock != null && lastBlock.type == 'paragraph') {
-	    lastBlock.open = false;
-	    return true;
-	  }
+	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l) };
+	          var header_atx = { type: 'header_setext', tag: 'h' + match[1].length, content: match[2] };
+	          var raw2 = { type: 'raw', tag: '', content: content.slice(l + 1, content.length) };
 
-	  var patt = /^\s*(.+)$/;
-	  var match;
-	  if ((match = patt.exec(line)) != null) {
-	    if (lastBlock != null && lastBlock.type == 'paragraph' && lastBlock.open) {
-	      lastBlock.content.push(line);
-	      lastBlock.rawLines.push(line);
+	          blocks.splice(b, 1, raw1, header_atx, raw2);
+	          b++;
+	          break;
+	        }
+	      }
+	      b++;
 	    } else {
-	      blocks.push({ type: 'paragraph', tags: ['p'], open: true, content: [match[1]], rawLines: [line] });
+	      b++;
 	    }
-	    return true;
+	    if (b >= blocks.length) {
+	      break;
+	    }
 	  }
-	  return false;
 	}
+
+	function check_blockquote(blocks) {
+	  var patt = /^>\s(.*)$/;
+	  var match;
+
+	  var b = 0; //block iterator
+	  while (true) {
+	    if (blocks[b].type == 'raw') {
+	      var content = blocks[b].content;
+	      for (var l = 0; l < content.length; l++) {
+	        if ((match = patt.exec(content[l])) != null) {
+	          var inner_content = '';
+	          var end = l;
+	          var same_block = true; //Keeps track of inner blockquote blocks
+	          while (true) {
+	            if ((match = patt.exec(content[end])) != null) {
+	              inner_content += match[1] + '\n';
+	              same_block = true;
+	            } else if (content[end].trim().length == 0) {
+	              //End of block may mean end of blockquote
+	              inner_content += '\n';
+	              same_block = false;
+	            } else if (same_block) {
+	              inner_content += content[end] + '\n';
+	            } else {
+	              break;
+	            }
+	            end++;
+	            if (end >= content.length) {
+	              break;
+	            }
+	          }
+	          inner_content = parse(inner_content);
+
+	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l) };
+	          var blockquote = { type: 'blockquote', tag: 'blockquote', content: inner_content };
+	          var raw2 = { type: 'raw', tag: '', content: content.slice(end, content.length) };
+
+	          blocks.splice(b, 1, raw1, blockquote, raw2);
+	          b++;
+	          break;
+	        }
+	      }
+	      b++;
+	    } else {
+	      b++;
+	    }
+	    if (b >= blocks.length) {
+	      break;
+	    }
+	  }
+	}
+
+	function check_hrule(blocks) {
+	  var patt1 = /^[ ]{0,3}(?:\*[ ]{0,2})+\s*$/;
+	  var patt2 = /^[ ]{0,3}(?:-[ ]{0,2})+\s*$/;
+	  var match;
+
+	  var b = 0; //block iterator
+	  while (true) {
+	    if (blocks[b].type == 'raw') {
+	      var content = blocks[b].content;
+	      for (var l = 0; l < content.length; l++) {
+	        if ((match = patt1.exec(content[l])) != null || (match = patt2.exec(content[l])) != null) {
+
+	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l) };
+	          var header_atx = { type: 'hrule', tag: 'hr' };
+	          var raw2 = { type: 'raw', tag: '', content: content.slice(l + 1, content.length) };
+
+	          blocks.splice(b, 1, raw1, header_atx, raw2);
+	          b++;
+	          break;
+	        }
+	      }
+	      b++;
+	    } else {
+	      b++;
+	    }
+	    if (b >= blocks.length) {
+	      break;
+	    }
+	  }
+	}
+
+	function check_flashcard(blocks) {}
+
+	function check_table(blocks) {}
+
+	function check_paragraph(blocks) {
+	  var patt = /^[ ]{0,3}(.+)$/;
+	  var match;
+
+	  var b = 0; //block iterator
+	  while (true) {
+	    if (blocks[b].type == 'raw') {
+	      var content = blocks[b].content;
+	      for (var l = 0; l < content.length; l++) {
+	        if ((match = patt.exec(content[l])) != null) {
+	          var end = l + 1;
+	          while (end < content.length && content[end].trim().length > 0) {
+	            end++;
+	          }
+	          var p_content_array = content.slice(l, end);
+	          var inner_content = '';
+	          for (var i = 0; i < p_content_array.length; i++) {
+	            inner_content += (i > 0 ? '\n' : '') + p_content_array[i];
+	          }
+
+	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l) };
+	          var paragraph = { type: 'paragraph', tag: 'p', content: inner_content };
+	          var raw2 = { type: 'raw', tag: '', content: content.slice(end, content.length) };
+
+	          blocks.splice(b, 1, raw1, paragraph, raw2);
+	          b++;
+	          break;
+	        }
+	      }
+	      b++;
+	    } else {
+	      b++;
+	    }
+	    if (b >= blocks.length) {
+	      break;
+	    }
+	  }
+	}
+
+	function check_list_ordered(blocks) {}
+
+	function check_list_unordered(blocks) {}
+
+	function check_block_code(blocks) {}
 
 	module.exports.parse = parse;
 	console.log("Shared module loaded");
@@ -39478,8 +39680,80 @@
 /* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _menubar = __webpack_require__(220);
+
+	var _menubar2 = _interopRequireDefault(_menubar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _require = __webpack_require__(221),
+	    remote = _require.remote;
+
+	var Menu = remote.Menu,
+	    MenuItem = remote.MenuItem;
+
+
+	var ipc = __webpack_require__(221).ipcRenderer;
+
+	var MenubarTile = function (_React$Component) {
+	  _inherits(MenubarTile, _React$Component);
+
+	  function MenubarTile() {
+	    _classCallCheck(this, MenubarTile);
+
+	    var _this = _possibleConstructorReturn(this, (MenubarTile.__proto__ || Object.getPrototypeOf(MenubarTile)).call(this));
+
+	    _this.handleClick = _this.handleClick.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(MenubarTile, [{
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(this.props.store));
+	      menubar.popup();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'menubar-tile', onClick: this.handleClick },
+	        _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
+	      );
+	    }
+	  }]);
+
+	  return MenubarTile;
+	}(_react2.default.Component);
+
+	exports.default = MenubarTile;
+
+/***/ },
+/* 436 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(436);
+	var defaultClickRejectionStrategy = __webpack_require__(437);
 
 	var alreadyInjected = false;
 
@@ -39501,13 +39775,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(437)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(438)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 436 */
+/* 437 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -39518,7 +39792,7 @@
 
 
 /***/ },
-/* 437 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -39542,14 +39816,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(438);
+	var EventConstants = __webpack_require__(439);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(439);
+	var TouchEventUtils = __webpack_require__(440);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(440);
+	var keyOf = __webpack_require__(441);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -39695,7 +39969,7 @@
 
 
 /***/ },
-/* 438 */
+/* 439 */
 /***/ function(module, exports) {
 
 	/**
@@ -39791,7 +40065,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 439 */
+/* 440 */
 /***/ function(module, exports) {
 
 	/**
@@ -39839,7 +40113,7 @@
 
 
 /***/ },
-/* 440 */
+/* 441 */
 /***/ function(module, exports) {
 
 	"use strict";

@@ -4,6 +4,8 @@ const {remote} = require('electron');
 var fs = require('fs')
 const {dialog} = remote;
 
+const ipc = require('electron').ipcRenderer;
+
 ////////////////////////////////////////////////////////
 /// Bool Queries
 const is_quickmode = function(state) {
@@ -191,7 +193,13 @@ const menubar_template_builder = function(store) {
         label: 'Logout',
         visible: is_logged_in(state),
         click () { menuLogout(store) }
+      },
+      {
+        role: 'Quit',
+        label: 'Quit',
+        click () { ipc.send('quit'); }
       }
+
     ]
   },
   {

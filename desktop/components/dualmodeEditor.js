@@ -76,6 +76,7 @@ class DualmodeEditor extends React.Component {
           {this.getContent()}
         </textarea>
         <div className="render-container">
+          <div className="toc-nav-show"><i className="icon-bars" aria-hidden="true"></i></div>
           <TocNav store={this.props.store} info={this.getContent()} scrollTo={id => this.scrollTo(id)}/>
           <div id="renderField" className="markdown-output-renderer" 
             dangerouslySetInnerHTML= {{__html: this.state.rendered_content}}>
