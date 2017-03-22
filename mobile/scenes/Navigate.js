@@ -16,6 +16,7 @@ import FlashcardsMenuScene from './FlashcardsMenuScene';
 import NotesViewScene from './NotesViewScene';
 import NotesEditScene from './NotesEditScene';
 import FlashcardViewScene from './FlashcardViewScene';
+import CameraScene from './CameraScene';
 
 export default class Navigate extends Component {
     render() {
@@ -30,7 +31,8 @@ export default class Navigate extends Component {
             {title: 'Flashcards Menu', index: 3},
             {title: 'View Notes', index: 4},
             {title: 'Edit Notes', index: 5},
-            {title: 'View Flashcard', index: 6}
+            {title: 'View Flashcard', index: 6},
+            {title: 'Camera', index: 7}
         ];
         return (
             <Navigator
@@ -50,6 +52,8 @@ export default class Navigate extends Component {
                         return <NotesEditScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'View Flashcard') {
                         return <FlashcardViewScene navigator={navigator} content={route.content} />
+                    } else if (route.title === 'Camera') {
+                        return <CameraScene navigator={navigator} />
                     } else {
                         return null;
                     }
@@ -95,6 +99,12 @@ export default class Navigate extends Component {
                                             })
                                         }>
                                         <Text>Go to Flashcards</Text>
+                                    </TouchableHighlight>
+                                );
+                            } else if (route.title === 'Main Menu') {
+                                return(
+                                    <TouchableHighlight onPress={() => navigator.push({ title: 'Camera' })}>
+                                        <Text style={styles.navButton}>Camera</Text>
                                     </TouchableHighlight>
                                 );
                             } else {
