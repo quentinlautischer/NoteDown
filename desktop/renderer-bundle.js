@@ -80,15 +80,15 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _folderContainerView = __webpack_require__(428);
+	var _folderContainerView = __webpack_require__(429);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _menubarTile = __webpack_require__(435);
+	var _menubarTile = __webpack_require__(436);
 
 	var _menubarTile2 = _interopRequireDefault(_menubarTile);
 
-	var _reactTapEventPlugin = __webpack_require__(436);
+	var _reactTapEventPlugin = __webpack_require__(437);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -240,6 +240,10 @@
 
 	      ipc.on('request-photo-response', function (event, data) {
 	        console.log('request-photo-response: ' + data);
+	      });
+
+	      ipc.on('re-render', function (event, data) {
+	        _this2.forceUpdate();
 	      });
 
 	      ipc.on('create-folder-response', function (event, data) {
@@ -32270,7 +32274,13 @@
 	        _react2.default.createElement(
 	          'h1',
 	          null,
-	          'NoteDown'
+	          'NoteDown ',
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            _react2.default.createElement('i', { className: 'icon-tree left-half', 'aria-hidden': 'true' }),
+	            _react2.default.createElement('i', { className: 'icon-tree right-half', 'aria-hidden': 'true' })
+	          )
 	        )
 	      );
 	    }
@@ -37774,7 +37784,10 @@
 	    var _this = _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).call(this));
 
 	    _this.array = [];
-
+	    _this.pagesArray = [];
+	    _this.state = {
+	      zoom: 'in'
+	    };
 	    // All Data
 	    _this.data = {
 	      previousPages: [], //List of Pages Identified by first Header
@@ -37787,17 +37800,36 @@
 
 	    _this.scrollTo = _this.scrollTo.bind(_this);
 	    _this.renderTocItem = _this.renderTocItem.bind(_this);
+	    _this.renderPageItem = _this.renderPageItem.bind(_this);
 	    _this.selectPreviousPage = _this.selectPreviousPage.bind(_this);
 	    _this.selectNextPage = _this.selectNextPage.bind(_this);
 	    _this.createNewPage = _this.createNewPage.bind(_this);
 	    _this.deletePage = _this.deletePage.bind(_this);
 	    _this.extractLastPageHeader = _this.extractLastPageHeader.bind(_this);
 	    _this.extractNextPageHeader = _this.extractNextPageHeader.bind(_this);
+	    _this.pageContentView = _this.pageContentView.bind(_this);
+	    _this.pagesView = _this.pagesView.bind(_this);
+	    _this.folderview = _this.folderview.bind(_this);
+	    _this.extractPageHeader = _this.extractPageHeader.bind(_this);
+	    _this.generatePagesArray = _this.generatePagesArray.bind(_this);
 
 	    return _this;
 	  }
 
 	  _createClass(TocNav, [{
+	    key: 'generatePagesArray',
+	    value: function generatePagesArray() {
+	      var array = [];
+	      var state = this.props.store.getState();
+	      var pages = state.notes.folders[state.state.folderIndex].pages;
+	      var i;
+	      for (i = 0; i < pages.length; i++) {
+	        array.push(this.extractPageHeader(pages[i]));
+	      }
+	      console.log('Array: ' + array);
+	      return array;
+	    }
+	  }, {
 	    key: 'generateHeaderArray',
 	    value: function generateHeaderArray(str) {
 	      var match;
@@ -37838,6 +37870,21 @@
 	      );
 	    }
 	  }, {
+	    key: 'renderPageItem',
+	    value: function renderPageItem(_ref2) {
+	      var name = _ref2.name;
+
+	      return _react2.default.createElement(
+	        'li',
+	        { key: name, onClick: this.scrollTo.bind(this, name) },
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'toc-li' },
+	          name
+	        )
+	      );
+	    }
+	  }, {
 	    key: 'selectPreviousPage',
 	    value: function selectPreviousPage() {
 	      var state = this.props.store.getState();
@@ -37868,20 +37915,33 @@
 	  }, {
 	    key: 'pageContentView',
 	    value: function pageContentView() {
-	      //Todo
+	      this.setState({
+	        zoom: 'in'
+	      });
 	    }
 	  }, {
 	    key: 'pagesView',
 	    value: function pagesView() {
-	      //Todo
+	      this.setState({
+	        zoom: 'out'
+	      });
+	    }
+	  }, {
+	    key: 'folderview',
+	    value: function folderview() {
+	      this.props.store.dispatch({ type: 'FOLDER_MODE' });
+	    }
+	  }, {
+	    key: 'extractPageHeader',
+	    value: function extractPageHeader(page) {
+	      return page.content.split('\n')[0];
 	    }
 	  }, {
 	    key: 'extractLastPageHeader',
 	    value: function extractLastPageHeader() {
 	      var state = this.props.store.getState();
 	      if (state.state.pageIndex != 0) {
-	        var firstLine = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex - 1].content.split('\n')[0];
-	        return firstLine;
+	        return this.extractPageHeader(state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex - 1]);
 	      } else {
 	        return 'Undefined';
 	      }
@@ -37891,8 +37951,7 @@
 	    value: function extractNextPageHeader() {
 	      var state = this.props.store.getState();
 	      if (state.state.pageIndex < state.notes.folders[state.state.folderIndex].pages.length - 1) {
-	        var firstLine = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex + 1].content.split('\n')[0];
-	        return firstLine;
+	        return this.extractPageHeader(state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex + 1]);
 	      } else {
 	        return 'Undefined';
 	      }
@@ -37903,67 +37962,112 @@
 	      var state = this.props.store.getState();
 	      console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
 	      this.array = this.generateHeaderArray(this.props.info);
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'toc-nav' },
-	        _react2.default.createElement(
-	          'span',
-	          null,
-	          _react2.default.createElement(
-	            'span',
-	            { className: 'toc-btn', onClick: this.createNewPage },
-	            _react2.default.createElement('i', { className: 'icon-file-text', 'aria-hidden': 'true' })
-	          ),
-	          '\xA0\xA0\xA0',
-	          _react2.default.createElement(
-	            'span',
-	            { className: 'toc-btn', onClick: this.deletePage },
-	            _react2.default.createElement('i', { className: 'icon-trash', 'aria-hidden': 'true' })
-	          ),
-	          '\xA0\xA0\xA0',
-	          _react2.default.createElement(
-	            'span',
-	            { className: 'toc-btn', onClick: this.pageContentView },
-	            _react2.default.createElement('i', { className: 'icon-search-plus', 'aria-hidden': 'true' })
-	          ),
-	          '\xA0\xA0\xA0',
-	          _react2.default.createElement(
-	            'span',
-	            { className: 'toc-btn', onClick: this.pagesView },
-	            _react2.default.createElement('i', { className: 'icon-search-minus', 'aria-hidden': 'true' })
-	          )
-	        ),
-	        _react2.default.createElement('br', null),
-	        _react2.default.createElement(
+	      this.pagesArray = this.generatePagesArray();
+	      if (this.state.zoom == 'in') {
+	        return _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'toc-nav' },
 	          _react2.default.createElement(
 	            'span',
-	            { style: { float: 'left' }, className: 'toc-btn', onClick: this.selectPreviousPage },
-	            _react2.default.createElement('i', { className: 'icon-arrow-left', 'aria-hidden': 'true' }),
-	            '\xA0\xA0',
-	            this.extractLastPageHeader(),
-	            ' '
-	          ),
-	          _react2.default.createElement(
-	            'span',
-	            { style: { float: 'right' }, className: 'toc-btn', onClick: this.selectNextPage },
-	            this.extractNextPageHeader(),
-	            '\xA0\xA0',
-	            _react2.default.createElement('i', { className: 'icon-arrow-right', 'aria-hidden': 'true' })
-	          )
-	        ),
-	        _react2.default.createElement('br', null),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'toc-nav-content' },
-	          _react2.default.createElement(
-	            'ul',
 	            null,
-	            this.array.map(this.renderTocItem, this)
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'toc-btn', onClick: this.folderview },
+	              _react2.default.createElement('i', { className: 'icon-folderview', 'aria-hidden': 'true' })
+	            ),
+	            '\xA0\xA0\xA0',
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'toc-btn', onClick: this.createNewPage },
+	              _react2.default.createElement('i', { className: 'icon-file-text', 'aria-hidden': 'true' })
+	            ),
+	            '\xA0\xA0\xA0',
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'toc-btn', onClick: this.deletePage },
+	              _react2.default.createElement('i', { className: 'icon-trash', 'aria-hidden': 'true' })
+	            ),
+	            '\xA0\xA0\xA0',
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'toc-btn', onClick: this.pageContentView },
+	              _react2.default.createElement('i', { className: 'icon-search-plus', 'aria-hidden': 'true' })
+	            ),
+	            '\xA0\xA0\xA0',
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'toc-btn', onClick: this.pagesView },
+	              _react2.default.createElement('i', { className: 'icon-search-minus', 'aria-hidden': 'true' })
+	            )
+	          ),
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	              'span',
+	              { style: { float: 'left' }, className: 'toc-btn', onClick: this.selectPreviousPage },
+	              _react2.default.createElement('i', { className: 'icon-arrow-left', 'aria-hidden': 'true' }),
+	              '\xA0\xA0',
+	              this.extractLastPageHeader(),
+	              ' '
+	            ),
+	            _react2.default.createElement(
+	              'span',
+	              { style: { float: 'right' }, className: 'toc-btn', onClick: this.selectNextPage },
+	              this.extractNextPageHeader(),
+	              '\xA0\xA0',
+	              _react2.default.createElement('i', { className: 'icon-arrow-right', 'aria-hidden': 'true' })
+	            )
+	          ),
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'toc-nav-content' },
+	            _react2.default.createElement(
+	              'ul',
+	              null,
+	              this.array.map(this.renderTocItem, this)
+	            )
 	          )
-	        )
-	      );
+	        );
+	      } else if (this.state.zoom == 'out') {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'toc-nav' },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'toc-btn', onClick: this.folderview },
+	              _react2.default.createElement('i', { className: 'icon-folderview', 'aria-hidden': 'true' })
+	            ),
+	            '\xA0\xA0\xA0',
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'toc-btn', onClick: this.pageContentView },
+	              _react2.default.createElement('i', { className: 'icon-search-plus', 'aria-hidden': 'true' })
+	            ),
+	            '\xA0\xA0\xA0',
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'toc-btn', onClick: this.pagesView },
+	              _react2.default.createElement('i', { className: 'icon-search-minus', 'aria-hidden': 'true' })
+	            )
+	          ),
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'toc-nav-content' },
+	            _react2.default.createElement(
+	              'ul',
+	              null,
+	              this.pagesArray.map(this.renderPageItem, this)
+	            )
+	          )
+	        );
+	      }
 	    }
 	  }]);
 
@@ -38056,9 +38160,15 @@
 
 /***/ },
 /* 427 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var _flashcardTemplate = __webpack_require__(428);
+
+	var _flashcardTemplate2 = _interopRequireDefault(_flashcardTemplate);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function parse(str) {
 	  //The main parsing function. Calls all other functions.
@@ -38320,11 +38430,61 @@
 
 	function check_block_code(blocks) {}
 
-	module.exports.parse = parse;
+	/* Functions to convert content extracted from MarkDown to HTML (for flashcards) */
+	function getFrontContent(front) {
+	  return '<p>' + front + '</p>';
+	}
+
+	function getContentLines(arr, name) {
+	  var lines = '';
+	  var i = 0;
+	  arr.forEach(function (line) {
+	    lines += '<p id=' + name + i++ + '>' + line + '</p>';
+	  });
+	  console.log(lines);
+	  return lines;
+	}
+
+	function makeFlashcard(front, back, hints) {
+	  return _flashcardTemplate2.default.html1 + getFrontContent(front) + _flashcardTemplate2.default.html2 + getContentLines(hints, 'hint') + _flashcardTemplate2.default.html3 + getContentLines(back, 'solution') + _flashcardTemplate2.default.html4 + _flashcardTemplate2.default.css + _flashcardTemplate2.default.js;
+	}
+
+	module.exports = {
+	  parse: parse,
+	  makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
+	};
+
 	console.log("Shared module loaded");
 
 /***/ },
 /* 428 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var html1 = "\n<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>\n  <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->\n<div class='flashcard-container'>\n    <div id='flipper' class='flashcard-flipper'>\n        <div class='front'>\n            <i id='hints-button' class=\"fa fa-question-circle-o\"></i>\n            <div id='front-content' class='content'>\n                <div class='middle'>\n                    <div id='front-inner-content' class='inner'>\n";
+
+	var html2 = "\n</div>\n</div>\n</div>\n</div>\n<div class='back'>\n<i id='front-button' class=\"fa fa-arrow-left\"></i>\n<div id='back-content' class='content'>\n<div class='middle'>\n<div id='solution' class='inner'>\n    <div id='back-inner-content'>\n";
+
+	var html3 = "\n</div>\n<div id='ranking'>\n    <table>\n        <tr id='ranking-row'>\n            <td><p class='circle'>1</p></td>\n            <td><p class='circle'>2</p></td>\n            <td><p class='circle'>3</p></td>\n        </tr>\n    </table>\n</div>\n</div>\n<div id='hints' class='inner'>\n<div id='hints-inner-content'>\n";
+
+	var html4 = "\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n";
+
+	var css = "\n<style>\n    .flashcard-container {\n        font-family: Tahoma, Geneva, sans-serif;\n        perspective: 1000px; /* adds realistic-looking perspective to flip action */\n        background-color: transparent;\n        width: 80%;\n        font-size: 1em;\n        color: black;\n    }\n\n    #flipper {\n        transition: width 1s, height 1s, transform 1s;\n        transform-style: preserve-3d;\n        position: relative;\n        width: 100%;\n        padding: 25%;\n        box-sizing: border-box;\n    }\n\n    .front,\n    .back {\n        /* not sure how much of this is needed for Electron */\n        -webkit-backface-visibility: hidden;\n        -moz-backface-visibility: hidden;\n        -o-backface-visibility: hidden;\n        backface-visibility: hidden;\n\n        width: 100%;\n        height: 100%;\n        position: absolute;\n        top: 0;\n        left: 0;\n        background-color: #e7fef8;\n        border: thick solid black;\n        border-radius: 5px;\n    }\n\n    .front {\n        z-index: 2; /* moves the front forward */\n        transform: rotateY(0deg);\n    }\n\n    .back {\n        transform: rotateY(180deg);\n    }\n\n    /* flip the pane when clicked */\n    .rotateBack {\n        transform: rotateY(-180deg);\n    }\n\n    .rotateHint {\n        transform: rotateY(180deg);\n    }\n\n    /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */\n    .content {\n        display: table;\n        position: absolute;\n        height: 100%;\n        width: 100%;\n    }\n\n    .middle {\n        display: table-cell;\n        vertical-align: middle;\n        text-align: center;\n    }\n\n    .inner {\n        margin-left: auto;\n        margin-right: auto;\n    }\n\n    #back-inner-content p,\n    #hints-inner-content p {\n        border-bottom: thin solid #0aaf82;\n        text-align: center;\n        margin-left: 20px;\n        margin-right: 20px;\n        visibility: hidden;\n    }\n\n    i {\n      position: absolute;\n      padding: 10px;\n    }\n\n    .fa {\n      font-size: 1.5em;\n    }\n\n    #hints-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n    }\n\n    #front-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n        display: none;\n    }\n\n    #ranking {\n      width: 100%;\n      position: absolute;\n      bottom: 5px;\n      visibility: hidden; /* don't allow ranking til all the solution is visible */\n    }\n\n    table {\n      display: inline; /* allows it to be centred */\n    }\n\n    td p {\n      margin: 0 30px; /* space between cells */\n    }\n\n    /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle\n    by Jawad\n    accessed 03/18/17 */\n    .circle {\n        width: 2em;\n        height: 2em;\n        border-radius: 50%;\n        font-size: 1em;\n        color: white;\n        line-height: 2em;\n        text-align: center;\n        background: #0aaf82;\n    }\n\n    .circle:hover {\n        color: #0aaf82;\n        background-color: black;\n    }\n</style>\n";
+
+	var js = "\n<script>\n    document.getElementById('front-content').onclick = handleClick;\n    document.getElementById('back-content').onclick = handleClick;\n    document.getElementById('hints-button').onclick = clickedShowHints;\n    document.getElementById('front-button').onclick = clickedShowFront;\n\n    var viewingHints = false;\n    var viewingSolution = false;\n    var solutionIndex = 0;\n    var hintIndex = 0;\n\n    function handleClick() {\n        if (viewingHints) {\n          showNextHint();\n          return;\n        }\n        showSolutionSide();\n    }\n\n    function clickedShowHints() {\n        remove('solution', 'hints-button');\n        display('hints');\n        if(document.getElementById('hints').childElementCount > 0) {\n            document.getElementById('hint0').style.visibility = 'visible';\n            hintIndex += 1;\n        }\n\n        viewingHints = true;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function clickedShowFront() {\n        remove('front-button');\n        display('hints-button');\n\n        viewingHints = false;\n        hintIndex = 0;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function remove() { // sets display of args (ids) to 'none'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'none');\n        }\n    }\n\n    function display() { // sets display of args (ids) to 'inline'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'inline');\n        }\n    }\n\n    function setDisplay(id, display) { // sets element 'id' to display 'display'\n        document.getElementById(id).style.display = display;\n    }\n\n    function flipFinished() { // called after a flip event to update what's displayed\n        if (viewingHints) {\n            display('front-button');\n        } else if (!viewingSolution) {\n            hideChildren(document.getElementById('back-inner-content'), 'solution');\n            hideChildren(document.getElementById('hints-inner-content'), 'hint');\n            document.getElementById('ranking').style.visibility = 'hidden';\n            display('hints-button');\n        }\n    }\n\n    function hideChildren(ele, id) {\n        for (var index = 0; index < ele.childElementCount; index++) {\n          document.getElementById(id + index).style.visibility = 'hidden';\n        }\n    }\n\n    function showNextHint() {\n        var hintsDiv = document.getElementById('hints-inner-content');\n        if (hintIndex < hintsDiv.childElementCount) {\n          document.getElementById('hint' + hintIndex).style.visibility = 'visible';\n          hintIndex += 1;\n        }\n    }\n\n    function resetCard() { // flips back to front after solution viewed, resetting everything\n        solutionIndex = 0;\n        viewingHints = false;\n        viewingSolution = false;\n        document.getElementById('flipper').classList.toggle('rotateBack');\n    }\n\n    function showNextSolutionStep() {\n        document.getElementById('solution' + solutionIndex++).style.visibility = 'visible';\n    }\n\n    function showSolutionSide() {\n        remove('hints', 'hints-button', 'front-button');\n        display('solution');\n\n        var solutionElementCount = document.getElementById('back-inner-content').childElementCount;\n        if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point\n            resetCard();\n            return;\n        }\n\n        if (solutionIndex === 0) { // flip to back!\n            viewingSolution = true;\n            document.getElementById('flipper').classList.toggle('rotateBack');\n        } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution\n            document.getElementById('ranking').style.visibility = 'visible';\n        }\n        showNextSolutionStep();\n    }\n\n    // The following is used to help with flashcard content display during card rotations.\n    // It allows the display to be updated when the rotation (flip) completes.\n    /* From Modernizr */\n    function whichTransitionEvent(){\n        var t;\n        var el = document.createElement('fakeelement');\n\n        // allows it to work on many browsers\n        var transitions = {\n            'transition':'transitionend',\n            'OTransition':'oTransitionEnd',\n            'MozTransition':'transitionend',\n            'WebkitTransition':'webkitTransitionEnd'\n        }\n\n        for(t in transitions){\n            if( el.style[t] !== undefined ){\n                return transitions[t];\n            }\n        }\n    }\n\n    // listen for transition to end\n    var transitionEvent = whichTransitionEvent();\n    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);\n</script>\n";
+
+	module.exports = {
+	    html1: html1,
+	    html2: html2,
+	    html3: html3,
+	    html4: html4,
+	    css: css,
+	    js: js
+	};
+
+/***/ },
+/* 429 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38339,7 +38499,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _dialogFolderCreate = __webpack_require__(429);
+	var _dialogFolderCreate = __webpack_require__(430);
 
 	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
 
@@ -38482,7 +38642,7 @@
 	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
 
 /***/ },
-/* 429 */
+/* 430 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38497,7 +38657,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog = __webpack_require__(430);
+	var _Dialog = __webpack_require__(431);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -38612,7 +38772,7 @@
 	exports.default = DialogFolderCreate;
 
 /***/ },
-/* 430 */
+/* 431 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38622,7 +38782,7 @@
 	});
 	exports.default = undefined;
 
-	var _Dialog = __webpack_require__(431);
+	var _Dialog = __webpack_require__(432);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -38631,7 +38791,7 @@
 	exports.default = _Dialog2.default;
 
 /***/ },
-/* 431 */
+/* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38692,11 +38852,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _Overlay = __webpack_require__(432);
+	var _Overlay = __webpack_require__(433);
 
 	var _Overlay2 = _interopRequireDefault(_Overlay);
 
-	var _RenderToLayer = __webpack_require__(434);
+	var _RenderToLayer = __webpack_require__(435);
 
 	var _RenderToLayer2 = _interopRequireDefault(_RenderToLayer);
 
@@ -39223,7 +39383,7 @@
 	exports.default = Dialog;
 
 /***/ },
-/* 432 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39272,7 +39432,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _AutoLockScrolling = __webpack_require__(433);
+	var _AutoLockScrolling = __webpack_require__(434);
 
 	var _AutoLockScrolling2 = _interopRequireDefault(_AutoLockScrolling);
 
@@ -39368,7 +39528,7 @@
 	exports.default = Overlay;
 
 /***/ },
-/* 433 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39493,7 +39653,7 @@
 	exports.default = AutoLockScrolling;
 
 /***/ },
-/* 434 */
+/* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39677,7 +39837,7 @@
 	exports.default = RenderToLayer;
 
 /***/ },
-/* 435 */
+/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39721,24 +39881,101 @@
 
 	    var _this = _possibleConstructorReturn(this, (MenubarTile.__proto__ || Object.getPrototypeOf(MenubarTile)).call(this));
 
-	    _this.handleClick = _this.handleClick.bind(_this);
+	    _this.handleMenuClick = _this.handleMenuClick.bind(_this);
+	    _this.handleCloseClick = _this.handleCloseClick.bind(_this);
+	    _this.handleMaximizeClick = _this.handleMaximizeClick.bind(_this);
+	    _this.handleUnmaximizeClick = _this.handleUnmaximizeClick.bind(_this);
+	    _this.handleMinimizeClick = _this.handleMinimizeClick.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(MenubarTile, [{
-	    key: 'handleClick',
-	    value: function handleClick() {
+	    key: 'handleMenuClick',
+	    value: function handleMenuClick() {
 	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(this.props.store));
 	      menubar.popup();
 	    }
 	  }, {
+	    key: 'handleCloseClick',
+	    value: function handleCloseClick() {
+	      ipc.send('quit');
+	    }
+	  }, {
+	    key: 'handleMaximizeClick',
+	    value: function handleMaximizeClick() {
+	      ipc.send('maximize');
+	    }
+	  }, {
+	    key: 'handleUnmaximizeClick',
+	    value: function handleUnmaximizeClick() {
+	      ipc.send('unmaximize');
+	    }
+	  }, {
+	    key: 'handleMinimizeClick',
+	    value: function handleMinimizeClick() {
+	      ipc.send('minimize');
+	    }
+	  }, {
+	    key: 'minormax',
+	    value: function minormax() {
+	      console.log('remote current window state: ' + remote.getCurrentWindow().isMaximized());
+	      if (!remote.getCurrentWindow().isMaximized()) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-tile window-tile', onClick: this.handleMaximizeClick },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            _react2.default.createElement('i', { className: 'icon-square', 'aria-hidden': 'true' })
+	          )
+	        );
+	      } else {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-tile window-tile', onClick: this.handleUnmaximizeClick },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            _react2.default.createElement('i', { className: 'icon-clone', 'aria-hidden': 'true' })
+	          )
+	        );
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-
+	      console.log("Rendering menubar");
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'menubar-tile', onClick: this.handleClick },
-	        _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
+	        { className: 'menubar-custom' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-tile menu-bars', onClick: this.handleMenuClick },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-tile window-tile', onClick: this.handleCloseClick },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            'X'
+	          )
+	        ),
+	        this.minormax(),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-tile window-tile', onClick: this.handleMinimizeClick },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            '\u2014'
+	          )
+	        )
 	      );
 	    }
 	  }]);
@@ -39749,11 +39986,11 @@
 	exports.default = MenubarTile;
 
 /***/ },
-/* 436 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(437);
+	var defaultClickRejectionStrategy = __webpack_require__(438);
 
 	var alreadyInjected = false;
 
@@ -39775,13 +40012,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(438)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(439)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 437 */
+/* 438 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -39792,7 +40029,7 @@
 
 
 /***/ },
-/* 438 */
+/* 439 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -39816,14 +40053,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(439);
+	var EventConstants = __webpack_require__(440);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(440);
+	var TouchEventUtils = __webpack_require__(441);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(441);
+	var keyOf = __webpack_require__(442);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -39969,7 +40206,7 @@
 
 
 /***/ },
-/* 439 */
+/* 440 */
 /***/ function(module, exports) {
 
 	/**
@@ -40065,7 +40302,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 440 */
+/* 441 */
 /***/ function(module, exports) {
 
 	/**
@@ -40113,7 +40350,7 @@
 
 
 /***/ },
-/* 441 */
+/* 442 */
 /***/ function(module, exports) {
 
 	"use strict";

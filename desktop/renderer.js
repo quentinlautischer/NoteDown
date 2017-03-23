@@ -131,6 +131,10 @@ class App extends React.Component {
       console.log('request-photo-response: ' + data);
     })
 
+    ipc.on('re-render', (event, data) => {
+      this.forceUpdate();
+    })
+
     ipc.on('create-folder-response', (event, data) => {
       console.log(`create folder reponse: ${data.data}`);
       var folder = JSON.parse(data.data);

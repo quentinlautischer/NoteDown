@@ -1,12 +1,18 @@
 $colors: (
   'primary1': rgba(139, 191, 159, 1),
-  'secondary1': #284059,
+  'secondary1': rgba(48, 62, 77, 1),
   'primary2': rgba(254, 215, 94, 1),
   'secondary2': rgba(254, 178, 85, 1),
   'dark': rgba(67, 65, 70, 1),
   'med': rgba(133, 126, 123, 1),
-  'light': #EDEDEE
+  'light': #EDEDEE,
+  'accent-gray': rgba(77,82,87,1)
 );
+
+$windows-dimensions: (
+  'menubar-custom-height': 31px,
+  'menubar-custom-tile-width': 47px
+)
 
 
 // $color1: rgba(101, 101, 101, 1);

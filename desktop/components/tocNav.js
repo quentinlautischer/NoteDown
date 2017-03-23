@@ -5,7 +5,10 @@ class TocNav extends React.Component {
   constructor() {
     super();
     this.array = [];
-
+    this.pagesArray = [];
+    this.state = {
+      zoom: 'in'
+    }
     // All Data
     this.data = {
       previousPages: [], //List of Pages Identified by first Header
@@ -17,14 +20,32 @@ class TocNav extends React.Component {
     // Going to need a return to folder button or something
 
     this.scrollTo  = this.scrollTo.bind(this);
-    this.renderTocItem = this.renderTocItem.bind(this)
+    this.renderTocItem = this.renderTocItem.bind(this);
+    this.renderPageItem = this.renderPageItem.bind(this)
     this.selectPreviousPage = this.selectPreviousPage.bind(this);
     this.selectNextPage = this.selectNextPage.bind(this);
     this.createNewPage = this.createNewPage.bind(this);
     this.deletePage = this.deletePage.bind(this);
     this.extractLastPageHeader = this.extractLastPageHeader.bind(this);
     this.extractNextPageHeader = this.extractNextPageHeader.bind(this);
+    this.pageContentView = this.pageContentView.bind(this);
+    this.pagesView = this.pagesView.bind(this);
+    this.folderview = this.folderview.bind(this);
+    this.extractPageHeader = this.extractPageHeader.bind(this);
+    this.generatePagesArray = this.generatePagesArray.bind(this);
 
+  }
+
+  generatePagesArray() {
+    var array = [];
+    var state = this.props.store.getState();
+    var pages = state.notes.folders[state.state.folderIndex].pages;
+    var i;
+    for(i=0; i < pages.length; i++){
+      array.push(this.extractPageHeader(pages[i]));
+    }
+    console.log(`Array: ${array}`);
+    return array;
   }
 
   generateHeaderArray(str) {
@@ -57,6 +78,14 @@ class TocNav extends React.Component {
     );
   }
 
+  renderPageItem({name}) {
+    return (
+      <li key={name} onClick={this.scrollTo.bind(this, name)}>
+          <span className="toc-li">{name}</span>
+      </li>
+    );
+  }
+
   selectPreviousPage() {
     var state = this.props.store.getState();
     this.props.store.dispatch({type: 'SELECT_PAGE', index: state.state.pageIndex-1})
@@ -82,18 +111,29 @@ class TocNav extends React.Component {
   }
 
   pageContentView() {
-    //Todo
+    this.setState({
+      zoom: 'in',
+    });
   }
 
   pagesView() {
-    //Todo
+    this.setState({
+      zoom: 'out',
+    });
+  }
+
+  folderview() {
+    this.props.store.dispatch({type: 'FOLDER_MODE'});
+  }
+
+  extractPageHeader(page) {
+    return page.content.split('\n')[0];
   }
 
   extractLastPageHeader() {
     var state = this.props.store.getState();
     if (state.state.pageIndex != 0) {
-      var firstLine = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex-1].content.split('\n')[0];
-      return firstLine;
+      return this.extractPageHeader(state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex-1]);
     } else {
       return 'Undefined';
     }
@@ -102,8 +142,7 @@ class TocNav extends React.Component {
   extractNextPageHeader() {
     var state = this.props.store.getState();
     if (state.state.pageIndex < state.notes.folders[state.state.folderIndex].pages.length-1) {
-      var firstLine = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex+1].content.split('\n')[0];
-      return firstLine;
+       return this.extractPageHeader(state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex+1]);
     } else {
       return 'Undefined';
     }
@@ -113,9 +152,13 @@ class TocNav extends React.Component {
     var state = this.props.store.getState();
     console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
     this.array = this.generateHeaderArray(this.props.info);
-    return (      
-      <div className="toc-nav">
+    this.pagesArray = this.generatePagesArray();
+    if (this.state.zoom == 'in') {
+      return (      
+        <div className="toc-nav">
           <span>
+            <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
+            &nbsp;&nbsp;&nbsp;
             <span className="toc-btn" onClick={this.createNewPage}><i className="icon-file-text" aria-hidden="true"></i></span>
             &nbsp;&nbsp;&nbsp;
             <span className="toc-btn" onClick={this.deletePage}><i className="icon-trash" aria-hidden="true"></i></span>
@@ -137,6 +180,26 @@ class TocNav extends React.Component {
           </div>
       </div>
     );
+    } else if (this.state.zoom == 'out') {
+      return (      
+        <div className="toc-nav">
+          <span>
+            <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
+            &nbsp;&nbsp;&nbsp;
+            <span className="toc-btn" onClick={this.pageContentView}><i className="icon-search-plus" aria-hidden="true"></i></span>
+            &nbsp;&nbsp;&nbsp;
+            <span className="toc-btn" onClick={this.pagesView}><i className="icon-search-minus" aria-hidden="true"></i></span>
+          </span>
+          <br/>
+          <div className="toc-nav-content">
+            <ul>
+              {this.pagesArray.map(this.renderPageItem, this)}
+            </ul>
+          </div>
+      </div>
+    );
+    }
+    
   }
 }
 

@@ -17,10 +17,11 @@
 .markdown-input-editor {
   position: absolute;
   box-sizing: border-box;
-  top: 3%;
+  top: 30px;
   left: 1%;
   width: 48%;
   height: 96%;
+  -webkit-box-sizing: border-box;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -37,10 +38,11 @@
 .markdown-output-renderer {
   position: absolute;
   box-sizing: border-box;
-  top: 3%;
+  top: 30px;
   left: 50%;
-  width: 48%;
+  width: 49%;
   height: 96%;
+  -webkit-box-sizing: border-box;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -58,14 +60,18 @@
     background-color: #434146; }
 
 .notedown-title-logo {
-  font-family: Chalkduster;
   width: 100%;
   float: center;
   text-align: center;
   padding: 0.5rem;
-  font-size: 0.75rem;
+  font-size: 20px;
   font-weight: 400;
-  border-radius: 0.25rem; }
+  border-radius: 0.25rem;
+  -webkit-user-select: none; }
+  .notedown-title-logo:hover {
+    cursor: default; }
+  .notedown-title-logo .left-half {
+    color: white; }
 
 .folder-view {
   position: relative;
@@ -128,8 +134,8 @@
 .toc-nav-show {
   position: relative;
   float: right;
-  margin-top: 5%;
-  margin-right: 5%;
+  margin-top: 33px;
+  margin-right: 33px;
   color: #fed75e;
   z-index: 4; }
 
@@ -151,7 +157,7 @@
   outline: none;
   font-size: 1.3em;
   color: #434146;
-  background-color: #284059;
+  background-color: #303e4d;
   font-weight: 300;
   z-index: 5; }
   .toc-nav li {
@@ -212,7 +218,7 @@
   src: url("../../node_modules/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"), url("../../node_modules/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0") format("woff2"), url("../../node_modules/font-awesome/fonts/fontawesome-webfont.woff?v=4.7.0") format("woff"), url("../../node_modules/font-awesome/fonts/fontawesome-webfont.ttf?v=4.7.0") format("truetype"), url("../../node_modules/font-awesome/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
   font-weight: normal;
   font-style: normal; }
-.fa, .icon-user, .icon-bars, .icon-arrow-left, .icon-arrow-right, .icon-search-plus, .icon-search-minus, .icon-file-text, .icon-trash {
+.fa, .icon-user, .icon-bars, .icon-tree, .icon-square-solid, .icon-arrow-left, .icon-arrow-right, .icon-search-plus, .icon-search-minus, .icon-folderview, .icon-minus, .icon-square, .icon-clone, .icon-times, .icon-file-text, .icon-trash {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
   font-size: inherit;
@@ -269,9 +275,9 @@
 .fa-pull-right {
   float: right; }
 
-.fa.fa-pull-left, .fa-pull-left.icon-user, .fa-pull-left.icon-bars, .fa-pull-left.icon-arrow-left, .fa-pull-left.icon-arrow-right, .fa-pull-left.icon-search-plus, .fa-pull-left.icon-search-minus, .fa-pull-left.icon-file-text, .fa-pull-left.icon-trash {
+.fa.fa-pull-left, .fa-pull-left.icon-user, .fa-pull-left.icon-bars, .fa-pull-left.icon-tree, .fa-pull-left.icon-square-solid, .fa-pull-left.icon-arrow-left, .fa-pull-left.icon-arrow-right, .fa-pull-left.icon-search-plus, .fa-pull-left.icon-search-minus, .fa-pull-left.icon-folderview, .fa-pull-left.icon-minus, .fa-pull-left.icon-square, .fa-pull-left.icon-clone, .fa-pull-left.icon-times, .fa-pull-left.icon-file-text, .fa-pull-left.icon-trash {
   margin-right: .3em; }
-.fa.fa-pull-right, .fa-pull-right.icon-user, .fa-pull-right.icon-bars, .fa-pull-right.icon-arrow-left, .fa-pull-right.icon-arrow-right, .fa-pull-right.icon-search-plus, .fa-pull-right.icon-search-minus, .fa-pull-right.icon-file-text, .fa-pull-right.icon-trash {
+.fa.fa-pull-right, .fa-pull-right.icon-user, .fa-pull-right.icon-bars, .fa-pull-right.icon-tree, .fa-pull-right.icon-square-solid, .fa-pull-right.icon-arrow-left, .fa-pull-right.icon-arrow-right, .fa-pull-right.icon-search-plus, .fa-pull-right.icon-search-minus, .fa-pull-right.icon-folderview, .fa-pull-right.icon-minus, .fa-pull-right.icon-square, .fa-pull-right.icon-clone, .fa-pull-right.icon-times, .fa-pull-right.icon-file-text, .fa-pull-right.icon-trash {
   margin-left: .3em; }
 
 /* Deprecated as of 4.4.0 */
@@ -281,9 +287,9 @@
 .pull-left {
   float: left; }
 
-.fa.pull-left, .pull-left.icon-user, .pull-left.icon-bars, .pull-left.icon-arrow-left, .pull-left.icon-arrow-right, .pull-left.icon-search-plus, .pull-left.icon-search-minus, .pull-left.icon-file-text, .pull-left.icon-trash {
+.fa.pull-left, .pull-left.icon-user, .pull-left.icon-bars, .pull-left.icon-tree, .pull-left.icon-square-solid, .pull-left.icon-arrow-left, .pull-left.icon-arrow-right, .pull-left.icon-search-plus, .pull-left.icon-search-minus, .pull-left.icon-folderview, .pull-left.icon-minus, .pull-left.icon-square, .pull-left.icon-clone, .pull-left.icon-times, .pull-left.icon-file-text, .pull-left.icon-trash {
   margin-right: .3em; }
-.fa.pull-right, .pull-right.icon-user, .pull-right.icon-bars, .pull-right.icon-arrow-left, .pull-right.icon-arrow-right, .pull-right.icon-search-plus, .pull-right.icon-search-minus, .pull-right.icon-file-text, .pull-right.icon-trash {
+.fa.pull-right, .pull-right.icon-user, .pull-right.icon-bars, .pull-right.icon-tree, .pull-right.icon-square-solid, .pull-right.icon-arrow-left, .pull-right.icon-arrow-right, .pull-right.icon-search-plus, .pull-right.icon-search-minus, .pull-right.icon-folderview, .pull-right.icon-minus, .pull-right.icon-square, .pull-right.icon-clone, .pull-right.icon-times, .pull-right.icon-file-text, .pull-right.icon-trash {
   margin-left: .3em; }
 
 .fa-spin {
@@ -400,7 +406,7 @@
 .fa-th-large:before {
   content: ""; }
 
-.fa-th:before {
+.fa-th:before, .icon-folderview:before {
   content: ""; }
 
 .fa-th-list:before {
@@ -411,7 +417,8 @@
 
 .fa-remove:before,
 .fa-close:before,
-.fa-times:before {
+.fa-times:before,
+.icon-times:before {
   content: ""; }
 
 .fa-search-plus:before, .icon-search-plus:before {
@@ -673,7 +680,7 @@
 .fa-plus:before {
   content: ""; }
 
-.fa-minus:before {
+.fa-minus:before, .icon-minus:before {
   content: ""; }
 
 .fa-asterisk:before {
@@ -805,7 +812,7 @@
 .fa-phone:before {
   content: ""; }
 
-.fa-square-o:before {
+.fa-square-o:before, .icon-square:before {
   content: ""; }
 
 .fa-bookmark-o:before {
@@ -917,7 +924,7 @@
 .fa-floppy-o:before {
   content: ""; }
 
-.fa-square:before {
+.fa-square:before, .icon-square-solid:before {
   content: ""; }
 
 .fa-navicon:before,
@@ -1633,7 +1640,7 @@
 .fa-taxi:before {
   content: ""; }
 
-.fa-tree:before {
+.fa-tree:before, .icon-tree:before {
   content: ""; }
 
 .fa-spotify:before {
@@ -2067,7 +2074,7 @@
 .fa-cc-diners-club:before {
   content: ""; }
 
-.fa-clone:before {
+.fa-clone:before, .icon-clone:before {
   content: ""; }
 
 .fa-balance-scale:before {
@@ -2525,6 +2532,18 @@
   overflow: visible;
   clip: auto; }
 
+.icon-bars {
+  font-weight: 100; }
+
+.icon-minus {
+  font-weight: 100; }
+
+.icon-square {
+  font-weight: 100; }
+
+.icon-times {
+  font-weight: 100; }
+
 .app-container {
   -webkit-app-region: no-drag; }
 
@@ -2534,29 +2553,61 @@
   align: center;
   -webkit-app-region: no-drag; }
 
-.menubar-tile {
-  position: absolute;
+.menubar-custom {
+  position: relative;
   top: 0;
   left: 0;
-  z-index: 5;
-  color: #fed75e;
+  height: 31px;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  background-color: #303e4d;
+  -webkit-app-region: drag;
+  z-index: 2; }
+
+.menubar-tile {
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  width: 47px;
+  height: 100%;
+  line-height: 31px;
+  color: #8bbf9f;
   -webkit-app-region: no-drag; }
+  .menubar-tile:hover {
+    background-color: #4d5257; }
+  .menubar-tile.span {
+    display: inline-block;
+    font-family: "Arial Rounded MT Bold";
+    align: center;
+    vertical-align: middle; }
+
+.menu-bars {
+  float: left; }
+
+.window-tile {
+  float: right; }
 
 body {
+  margin: 0;
+  border: 1px solid #444;
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
+  -webkit-box-sizing: border-box;
   font-family: "Roboto", sans-serif;
   background-color: #8bbf9f;
   overflow: hidden;
-  -webkit-app-region: drag; }
+  -webkit-app-region: drag;
+  -webkit-user-select: none; }
   body ::-webkit-scrollbar {
     width: 6px;
-    background-color: transparent; }
+    background-color: transparent;
+    -webkit-app-region: no-drag; }
   body ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, #8bbf9f), color-stop(0.72, #8bbf9f)); }
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, #8bbf9f), color-stop(0.72, #8bbf9f));
+    -webkit-app-region: no-drag; }
 
 /*# sourceMappingURL=main.css.map */

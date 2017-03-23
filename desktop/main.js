@@ -28,9 +28,9 @@ let mainWindow
 function createWindow () {
   
   if (process.platform !== 'darwin') {
-    mainWindow = new BrowserWindow({width: 1500, height: 1100, minWidth: 500, minHeight: 450, frame: false})
+    mainWindow = new BrowserWindow({width: 1000, height: 700, minWidth: 500, minHeight: 450, frame: false})
   } else {
-    mainWindow = new BrowserWindow({width: 1500, height: 1100, minWidth: 500, minHeight: 450})
+    mainWindow = new BrowserWindow({width: 1000, height: 700, minWidth: 500, minHeight: 450})
   }
 
 
@@ -66,6 +66,10 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+app.on('maximize', function () {
+
 })
 
 function initServerComm() {
@@ -117,6 +121,20 @@ ipcMain.on('server-error', (event, data) => {
 
 ipcMain.on('quit', (event, data) => {
   app.quit();
+});
+
+ipcMain.on('maximize', (event, data) => {
+  mainWindow.maximize();
+  mainWindow.webContents.send('re-render');
+});
+
+ipcMain.on('unmaximize', (event, data) => {
+  mainWindow.restore();
+  mainWindow.webContents.send('re-render');
+});
+
+ipcMain.on('minimize', (event, data) => {
+  mainWindow.minimize();
 });
 
 process.on('uncaughtException', function (error) {
