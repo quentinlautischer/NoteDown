@@ -39565,7 +39565,12 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function parse(str) {
-	  //The main parsing function. Calls all other functions.
+	  //The main parsing function.
+	  return parse_blocks(str, false);
+	}
+
+	function parse_blocks(str, allow_raw) {
+	  //allow_raw is for nested blocks, where raw text need not be wrapped
 
 	  //Make all newlines consistent, then split string into lines
 	  str = str.replace(/\r\n/g, '\n');
@@ -39574,23 +39579,22 @@
 	  //Block-level elements
 	  var block_array = [{ tag: null, content: str.split('\n') }];
 
-	  check_blocks(block_array);
-	  remove_raw(block_array);
-	  return render_block(block_array);
-	}
+	  check_block_html(block_array);
+	  check_header_setext(block_array);
+	  check_header_atx(block_array);
+	  check_blockquote(block_array);
+	  check_hrule(block_array);
+	  check_flashcard(block_array);
+	  check_table(block_array);
+	  check_paragraph(block_array);
+	  check_list_ordered(block_array);
+	  check_list_unordered(block_array);
+	  check_block_code(block_array);
 
-	function check_blocks(blocks) {
-	  check_block_html(blocks);
-	  check_header_setext(blocks);
-	  check_header_atx(blocks);
-	  check_blockquote(blocks);
-	  check_hrule(blocks);
-	  check_flashcard(blocks);
-	  check_table(blocks);
-	  check_paragraph(blocks);
-	  check_list_ordered(blocks);
-	  check_list_unordered(blocks);
-	  check_block_code(blocks);
+	  if (!allow_raw) {
+	    remove_raw(block_array);
+	  }
+	  return render_block(block_array);
 	}
 
 	function remove_raw(blocks) {
@@ -39617,14 +39621,16 @@
 	    var block = blocks[i];
 	    var attrs = '';
 	    if (block.attributes != null) {
-	      //TODO
+	      for (var a = 0; a < block.attributes.length; a++) {
+	        attrs += ' ' + block.attributes[a][0] + '="' + block.attributes[a][1] + '"';
+	      }
 	    }
-	    if (block.content == null) {
+	    if (block.tag == null) {
+	      result += block.content;
+	    } else if (block.content == null) {
 	      result += '<' + block.tag + attrs + ' />';
 	    } else {
-	      result += '<' + block.tag + attrs + '>';
-	      result += block.content;
-	      result += '</' + block.tag + '>';
+	      result += '<' + block.tag + attrs + '>' + block.content + '</' + block.tag + '>';
 	    }
 	  }
 	  return result;
@@ -39723,7 +39729,7 @@
 	              break;
 	            }
 	          }
-	          inner_content = parse(inner_content);
+	          inner_content = parse_blocks(inner_content, false);
 
 	          var raw1 = { tag: null, content: content.slice(0, l) };
 	          var blockquote = { tag: 'blockquote', content: inner_content };
