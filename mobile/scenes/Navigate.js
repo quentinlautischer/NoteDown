@@ -17,6 +17,7 @@ import NotesViewScene from './NotesViewScene';
 import NotesEditScene from './NotesEditScene';
 import FlashcardViewScene from './FlashcardViewScene';
 import CameraScene from './CameraScene';
+import PhotoConfirmScene from './PhotoConfirmScene';
 
 export default class Navigate extends Component {
     render() {
@@ -32,7 +33,8 @@ export default class Navigate extends Component {
             {title: 'View Notes', index: 4},
             {title: 'Edit Notes', index: 5},
             {title: 'View Flashcard', index: 6},
-            {title: 'Camera', index: 7}
+            {title: 'Camera', index: 7},
+            {title: 'Confirm Photo', index: 8}
         ];
         return (
             <Navigator
@@ -54,6 +56,8 @@ export default class Navigate extends Component {
                         return <FlashcardViewScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'Camera') {
                         return <CameraScene navigator={navigator} />
+                    } else if (route.title === 'Confirm Photo') {
+                        return <PhotoConfirmScene navigator={navigator} content={route.content} />
                     } else {
                         return null;
                     }

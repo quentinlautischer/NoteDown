@@ -11,7 +11,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 export default class CameraScene extends Component {
     takePicture() {
         this.camera.capture()
-        .then((data) => console.log(data))
+        .then((data) => this.props.navigator.push({
+            title: 'Confirm Photo',
+            content: data
+        }))
         .catch(err => console.error(err));
     }
 
@@ -23,7 +26,8 @@ export default class CameraScene extends Component {
                         this.camera = cam;
                     }}
                     style={styles.preview}
-                    aspect={Camera.constants.Aspect.fill}>
+                    aspect={Camera.constants.Aspect.fill}
+                    captureTarget={Camera.constants.CaptureTarget.temp}>
                     <TouchableHighlight
                         style={styles.capture}
                         onPress={this.takePicture.bind(this)}>

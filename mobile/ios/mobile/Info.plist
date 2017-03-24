@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
   <key>NSCameraUsageDescription</key>
-  <string>NoteDown Camera Mode requires access to your camera</string>
+  <string>The camera is required to use Camera Mode</string>
   <key>NSPhotoLibraryUsageDescription</key><!-- for camera roll -->
-  <string>NoteDown Camera Mode requires access to your photo library</string>
+  <string>The camera roll is required to use Camera Mode</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
