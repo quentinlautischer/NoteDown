@@ -31,6 +31,7 @@ class DualmodeEditor extends React.Component {
 
   storeDidUpdate(){
     this.setState({open: this.props.store.getState().sessionActive});
+    this.parse(this.getContent());
   }
 
   handleChange(e) {

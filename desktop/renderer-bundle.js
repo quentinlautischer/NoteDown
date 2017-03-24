@@ -37671,6 +37671,7 @@
 	    key: 'storeDidUpdate',
 	    value: function storeDidUpdate() {
 	      this.setState({ open: this.props.store.getState().sessionActive });
+	      this.parse(this.getContent());
 	    }
 	  }, {
 	    key: 'handleChange',
