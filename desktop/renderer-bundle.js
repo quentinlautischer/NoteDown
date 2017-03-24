@@ -84,15 +84,15 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _folderContainerView = __webpack_require__(436);
+	var _folderContainerView = __webpack_require__(435);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _menubarTile = __webpack_require__(438);
+	var _menubarTile = __webpack_require__(437);
 
 	var _menubarTile2 = _interopRequireDefault(_menubarTile);
 
-	var _reactTapEventPlugin = __webpack_require__(439);
+	var _reactTapEventPlugin = __webpack_require__(438);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -39558,7 +39558,7 @@
 
 	'use strict';
 
-	var _flashcardTemplate = __webpack_require__(435);
+	var _flashcardTemplate = __webpack_require__(444);
 
 	var _flashcardTemplate2 = _interopRequireDefault(_flashcardTemplate);
 
@@ -39577,39 +39577,33 @@
 	  str = str.replace(/\r/g, '\n');
 
 	  //Block-level elements
-	  var block_array = [{ tag: null, content: str.split('\n') }];
+	  var block_array = [{ content: str.split('\n') }];
 
-	  check_block_html(block_array);
 	  check_header_setext(block_array);
 	  check_header_atx(block_array);
 	  check_blockquote(block_array);
 	  check_hrule(block_array);
-	  check_flashcard(block_array);
-	  check_table(block_array);
 	  check_paragraph(block_array);
-	  check_list_ordered(block_array);
-	  check_list_unordered(block_array);
-	  check_block_code(block_array);
 
 	  if (!allow_raw) {
-	    remove_raw(block_array);
+	    for (var b = 0; b < block_array.length;) {
+	      if (block_array[b].tag == null) {
+	        block_array.splice(b, 1);
+	      } else {
+	        b++;
+	      }
+	    }
 	  }
 	  return render_block(block_array);
 	}
 
-	function remove_raw(blocks) {
-	  //Get rid of the remaining raw text (mostly whitespace)
-	  var b = 0;
-	  while (true) {
-	    if (blocks[b].tag == null) {
-	      blocks.splice(b, 1);
-	    } else {
-	      b++;
-	    }
-	    if (b >= blocks.length) {
-	      break;
-	    }
-	  }
+	function parse_span(str) {
+	  //Span-level elements
+	  var span_array = [{ content: str }];
+
+	  check_links(span_array);
+
+	  return render_span(span_array);
 	}
 
 	function render_block(blocks) {
@@ -39636,34 +39630,34 @@
 	  return result;
 	}
 
-	function check_block_html(blocks) {}
+	function render_span(span) {
+	  var result = '';
+	  for (var i = 0; i < span.length; i++) {
+	    result += block.content;
+	  }
+	  return result;
+	}
 
 	function check_header_setext(blocks) {
 	  var patt = /^(=+|-+)\s*$/;
 	  var match;
-	  var b = 0; //block iterator
-	  while (true) {
+
+	  for (var b = 0; b < blocks.length; b++) {
 	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 1; l < content.length; l++) {
 	        if ((match = patt.exec(content[l])) != null) {
 	          var mag = match[1].charAt(0) == '=' ? 1 : 2;
 
-	          var raw1 = { tag: null, content: content.slice(0, l - 1) };
+	          var raw1 = { content: content.slice(0, l - 1) };
 	          var header_setext = { tag: 'h' + mag, content: content[l - 1] };
-	          var raw2 = { tag: null, content: content.slice(l + 1, content.length) };
+	          var raw2 = { content: content.slice(l + 1, content.length) };
 
 	          blocks.splice(b, 1, raw1, header_setext, raw2);
 	          b++;
 	          break;
 	        }
 	      }
-	      b++;
-	    } else {
-	      b++;
-	    }
-	    if (b >= blocks.length) {
-	      break;
 	    }
 	  }
 	}
@@ -39672,28 +39666,21 @@
 	  var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
 	  var match;
 
-	  var b = 0; //block iterator
-	  while (true) {
+	  for (var b = 0; b < blocks.length; b++) {
 	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 0; l < content.length; l++) {
 	        if ((match = patt.exec(content[l])) != null) {
 
-	          var raw1 = { tag: null, content: content.slice(0, l) };
+	          var raw1 = { content: content.slice(0, l) };
 	          var header_atx = { tag: 'h' + match[1].length, content: match[2] };
-	          var raw2 = { tag: null, content: content.slice(l + 1, content.length) };
+	          var raw2 = { content: content.slice(l + 1, content.length) };
 
 	          blocks.splice(b, 1, raw1, header_atx, raw2);
 	          b++;
 	          break;
 	        }
 	      }
-	      b++;
-	    } else {
-	      b++;
-	    }
-	    if (b >= blocks.length) {
-	      break;
 	    }
 	  }
 	}
@@ -39702,8 +39689,7 @@
 	  var patt = /^>\s(.*)$/;
 	  var match;
 
-	  var b = 0; //block iterator
-	  while (true) {
+	  for (var b = 0; b < blocks.length; b++) {
 	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 0; l < content.length; l++) {
@@ -39731,21 +39717,15 @@
 	          }
 	          inner_content = parse_blocks(inner_content, false);
 
-	          var raw1 = { tag: null, content: content.slice(0, l) };
+	          var raw1 = { content: content.slice(0, l) };
 	          var blockquote = { tag: 'blockquote', content: inner_content };
-	          var raw2 = { tag: null, content: content.slice(end, content.length) };
+	          var raw2 = { content: content.slice(end, content.length) };
 
 	          blocks.splice(b, 1, raw1, blockquote, raw2);
 	          b++;
 	          break;
 	        }
 	      }
-	      b++;
-	    } else {
-	      b++;
-	    }
-	    if (b >= blocks.length) {
-	      break;
 	    }
 	  }
 	}
@@ -39755,42 +39735,30 @@
 	  var patt2 = /^[ ]{0,3}(?:-[ ]{0,2})+\s*$/;
 	  var match;
 
-	  var b = 0; //block iterator
-	  while (true) {
+	  for (var b = 0; b < blocks.length; b++) {
 	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 0; l < content.length; l++) {
 	        if ((match = patt1.exec(content[l])) != null || (match = patt2.exec(content[l])) != null) {
 
-	          var raw1 = { tag: null, content: content.slice(0, l) };
-	          var header_atx = { tag: 'hr', content: null };
-	          var raw2 = { tag: null, content: content.slice(l + 1, content.length) };
+	          var raw1 = { content: content.slice(0, l) };
+	          var header_atx = { tag: 'hr' };
+	          var raw2 = { content: content.slice(l + 1, content.length) };
 
 	          blocks.splice(b, 1, raw1, header_atx, raw2);
 	          b++;
 	          break;
 	        }
 	      }
-	      b++;
-	    } else {
-	      b++;
-	    }
-	    if (b >= blocks.length) {
-	      break;
 	    }
 	  }
 	}
-
-	function check_flashcard(blocks) {}
-
-	function check_table(blocks) {}
 
 	function check_paragraph(blocks) {
 	  var patt = /^[ ]{0,3}(.+)$/;
 	  var match;
 
-	  var b = 0; //block iterator
-	  while (true) {
+	  for (var b = 0; b < blocks.length; b++) {
 	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 0; l < content.length; l++) {
@@ -39805,30 +39773,20 @@
 	            inner_content += (i > 0 ? '\n' : '') + p_content_array[i];
 	          }
 
-	          var raw1 = { tag: null, content: content.slice(0, l) };
+	          var raw1 = { content: content.slice(0, l) };
 	          var paragraph = { tag: 'p', content: inner_content };
-	          var raw2 = { tag: null, content: content.slice(end, content.length) };
+	          var raw2 = { content: content.slice(end, content.length) };
 
 	          blocks.splice(b, 1, raw1, paragraph, raw2);
 	          b++;
 	          break;
 	        }
 	      }
-	      b++;
-	    } else {
-	      b++;
-	    }
-	    if (b >= blocks.length) {
-	      break;
 	    }
 	  }
 	}
 
-	function check_list_ordered(blocks) {}
-
-	function check_list_unordered(blocks) {}
-
-	function check_block_code(blocks) {}
+	function check_links(span_array) {}
 
 	/* Functions to convert content extracted from MarkDown to HTML (for flashcards) */
 	function getFrontContent(front) {
@@ -39858,33 +39816,6 @@
 
 /***/ },
 /* 435 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	var html1 = "\n<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>\n  <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->\n<div class='flashcard-container'>\n    <div id='flipper' class='flashcard-flipper'>\n        <div class='front'>\n            <i id='hints-button' class=\"fa fa-question-circle-o\"></i>\n            <div id='front-content' class='content'>\n                <div class='middle'>\n                    <div id='front-inner-content' class='inner'>\n";
-
-	var html2 = "\n</div>\n</div>\n</div>\n</div>\n<div class='back'>\n<i id='front-button' class=\"fa fa-arrow-left\"></i>\n<div id='back-content' class='content'>\n<div class='middle'>\n<div id='solution' class='inner'>\n    <div id='back-inner-content'>\n";
-
-	var html3 = "\n</div>\n<div id='ranking'>\n    <table>\n        <tr id='ranking-row'>\n            <td><p class='circle'>1</p></td>\n            <td><p class='circle'>2</p></td>\n            <td><p class='circle'>3</p></td>\n        </tr>\n    </table>\n</div>\n</div>\n<div id='hints' class='inner'>\n<div id='hints-inner-content'>\n";
-
-	var html4 = "\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n";
-
-	var css = "\n<style>\n    .flashcard-container {\n        font-family: Tahoma, Geneva, sans-serif;\n        perspective: 1000px; /* adds realistic-looking perspective to flip action */\n        background-color: transparent;\n        width: 80%;\n        font-size: 1em;\n        color: black;\n    }\n\n    #flipper {\n        transition: width 1s, height 1s, transform 1s;\n        transform-style: preserve-3d;\n        position: relative;\n        width: 100%;\n        padding: 25%;\n        box-sizing: border-box;\n    }\n\n    .front,\n    .back {\n        /* not sure how much of this is needed for Electron */\n        -webkit-backface-visibility: hidden;\n        -moz-backface-visibility: hidden;\n        -o-backface-visibility: hidden;\n        backface-visibility: hidden;\n\n        width: 100%;\n        height: 100%;\n        position: absolute;\n        top: 0;\n        left: 0;\n        background-color: #e7fef8;\n        border: thick solid black;\n        border-radius: 5px;\n    }\n\n    .front {\n        z-index: 2; /* moves the front forward */\n        transform: rotateY(0deg);\n    }\n\n    .back {\n        transform: rotateY(180deg);\n    }\n\n    /* flip the pane when clicked */\n    .rotateBack {\n        transform: rotateY(-180deg);\n    }\n\n    .rotateHint {\n        transform: rotateY(180deg);\n    }\n\n    /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */\n    .content {\n        display: table;\n        position: absolute;\n        height: 100%;\n        width: 100%;\n    }\n\n    .middle {\n        display: table-cell;\n        vertical-align: middle;\n        text-align: center;\n    }\n\n    .inner {\n        margin-left: auto;\n        margin-right: auto;\n    }\n\n    #back-inner-content p,\n    #hints-inner-content p {\n        border-bottom: thin solid #0aaf82;\n        text-align: center;\n        margin-left: 20px;\n        margin-right: 20px;\n        visibility: hidden;\n    }\n\n    i {\n      position: absolute;\n      padding: 10px;\n    }\n\n    .fa {\n      font-size: 1.5em;\n    }\n\n    #hints-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n    }\n\n    #front-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n        display: none;\n    }\n\n    #ranking {\n      width: 100%;\n      position: absolute;\n      bottom: 5px;\n      visibility: hidden; /* don't allow ranking til all the solution is visible */\n    }\n\n    table {\n      display: inline; /* allows it to be centred */\n    }\n\n    td p {\n      margin: 0 30px; /* space between cells */\n    }\n\n    /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle\n    by Jawad\n    accessed 03/18/17 */\n    .circle {\n        width: 2em;\n        height: 2em;\n        border-radius: 50%;\n        font-size: 1em;\n        color: white;\n        line-height: 2em;\n        text-align: center;\n        background: #0aaf82;\n    }\n\n    .circle:hover {\n        color: #0aaf82;\n        background-color: black;\n    }\n</style>\n";
-
-	var js = "\n<script>\n    document.getElementById('front-content').onclick = handleClick;\n    document.getElementById('back-content').onclick = handleClick;\n    document.getElementById('hints-button').onclick = clickedShowHints;\n    document.getElementById('front-button').onclick = clickedShowFront;\n\n    var viewingHints = false;\n    var viewingSolution = false;\n    var solutionIndex = 0;\n    var hintIndex = 0;\n\n    function handleClick() {\n        if (viewingHints) {\n          showNextHint();\n          return;\n        }\n        showSolutionSide();\n    }\n\n    function clickedShowHints() {\n        remove('solution', 'hints-button');\n        display('hints');\n        if(document.getElementById('hints').childElementCount > 0) {\n            document.getElementById('hint0').style.visibility = 'visible';\n            hintIndex += 1;\n        }\n\n        viewingHints = true;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function clickedShowFront() {\n        remove('front-button');\n        display('hints-button');\n\n        viewingHints = false;\n        hintIndex = 0;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function remove() { // sets display of args (ids) to 'none'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'none');\n        }\n    }\n\n    function display() { // sets display of args (ids) to 'inline'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'inline');\n        }\n    }\n\n    function setDisplay(id, display) { // sets element 'id' to display 'display'\n        document.getElementById(id).style.display = display;\n    }\n\n    function flipFinished() { // called after a flip event to update what's displayed\n        if (viewingHints) {\n            display('front-button');\n        } else if (!viewingSolution) {\n            hideChildren(document.getElementById('back-inner-content'), 'solution');\n            hideChildren(document.getElementById('hints-inner-content'), 'hint');\n            document.getElementById('ranking').style.visibility = 'hidden';\n            display('hints-button');\n        }\n    }\n\n    function hideChildren(ele, id) {\n        for (var index = 0; index < ele.childElementCount; index++) {\n          document.getElementById(id + index).style.visibility = 'hidden';\n        }\n    }\n\n    function showNextHint() {\n        var hintsDiv = document.getElementById('hints-inner-content');\n        if (hintIndex < hintsDiv.childElementCount) {\n          document.getElementById('hint' + hintIndex).style.visibility = 'visible';\n          hintIndex += 1;\n        }\n    }\n\n    function resetCard() { // flips back to front after solution viewed, resetting everything\n        solutionIndex = 0;\n        viewingHints = false;\n        viewingSolution = false;\n        document.getElementById('flipper').classList.toggle('rotateBack');\n    }\n\n    function showNextSolutionStep() {\n        document.getElementById('solution' + solutionIndex++).style.visibility = 'visible';\n    }\n\n    function showSolutionSide() {\n        remove('hints', 'hints-button', 'front-button');\n        display('solution');\n\n        var solutionElementCount = document.getElementById('back-inner-content').childElementCount;\n        if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point\n            resetCard();\n            return;\n        }\n\n        if (solutionIndex === 0) { // flip to back!\n            viewingSolution = true;\n            document.getElementById('flipper').classList.toggle('rotateBack');\n        } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution\n            document.getElementById('ranking').style.visibility = 'visible';\n        }\n        showNextSolutionStep();\n    }\n\n    // The following is used to help with flashcard content display during card rotations.\n    // It allows the display to be updated when the rotation (flip) completes.\n    /* From Modernizr */\n    function whichTransitionEvent(){\n        var t;\n        var el = document.createElement('fakeelement');\n\n        // allows it to work on many browsers\n        var transitions = {\n            'transition':'transitionend',\n            'OTransition':'oTransitionEnd',\n            'MozTransition':'transitionend',\n            'WebkitTransition':'webkitTransitionEnd'\n        }\n\n        for(t in transitions){\n            if( el.style[t] !== undefined ){\n                return transitions[t];\n            }\n        }\n    }\n\n    // listen for transition to end\n    var transitionEvent = whichTransitionEvent();\n    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);\n</script>\n";
-
-	module.exports = {
-	    html1: html1,
-	    html2: html2,
-	    html3: html3,
-	    html4: html4,
-	    css: css,
-	    js: js
-	};
-
-/***/ },
-/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39899,7 +39830,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _dialogFolderCreate = __webpack_require__(437);
+	var _dialogFolderCreate = __webpack_require__(436);
 
 	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
 
@@ -40042,7 +39973,7 @@
 	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
 
 /***/ },
-/* 437 */
+/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -40172,7 +40103,7 @@
 	exports.default = DialogFolderCreate;
 
 /***/ },
-/* 438 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -40325,11 +40256,11 @@
 	exports.default = MenubarTile;
 
 /***/ },
-/* 439 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(440);
+	var defaultClickRejectionStrategy = __webpack_require__(439);
 
 	var alreadyInjected = false;
 
@@ -40351,13 +40282,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(441)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(440)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 440 */
+/* 439 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -40368,7 +40299,7 @@
 
 
 /***/ },
-/* 441 */
+/* 440 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -40392,14 +40323,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(442);
+	var EventConstants = __webpack_require__(441);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(443);
+	var TouchEventUtils = __webpack_require__(442);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(444);
+	var keyOf = __webpack_require__(443);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -40545,7 +40476,7 @@
 
 
 /***/ },
-/* 442 */
+/* 441 */
 /***/ function(module, exports) {
 
 	/**
@@ -40641,7 +40572,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 443 */
+/* 442 */
 /***/ function(module, exports) {
 
 	/**
@@ -40689,7 +40620,7 @@
 
 
 /***/ },
-/* 444 */
+/* 443 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -40726,6 +40657,33 @@
 	};
 
 	module.exports = keyOf;
+
+/***/ },
+/* 444 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var html1 = "\n<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>\n  <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->\n<div class='flashcard-container'>\n    <div id='flipper' class='flashcard-flipper'>\n        <div class='front'>\n            <i id='hints-button' class=\"fa fa-question-circle-o\"></i>\n            <div id='front-content' class='content'>\n                <div class='middle'>\n                    <div id='front-inner-content' class='inner'>\n";
+
+	var html2 = "\n</div>\n</div>\n</div>\n</div>\n<div class='back'>\n<i id='front-button' class=\"fa fa-arrow-left\"></i>\n<div id='back-content' class='content'>\n<div class='middle'>\n<div id='solution' class='inner'>\n    <div id='back-inner-content'>\n";
+
+	var html3 = "\n</div>\n<div id='ranking'>\n    <table>\n        <tr id='ranking-row'>\n            <td><p class='circle'>1</p></td>\n            <td><p class='circle'>2</p></td>\n            <td><p class='circle'>3</p></td>\n        </tr>\n    </table>\n</div>\n</div>\n<div id='hints' class='inner'>\n<div id='hints-inner-content'>\n";
+
+	var html4 = "\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n";
+
+	var css = "\n<style>\n    .flashcard-container {\n        font-family: Tahoma, Geneva, sans-serif;\n        perspective: 1000px; /* adds realistic-looking perspective to flip action */\n        background-color: transparent;\n        width: 80%;\n        font-size: 1em;\n        color: black;\n    }\n\n    #flipper {\n        transition: width 1s, height 1s, transform 1s;\n        transform-style: preserve-3d;\n        position: relative;\n        width: 100%;\n        padding: 25%;\n        box-sizing: border-box;\n    }\n\n    .front,\n    .back {\n        /* not sure how much of this is needed for Electron */\n        -webkit-backface-visibility: hidden;\n        -moz-backface-visibility: hidden;\n        -o-backface-visibility: hidden;\n        backface-visibility: hidden;\n\n        width: 100%;\n        height: 100%;\n        position: absolute;\n        top: 0;\n        left: 0;\n        background-color: #e7fef8;\n        border: thick solid black;\n        border-radius: 5px;\n    }\n\n    .front {\n        z-index: 2; /* moves the front forward */\n        transform: rotateY(0deg);\n    }\n\n    .back {\n        transform: rotateY(180deg);\n    }\n\n    /* flip the pane when clicked */\n    .rotateBack {\n        transform: rotateY(-180deg);\n    }\n\n    .rotateHint {\n        transform: rotateY(180deg);\n    }\n\n    /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */\n    .content {\n        display: table;\n        position: absolute;\n        height: 100%;\n        width: 100%;\n    }\n\n    .middle {\n        display: table-cell;\n        vertical-align: middle;\n        text-align: center;\n    }\n\n    .inner {\n        margin-left: auto;\n        margin-right: auto;\n    }\n\n    #back-inner-content p,\n    #hints-inner-content p {\n        border-bottom: thin solid #0aaf82;\n        text-align: center;\n        margin-left: 20px;\n        margin-right: 20px;\n        visibility: hidden;\n    }\n\n    i {\n      position: absolute;\n      padding: 10px;\n    }\n\n    .fa {\n      font-size: 1.5em;\n    }\n\n    #hints-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n    }\n\n    #front-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n        display: none;\n    }\n\n    #ranking {\n      width: 100%;\n      position: absolute;\n      bottom: 5px;\n      visibility: hidden; /* don't allow ranking til all the solution is visible */\n    }\n\n    table {\n      display: inline; /* allows it to be centred */\n    }\n\n    td p {\n      margin: 0 30px; /* space between cells */\n    }\n\n    /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle\n    by Jawad\n    accessed 03/18/17 */\n    .circle {\n        width: 2em;\n        height: 2em;\n        border-radius: 50%;\n        font-size: 1em;\n        color: white;\n        line-height: 2em;\n        text-align: center;\n        background: #0aaf82;\n    }\n\n    .circle:hover {\n        color: #0aaf82;\n        background-color: black;\n    }\n</style>\n";
+
+	var js = "\n<script>\n    document.getElementById('front-content').onclick = handleClick;\n    document.getElementById('back-content').onclick = handleClick;\n    document.getElementById('hints-button').onclick = clickedShowHints;\n    document.getElementById('front-button').onclick = clickedShowFront;\n\n    var viewingHints = false;\n    var viewingSolution = false;\n    var solutionIndex = 0;\n    var hintIndex = 0;\n\n    function handleClick() {\n        if (viewingHints) {\n          showNextHint();\n          return;\n        }\n        showSolutionSide();\n    }\n\n    function clickedShowHints() {\n        remove('solution', 'hints-button');\n        display('hints');\n        if(document.getElementById('hints').childElementCount > 0) {\n            document.getElementById('hint0').style.visibility = 'visible';\n            hintIndex += 1;\n        }\n\n        viewingHints = true;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function clickedShowFront() {\n        remove('front-button');\n        display('hints-button');\n\n        viewingHints = false;\n        hintIndex = 0;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function remove() { // sets display of args (ids) to 'none'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'none');\n        }\n    }\n\n    function display() { // sets display of args (ids) to 'inline'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'inline');\n        }\n    }\n\n    function setDisplay(id, display) { // sets element 'id' to display 'display'\n        document.getElementById(id).style.display = display;\n    }\n\n    function flipFinished() { // called after a flip event to update what's displayed\n        if (viewingHints) {\n            display('front-button');\n        } else if (!viewingSolution) {\n            hideChildren(document.getElementById('back-inner-content'), 'solution');\n            hideChildren(document.getElementById('hints-inner-content'), 'hint');\n            document.getElementById('ranking').style.visibility = 'hidden';\n            display('hints-button');\n        }\n    }\n\n    function hideChildren(ele, id) {\n        for (var index = 0; index < ele.childElementCount; index++) {\n          document.getElementById(id + index).style.visibility = 'hidden';\n        }\n    }\n\n    function showNextHint() {\n        var hintsDiv = document.getElementById('hints-inner-content');\n        if (hintIndex < hintsDiv.childElementCount) {\n          document.getElementById('hint' + hintIndex).style.visibility = 'visible';\n          hintIndex += 1;\n        }\n    }\n\n    function resetCard() { // flips back to front after solution viewed, resetting everything\n        solutionIndex = 0;\n        viewingHints = false;\n        viewingSolution = false;\n        document.getElementById('flipper').classList.toggle('rotateBack');\n    }\n\n    function showNextSolutionStep() {\n        document.getElementById('solution' + solutionIndex++).style.visibility = 'visible';\n    }\n\n    function showSolutionSide() {\n        remove('hints', 'hints-button', 'front-button');\n        display('solution');\n\n        var solutionElementCount = document.getElementById('back-inner-content').childElementCount;\n        if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point\n            resetCard();\n            return;\n        }\n\n        if (solutionIndex === 0) { // flip to back!\n            viewingSolution = true;\n            document.getElementById('flipper').classList.toggle('rotateBack');\n        } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution\n            document.getElementById('ranking').style.visibility = 'visible';\n        }\n        showNextSolutionStep();\n    }\n\n    // The following is used to help with flashcard content display during card rotations.\n    // It allows the display to be updated when the rotation (flip) completes.\n    /* From Modernizr */\n    function whichTransitionEvent(){\n        var t;\n        var el = document.createElement('fakeelement');\n\n        // allows it to work on many browsers\n        var transitions = {\n            'transition':'transitionend',\n            'OTransition':'oTransitionEnd',\n            'MozTransition':'transitionend',\n            'WebkitTransition':'webkitTransitionEnd'\n        }\n\n        for(t in transitions){\n            if( el.style[t] !== undefined ){\n                return transitions[t];\n            }\n        }\n    }\n\n    // listen for transition to end\n    var transitionEvent = whichTransitionEvent();\n    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);\n</script>\n";
+
+	module.exports = {
+	    html1: html1,
+	    html2: html2,
+	    html3: html3,
+	    html4: html4,
+	    css: css,
+	    js: js
+	};
 
 /***/ }
 /******/ ]);

@@ -14,31 +14,30 @@ function parse_blocks(str, allow_raw) {
   str = str.replace (/\r/g, '\n');
 
   //Block-level elements
-  var block_array = [{tag:null, content:str.split('\n')}];
+  var block_array = [{content:str.split('\n')}];
 
-  check_block_html(block_array);
   check_header_setext(block_array);
   check_header_atx(block_array);
   check_blockquote(block_array);
   check_hrule(block_array);
-  check_flashcard(block_array);
-  check_table(block_array);
   check_paragraph(block_array);
-  check_list_ordered(block_array);
-  check_list_unordered(block_array);
-  check_block_code(block_array);
   
-  if (!allow_raw) { remove_raw(block_array); }
+  if (!allow_raw) {
+    for (var b = 0; b < block_array.length; ) {
+      if (block_array[b].tag == null) { block_array.splice(b,1); }
+      else { b++; }
+    }
+  }
   return render_block(block_array);
 }
 
-function remove_raw(blocks) { //Get rid of the remaining raw text (mostly whitespace)
-  var b = 0;
-  while (true) {
-    if (blocks[b].tag == null) { blocks.splice(b,1); }
-    else { b++; }
-    if (b >= blocks.length) { break; }
-  }
+function parse_span(str) {
+  //Span-level elements
+  var span_array = [{content:str}];
+
+  check_links(span_array);
+  
+  return render_span(span_array);
 }
 
 function render_block(blocks) {
@@ -63,32 +62,35 @@ function render_block(blocks) {
   return result;
 }
 
-function check_block_html(blocks) {
+function render_span(span) {
+  var result = '';
+  for (var i = 0; i < span.length; i++) {
+    result += block.content;
+  }
+  return result;
 }
 
 function check_header_setext(blocks) {
   var patt = /^(=+|-+)\s*$/;
   var match;
-  var b = 0; //block iterator
-  while (true) {
+  
+  for (var b = 0; b < blocks.length; b++) {
     if (blocks[b].tag == null) {
       var content = blocks[b].content;
       for (var l = 1; l < content.length; l++) {
         if ((match = patt.exec(content[l])) != null) {
           var mag = (match[1].charAt(0) == '=') ? 1 : 2;
 
-          var raw1 = {tag:null, content:content.slice(0,l-1)};
+          var raw1 = {content:content.slice(0,l-1)};
           var header_setext = {tag:'h'+mag, content:content[l-1]};
-          var raw2 = {tag:null, content:content.slice(l+1,content.length)};
+          var raw2 = {content:content.slice(l+1,content.length)};
 
           blocks.splice(b, 1, raw1, header_setext, raw2);
           b++;
           break;
         }
       }
-      b++;
-    } else { b++; }
-    if (b >= blocks.length) { break; }
+    }
   }
 }
 
@@ -96,25 +98,22 @@ function check_header_atx(blocks) {
   var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
   var match;
 
-  var b = 0; //block iterator
-  while (true) {
+  for (var b = 0; b < blocks.length; b++) {
     if (blocks[b].tag == null) {
       var content = blocks[b].content;
       for (var l = 0; l < content.length; l++) {
         if ((match = patt.exec(content[l])) != null) {
 
-          var raw1 = {tag:null, content:content.slice(0,l)};
+          var raw1 = {content:content.slice(0,l)};
           var header_atx = {tag:'h'+match[1].length, content:match[2]};
-          var raw2 = {tag:null, content:content.slice(l+1,content.length)};
+          var raw2 = {content:content.slice(l+1,content.length)};
 
           blocks.splice(b, 1, raw1, header_atx, raw2);
           b++;
           break;
         }
       }
-      b++;
-    } else { b++; }
-    if (b >= blocks.length) { break; }
+    }
   }
 }
 
@@ -122,8 +121,7 @@ function check_blockquote(blocks) {
   var patt = /^>\s(.*)$/;
   var match;
 
-  var b = 0; //block iterator
-  while (true) {
+  for (var b = 0; b < blocks.length; b++) {
     if (blocks[b].tag == null) {
       var content = blocks[b].content;
       for (var l = 0; l < content.length; l++) {
@@ -146,18 +144,16 @@ function check_blockquote(blocks) {
           }
           inner_content = parse_blocks(inner_content, false);
 
-          var raw1 = {tag:null, content:content.slice(0,l)};
+          var raw1 = {content:content.slice(0,l)};
           var blockquote = {tag:'blockquote', content:inner_content};
-          var raw2 = {tag:null, content:content.slice(end,content.length)};
+          var raw2 = {content:content.slice(end,content.length)};
 
           blocks.splice(b, 1, raw1, blockquote, raw2);
           b++;
           break;
         }
       }
-      b++;
-    } else { b++; }
-    if (b >= blocks.length) { break; }
+    }
   }
 }
 
@@ -166,40 +162,30 @@ function check_hrule(blocks) {
   var patt2 = /^[ ]{0,3}(?:-[ ]{0,2})+\s*$/;
   var match;
 
-  var b = 0; //block iterator
-  while (true) {
+  for (var b = 0; b < blocks.length; b++) {
     if (blocks[b].tag == null) {
       var content = blocks[b].content;
       for (var l = 0; l < content.length; l++) {
         if ((match = patt1.exec(content[l])) != null || (match = patt2.exec(content[l])) != null) {
 
-          var raw1 = {tag:null, content:content.slice(0,l)};
-          var header_atx = {tag:'hr', content:null};
-          var raw2 = {tag:null, content:content.slice(l+1,content.length)};
+          var raw1 = {content:content.slice(0,l)};
+          var header_atx = {tag:'hr'};
+          var raw2 = {content:content.slice(l+1,content.length)};
 
           blocks.splice(b, 1, raw1, header_atx, raw2);
           b++;
           break;
         }
       }
-      b++;
-    } else { b++; }
-    if (b >= blocks.length) { break; }
+    }
   }
-}
-
-function check_flashcard(blocks) {
-}
-
-function check_table(blocks) {
 }
 
 function check_paragraph(blocks) {
   var patt = /^[ ]{0,3}(.+)$/;
   var match;
 
-  var b = 0; //block iterator
-  while (true) {
+  for (var b = 0; b < blocks.length; b++) {
     if (blocks[b].tag == null) {
       var content = blocks[b].content;
       for (var l = 0; l < content.length; l++) {
@@ -212,28 +198,20 @@ function check_paragraph(blocks) {
             inner_content += (i > 0 ? '\n' : '') + p_content_array[i];
           }
 
-          var raw1 = {tag:null, content:content.slice(0,l)};
+          var raw1 = {content:content.slice(0,l)};
           var paragraph = {tag:'p', content:inner_content};
-          var raw2 = {tag:null, content:content.slice(end,content.length)};
+          var raw2 = {content:content.slice(end,content.length)};
 
           blocks.splice(b, 1, raw1, paragraph, raw2);
           b++;
           break;
         }
       }
-      b++;
-    } else { b++; }
-    if (b >= blocks.length) { break; }
+    }
   }
 }
 
-function check_list_ordered(blocks) {
-}
-
-function check_list_unordered(blocks) {
-}
-
-function check_block_code(blocks) {
+function check_links(span_array) {
 }
 
 /* Functions to convert content extracted from MarkDown to HTML (for flashcards) */
