@@ -39572,7 +39572,7 @@
 	  str = str.replace(/\r/g, '\n');
 
 	  //Block-level elements
-	  var block_array = [{ type: 'raw', tag: '', content: str.split('\n') }];
+	  var block_array = [{ tag: null, content: str.split('\n') }];
 
 	  check_blocks(block_array);
 	  remove_raw(block_array);
@@ -39597,7 +39597,7 @@
 	  //Get rid of the remaining raw text (mostly whitespace)
 	  var b = 0;
 	  while (true) {
-	    if (blocks[b].type == 'raw') {
+	    if (blocks[b].tag == null) {
 	      blocks.splice(b, 1);
 	    } else {
 	      b++;
@@ -39637,15 +39637,15 @@
 	  var match;
 	  var b = 0; //block iterator
 	  while (true) {
-	    if (blocks[b].type == 'raw') {
+	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 1; l < content.length; l++) {
 	        if ((match = patt.exec(content[l])) != null) {
 	          var mag = match[1].charAt(0) == '=' ? 1 : 2;
 
-	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l - 1) };
-	          var header_setext = { type: 'header_setext', tag: 'h' + mag, content: content[l - 1] };
-	          var raw2 = { type: 'raw', tag: '', content: content.slice(l + 1, content.length) };
+	          var raw1 = { tag: null, content: content.slice(0, l - 1) };
+	          var header_setext = { tag: 'h' + mag, content: content[l - 1] };
+	          var raw2 = { tag: null, content: content.slice(l + 1, content.length) };
 
 	          blocks.splice(b, 1, raw1, header_setext, raw2);
 	          b++;
@@ -39668,14 +39668,14 @@
 
 	  var b = 0; //block iterator
 	  while (true) {
-	    if (blocks[b].type == 'raw') {
+	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 0; l < content.length; l++) {
 	        if ((match = patt.exec(content[l])) != null) {
 
-	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l) };
-	          var header_atx = { type: 'header_setext', tag: 'h' + match[1].length, content: match[2] };
-	          var raw2 = { type: 'raw', tag: '', content: content.slice(l + 1, content.length) };
+	          var raw1 = { tag: null, content: content.slice(0, l) };
+	          var header_atx = { tag: 'h' + match[1].length, content: match[2] };
+	          var raw2 = { tag: null, content: content.slice(l + 1, content.length) };
 
 	          blocks.splice(b, 1, raw1, header_atx, raw2);
 	          b++;
@@ -39698,7 +39698,7 @@
 
 	  var b = 0; //block iterator
 	  while (true) {
-	    if (blocks[b].type == 'raw') {
+	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 0; l < content.length; l++) {
 	        if ((match = patt.exec(content[l])) != null) {
@@ -39725,9 +39725,9 @@
 	          }
 	          inner_content = parse(inner_content);
 
-	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l) };
-	          var blockquote = { type: 'blockquote', tag: 'blockquote', content: inner_content };
-	          var raw2 = { type: 'raw', tag: '', content: content.slice(end, content.length) };
+	          var raw1 = { tag: null, content: content.slice(0, l) };
+	          var blockquote = { tag: 'blockquote', content: inner_content };
+	          var raw2 = { tag: null, content: content.slice(end, content.length) };
 
 	          blocks.splice(b, 1, raw1, blockquote, raw2);
 	          b++;
@@ -39751,14 +39751,14 @@
 
 	  var b = 0; //block iterator
 	  while (true) {
-	    if (blocks[b].type == 'raw') {
+	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 0; l < content.length; l++) {
 	        if ((match = patt1.exec(content[l])) != null || (match = patt2.exec(content[l])) != null) {
 
-	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l) };
-	          var header_atx = { type: 'hrule', tag: 'hr' };
-	          var raw2 = { type: 'raw', tag: '', content: content.slice(l + 1, content.length) };
+	          var raw1 = { tag: null, content: content.slice(0, l) };
+	          var header_atx = { tag: 'hr', content: null };
+	          var raw2 = { tag: null, content: content.slice(l + 1, content.length) };
 
 	          blocks.splice(b, 1, raw1, header_atx, raw2);
 	          b++;
@@ -39785,7 +39785,7 @@
 
 	  var b = 0; //block iterator
 	  while (true) {
-	    if (blocks[b].type == 'raw') {
+	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 0; l < content.length; l++) {
 	        if ((match = patt.exec(content[l])) != null) {
@@ -39799,9 +39799,9 @@
 	            inner_content += (i > 0 ? '\n' : '') + p_content_array[i];
 	          }
 
-	          var raw1 = { type: 'raw', tag: '', content: content.slice(0, l) };
-	          var paragraph = { type: 'paragraph', tag: 'p', content: inner_content };
-	          var raw2 = { type: 'raw', tag: '', content: content.slice(end, content.length) };
+	          var raw1 = { tag: null, content: content.slice(0, l) };
+	          var paragraph = { tag: 'p', content: inner_content };
+	          var raw2 = { tag: null, content: content.slice(end, content.length) };
 
 	          blocks.splice(b, 1, raw1, paragraph, raw2);
 	          b++;
