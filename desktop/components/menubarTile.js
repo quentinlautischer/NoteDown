@@ -1,4 +1,4 @@
-import React from 'react';
+ import React from 'react';
 
 import menubuilder from './menubar';
 const {remote} = require('electron');
@@ -53,6 +53,7 @@ class MenubarTile extends React.Component {
 
   render() {
     console.log("Rendering menubar");
+    if (process.platform !== 'darwin') {
     return (
       <div className="menubar-custom">
         <div className="menubar-tile menu-bars" onClick={this.handleMenuClick}>
@@ -67,6 +68,9 @@ class MenubarTile extends React.Component {
         </div>
       </div>
     );
+    } else {
+      return (<div/>);
+    }
   }
   
 }

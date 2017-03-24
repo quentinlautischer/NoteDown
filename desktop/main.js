@@ -30,7 +30,8 @@ function createWindow () {
   if (process.platform !== 'darwin') {
     mainWindow = new BrowserWindow({width: 1000, height: 700, minWidth: 500, minHeight: 450, frame: false})
   } else {
-    mainWindow = new BrowserWindow({width: 1000, height: 700, minWidth: 500, minHeight: 450})
+    mainWindow = new BrowserWindow({titleBarStyle: 'hidden', width: 1000, height: 700, minWidth: 500, minHeight: 450})
+    
   }
 
 

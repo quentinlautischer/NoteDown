@@ -6,8 +6,9 @@ import { createStore, combineReducers } from 'redux';
 
 import appReducer from './reducers/appReducer';
 import notesReducer from './reducers/notesReducer';
+import editorReducer from './reducers/editorReducer';
 
- import menubuilder from './components/menubar';
+import menubuilder from './components/menubar';
 import StartMenu from './components/startMenu';
 import DualmodeEditor from './components/dualmodeEditor';
 import FolderContainerView from './components/folderContainerView';
@@ -147,10 +148,14 @@ class App extends React.Component {
 
 const reducer = combineReducers({
   state: appReducer,
-  notes: notesReducer
+  notes: notesReducer,
+  editor: editorReducer
 });
 
 const store = createStore(reducer);
+
+document.addEventListener('dragover', event => event.preventDefault())
+document.addEventListener('drop', event => event.preventDefault())
 
 ReactDOM.render(
   <Provider store={ store }>
