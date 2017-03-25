@@ -84,6 +84,10 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
+	var _fusionmodeEditor = __webpack_require__(629);
+
+	var _fusionmodeEditor2 = _interopRequireDefault(_fusionmodeEditor);
+
 	var _folderContainerView = __webpack_require__(618);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
@@ -174,6 +178,13 @@
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
 	            _react2.default.createElement(_folderContainerView2.default, { store: store })
+	          );
+	        case 'fusion':
+	          return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(_menubarTile2.default, { store: store }),
+	            _react2.default.createElement(_fusionmodeEditor2.default, { store: store })
 	          );
 	        default:
 	          return _react2.default.createElement(
@@ -23731,6 +23742,10 @@
 	  return Object.assign({}, state, { mode: 'editor' });
 	}
 
+	function fusionMode(state, action) {
+	  return Object.assign({}, state, { mode: 'fusion' });
+	}
+
 	function folderMode(state, action) {
 	  return Object.assign({}, state, { mode: 'folderview' });
 	}
@@ -23769,6 +23784,7 @@
 
 	var appReducer = (0, _reducerUtilities2.default)(initial_state, {
 	  'EDITOR_MODE': editorMode,
+	  'FUSION_MODE': fusionMode,
 	  'FOLDER_MODE': folderMode,
 	  'FLASHCARD_MODE': flashcardMode,
 	  'MENU_MODE': menuMode,
@@ -24686,6 +24702,11 @@
 	      this.props.store.dispatch({ type: 'EDITOR_MODE' });
 	    }
 	  }, {
+	    key: 'fusionmode',
+	    value: function fusionmode() {
+	      this.props.store.dispatch({ type: 'FUSION_MODE' });
+	    }
+	  }, {
 	    key: 'handleUsernameChange',
 	    value: function handleUsernameChange(event) {
 	      this.setState({
@@ -24803,7 +24824,10 @@
 	              _react2.default.createElement(_menuButton2.default, { label: 'Quickmode', onClick: function onClick() {
 	                  return _this2.quickmode();
 	                } })
-	            )
+	            ),
+	            _react2.default.createElement(_menuButton2.default, { label: 'Fusionmode', onClick: function onClick() {
+	                return _this2.fusionmode();
+	              } })
 	          )
 	        );
 	      }
@@ -37631,6 +37655,10 @@
 
 	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
 
+	var _formatToolbar = __webpack_require__(628);
+
+	var _formatToolbar2 = _interopRequireDefault(_formatToolbar);
+
 	var _reactRedux = __webpack_require__(177);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -37686,7 +37714,7 @@
 	    key: 'handleChange',
 	    value: function handleChange(e) {
 	      // If there is no selection, you can use the properties .selectionStart or .selectionEnd (with no selection they're equal).
-	      var cursorPosition = e.target.selectionStart;
+	      var cursorPosition = 0; //e.target.selectionStart;
 	      this.props.store.dispatch({ type: 'CURSOR_CHANGE', position: cursorPosition });
 	      console.log('cursor position: ' + this.props.store.getState().editor.cursor_position);
 
@@ -37789,6 +37817,13 @@
 	    // <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
 	    //           {this.getContent()}
 	    //         </textarea>
+	    // <CodeMirror 
+	    //   id="userText"
+	    //   className="markdown-input-editor" 
+	    //   value={this.getContent()} 
+	    //   onChange={this.handleChange} 
+	    //   options={options} 
+	    // />
 
 	  }, {
 	    key: 'render',
@@ -37809,13 +37844,6 @@
 	          onDragEnd: this.preventDefault,
 	          onDrop: this.drop
 	        },
-	        _react2.default.createElement(CodeMirror, {
-	          id: 'userText',
-	          className: 'markdown-input-editor',
-	          value: this.getContent(),
-	          onChange: this.handleChange,
-	          options: options
-	        }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'render-container' },
@@ -69614,6 +69642,420 @@
 	};
 
 	module.exports = keyOf;
+
+/***/ },
+/* 627 */,
+/* 628 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _MuiThemeProvider = __webpack_require__(225);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(312);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var FormatToolbar = function (_React$Component) {
+	  _inherits(FormatToolbar, _React$Component);
+
+	  function FormatToolbar() {
+	    _classCallCheck(this, FormatToolbar);
+
+	    return _possibleConstructorReturn(this, (FormatToolbar.__proto__ || Object.getPrototypeOf(FormatToolbar)).apply(this, arguments));
+	  }
+
+	  _createClass(FormatToolbar, [{
+	    key: 'setHeader',
+	    value: function setHeader(num) {
+	      document.execCommand('formatBlock', false, 'h' + num);
+	    }
+	  }, {
+	    key: 'setParagraph',
+	    value: function setParagraph() {
+	      document.execCommand('formatBlock', false, 'p');
+	    }
+	  }, {
+	    key: 'setBlockquote',
+	    value: function setBlockquote() {
+	      document.execCommand('formatBlock', false, 'blockquote');
+	    }
+	  }, {
+	    key: 'setBold',
+	    value: function setBold() {
+	      document.execCommand('bold', false, null);
+	    }
+	  }, {
+	    key: 'setItalic',
+	    value: function setItalic() {
+	      document.execCommand('italic', false, null);
+	    }
+	  }, {
+	    key: 'insertLink',
+	    value: function insertLink() {
+	      url = prompt('Enter the link here: ', 'http:\/\/');
+	      document.execCommand('createlink', false, url);
+	    }
+	  }, {
+	    key: 'insertPhoto',
+	    value: function insertPhoto() {
+	      url = prompt('Enter the link here: ', 'http:\/\/');
+	      document.execCommand('insertimage', false, url);
+	    }
+	  }, {
+	    key: 'insertHorizontalRule',
+	    value: function insertHorizontalRule() {
+	      document.execCommand('insertHorizontalRule', false, null);
+	    }
+	  }, {
+	    key: 'insertOrderedList',
+	    value: function insertOrderedList() {
+	      document.execCommand('insertOrderedList', false, null);
+	    }
+	  }, {
+	    key: 'insertUnorderedList',
+	    value: function insertUnorderedList() {
+	      document.execCommand('insertUnorderedList', false, null);
+	    }
+
+	    //code, flashcards and tables.
+
+
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'format-toolbar' },
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'bold', onClick: this.setBold },
+	          _react2.default.createElement('i', { className: 'fa fa-bold' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'italic', onClick: this.setBold },
+	          _react2.default.createElement('i', { className: 'fa fa-italic' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'insertUnorderedList', onClick: this.insertUnorderedList },
+	          _react2.default.createElement('i', { className: 'fa fa-list-ul' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'insertOrderedList', onClick: this.insertOrderedList },
+	          _react2.default.createElement('i', { className: 'fa fa-list-ol' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h1', onClick: this.setHeader(1) },
+	          'H1'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h2', onClick: this.setHeader(2) },
+	          'H2'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h3', onClick: this.setHeader(3) },
+	          'H3'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h4', onClick: this.setHeader(4) },
+	          'H4'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h5', onClick: this.setHeader(5) },
+	          'H5'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h6', onClick: this.setHeader(6) },
+	          'H6'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'p', onClick: this.setParagraph },
+	          'P'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'blockquote', onClick: this.setBlockquote },
+	          _react2.default.createElement('i', { className: 'fa fa-indent' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'horizontalRule', onClick: this.insertHorizontalRule },
+	          _react2.default.createElement('i', { className: 'fa fa-minus' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'createlink', onClick: this.insertLink },
+	          _react2.default.createElement('i', { className: 'fa fa-link' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'insertimage', onClick: this.insertPhoto },
+	          _react2.default.createElement('i', { className: 'fa fa-image' })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return FormatToolbar;
+	}(_react2.default.Component);
+
+	exports.default = FormatToolbar;
+
+/***/ },
+/* 629 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _renderer = __webpack_require__(425);
+
+	var _renderer2 = _interopRequireDefault(_renderer);
+
+	var _tocNav = __webpack_require__(426);
+
+	var _tocNav2 = _interopRequireDefault(_tocNav);
+
+	var _dialogFileDrag = __webpack_require__(428);
+
+	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
+
+	var _formatToolbar = __webpack_require__(628);
+
+	var _formatToolbar2 = _interopRequireDefault(_formatToolbar);
+
+	var _reactRedux = __webpack_require__(177);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ipc = __webpack_require__(222).ipcRenderer;
+
+	var shared = __webpack_require__(434);
+
+	var FusionmodeEditor = function (_React$Component) {
+	  _inherits(FusionmodeEditor, _React$Component);
+
+	  function FusionmodeEditor() {
+	    _classCallCheck(this, FusionmodeEditor);
+
+	    var _this = _possibleConstructorReturn(this, (FusionmodeEditor.__proto__ || Object.getPrototypeOf(FusionmodeEditor)).call(this));
+
+	    _this.state = {
+	      open: false,
+	      fileDragDialogOpen: false,
+	      fileDragEventFilepath: "",
+	      rendered_content: ""
+	    };
+	    _this.handleChange = _this.handleChange.bind(_this);
+	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
+	    _this.drop = _this.drop.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(FusionmodeEditor, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.props.store.subscribe(this.storeDidUpdate);
+	    }
+	  }, {
+	    key: 'storeDidUpdate',
+	    value: function storeDidUpdate() {
+	      this.setState({ open: this.props.store.getState().sessionActive });
+	      this.parse(this.getContent());
+	    }
+	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(e) {
+	      // If there is no selection, you can use the properties .selectionStart or .selectionEnd (with no selection they're equal).
+	      var cursorPosition = 0; //e.target.selectionStart;
+	      this.props.store.dispatch({ type: 'CURSOR_CHANGE', position: cursorPosition });
+	      console.log('cursor position: ' + this.props.store.getState().editor.cursor_position);
+
+	      this.updateContent(e.target.value);
+	      this.parse(e.target.value);
+	    }
+	  }, {
+	    key: 'updateContent',
+	    value: function updateContent(content) {
+	      this.props.store.dispatch({ type: 'PAGE_CONTENT_CHANGE',
+	        content: content,
+	        folderIndex: this.props.store.getState().state.folderIndex,
+	        pageIndex: this.props.store.getState().state.pageIndex
+	      });
+	      this.request_push_data();
+	    }
+	  }, {
+	    key: 'openFileDragDialog',
+	    value: function openFileDragDialog() {
+	      this.setState({ fileDragDialogOpen: true });
+	    }
+	  }, {
+	    key: 'closeFileDragDialog',
+	    value: function closeFileDragDialog() {
+	      this.setState({ fileDragDialogOpen: false });
+	    }
+	  }, {
+	    key: 'request_push_data',
+	    value: function request_push_data() {
+	      console.log("requesting data push");
+	      var state = this.props.store.getState();
+	      var data = { userid: state.state.userid, notes: state.notes };
+	      ipc.send('request-push-data', data);
+	    }
+	  }, {
+	    key: 'scrollTo',
+	    value: function scrollTo(id) {
+	      console.log("scrolling to id: " + id);
+	      var element_to_scroll_to = document.getElementById(id);
+	      if (element_to_scroll_to) {
+	        element_to_scroll_to.scrollIntoView();
+	      }
+	    }
+	  }, {
+	    key: 'getContent',
+	    value: function getContent() {
+	      var state = this.props.store.getState();
+	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
+	    }
+	  }, {
+	    key: 'parse',
+	    value: function parse(content) {
+	      var rendered = '';
+	      rendered = shared.parse(content);
+	      this.setState({ rendered_content: rendered });
+	    }
+	  }, {
+	    key: 'drop',
+	    value: function drop(e) {
+	      e.preventDefault();
+
+	      var path = "";
+	      try {
+	        var _iteratorNormalCompletion = true;
+	        var _didIteratorError = false;
+	        var _iteratorError = undefined;
+
+	        try {
+	          for (var _iterator = e.dataTransfer.files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var f = _step.value;
+
+	            console.log('File(s) you dragged here: ', f.path);
+	            path = f.path;
+	          }
+	        } catch (err) {
+	          _didIteratorError = true;
+	          _iteratorError = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	              _iterator.return();
+	            }
+	          } finally {
+	            if (_didIteratorError) {
+	              throw _iteratorError;
+	            }
+	          }
+	        }
+	      } catch (e) {
+	        console.log('error with dropped file');
+	      }
+
+	      this.setState({
+	        fileDragDialogOpen: true,
+	        fileDragEventFilepath: path
+	      });
+
+	      return false;
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'fusionmode-container',
+	          onDragOver: this.preventDefault,
+	          onDragLeave: this.preventDefault,
+	          onDragEnd: this.preventDefault,
+	          onDrop: this.drop
+	        },
+	        _react2.default.createElement(_formatToolbar2.default, null),
+	        _react2.default.createElement(
+	          'div',
+	          { id: 'editor', className: 'fusion-editor', contentEditable: 'true' },
+	          _react2.default.createElement(
+	            'h1',
+	            null,
+	            'A WYSIWYG Editor.'
+	          ),
+	          _react2.default.createElement(
+	            'p',
+	            null,
+	            'Try making some changes here. Add your own text or maybe an image.'
+	          )
+	        ),
+	        _react2.default.createElement(_dialogFileDrag2.default, {
+	          open: this.state.fileDragDialogOpen,
+	          close: function close() {
+	            return _this2.closeFileDragDialog();
+	          },
+	          filepath: this.state.fileDragEventFilepath,
+	          store: this.props.store
+	        })
+	      );
+	    }
+	  }]);
+
+	  return FusionmodeEditor;
+	}(_react2.default.Component);
+
+	exports.default = (0, _reactRedux.connect)()(FusionmodeEditor);
 
 /***/ }
 /******/ ]);

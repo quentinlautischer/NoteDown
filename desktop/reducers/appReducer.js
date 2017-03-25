@@ -6,6 +6,10 @@ function editorMode(state, action) {
   return Object.assign({}, state, {mode: 'editor'});
 }
 
+function fusionMode(state, action) {
+  return Object.assign({}, state, {mode: 'fusion'});
+}
+
 function folderMode(state, action) {
   return Object.assign({}, state, {mode: 'folderview'});
 }
@@ -44,6 +48,7 @@ const initial_state = {
 
 const appReducer = createReducer(initial_state, {
   'EDITOR_MODE': editorMode,
+  'FUSION_MODE': fusionMode,
   'FOLDER_MODE': folderMode,
   'FLASHCARD_MODE': flashcardMode,
   'MENU_MODE': menuMode,

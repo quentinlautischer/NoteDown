@@ -11,14 +11,8 @@ import { connect } from 'react-redux';
 var ipc = require('electron').ipcRenderer;
 
 var shared = require('../../shared/parser.js');
-var hljs = require('highlight.js');
 
-var CodeMirror = require('react-codemirror');
-require('codemirror/mode/javascript/javascript');
-require('codemirror/mode/xml/xml');
-require('codemirror/mode/markdown/markdown');
-
-class DualmodeEditor extends React.Component {
+class FusionmodeEditor extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -115,38 +109,19 @@ class DualmodeEditor extends React.Component {
     
     return false;
   }
-// <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
-//           {this.getContent()}
-//         </textarea>
-        // <CodeMirror 
-        //   id="userText"
-        //   className="markdown-input-editor" 
-        //   value={this.getContent()} 
-        //   onChange={this.handleChange} 
-        //   options={options} 
-        // />
+
   render() {
-    hljs.initHighlighting();
-    var options = {
-      lineNumbers: true,
-      mode: 'javascript'
-    };
-    //console.log(hljs.highlight("python", '<pre><code class="python">def foo():</code></pre>', true));
     return (
-      <div className="dualMode-container"
+      <div className="fusionmode-container"
         onDragOver={this.preventDefault}
         onDragLeave={this.preventDefault}
         onDragEnd={this.preventDefault}
         onDrop={this.drop}
       >
-        
-
-        <div className="render-container">
-          <div className="toc-nav-show"><i className="icon-bars" aria-hidden="true"></i></div>
-          <TocNav store={this.props.store} info={this.getContent()} scrollTo={id => this.scrollTo(id)}/>
-          <div id="renderField" className="markdown-output-renderer" 
-            dangerouslySetInnerHTML= {{__html: this.state.rendered_content}}>
-          </div>
+        <FormatToolbar />
+        <div id='editor' className="fusion-editor" contentEditable="true">
+          <h1>A WYSIWYG Editor.</h1>
+          <p>Try making some changes here. Add your own text or maybe an image.</p>
         </div>
         <DialogFileDrag
           open={this.state.fileDragDialogOpen} 
@@ -160,4 +135,4 @@ class DualmodeEditor extends React.Component {
   
 }
 
-export default connect()(DualmodeEditor);
+export default connect()(FusionmodeEditor);

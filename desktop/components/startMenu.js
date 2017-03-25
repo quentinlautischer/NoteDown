@@ -59,6 +59,10 @@ class StartMenu extends React.Component {
     this.props.store.dispatch({type: 'EDITOR_MODE'})
   }
 
+  fusionmode() {
+    this.props.store.dispatch({type: 'FUSION_MODE'})
+  }
+
   handleUsernameChange(event) {
     this.setState({
       username: event.target.value,
@@ -125,6 +129,7 @@ class StartMenu extends React.Component {
           <div className="quickmode-btn">
             <MenuButton label="Quickmode" onClick={() => this.quickmode()} />
           </div>
+           <MenuButton label="Fusionmode" onClick={() => this.fusionmode()} />
         </div>
         </MuiThemeProvider>
       );

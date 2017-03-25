@@ -11,6 +11,7 @@ import editorReducer from './reducers/editorReducer';
 import menubuilder from './components/menubar';
 import StartMenu from './components/startMenu';
 import DualmodeEditor from './components/dualmodeEditor';
+import FusionmodeEditor from './components/fusionmodeEditor';
 import FolderContainerView from './components/folderContainerView';
 import MenubarTile from './components/menubarTile';
 
@@ -71,6 +72,13 @@ class App extends React.Component {
             <FolderContainerView store={store}/>
           </div>
         );
+      case 'fusion':
+        return (
+          <div>
+            <MenubarTile store={store}/>
+            <FusionmodeEditor store={store}/>
+          </div>
+        )
       default: 
         return (<div>Error</div>); // Make an error view?
     }
