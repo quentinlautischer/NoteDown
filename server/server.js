@@ -55,6 +55,10 @@ websocket.on('connection', (socket) => {
       photoSupplyRequest(socket, data);
     });
 
+    socket.on('request-photo-put', (data) => {
+      photoPutRequest(socket, data);
+    });
+
 });
 
 websocket.on('close', (socket) => {
@@ -259,7 +263,11 @@ photoRequest = function(socket, data) {
 }
 
 photoSupplyRequest = function(socket, data) {
-  console.log('photo-supply-request ' + data.photo);
+  console.log('photo-supply-request');
+}
+
+photoPutRequest = function(socket, data) {
+  console.log('photo-put-request ' + data.photo);
 }
 
 console.log("server running");

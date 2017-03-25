@@ -37,7 +37,7 @@ export default class PhotoConfirmScene extends Component {
                 })
                 ifstream.onEnd(() => {
                     // this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
-                    this.props.socket.emit('request-photo-supply', { 'photo': data });
+                    this.props.socket.emit('request-photo-put', { 'photo': data });
                 })
             })
     }
