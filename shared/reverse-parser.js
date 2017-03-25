@@ -9,8 +9,9 @@ console.log(reverseParse(`
     <p>This is some text.</p>
     <h2>This is another heading 2</h2>
     <p>This is some other text.</p>
-    <p>This is a paragraph below a paragraph.</p>
-    <p><strong>strong</strong> text is kind of like <b>bold</b> text</p>
+    <p><strong>strong</strong> text is kind of like <b>bold</b> text, and <em>emphasized</em> text is kind of like <i>italic</i> text</p>
+    <p>What happens if I nest bold in italic? <i>italic<b>both</b>italic</i></p>
+    <p>What happens if I nest italic in bold? <b>bold<i>both</i>bold</b></p>
 `));
 
 
@@ -18,6 +19,7 @@ function reverseParse(str) {
     str = parseHeaders(str);
     str = parseParagraphs(str);
     str = parseBold(str);
+    str = parseItalic(str);
     return str;
 }
 
@@ -46,5 +48,10 @@ function parseParagraphs(str) {
 
 function parseBold(str) {
     str = replaceAll(str, /(<b>(.*?)<\/b>)/, '**', '**');
-    return replaceAll(str, /(<strong>(.*?)<\/strong>)/, '**', '**')
+    return replaceAll(str, /(<strong>(.*?)<\/strong>)/, '**', '**');
+}
+
+function parseItalic(str) {
+    str = replaceAll(str, /(<i>(.*?)<\/i>)/, '*', '*');
+    return replaceAll(str, /(<em>(.*?)<\/em>)/, '*', '*');
 }
