@@ -155,7 +155,7 @@ function check_blockquote(blocks) {
 }
 
 function check_hrule(blocks) {
-  var patt = /^[ ]{0,3}([-_*])[ ]{0,2}(?:\1[ ]{0,2}){2,}/;
+  var patt = /^[ ]{0,3}(-|_|\*)[ ]{0,2}(?:\1[ ]{0,2}){2,}\s*$/;
   var match;
 
   for (var b = 0; b < blocks.length; b++) {
