@@ -9,11 +9,14 @@ console.log(reverseParse(`
     <p>This is some text.</p>
     <h2>This is another heading 2</h2>
     <p>This is some other text.</p>
+    <p>This is a paragraph below a paragraph.</p>
 `));
 
 
 function reverseParse(str) {
-    return parseHeaders(str);
+    str = parseHeaders(str);
+    str = parseParagraphs(str);
+    return str;
 }
 
 function parseHeaders(str) {
@@ -23,12 +26,21 @@ function parseHeaders(str) {
         while (match != null) {
             var whole = match[1];
             var inner = match[2];
-            console.log(match[1]);
-            console.log(match[2]);
             str = str.replace(whole, '#'.repeat(i) + ' ' + inner);
             match = pattern.exec(str);
         }
     }
+    return str;
+}
 
+function parseParagraphs(str) {
+    var pattern = /(<p>(.*?)<\/p>)/;
+    var match = pattern.exec(str);
+    while (match != null) {
+        var whole = match[1];
+        var inner = match[2];
+        str = str.replace(whole, inner + '\n');
+        match = pattern.exec(str);
+    }
     return str;
 }
