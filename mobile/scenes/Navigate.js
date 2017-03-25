@@ -17,6 +17,7 @@ import NotesViewScene from './NotesViewScene';
 import NotesEditScene from './NotesEditScene';
 import FlashcardViewScene from './FlashcardViewScene';
 import CameraScene from './CameraScene';
+import PhotoConfirmScene from './PhotoConfirmScene';
 
 export default class Navigate extends Component {
     render() {
@@ -32,7 +33,8 @@ export default class Navigate extends Component {
             {title: 'View Notes', index: 4},
             {title: 'Edit Notes', index: 5},
             {title: 'View Flashcard', index: 6},
-            {title: 'Camera', index: 7}
+            {title: 'Camera', index: 7},
+            {title: 'Confirm Photo', index: 8}
         ];
         return (
             <Navigator
@@ -41,11 +43,11 @@ export default class Navigate extends Component {
                     if (route.title == 'Login') {
                         return <LoginScene navigator={navigator} />
                     } else if (route.title == 'Main Menu') {
-                        return <MenuScene navigator={navigator} content={route.content} />
+                        return <MenuScene navigator={navigator} content={route.content} socket={route.socket} />
                     } else if (route.title === 'Folders') {
-                        return <FoldersScene navigator={navigator} content={route.content} />
+                        return <FoldersScene navigator={navigator} content={route.content} socket={route.socket} />
                     } else if (route.title === 'Flashcards Menu') {
-                        return <FlashcardsMenuScene navigator={navigator} content={route.content} />
+                        return <FlashcardsMenuScene navigator={navigator} content={route.content} socket={route.socket} />
                     } else if (route.title === 'View Notes') {
                         return <NotesViewScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'Edit Notes') {
@@ -53,7 +55,9 @@ export default class Navigate extends Component {
                     } else if (route.title === 'View Flashcard') {
                         return <FlashcardViewScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'Camera') {
-                        return <CameraScene navigator={navigator} />
+                        return <CameraScene navigator={navigator} socket={route.socket} />
+                    } else if (route.title === 'Confirm Photo') {
+                        return <PhotoConfirmScene navigator={navigator} content={route.content} socket={route.socket} />
                     } else {
                         return null;
                     }
@@ -99,12 +103,6 @@ export default class Navigate extends Component {
                                             })
                                         }>
                                         <Text>Go to Flashcards</Text>
-                                    </TouchableHighlight>
-                                );
-                            } else if (route.title === 'Main Menu') {
-                                return(
-                                    <TouchableHighlight onPress={() => navigator.push({ title: 'Camera' })}>
-                                        <Text style={styles.navButton}>Camera</Text>
                                     </TouchableHighlight>
                                 );
                             } else {
