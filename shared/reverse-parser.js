@@ -17,16 +17,17 @@ function reverseParse(str) {
 }
 
 function parseHeaders(str) {
-    console.log(str);
-    var pattern = /(<h1>(.*?)<\/h1>)/;
-    var match = pattern.exec(str);
-    while (match != null) {
-        var whole = match[1];
-        var inner = match[2];
-        console.log(match[1]);
-        console.log(match[2]);
-        str = str.replace(whole, "# " + inner);
-        match = pattern.exec(str);
+    for (var i = 1; i <=6; i++) {
+        var pattern = new RegExp('(<h' + i + '>(.*?)</h' + i + '>)');
+        var match = pattern.exec(str);
+        while (match != null) {
+            var whole = match[1];
+            var inner = match[2];
+            console.log(match[1]);
+            console.log(match[2]);
+            str = str.replace(whole, '#'.repeat(i) + ' ' + inner);
+            match = pattern.exec(str);
+        }
     }
 
     return str;
