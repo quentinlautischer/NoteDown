@@ -28,6 +28,7 @@ class DualmodeEditor extends React.Component {
       rendered_content: ""
     }
     this.handleChange = this.handleChange.bind(this);
+    this.handleCodeMirrorChange = this.handleCodeMirrorChange.bind(this);
     this.storeDidUpdate = this.storeDidUpdate.bind(this);
     this.drop = this.drop.bind(this);
   }
@@ -41,9 +42,19 @@ class DualmodeEditor extends React.Component {
     this.parse(this.getContent());
   }
 
+  handleCodeMirrorChange(codeMirrorInstance, changeObj) {
+    console.log(`Cursor Change Obj: ${JSON.stringify(changeObj)}`)
+    this.updateContent(codeMirrorInstance);
+    this.parse(codeMirrorInstance);
+  }
+
+  handleCursorChange(codeMirrorInstance) {
+    
+  }
+
   handleChange(e) {
     // If there is no selection, you can use the properties .selectionStart or .selectionEnd (with no selection they're equal).
-    var cursorPosition = 0//e.target.selectionStart;
+    var cursorPosition = e.target.selectionStart;
     this.props.store.dispatch({type: 'CURSOR_CHANGE', position: cursorPosition});
     console.log(`cursor position: ${this.props.store.getState().editor.cursor_position}`);
 
@@ -57,7 +68,7 @@ class DualmodeEditor extends React.Component {
       folderIndex: this.props.store.getState().state.folderIndex,
       pageIndex: this.props.store.getState().state.pageIndex
     });
-    this.request_push_data();
+    //this.request_push_data();
   }
 
   openFileDragDialog() {
@@ -118,18 +129,13 @@ class DualmodeEditor extends React.Component {
 // <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
 //           {this.getContent()}
 //         </textarea>
-        // <CodeMirror 
-        //   id="userText"
-        //   className="markdown-input-editor" 
-        //   value={this.getContent()} 
-        //   onChange={this.handleChange} 
-        //   options={options} 
-        // />
+
   render() {
     hljs.initHighlighting();
     var options = {
       lineNumbers: true,
-      mode: 'javascript'
+      mode: 'markdown',
+      theme: 'duotone-light'
     };
     //console.log(hljs.highlight("python", '<pre><code class="python">def foo():</code></pre>', true));
     return (
@@ -139,7 +145,13 @@ class DualmodeEditor extends React.Component {
         onDragEnd={this.preventDefault}
         onDrop={this.drop}
       >
-        
+        <CodeMirror 
+          id="userText"
+          className="markdown-input-editor" 
+          value={this.getContent()} 
+          onChange={this.handleCodeMirrorChange}
+          options={options} 
+        />
 
         <div className="render-container">
           <div className="toc-nav-show"><i className="icon-bars" aria-hidden="true"></i></div>

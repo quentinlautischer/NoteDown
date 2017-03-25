@@ -39,7 +39,6 @@ class MenubarTile extends React.Component {
   }
 
   minormax() {
-    console.log(`remote current window state: ${remote.getCurrentWindow().isMaximized()}`)
     if (!remote.getCurrentWindow().isMaximized()) {
       return (<div className="menubar-tile window-tile" onClick={this.handleMaximizeClick}>
                 <span><i className="icon-square" aria-hidden="true"></i></span>
@@ -52,7 +51,6 @@ class MenubarTile extends React.Component {
   }
 
   render() {
-    console.log("Rendering menubar");
     if (process.platform !== 'darwin') {
     return (
       <div className="menubar-custom">

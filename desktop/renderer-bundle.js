@@ -84,19 +84,19 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _fusionmodeEditor = __webpack_require__(629);
+	var _fusionmodeEditor = __webpack_require__(619);
 
 	var _fusionmodeEditor2 = _interopRequireDefault(_fusionmodeEditor);
 
-	var _folderContainerView = __webpack_require__(618);
+	var _folderContainerView = __webpack_require__(620);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _menubarTile = __webpack_require__(620);
+	var _menubarTile = __webpack_require__(622);
 
 	var _menubarTile2 = _interopRequireDefault(_menubarTile);
 
-	var _reactTapEventPlugin = __webpack_require__(621);
+	var _reactTapEventPlugin = __webpack_require__(623);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -110,7 +110,7 @@
 
 	(0, _reactTapEventPlugin2.default)();
 
-	var hljs = __webpack_require__(436);
+	var hljs = __webpack_require__(437);
 
 	var ipc = __webpack_require__(222).ipcRenderer;
 
@@ -155,7 +155,7 @@
 	      // May be invisible but this keep the accelerator keybinds active.
 	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(store));
 	      Menu.setApplicationMenu(menubar);
-	      console.log(store.getState());
+	      // console.log(store.getState());
 
 	      switch (store.getState().state.mode) {
 	        case 'menu':
@@ -37655,7 +37655,7 @@
 
 	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
 
-	var _formatToolbar = __webpack_require__(628);
+	var _formatToolbar = __webpack_require__(434);
 
 	var _formatToolbar2 = _interopRequireDefault(_formatToolbar);
 
@@ -37671,13 +37671,13 @@
 
 	var ipc = __webpack_require__(222).ipcRenderer;
 
-	var shared = __webpack_require__(434);
-	var hljs = __webpack_require__(436);
+	var shared = __webpack_require__(435);
+	var hljs = __webpack_require__(437);
 
-	var CodeMirror = __webpack_require__(610);
-	__webpack_require__(614);
+	var CodeMirror = __webpack_require__(611);
 	__webpack_require__(615);
 	__webpack_require__(616);
+	__webpack_require__(617);
 
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
@@ -37694,6 +37694,7 @@
 	      rendered_content: ""
 	    };
 	    _this.handleChange = _this.handleChange.bind(_this);
+	    _this.handleCodeMirrorChange = _this.handleCodeMirrorChange.bind(_this);
 	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
 	    _this.drop = _this.drop.bind(_this);
 	    return _this;
@@ -37711,10 +37712,20 @@
 	      this.parse(this.getContent());
 	    }
 	  }, {
+	    key: 'handleCodeMirrorChange',
+	    value: function handleCodeMirrorChange(codeMirrorInstance, changeObj) {
+	      console.log('Cursor Change Obj: ' + JSON.stringify(changeObj));
+	      this.updateContent(codeMirrorInstance);
+	      this.parse(codeMirrorInstance);
+	    }
+	  }, {
+	    key: 'handleCursorChange',
+	    value: function handleCursorChange(codeMirrorInstance) {}
+	  }, {
 	    key: 'handleChange',
 	    value: function handleChange(e) {
 	      // If there is no selection, you can use the properties .selectionStart or .selectionEnd (with no selection they're equal).
-	      var cursorPosition = 0; //e.target.selectionStart;
+	      var cursorPosition = e.target.selectionStart;
 	      this.props.store.dispatch({ type: 'CURSOR_CHANGE', position: cursorPosition });
 	      console.log('cursor position: ' + this.props.store.getState().editor.cursor_position);
 
@@ -37729,7 +37740,7 @@
 	        folderIndex: this.props.store.getState().state.folderIndex,
 	        pageIndex: this.props.store.getState().state.pageIndex
 	      });
-	      this.request_push_data();
+	      //this.request_push_data();
 	    }
 	  }, {
 	    key: 'openFileDragDialog',
@@ -37817,13 +37828,6 @@
 	    // <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
 	    //           {this.getContent()}
 	    //         </textarea>
-	    // <CodeMirror 
-	    //   id="userText"
-	    //   className="markdown-input-editor" 
-	    //   value={this.getContent()} 
-	    //   onChange={this.handleChange} 
-	    //   options={options} 
-	    // />
 
 	  }, {
 	    key: 'render',
@@ -37833,7 +37837,8 @@
 	      hljs.initHighlighting();
 	      var options = {
 	        lineNumbers: true,
-	        mode: 'javascript'
+	        mode: 'markdown',
+	        theme: 'duotone-light'
 	      };
 	      //console.log(hljs.highlight("python", '<pre><code class="python">def foo():</code></pre>', true));
 	      return _react2.default.createElement(
@@ -37844,6 +37849,13 @@
 	          onDragEnd: this.preventDefault,
 	          onDrop: this.drop
 	        },
+	        _react2.default.createElement(CodeMirror, {
+	          id: 'userText',
+	          className: 'markdown-input-editor',
+	          value: this.getContent(),
+	          onChange: this.handleCodeMirrorChange,
+	          options: options
+	        }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'render-container' },
@@ -38011,7 +38023,7 @@
 	      for (i = 0; i < pages.length; i++) {
 	        array.push(this.extractPageHeader(pages[i]));
 	      }
-	      console.log('Array: ' + array);
+	      // console.log(`Array: ${array}`);
 	      return array;
 	    }
 	  }, {
@@ -38145,7 +38157,7 @@
 	    key: 'render',
 	    value: function render() {
 	      var state = this.props.store.getState();
-	      console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
+	      // console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
 	      this.array = this.generateHeaderArray(this.props.info);
 	      this.pagesArray = this.generatePagesArray();
 	      if (this.state.zoom == 'in') {
@@ -39608,7 +39620,194 @@
 
 	'use strict';
 
-	var _flashcardTemplate = __webpack_require__(435);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _MuiThemeProvider = __webpack_require__(225);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(312);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var FormatToolbar = function (_React$Component) {
+	  _inherits(FormatToolbar, _React$Component);
+
+	  function FormatToolbar() {
+	    _classCallCheck(this, FormatToolbar);
+
+	    return _possibleConstructorReturn(this, (FormatToolbar.__proto__ || Object.getPrototypeOf(FormatToolbar)).apply(this, arguments));
+	  }
+
+	  _createClass(FormatToolbar, [{
+	    key: 'setHeader',
+	    value: function setHeader(num) {
+	      document.execCommand('formatBlock', false, 'h' + num);
+	    }
+	  }, {
+	    key: 'setParagraph',
+	    value: function setParagraph() {
+	      document.execCommand('formatBlock', false, 'p');
+	    }
+	  }, {
+	    key: 'setBlockquote',
+	    value: function setBlockquote() {
+	      document.execCommand('formatBlock', false, 'blockquote');
+	    }
+	  }, {
+	    key: 'setBold',
+	    value: function setBold() {
+	      document.execCommand('bold', false, null);
+	    }
+	  }, {
+	    key: 'setItalic',
+	    value: function setItalic() {
+	      document.execCommand('italic', false, null);
+	    }
+	  }, {
+	    key: 'insertLink',
+	    value: function insertLink() {
+	      url = prompt('Enter the link here: ', 'http:\/\/');
+	      document.execCommand('createlink', false, url);
+	    }
+	  }, {
+	    key: 'insertPhoto',
+	    value: function insertPhoto() {
+	      url = prompt('Enter the link here: ', 'http:\/\/');
+	      document.execCommand('insertimage', false, url);
+	    }
+	  }, {
+	    key: 'insertHorizontalRule',
+	    value: function insertHorizontalRule() {
+	      document.execCommand('insertHorizontalRule', false, null);
+	    }
+	  }, {
+	    key: 'insertOrderedList',
+	    value: function insertOrderedList() {
+	      document.execCommand('insertOrderedList', false, null);
+	    }
+	  }, {
+	    key: 'insertUnorderedList',
+	    value: function insertUnorderedList() {
+	      document.execCommand('insertUnorderedList', false, null);
+	    }
+
+	    //code, flashcards and tables.
+
+
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'format-toolbar' },
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'bold', onClick: this.setBold },
+	          _react2.default.createElement('i', { className: 'fa fa-bold' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'italic', onClick: this.setBold },
+	          _react2.default.createElement('i', { className: 'fa fa-italic' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'insertUnorderedList', onClick: this.insertUnorderedList },
+	          _react2.default.createElement('i', { className: 'fa fa-list-ul' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'insertOrderedList', onClick: this.insertOrderedList },
+	          _react2.default.createElement('i', { className: 'fa fa-list-ol' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h1', onClick: this.setHeader(1) },
+	          'H1'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h2', onClick: this.setHeader(2) },
+	          'H2'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h3', onClick: this.setHeader(3) },
+	          'H3'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h4', onClick: this.setHeader(4) },
+	          'H4'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h5', onClick: this.setHeader(5) },
+	          'H5'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'h6', onClick: this.setHeader(6) },
+	          'H6'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'p', onClick: this.setParagraph },
+	          'P'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'blockquote', onClick: this.setBlockquote },
+	          _react2.default.createElement('i', { className: 'fa fa-indent' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'horizontalRule', onClick: this.insertHorizontalRule },
+	          _react2.default.createElement('i', { className: 'fa fa-minus' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'createlink', onClick: this.insertLink },
+	          _react2.default.createElement('i', { className: 'fa fa-link' })
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '#', 'data-command': 'insertimage', onClick: this.insertPhoto },
+	          _react2.default.createElement('i', { className: 'fa fa-image' })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return FormatToolbar;
+	}(_react2.default.Component);
+
+	exports.default = FormatToolbar;
+
+/***/ },
+/* 435 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _flashcardTemplate = __webpack_require__(436);
 
 	var _flashcardTemplate2 = _interopRequireDefault(_flashcardTemplate);
 
@@ -39882,7 +40081,7 @@
 	console.log("Shared module loaded");
 
 /***/ },
-/* 435 */
+/* 436 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -39909,188 +40108,188 @@
 	};
 
 /***/ },
-/* 436 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hljs = __webpack_require__(437);
+	var hljs = __webpack_require__(438);
 
-	hljs.registerLanguage('1c', __webpack_require__(438));
-	hljs.registerLanguage('abnf', __webpack_require__(439));
-	hljs.registerLanguage('accesslog', __webpack_require__(440));
-	hljs.registerLanguage('actionscript', __webpack_require__(441));
-	hljs.registerLanguage('ada', __webpack_require__(442));
-	hljs.registerLanguage('apache', __webpack_require__(443));
-	hljs.registerLanguage('applescript', __webpack_require__(444));
-	hljs.registerLanguage('cpp', __webpack_require__(445));
-	hljs.registerLanguage('arduino', __webpack_require__(446));
-	hljs.registerLanguage('armasm', __webpack_require__(447));
-	hljs.registerLanguage('xml', __webpack_require__(448));
-	hljs.registerLanguage('asciidoc', __webpack_require__(449));
-	hljs.registerLanguage('aspectj', __webpack_require__(450));
-	hljs.registerLanguage('autohotkey', __webpack_require__(451));
-	hljs.registerLanguage('autoit', __webpack_require__(452));
-	hljs.registerLanguage('avrasm', __webpack_require__(453));
-	hljs.registerLanguage('awk', __webpack_require__(454));
-	hljs.registerLanguage('axapta', __webpack_require__(455));
-	hljs.registerLanguage('bash', __webpack_require__(456));
-	hljs.registerLanguage('basic', __webpack_require__(457));
-	hljs.registerLanguage('bnf', __webpack_require__(458));
-	hljs.registerLanguage('brainfuck', __webpack_require__(459));
-	hljs.registerLanguage('cal', __webpack_require__(460));
-	hljs.registerLanguage('capnproto', __webpack_require__(461));
-	hljs.registerLanguage('ceylon', __webpack_require__(462));
-	hljs.registerLanguage('clean', __webpack_require__(463));
-	hljs.registerLanguage('clojure', __webpack_require__(464));
-	hljs.registerLanguage('clojure-repl', __webpack_require__(465));
-	hljs.registerLanguage('cmake', __webpack_require__(466));
-	hljs.registerLanguage('coffeescript', __webpack_require__(467));
-	hljs.registerLanguage('coq', __webpack_require__(468));
-	hljs.registerLanguage('cos', __webpack_require__(469));
-	hljs.registerLanguage('crmsh', __webpack_require__(470));
-	hljs.registerLanguage('crystal', __webpack_require__(471));
-	hljs.registerLanguage('cs', __webpack_require__(472));
-	hljs.registerLanguage('csp', __webpack_require__(473));
-	hljs.registerLanguage('css', __webpack_require__(474));
-	hljs.registerLanguage('d', __webpack_require__(475));
-	hljs.registerLanguage('markdown', __webpack_require__(476));
-	hljs.registerLanguage('dart', __webpack_require__(477));
-	hljs.registerLanguage('delphi', __webpack_require__(478));
-	hljs.registerLanguage('diff', __webpack_require__(479));
-	hljs.registerLanguage('django', __webpack_require__(480));
-	hljs.registerLanguage('dns', __webpack_require__(481));
-	hljs.registerLanguage('dockerfile', __webpack_require__(482));
-	hljs.registerLanguage('dos', __webpack_require__(483));
-	hljs.registerLanguage('dsconfig', __webpack_require__(484));
-	hljs.registerLanguage('dts', __webpack_require__(485));
-	hljs.registerLanguage('dust', __webpack_require__(486));
-	hljs.registerLanguage('ebnf', __webpack_require__(487));
-	hljs.registerLanguage('elixir', __webpack_require__(488));
-	hljs.registerLanguage('elm', __webpack_require__(489));
-	hljs.registerLanguage('ruby', __webpack_require__(490));
-	hljs.registerLanguage('erb', __webpack_require__(491));
-	hljs.registerLanguage('erlang-repl', __webpack_require__(492));
-	hljs.registerLanguage('erlang', __webpack_require__(493));
-	hljs.registerLanguage('excel', __webpack_require__(494));
-	hljs.registerLanguage('fix', __webpack_require__(495));
-	hljs.registerLanguage('flix', __webpack_require__(496));
-	hljs.registerLanguage('fortran', __webpack_require__(497));
-	hljs.registerLanguage('fsharp', __webpack_require__(498));
-	hljs.registerLanguage('gams', __webpack_require__(499));
-	hljs.registerLanguage('gauss', __webpack_require__(500));
-	hljs.registerLanguage('gcode', __webpack_require__(501));
-	hljs.registerLanguage('gherkin', __webpack_require__(502));
-	hljs.registerLanguage('glsl', __webpack_require__(503));
-	hljs.registerLanguage('go', __webpack_require__(504));
-	hljs.registerLanguage('golo', __webpack_require__(505));
-	hljs.registerLanguage('gradle', __webpack_require__(506));
-	hljs.registerLanguage('groovy', __webpack_require__(507));
-	hljs.registerLanguage('haml', __webpack_require__(508));
-	hljs.registerLanguage('handlebars', __webpack_require__(509));
-	hljs.registerLanguage('haskell', __webpack_require__(510));
-	hljs.registerLanguage('haxe', __webpack_require__(511));
-	hljs.registerLanguage('hsp', __webpack_require__(512));
-	hljs.registerLanguage('htmlbars', __webpack_require__(513));
-	hljs.registerLanguage('http', __webpack_require__(514));
-	hljs.registerLanguage('hy', __webpack_require__(515));
-	hljs.registerLanguage('inform7', __webpack_require__(516));
-	hljs.registerLanguage('ini', __webpack_require__(517));
-	hljs.registerLanguage('irpf90', __webpack_require__(518));
-	hljs.registerLanguage('java', __webpack_require__(519));
-	hljs.registerLanguage('javascript', __webpack_require__(520));
-	hljs.registerLanguage('json', __webpack_require__(521));
-	hljs.registerLanguage('julia', __webpack_require__(522));
-	hljs.registerLanguage('kotlin', __webpack_require__(523));
-	hljs.registerLanguage('lasso', __webpack_require__(524));
-	hljs.registerLanguage('ldif', __webpack_require__(525));
-	hljs.registerLanguage('leaf', __webpack_require__(526));
-	hljs.registerLanguage('less', __webpack_require__(527));
-	hljs.registerLanguage('lisp', __webpack_require__(528));
-	hljs.registerLanguage('livecodeserver', __webpack_require__(529));
-	hljs.registerLanguage('livescript', __webpack_require__(530));
-	hljs.registerLanguage('llvm', __webpack_require__(531));
-	hljs.registerLanguage('lsl', __webpack_require__(532));
-	hljs.registerLanguage('lua', __webpack_require__(533));
-	hljs.registerLanguage('makefile', __webpack_require__(534));
-	hljs.registerLanguage('mathematica', __webpack_require__(535));
-	hljs.registerLanguage('matlab', __webpack_require__(536));
-	hljs.registerLanguage('maxima', __webpack_require__(537));
-	hljs.registerLanguage('mel', __webpack_require__(538));
-	hljs.registerLanguage('mercury', __webpack_require__(539));
-	hljs.registerLanguage('mipsasm', __webpack_require__(540));
-	hljs.registerLanguage('mizar', __webpack_require__(541));
-	hljs.registerLanguage('perl', __webpack_require__(542));
-	hljs.registerLanguage('mojolicious', __webpack_require__(543));
-	hljs.registerLanguage('monkey', __webpack_require__(544));
-	hljs.registerLanguage('moonscript', __webpack_require__(545));
-	hljs.registerLanguage('n1ql', __webpack_require__(546));
-	hljs.registerLanguage('nginx', __webpack_require__(547));
-	hljs.registerLanguage('nimrod', __webpack_require__(548));
-	hljs.registerLanguage('nix', __webpack_require__(549));
-	hljs.registerLanguage('nsis', __webpack_require__(550));
-	hljs.registerLanguage('objectivec', __webpack_require__(551));
-	hljs.registerLanguage('ocaml', __webpack_require__(552));
-	hljs.registerLanguage('openscad', __webpack_require__(553));
-	hljs.registerLanguage('oxygene', __webpack_require__(554));
-	hljs.registerLanguage('parser3', __webpack_require__(555));
-	hljs.registerLanguage('pf', __webpack_require__(556));
-	hljs.registerLanguage('php', __webpack_require__(557));
-	hljs.registerLanguage('pony', __webpack_require__(558));
-	hljs.registerLanguage('powershell', __webpack_require__(559));
-	hljs.registerLanguage('processing', __webpack_require__(560));
-	hljs.registerLanguage('profile', __webpack_require__(561));
-	hljs.registerLanguage('prolog', __webpack_require__(562));
-	hljs.registerLanguage('protobuf', __webpack_require__(563));
-	hljs.registerLanguage('puppet', __webpack_require__(564));
-	hljs.registerLanguage('purebasic', __webpack_require__(565));
-	hljs.registerLanguage('python', __webpack_require__(566));
-	hljs.registerLanguage('q', __webpack_require__(567));
-	hljs.registerLanguage('qml', __webpack_require__(568));
-	hljs.registerLanguage('r', __webpack_require__(569));
-	hljs.registerLanguage('rib', __webpack_require__(570));
-	hljs.registerLanguage('roboconf', __webpack_require__(571));
-	hljs.registerLanguage('rsl', __webpack_require__(572));
-	hljs.registerLanguage('ruleslanguage', __webpack_require__(573));
-	hljs.registerLanguage('rust', __webpack_require__(574));
-	hljs.registerLanguage('scala', __webpack_require__(575));
-	hljs.registerLanguage('scheme', __webpack_require__(576));
-	hljs.registerLanguage('scilab', __webpack_require__(577));
-	hljs.registerLanguage('scss', __webpack_require__(578));
-	hljs.registerLanguage('smali', __webpack_require__(579));
-	hljs.registerLanguage('smalltalk', __webpack_require__(580));
-	hljs.registerLanguage('sml', __webpack_require__(581));
-	hljs.registerLanguage('sqf', __webpack_require__(582));
-	hljs.registerLanguage('sql', __webpack_require__(583));
-	hljs.registerLanguage('stan', __webpack_require__(584));
-	hljs.registerLanguage('stata', __webpack_require__(585));
-	hljs.registerLanguage('step21', __webpack_require__(586));
-	hljs.registerLanguage('stylus', __webpack_require__(587));
-	hljs.registerLanguage('subunit', __webpack_require__(588));
-	hljs.registerLanguage('swift', __webpack_require__(589));
-	hljs.registerLanguage('taggerscript', __webpack_require__(590));
-	hljs.registerLanguage('yaml', __webpack_require__(591));
-	hljs.registerLanguage('tap', __webpack_require__(592));
-	hljs.registerLanguage('tcl', __webpack_require__(593));
-	hljs.registerLanguage('tex', __webpack_require__(594));
-	hljs.registerLanguage('thrift', __webpack_require__(595));
-	hljs.registerLanguage('tp', __webpack_require__(596));
-	hljs.registerLanguage('twig', __webpack_require__(597));
-	hljs.registerLanguage('typescript', __webpack_require__(598));
-	hljs.registerLanguage('vala', __webpack_require__(599));
-	hljs.registerLanguage('vbnet', __webpack_require__(600));
-	hljs.registerLanguage('vbscript', __webpack_require__(601));
-	hljs.registerLanguage('vbscript-html', __webpack_require__(602));
-	hljs.registerLanguage('verilog', __webpack_require__(603));
-	hljs.registerLanguage('vhdl', __webpack_require__(604));
-	hljs.registerLanguage('vim', __webpack_require__(605));
-	hljs.registerLanguage('x86asm', __webpack_require__(606));
-	hljs.registerLanguage('xl', __webpack_require__(607));
-	hljs.registerLanguage('xquery', __webpack_require__(608));
-	hljs.registerLanguage('zephir', __webpack_require__(609));
+	hljs.registerLanguage('1c', __webpack_require__(439));
+	hljs.registerLanguage('abnf', __webpack_require__(440));
+	hljs.registerLanguage('accesslog', __webpack_require__(441));
+	hljs.registerLanguage('actionscript', __webpack_require__(442));
+	hljs.registerLanguage('ada', __webpack_require__(443));
+	hljs.registerLanguage('apache', __webpack_require__(444));
+	hljs.registerLanguage('applescript', __webpack_require__(445));
+	hljs.registerLanguage('cpp', __webpack_require__(446));
+	hljs.registerLanguage('arduino', __webpack_require__(447));
+	hljs.registerLanguage('armasm', __webpack_require__(448));
+	hljs.registerLanguage('xml', __webpack_require__(449));
+	hljs.registerLanguage('asciidoc', __webpack_require__(450));
+	hljs.registerLanguage('aspectj', __webpack_require__(451));
+	hljs.registerLanguage('autohotkey', __webpack_require__(452));
+	hljs.registerLanguage('autoit', __webpack_require__(453));
+	hljs.registerLanguage('avrasm', __webpack_require__(454));
+	hljs.registerLanguage('awk', __webpack_require__(455));
+	hljs.registerLanguage('axapta', __webpack_require__(456));
+	hljs.registerLanguage('bash', __webpack_require__(457));
+	hljs.registerLanguage('basic', __webpack_require__(458));
+	hljs.registerLanguage('bnf', __webpack_require__(459));
+	hljs.registerLanguage('brainfuck', __webpack_require__(460));
+	hljs.registerLanguage('cal', __webpack_require__(461));
+	hljs.registerLanguage('capnproto', __webpack_require__(462));
+	hljs.registerLanguage('ceylon', __webpack_require__(463));
+	hljs.registerLanguage('clean', __webpack_require__(464));
+	hljs.registerLanguage('clojure', __webpack_require__(465));
+	hljs.registerLanguage('clojure-repl', __webpack_require__(466));
+	hljs.registerLanguage('cmake', __webpack_require__(467));
+	hljs.registerLanguage('coffeescript', __webpack_require__(468));
+	hljs.registerLanguage('coq', __webpack_require__(469));
+	hljs.registerLanguage('cos', __webpack_require__(470));
+	hljs.registerLanguage('crmsh', __webpack_require__(471));
+	hljs.registerLanguage('crystal', __webpack_require__(472));
+	hljs.registerLanguage('cs', __webpack_require__(473));
+	hljs.registerLanguage('csp', __webpack_require__(474));
+	hljs.registerLanguage('css', __webpack_require__(475));
+	hljs.registerLanguage('d', __webpack_require__(476));
+	hljs.registerLanguage('markdown', __webpack_require__(477));
+	hljs.registerLanguage('dart', __webpack_require__(478));
+	hljs.registerLanguage('delphi', __webpack_require__(479));
+	hljs.registerLanguage('diff', __webpack_require__(480));
+	hljs.registerLanguage('django', __webpack_require__(481));
+	hljs.registerLanguage('dns', __webpack_require__(482));
+	hljs.registerLanguage('dockerfile', __webpack_require__(483));
+	hljs.registerLanguage('dos', __webpack_require__(484));
+	hljs.registerLanguage('dsconfig', __webpack_require__(485));
+	hljs.registerLanguage('dts', __webpack_require__(486));
+	hljs.registerLanguage('dust', __webpack_require__(487));
+	hljs.registerLanguage('ebnf', __webpack_require__(488));
+	hljs.registerLanguage('elixir', __webpack_require__(489));
+	hljs.registerLanguage('elm', __webpack_require__(490));
+	hljs.registerLanguage('ruby', __webpack_require__(491));
+	hljs.registerLanguage('erb', __webpack_require__(492));
+	hljs.registerLanguage('erlang-repl', __webpack_require__(493));
+	hljs.registerLanguage('erlang', __webpack_require__(494));
+	hljs.registerLanguage('excel', __webpack_require__(495));
+	hljs.registerLanguage('fix', __webpack_require__(496));
+	hljs.registerLanguage('flix', __webpack_require__(497));
+	hljs.registerLanguage('fortran', __webpack_require__(498));
+	hljs.registerLanguage('fsharp', __webpack_require__(499));
+	hljs.registerLanguage('gams', __webpack_require__(500));
+	hljs.registerLanguage('gauss', __webpack_require__(501));
+	hljs.registerLanguage('gcode', __webpack_require__(502));
+	hljs.registerLanguage('gherkin', __webpack_require__(503));
+	hljs.registerLanguage('glsl', __webpack_require__(504));
+	hljs.registerLanguage('go', __webpack_require__(505));
+	hljs.registerLanguage('golo', __webpack_require__(506));
+	hljs.registerLanguage('gradle', __webpack_require__(507));
+	hljs.registerLanguage('groovy', __webpack_require__(508));
+	hljs.registerLanguage('haml', __webpack_require__(509));
+	hljs.registerLanguage('handlebars', __webpack_require__(510));
+	hljs.registerLanguage('haskell', __webpack_require__(511));
+	hljs.registerLanguage('haxe', __webpack_require__(512));
+	hljs.registerLanguage('hsp', __webpack_require__(513));
+	hljs.registerLanguage('htmlbars', __webpack_require__(514));
+	hljs.registerLanguage('http', __webpack_require__(515));
+	hljs.registerLanguage('hy', __webpack_require__(516));
+	hljs.registerLanguage('inform7', __webpack_require__(517));
+	hljs.registerLanguage('ini', __webpack_require__(518));
+	hljs.registerLanguage('irpf90', __webpack_require__(519));
+	hljs.registerLanguage('java', __webpack_require__(520));
+	hljs.registerLanguage('javascript', __webpack_require__(521));
+	hljs.registerLanguage('json', __webpack_require__(522));
+	hljs.registerLanguage('julia', __webpack_require__(523));
+	hljs.registerLanguage('kotlin', __webpack_require__(524));
+	hljs.registerLanguage('lasso', __webpack_require__(525));
+	hljs.registerLanguage('ldif', __webpack_require__(526));
+	hljs.registerLanguage('leaf', __webpack_require__(527));
+	hljs.registerLanguage('less', __webpack_require__(528));
+	hljs.registerLanguage('lisp', __webpack_require__(529));
+	hljs.registerLanguage('livecodeserver', __webpack_require__(530));
+	hljs.registerLanguage('livescript', __webpack_require__(531));
+	hljs.registerLanguage('llvm', __webpack_require__(532));
+	hljs.registerLanguage('lsl', __webpack_require__(533));
+	hljs.registerLanguage('lua', __webpack_require__(534));
+	hljs.registerLanguage('makefile', __webpack_require__(535));
+	hljs.registerLanguage('mathematica', __webpack_require__(536));
+	hljs.registerLanguage('matlab', __webpack_require__(537));
+	hljs.registerLanguage('maxima', __webpack_require__(538));
+	hljs.registerLanguage('mel', __webpack_require__(539));
+	hljs.registerLanguage('mercury', __webpack_require__(540));
+	hljs.registerLanguage('mipsasm', __webpack_require__(541));
+	hljs.registerLanguage('mizar', __webpack_require__(542));
+	hljs.registerLanguage('perl', __webpack_require__(543));
+	hljs.registerLanguage('mojolicious', __webpack_require__(544));
+	hljs.registerLanguage('monkey', __webpack_require__(545));
+	hljs.registerLanguage('moonscript', __webpack_require__(546));
+	hljs.registerLanguage('n1ql', __webpack_require__(547));
+	hljs.registerLanguage('nginx', __webpack_require__(548));
+	hljs.registerLanguage('nimrod', __webpack_require__(549));
+	hljs.registerLanguage('nix', __webpack_require__(550));
+	hljs.registerLanguage('nsis', __webpack_require__(551));
+	hljs.registerLanguage('objectivec', __webpack_require__(552));
+	hljs.registerLanguage('ocaml', __webpack_require__(553));
+	hljs.registerLanguage('openscad', __webpack_require__(554));
+	hljs.registerLanguage('oxygene', __webpack_require__(555));
+	hljs.registerLanguage('parser3', __webpack_require__(556));
+	hljs.registerLanguage('pf', __webpack_require__(557));
+	hljs.registerLanguage('php', __webpack_require__(558));
+	hljs.registerLanguage('pony', __webpack_require__(559));
+	hljs.registerLanguage('powershell', __webpack_require__(560));
+	hljs.registerLanguage('processing', __webpack_require__(561));
+	hljs.registerLanguage('profile', __webpack_require__(562));
+	hljs.registerLanguage('prolog', __webpack_require__(563));
+	hljs.registerLanguage('protobuf', __webpack_require__(564));
+	hljs.registerLanguage('puppet', __webpack_require__(565));
+	hljs.registerLanguage('purebasic', __webpack_require__(566));
+	hljs.registerLanguage('python', __webpack_require__(567));
+	hljs.registerLanguage('q', __webpack_require__(568));
+	hljs.registerLanguage('qml', __webpack_require__(569));
+	hljs.registerLanguage('r', __webpack_require__(570));
+	hljs.registerLanguage('rib', __webpack_require__(571));
+	hljs.registerLanguage('roboconf', __webpack_require__(572));
+	hljs.registerLanguage('rsl', __webpack_require__(573));
+	hljs.registerLanguage('ruleslanguage', __webpack_require__(574));
+	hljs.registerLanguage('rust', __webpack_require__(575));
+	hljs.registerLanguage('scala', __webpack_require__(576));
+	hljs.registerLanguage('scheme', __webpack_require__(577));
+	hljs.registerLanguage('scilab', __webpack_require__(578));
+	hljs.registerLanguage('scss', __webpack_require__(579));
+	hljs.registerLanguage('smali', __webpack_require__(580));
+	hljs.registerLanguage('smalltalk', __webpack_require__(581));
+	hljs.registerLanguage('sml', __webpack_require__(582));
+	hljs.registerLanguage('sqf', __webpack_require__(583));
+	hljs.registerLanguage('sql', __webpack_require__(584));
+	hljs.registerLanguage('stan', __webpack_require__(585));
+	hljs.registerLanguage('stata', __webpack_require__(586));
+	hljs.registerLanguage('step21', __webpack_require__(587));
+	hljs.registerLanguage('stylus', __webpack_require__(588));
+	hljs.registerLanguage('subunit', __webpack_require__(589));
+	hljs.registerLanguage('swift', __webpack_require__(590));
+	hljs.registerLanguage('taggerscript', __webpack_require__(591));
+	hljs.registerLanguage('yaml', __webpack_require__(592));
+	hljs.registerLanguage('tap', __webpack_require__(593));
+	hljs.registerLanguage('tcl', __webpack_require__(594));
+	hljs.registerLanguage('tex', __webpack_require__(595));
+	hljs.registerLanguage('thrift', __webpack_require__(596));
+	hljs.registerLanguage('tp', __webpack_require__(597));
+	hljs.registerLanguage('twig', __webpack_require__(598));
+	hljs.registerLanguage('typescript', __webpack_require__(599));
+	hljs.registerLanguage('vala', __webpack_require__(600));
+	hljs.registerLanguage('vbnet', __webpack_require__(601));
+	hljs.registerLanguage('vbscript', __webpack_require__(602));
+	hljs.registerLanguage('vbscript-html', __webpack_require__(603));
+	hljs.registerLanguage('verilog', __webpack_require__(604));
+	hljs.registerLanguage('vhdl', __webpack_require__(605));
+	hljs.registerLanguage('vim', __webpack_require__(606));
+	hljs.registerLanguage('x86asm', __webpack_require__(607));
+	hljs.registerLanguage('xl', __webpack_require__(608));
+	hljs.registerLanguage('xquery', __webpack_require__(609));
+	hljs.registerLanguage('zephir', __webpack_require__(610));
 
 	module.exports = hljs;
 
 /***/ },
-/* 437 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -40920,7 +41119,7 @@
 
 
 /***/ },
-/* 438 */
+/* 439 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -41003,7 +41202,7 @@
 	};
 
 /***/ },
-/* 439 */
+/* 440 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41078,7 +41277,7 @@
 	};
 
 /***/ },
-/* 440 */
+/* 441 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41120,7 +41319,7 @@
 	};
 
 /***/ },
-/* 441 */
+/* 442 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41198,7 +41397,7 @@
 	};
 
 /***/ },
-/* 442 */
+/* 443 */
 /***/ function(module, exports) {
 
 	module.exports = // We try to support full Ada2012
@@ -41375,7 +41574,7 @@
 	};
 
 /***/ },
-/* 443 */
+/* 444 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41425,7 +41624,7 @@
 	};
 
 /***/ },
-/* 444 */
+/* 445 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41515,7 +41714,7 @@
 	};
 
 /***/ },
-/* 445 */
+/* 446 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41685,7 +41884,7 @@
 	};
 
 /***/ },
-/* 446 */
+/* 447 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41789,7 +41988,7 @@
 	};
 
 /***/ },
-/* 447 */
+/* 448 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41885,7 +42084,7 @@
 	};
 
 /***/ },
-/* 448 */
+/* 449 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41992,7 +42191,7 @@
 	};
 
 /***/ },
-/* 449 */
+/* 450 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42184,7 +42383,7 @@
 	};
 
 /***/ },
-/* 450 */
+/* 451 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -42332,7 +42531,7 @@
 	};
 
 /***/ },
-/* 451 */
+/* 452 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42384,7 +42583,7 @@
 	};
 
 /***/ },
-/* 452 */
+/* 453 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42524,7 +42723,7 @@
 	};
 
 /***/ },
-/* 453 */
+/* 454 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42590,7 +42789,7 @@
 	};
 
 /***/ },
-/* 454 */
+/* 455 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42647,7 +42846,7 @@
 	};
 
 /***/ },
-/* 455 */
+/* 456 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42682,7 +42881,7 @@
 	};
 
 /***/ },
-/* 456 */
+/* 457 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42761,7 +42960,7 @@
 	};
 
 /***/ },
-/* 457 */
+/* 458 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42816,7 +43015,7 @@
 	};
 
 /***/ },
-/* 458 */
+/* 459 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -42849,7 +43048,7 @@
 	};
 
 /***/ },
-/* 459 */
+/* 460 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -42890,7 +43089,7 @@
 	};
 
 /***/ },
-/* 460 */
+/* 461 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42974,7 +43173,7 @@
 	};
 
 /***/ },
-/* 461 */
+/* 462 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43027,7 +43226,7 @@
 	};
 
 /***/ },
-/* 462 */
+/* 463 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43098,7 +43297,7 @@
 	};
 
 /***/ },
-/* 463 */
+/* 464 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43127,7 +43326,7 @@
 	};
 
 /***/ },
-/* 464 */
+/* 465 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43226,7 +43425,7 @@
 	};
 
 /***/ },
-/* 465 */
+/* 466 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43245,7 +43444,7 @@
 	};
 
 /***/ },
-/* 466 */
+/* 467 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43287,7 +43486,7 @@
 	};
 
 /***/ },
-/* 467 */
+/* 468 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43437,7 +43636,7 @@
 	};
 
 /***/ },
-/* 468 */
+/* 469 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43508,7 +43707,7 @@
 	};
 
 /***/ },
-/* 469 */
+/* 470 */
 /***/ function(module, exports) {
 
 	module.exports = function cos (hljs) {
@@ -43636,7 +43835,7 @@
 	};
 
 /***/ },
-/* 470 */
+/* 471 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43734,7 +43933,7 @@
 	};
 
 /***/ },
-/* 471 */
+/* 472 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43915,7 +44114,7 @@
 	};
 
 /***/ },
-/* 472 */
+/* 473 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44086,7 +44285,7 @@
 	};
 
 /***/ },
-/* 473 */
+/* 474 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44112,7 +44311,7 @@
 	};
 
 /***/ },
-/* 474 */
+/* 475 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44221,7 +44420,7 @@
 	};
 
 /***/ },
-/* 475 */
+/* 476 */
 /***/ function(module, exports) {
 
 	module.exports = /**
@@ -44483,7 +44682,7 @@
 	};
 
 /***/ },
-/* 476 */
+/* 477 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44595,7 +44794,7 @@
 	};
 
 /***/ },
-/* 477 */
+/* 478 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -44700,7 +44899,7 @@
 	};
 
 /***/ },
-/* 478 */
+/* 479 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44773,7 +44972,7 @@
 	};
 
 /***/ },
-/* 479 */
+/* 480 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44817,7 +45016,7 @@
 	};
 
 /***/ },
-/* 480 */
+/* 481 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44885,7 +45084,7 @@
 	};
 
 /***/ },
-/* 481 */
+/* 482 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44918,7 +45117,7 @@
 	};
 
 /***/ },
-/* 482 */
+/* 483 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44944,7 +45143,7 @@
 	};
 
 /***/ },
-/* 483 */
+/* 484 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45000,7 +45199,7 @@
 	};
 
 /***/ },
-/* 484 */
+/* 485 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45051,7 +45250,7 @@
 	};
 
 /***/ },
-/* 485 */
+/* 486 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45179,7 +45378,7 @@
 	};
 
 /***/ },
-/* 486 */
+/* 487 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45215,7 +45414,7 @@
 	};
 
 /***/ },
-/* 487 */
+/* 488 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45252,7 +45451,7 @@
 	};
 
 /***/ },
-/* 488 */
+/* 489 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45353,7 +45552,7 @@
 	};
 
 /***/ },
-/* 489 */
+/* 490 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45440,7 +45639,7 @@
 	};
 
 /***/ },
-/* 490 */
+/* 491 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45620,7 +45819,7 @@
 	};
 
 /***/ },
-/* 491 */
+/* 492 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45639,7 +45838,7 @@
 	};
 
 /***/ },
-/* 492 */
+/* 493 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45689,7 +45888,7 @@
 	};
 
 /***/ },
-/* 493 */
+/* 494 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45839,7 +46038,7 @@
 	};
 
 /***/ },
-/* 494 */
+/* 495 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45891,7 +46090,7 @@
 	};
 
 /***/ },
-/* 495 */
+/* 496 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45924,7 +46123,7 @@
 	};
 
 /***/ },
-/* 496 */
+/* 497 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -45973,7 +46172,7 @@
 	};
 
 /***/ },
-/* 497 */
+/* 498 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46048,7 +46247,7 @@
 	};
 
 /***/ },
-/* 498 */
+/* 499 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46111,7 +46310,7 @@
 	};
 
 /***/ },
-/* 499 */
+/* 500 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -46269,7 +46468,7 @@
 	};
 
 /***/ },
-/* 500 */
+/* 501 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46497,7 +46696,7 @@
 	};
 
 /***/ },
-/* 501 */
+/* 502 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46568,7 +46767,7 @@
 	};
 
 /***/ },
-/* 502 */
+/* 503 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -46609,7 +46808,7 @@
 	};
 
 /***/ },
-/* 503 */
+/* 504 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46730,7 +46929,7 @@
 	};
 
 /***/ },
-/* 504 */
+/* 505 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46788,7 +46987,7 @@
 	};
 
 /***/ },
-/* 505 */
+/* 506 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46815,7 +47014,7 @@
 	};
 
 /***/ },
-/* 506 */
+/* 507 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46854,7 +47053,7 @@
 	};
 
 /***/ },
-/* 507 */
+/* 508 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46952,7 +47151,7 @@
 	};
 
 /***/ },
-/* 508 */
+/* 509 */
 /***/ function(module, exports) {
 
 	module.exports = // TODO support filter tags like :javascript, support inline HTML
@@ -47063,7 +47262,7 @@
 	};
 
 /***/ },
-/* 509 */
+/* 510 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47101,7 +47300,7 @@
 	};
 
 /***/ },
-/* 510 */
+/* 511 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47227,7 +47426,7 @@
 	};
 
 /***/ },
-/* 511 */
+/* 512 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47343,7 +47542,7 @@
 	};
 
 /***/ },
-/* 512 */
+/* 513 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47393,7 +47592,7 @@
 	};
 
 /***/ },
-/* 513 */
+/* 514 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47468,7 +47667,7 @@
 	};
 
 /***/ },
-/* 514 */
+/* 515 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47513,7 +47712,7 @@
 	};
 
 /***/ },
-/* 515 */
+/* 516 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47619,7 +47818,7 @@
 	};
 
 /***/ },
-/* 516 */
+/* 517 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47680,7 +47879,7 @@
 	};
 
 /***/ },
-/* 517 */
+/* 518 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47750,7 +47949,7 @@
 	};
 
 /***/ },
-/* 518 */
+/* 519 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47830,7 +48029,7 @@
 	};
 
 /***/ },
-/* 519 */
+/* 520 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47942,7 +48141,7 @@
 	};
 
 /***/ },
-/* 520 */
+/* 521 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48117,7 +48316,7 @@
 	};
 
 /***/ },
-/* 521 */
+/* 522 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48158,7 +48357,7 @@
 	};
 
 /***/ },
-/* 522 */
+/* 523 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48340,7 +48539,7 @@
 	};
 
 /***/ },
-/* 523 */
+/* 524 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48518,7 +48717,7 @@
 	};
 
 /***/ },
-/* 524 */
+/* 525 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48685,7 +48884,7 @@
 	};
 
 /***/ },
-/* 525 */
+/* 526 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48712,7 +48911,7 @@
 	};
 
 /***/ },
-/* 526 */
+/* 527 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -48756,7 +48955,7 @@
 	};
 
 /***/ },
-/* 527 */
+/* 528 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48900,7 +49099,7 @@
 	};
 
 /***/ },
-/* 528 */
+/* 529 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49007,7 +49206,7 @@
 	};
 
 /***/ },
-/* 529 */
+/* 530 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49168,7 +49367,7 @@
 	};
 
 /***/ },
-/* 530 */
+/* 531 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49321,7 +49520,7 @@
 	};
 
 /***/ },
-/* 531 */
+/* 532 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49414,7 +49613,7 @@
 	};
 
 /***/ },
-/* 532 */
+/* 533 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49501,7 +49700,7 @@
 	};
 
 /***/ },
-/* 533 */
+/* 534 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49571,7 +49770,7 @@
 	};
 
 /***/ },
-/* 534 */
+/* 535 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49620,7 +49819,7 @@
 	};
 
 /***/ },
-/* 535 */
+/* 536 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49682,7 +49881,7 @@
 	};
 
 /***/ },
-/* 536 */
+/* 537 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49774,7 +49973,7 @@
 	};
 
 /***/ },
-/* 537 */
+/* 538 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50184,7 +50383,7 @@
 	};
 
 /***/ },
-/* 538 */
+/* 539 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50413,7 +50612,7 @@
 	};
 
 /***/ },
-/* 539 */
+/* 540 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50499,7 +50698,7 @@
 	};
 
 /***/ },
-/* 540 */
+/* 541 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50589,7 +50788,7 @@
 	};
 
 /***/ },
-/* 541 */
+/* 542 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50612,7 +50811,7 @@
 	};
 
 /***/ },
-/* 542 */
+/* 543 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50773,7 +50972,7 @@
 	};
 
 /***/ },
-/* 543 */
+/* 544 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50802,7 +51001,7 @@
 	};
 
 /***/ },
-/* 544 */
+/* 545 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50881,7 +51080,7 @@
 	};
 
 /***/ },
-/* 545 */
+/* 546 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50997,7 +51196,7 @@
 	};
 
 /***/ },
-/* 546 */
+/* 547 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51070,7 +51269,7 @@
 	};
 
 /***/ },
-/* 547 */
+/* 548 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51167,7 +51366,7 @@
 	};
 
 /***/ },
-/* 548 */
+/* 549 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51226,7 +51425,7 @@
 	};
 
 /***/ },
-/* 549 */
+/* 550 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51279,7 +51478,7 @@
 	};
 
 /***/ },
-/* 550 */
+/* 551 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51389,7 +51588,7 @@
 	};
 
 /***/ },
-/* 551 */
+/* 552 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51484,7 +51683,7 @@
 	};
 
 /***/ },
-/* 552 */
+/* 553 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51559,7 +51758,7 @@
 	};
 
 /***/ },
-/* 553 */
+/* 554 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51620,7 +51819,7 @@
 	};
 
 /***/ },
-/* 554 */
+/* 555 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51694,7 +51893,7 @@
 	};
 
 /***/ },
-/* 555 */
+/* 556 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51746,7 +51945,7 @@
 	};
 
 /***/ },
-/* 556 */
+/* 557 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51802,7 +52001,7 @@
 	};
 
 /***/ },
-/* 557 */
+/* 558 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51933,7 +52132,7 @@
 	};
 
 /***/ },
-/* 558 */
+/* 559 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52028,7 +52227,7 @@
 	};
 
 /***/ },
-/* 559 */
+/* 560 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52113,7 +52312,7 @@
 	};
 
 /***/ },
-/* 560 */
+/* 561 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52165,7 +52364,7 @@
 	};
 
 /***/ },
-/* 561 */
+/* 562 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52199,7 +52398,7 @@
 	};
 
 /***/ },
-/* 562 */
+/* 563 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52291,7 +52490,7 @@
 	};
 
 /***/ },
-/* 563 */
+/* 564 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52331,7 +52530,7 @@
 	};
 
 /***/ },
-/* 564 */
+/* 565 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52450,7 +52649,7 @@
 	};
 
 /***/ },
-/* 565 */
+/* 566 */
 /***/ function(module, exports) {
 
 	module.exports = // Base deafult colors in PB IDE: background: #FFFFDF; foreground: #000000;
@@ -52512,7 +52711,7 @@
 	};
 
 /***/ },
-/* 566 */
+/* 567 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52632,7 +52831,7 @@
 	};
 
 /***/ },
-/* 567 */
+/* 568 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52659,7 +52858,7 @@
 	};
 
 /***/ },
-/* 568 */
+/* 569 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52832,7 +53031,7 @@
 	};
 
 /***/ },
-/* 569 */
+/* 570 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52906,7 +53105,7 @@
 	};
 
 /***/ },
-/* 570 */
+/* 571 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52937,7 +53136,7 @@
 	};
 
 /***/ },
-/* 571 */
+/* 572 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53008,7 +53207,7 @@
 	};
 
 /***/ },
-/* 572 */
+/* 573 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53048,7 +53247,7 @@
 	};
 
 /***/ },
-/* 573 */
+/* 574 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53113,7 +53312,7 @@
 	};
 
 /***/ },
-/* 574 */
+/* 575 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53225,7 +53424,7 @@
 	};
 
 /***/ },
-/* 575 */
+/* 576 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53344,7 +53543,7 @@
 	};
 
 /***/ },
-/* 576 */
+/* 577 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53492,7 +53691,7 @@
 	};
 
 /***/ },
-/* 577 */
+/* 578 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53550,7 +53749,7 @@
 	};
 
 /***/ },
-/* 578 */
+/* 579 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53652,7 +53851,7 @@
 	};
 
 /***/ },
-/* 579 */
+/* 580 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53712,7 +53911,7 @@
 	};
 
 /***/ },
-/* 580 */
+/* 581 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53766,7 +53965,7 @@
 	};
 
 /***/ },
-/* 581 */
+/* 582 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53836,7 +54035,7 @@
 	};
 
 /***/ },
-/* 582 */
+/* 583 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54211,7 +54410,7 @@
 	};
 
 /***/ },
-/* 583 */
+/* 584 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54375,7 +54574,7 @@
 	};
 
 /***/ },
-/* 584 */
+/* 585 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54462,7 +54661,7 @@
 	};
 
 /***/ },
-/* 585 */
+/* 586 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54504,7 +54703,7 @@
 	};
 
 /***/ },
-/* 586 */
+/* 587 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54555,7 +54754,7 @@
 	};
 
 /***/ },
-/* 587 */
+/* 588 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55013,7 +55212,7 @@
 	};
 
 /***/ },
-/* 588 */
+/* 589 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55051,7 +55250,7 @@
 	};
 
 /***/ },
-/* 589 */
+/* 590 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55172,7 +55371,7 @@
 	};
 
 /***/ },
-/* 590 */
+/* 591 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55220,7 +55419,7 @@
 	};
 
 /***/ },
-/* 591 */
+/* 592 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55312,7 +55511,7 @@
 	};
 
 /***/ },
-/* 592 */
+/* 593 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55352,7 +55551,7 @@
 	};
 
 /***/ },
-/* 593 */
+/* 594 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55417,7 +55616,7 @@
 	};
 
 /***/ },
-/* 594 */
+/* 595 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55483,7 +55682,7 @@
 	};
 
 /***/ },
-/* 595 */
+/* 596 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55522,7 +55721,7 @@
 	};
 
 /***/ },
-/* 596 */
+/* 597 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55610,7 +55809,7 @@
 	};
 
 /***/ },
-/* 597 */
+/* 598 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55680,7 +55879,7 @@
 	};
 
 /***/ },
-/* 598 */
+/* 599 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55840,7 +56039,7 @@
 	};
 
 /***/ },
-/* 599 */
+/* 600 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55894,7 +56093,7 @@
 	};
 
 /***/ },
-/* 600 */
+/* 601 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55954,7 +56153,7 @@
 	};
 
 /***/ },
-/* 601 */
+/* 602 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55997,7 +56196,7 @@
 	};
 
 /***/ },
-/* 602 */
+/* 603 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56013,7 +56212,7 @@
 	};
 
 /***/ },
-/* 603 */
+/* 604 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56116,7 +56315,7 @@
 	};
 
 /***/ },
-/* 604 */
+/* 605 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56181,7 +56380,7 @@
 	};
 
 /***/ },
-/* 605 */
+/* 606 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56291,7 +56490,7 @@
 	};
 
 /***/ },
-/* 606 */
+/* 607 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56431,7 +56630,7 @@
 	};
 
 /***/ },
-/* 607 */
+/* 608 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56508,7 +56707,7 @@
 	};
 
 /***/ },
-/* 608 */
+/* 609 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56583,7 +56782,7 @@
 	};
 
 /***/ },
-/* 609 */
+/* 610 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56694,7 +56893,7 @@
 	};
 
 /***/ },
-/* 610 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56702,8 +56901,8 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(31);
 	var findDOMNode = ReactDOM.findDOMNode;
-	var className = __webpack_require__(611);
-	var debounce = __webpack_require__(612);
+	var className = __webpack_require__(612);
+	var debounce = __webpack_require__(613);
 
 	function normalizeLineEndings(str) {
 		if (!str) return str;
@@ -56731,7 +56930,7 @@
 			};
 		},
 		getCodeMirrorInstance: function getCodeMirrorInstance() {
-			return this.props.codeMirrorInstance || __webpack_require__(613);
+			return this.props.codeMirrorInstance || __webpack_require__(614);
 		},
 		getInitialState: function getInitialState() {
 			return {
@@ -56810,7 +57009,7 @@
 	module.exports = CodeMirror;
 
 /***/ },
-/* 611 */
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -56864,7 +57063,7 @@
 
 
 /***/ },
-/* 612 */
+/* 613 */
 /***/ function(module, exports) {
 
 	/**
@@ -57247,7 +57446,7 @@
 
 
 /***/ },
-/* 613 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -66558,7 +66757,7 @@
 
 
 /***/ },
-/* 614 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -66566,7 +66765,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(613));
+	    mod(__webpack_require__(614));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -67366,7 +67565,7 @@
 
 
 /***/ },
-/* 615 */
+/* 616 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -67374,7 +67573,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(613));
+	    mod(__webpack_require__(614));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -67766,7 +67965,7 @@
 
 
 /***/ },
-/* 616 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -67774,7 +67973,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(613), __webpack_require__(615), __webpack_require__(617));
+	    mod(__webpack_require__(614), __webpack_require__(616), __webpack_require__(618));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "../xml/xml", "../meta"], mod);
 	  else // Plain browser env
@@ -68580,7 +68779,7 @@
 
 
 /***/ },
-/* 617 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -68588,7 +68787,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(613));
+	    mod(__webpack_require__(614));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -68800,1039 +68999,7 @@
 
 
 /***/ },
-/* 618 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _dialogFolderCreate = __webpack_require__(619);
-
-	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
-
-	var _reactRedux = __webpack_require__(177);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ipc = __webpack_require__(222).ipcRenderer;
-
-	var FolderContainerView = function (_React$Component) {
-	  _inherits(FolderContainerView, _React$Component);
-
-	  function FolderContainerView(props) {
-	    _classCallCheck(this, FolderContainerView);
-
-	    var _this = _possibleConstructorReturn(this, (FolderContainerView.__proto__ || Object.getPrototypeOf(FolderContainerView)).call(this, props));
-
-	    _this.state = {
-	      open: false,
-	      createFolderDialogOpen: false
-	    };
-
-	    _this.folderid = "0";
-	    _this.selectFolder = _this.selectFolder.bind(_this);
-	    _this.renderFolder = _this.renderFolder.bind(_this);
-	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(FolderContainerView, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.props.store.subscribe(this.storeDidUpdate);
-	    }
-	  }, {
-	    key: 'storeDidUpdate',
-	    value: function storeDidUpdate() {
-	      this.setState({ open: this.props.store.getState().sessionActive });
-	    }
-	  }, {
-	    key: 'findIndexOfFolder',
-	    value: function findIndexOfFolder(folderid) {
-	      var folders = this.props.store.getState().notes.folders;
-	      var length = folders.length;
-	      var i;
-	      for (i = 0; i < length; i++) {
-	        if (folders[i]._id == folderid) return i;
-	      }
-	      return null;
-	    }
-	  }, {
-	    key: 'openCreateFolderDialog',
-	    value: function openCreateFolderDialog() {
-	      console.log("Opening Create Folder Dialog");
-	      this.setState({ createFolderDialogOpen: true });
-	    }
-	  }, {
-	    key: 'createNewFolder',
-	    value: function createNewFolder(name) {
-	      console.log('Creating New Folder with name: ' + name);
-	      var data = { name: name };
-	      ipc.send('create-folder-request', data);
-	      this.closeCreateFolderDialog();
-	    }
-	  }, {
-	    key: 'closeCreateFolderDialog',
-	    value: function closeCreateFolderDialog() {
-	      console.log("Closing Create Folder Dialog");
-	      this.setState({ createFolderDialogOpen: false });
-	    }
-	  }, {
-	    key: 'selectFolder',
-	    value: function selectFolder(id, e) {
-	      console.log("Selected Folder: " + id);
-	      var index = this.findIndexOfFolder(id);
-	      this.props.store.dispatch({ type: 'SELECT_FOLDER', index: index });
-	      this.props.store.dispatch({ type: 'EDITOR_MODE' });
-	    }
-	  }, {
-	    key: 'deleteFolder',
-	    value: function deleteFolder(id, e) {
-	      console.log("Deleting Folder: " + id);
-	      var index = this.findIndexOfFolder(id);
-	      store.dispatch({ type: 'DELETE_FOLDER', index: index });
-	    }
-
-	    // <div className="folder-delete-btn" onClick={this.deleteFolder.bind(this, _id)}>X</div>
-
-	  }, {
-	    key: 'renderFolder',
-	    value: function renderFolder(_ref) {
-	      var name = _ref.name,
-	          _id = _ref._id;
-
-	      return _react2.default.createElement(
-	        'div',
-	        { key: _id, className: 'folder-view', onClick: this.selectFolder.bind(this, _id) },
-	        name
-	      );
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      console.log("FolderviewContainer Rendering!!!!!");
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'folder-container-view' },
-	        this.props.store.getState().notes.folders.map(this.renderFolder, this),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'folder-view', onClick: function onClick() {
-	              return _this2.openCreateFolderDialog();
-	            } },
-	          'New +'
-	        ),
-	        _react2.default.createElement(_dialogFolderCreate2.default, {
-	          open: this.state.createFolderDialogOpen,
-	          close: function close() {
-	            return _this2.closeCreateFolderDialog();
-	          },
-	          createFolder: function createFolder(name) {
-	            return _this2.createNewFolder(name);
-	          }
-	        })
-	      );
-	    }
-	  }]);
-
-	  return FolderContainerView;
-	}(_react2.default.Component);
-
-	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
-
-/***/ },
 /* 619 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _Dialog = __webpack_require__(429);
-
-	var _Dialog2 = _interopRequireDefault(_Dialog);
-
-	var _FlatButton = __webpack_require__(407);
-
-	var _FlatButton2 = _interopRequireDefault(_FlatButton);
-
-	var _RaisedButton = __webpack_require__(375);
-
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
-	var _menuTextField = __webpack_require__(410);
-
-	var _menuTextField2 = _interopRequireDefault(_menuTextField);
-
-	var _menuButton = __webpack_require__(374);
-
-	var _menuButton2 = _interopRequireDefault(_menuButton);
-
-	var _MuiThemeProvider = __webpack_require__(225);
-
-	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
-
-	var _getMuiTheme = __webpack_require__(312);
-
-	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var DialogFolderCreate = function (_React$Component) {
-	  _inherits(DialogFolderCreate, _React$Component);
-
-	  function DialogFolderCreate(props) {
-	    _classCallCheck(this, DialogFolderCreate);
-
-	    var _this = _possibleConstructorReturn(this, (DialogFolderCreate.__proto__ || Object.getPrototypeOf(DialogFolderCreate)).call(this, props));
-
-	    _this.state = {
-	      value: ""
-	    };
-
-	    _this.handleChange = _this.handleChange.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(DialogFolderCreate, [{
-	    key: 'handleChange',
-	    value: function handleChange(event) {
-	      this.setState({
-	        value: event.target.value
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      var actions = [_react2.default.createElement(_FlatButton2.default, {
-	        label: 'Cancel',
-	        primary: false,
-	        keyboardFocused: false,
-	        onTouchTap: function onTouchTap() {
-	          return _this2.props.close();
-	        }
-	      }), _react2.default.createElement(_FlatButton2.default, {
-	        label: 'Create',
-	        primary: true,
-	        keyboardFocused: true,
-	        onTouchTap: function onTouchTap() {
-	          return _this2.props.createFolder(_this2.state.value);
-	        }
-	      })];
-
-	      return _react2.default.createElement(
-	        _MuiThemeProvider2.default,
-	        null,
-	        _react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement(
-	            _Dialog2.default,
-	            {
-	              title: 'Create New Folder',
-	              actions: actions,
-	              modal: false,
-	              open: this.props.open,
-	              onRequestClose: function onRequestClose() {
-	                return _this2.props.close();
-	              }
-	            },
-	            _react2.default.createElement(_menuTextField2.default, {
-	              hintStyle: { textAlign: 'left' },
-	              hintText: "Folder Name",
-	              value: this.state.value,
-	              onChange: this.handleChange
-	            })
-	          )
-	        )
-	      );
-	    }
-	  }]);
-
-	  return DialogFolderCreate;
-	}(_react2.default.Component);
-
-	exports.default = DialogFolderCreate;
-
-/***/ },
-/* 620 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _menubar = __webpack_require__(221);
-
-	var _menubar2 = _interopRequireDefault(_menubar);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var _require = __webpack_require__(222),
-	    remote = _require.remote;
-
-	var Menu = remote.Menu,
-	    MenuItem = remote.MenuItem;
-
-
-	var ipc = __webpack_require__(222).ipcRenderer;
-
-	var MenubarTile = function (_React$Component) {
-	  _inherits(MenubarTile, _React$Component);
-
-	  function MenubarTile() {
-	    _classCallCheck(this, MenubarTile);
-
-	    var _this = _possibleConstructorReturn(this, (MenubarTile.__proto__ || Object.getPrototypeOf(MenubarTile)).call(this));
-
-	    _this.handleMenuClick = _this.handleMenuClick.bind(_this);
-	    _this.handleCloseClick = _this.handleCloseClick.bind(_this);
-	    _this.handleMaximizeClick = _this.handleMaximizeClick.bind(_this);
-	    _this.handleUnmaximizeClick = _this.handleUnmaximizeClick.bind(_this);
-	    _this.handleMinimizeClick = _this.handleMinimizeClick.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(MenubarTile, [{
-	    key: 'handleMenuClick',
-	    value: function handleMenuClick() {
-	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(this.props.store));
-	      menubar.popup();
-	    }
-	  }, {
-	    key: 'handleCloseClick',
-	    value: function handleCloseClick() {
-	      ipc.send('quit');
-	    }
-	  }, {
-	    key: 'handleMaximizeClick',
-	    value: function handleMaximizeClick() {
-	      ipc.send('maximize');
-	    }
-	  }, {
-	    key: 'handleUnmaximizeClick',
-	    value: function handleUnmaximizeClick() {
-	      ipc.send('unmaximize');
-	    }
-	  }, {
-	    key: 'handleMinimizeClick',
-	    value: function handleMinimizeClick() {
-	      ipc.send('minimize');
-	    }
-	  }, {
-	    key: 'minormax',
-	    value: function minormax() {
-	      console.log('remote current window state: ' + remote.getCurrentWindow().isMaximized());
-	      if (!remote.getCurrentWindow().isMaximized()) {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'menubar-tile window-tile', onClick: this.handleMaximizeClick },
-	          _react2.default.createElement(
-	            'span',
-	            null,
-	            _react2.default.createElement('i', { className: 'icon-square', 'aria-hidden': 'true' })
-	          )
-	        );
-	      } else {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'menubar-tile window-tile', onClick: this.handleUnmaximizeClick },
-	          _react2.default.createElement(
-	            'span',
-	            null,
-	            _react2.default.createElement('i', { className: 'icon-clone', 'aria-hidden': 'true' })
-	          )
-	        );
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      console.log("Rendering menubar");
-	      if (process.platform !== 'darwin') {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'menubar-custom' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'menubar-tile menu-bars', onClick: this.handleMenuClick },
-	            _react2.default.createElement(
-	              'span',
-	              null,
-	              _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'menubar-tile window-tile', onClick: this.handleCloseClick },
-	            _react2.default.createElement(
-	              'span',
-	              null,
-	              'X'
-	            )
-	          ),
-	          this.minormax(),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'menubar-tile window-tile', onClick: this.handleMinimizeClick },
-	            _react2.default.createElement(
-	              'span',
-	              null,
-	              '\u2014'
-	            )
-	          )
-	        );
-	      } else {
-	        return _react2.default.createElement('div', null);
-	      }
-	    }
-	  }]);
-
-	  return MenubarTile;
-	}(_react2.default.Component);
-
-	exports.default = MenubarTile;
-
-/***/ },
-/* 621 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(622);
-
-	var alreadyInjected = false;
-
-	module.exports = function injectTapEventPlugin (strategyOverrides) {
-	  strategyOverrides = strategyOverrides || {}
-	  var shouldRejectClick = strategyOverrides.shouldRejectClick || defaultClickRejectionStrategy;
-
-	  if (process.env.NODE_ENV !== 'production') {
-	    invariant(
-	      !alreadyInjected,
-	      'injectTapEventPlugin(): Can only be called once per application lifecycle.\n\n\
-	It is recommended to call injectTapEventPlugin() just before you call \
-	ReactDOM.render(). If you are using an external library which calls injectTapEventPlugin() \
-	itself, please contact the maintainer as it shouldn\'t be called in library code and \
-	should be injected by the application.'
-	    )
-	  }
-
-	  alreadyInjected = true;
-
-	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(623)(shouldRejectClick)
-	  });
-	};
-
-
-/***/ },
-/* 622 */
-/***/ function(module, exports) {
-
-	module.exports = function(lastTouchEvent, clickTimestamp) {
-	  if (lastTouchEvent && (clickTimestamp - lastTouchEvent) < 750) {
-	    return true;
-	  }
-	};
-
-
-/***/ },
-/* 623 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule TapEventPlugin
-	 * @typechecks static-only
-	 */
-
-	"use strict";
-
-	var EventConstants = __webpack_require__(624);
-	var EventPluginUtils = __webpack_require__(43);
-	var EventPropagators = __webpack_require__(40);
-	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(625);
-	var ViewportMetrics = __webpack_require__(75);
-
-	var keyOf = __webpack_require__(626);
-	var topLevelTypes = EventConstants.topLevelTypes;
-
-	var isStartish = EventPluginUtils.isStartish;
-	var isEndish = EventPluginUtils.isEndish;
-
-	var isTouch = function(topLevelType) {
-	  var touchTypes = [
-	    'topTouchCancel',
-	    'topTouchEnd',
-	    'topTouchStart',
-	    'topTouchMove'
-	  ];
-	  return touchTypes.indexOf(topLevelType) >= 0;
-	}
-
-	/**
-	 * Number of pixels that are tolerated in between a `touchStart` and `touchEnd`
-	 * in order to still be considered a 'tap' event.
-	 */
-	var tapMoveThreshold = 10;
-	var ignoreMouseThreshold = 750;
-	var startCoords = {x: null, y: null};
-	var lastTouchEvent = null;
-
-	var Axis = {
-	  x: {page: 'pageX', client: 'clientX', envScroll: 'currentPageScrollLeft'},
-	  y: {page: 'pageY', client: 'clientY', envScroll: 'currentPageScrollTop'}
-	};
-
-	function getAxisCoordOfEvent(axis, nativeEvent) {
-	  var singleTouch = TouchEventUtils.extractSingleTouch(nativeEvent);
-	  if (singleTouch) {
-	    return singleTouch[axis.page];
-	  }
-	  return axis.page in nativeEvent ?
-	    nativeEvent[axis.page] :
-	    nativeEvent[axis.client] + ViewportMetrics[axis.envScroll];
-	}
-
-	function getDistance(coords, nativeEvent) {
-	  var pageX = getAxisCoordOfEvent(Axis.x, nativeEvent);
-	  var pageY = getAxisCoordOfEvent(Axis.y, nativeEvent);
-	  return Math.pow(
-	    Math.pow(pageX - coords.x, 2) + Math.pow(pageY - coords.y, 2),
-	    0.5
-	  );
-	}
-
-	var touchEvents = [
-	  'topTouchStart',
-	  'topTouchCancel',
-	  'topTouchEnd',
-	  'topTouchMove',
-	];
-
-	var dependencies = [
-	  'topMouseDown',
-	  'topMouseMove',
-	  'topMouseUp',
-	].concat(touchEvents);
-
-	var eventTypes = {
-	  touchTap: {
-	    phasedRegistrationNames: {
-	      bubbled: keyOf({onTouchTap: null}),
-	      captured: keyOf({onTouchTapCapture: null})
-	    },
-	    dependencies: dependencies
-	  }
-	};
-
-	var now = (function() {
-	  if (Date.now) {
-	    return Date.now;
-	  } else {
-	    // IE8 support: http://stackoverflow.com/questions/9430357/please-explain-why-and-how-new-date-works-as-workaround-for-date-now-in
-	    return function () {
-	      return +new Date;
-	    }
-	  }
-	})();
-
-	function createTapEventPlugin(shouldRejectClick) {
-	  return {
-
-	    tapMoveThreshold: tapMoveThreshold,
-
-	    ignoreMouseThreshold: ignoreMouseThreshold,
-
-	    eventTypes: eventTypes,
-
-	    /**
-	     * @param {string} topLevelType Record from `EventConstants`.
-	     * @param {DOMEventTarget} targetInst The listening component root node.
-	     * @param {object} nativeEvent Native browser event.
-	     * @return {*} An accumulation of synthetic events.
-	     * @see {EventPluginHub.extractEvents}
-	     */
-	    extractEvents: function(
-	      topLevelType,
-	      targetInst,
-	      nativeEvent,
-	      nativeEventTarget
-	    ) {
-
-	      if (!isStartish(topLevelType) && !isEndish(topLevelType)) {
-	        return null;
-	      }
-
-	      if (isTouch(topLevelType)) {
-	        lastTouchEvent = now();
-	      } else {
-	        if (shouldRejectClick(lastTouchEvent, now())) {
-	          return null;
-	        }
-	      }
-
-	      var event = null;
-	      var distance = getDistance(startCoords, nativeEvent);
-	      if (isEndish(topLevelType) && distance < tapMoveThreshold) {
-	        event = SyntheticUIEvent.getPooled(
-	          eventTypes.touchTap,
-	          targetInst,
-	          nativeEvent,
-	          nativeEventTarget
-	        );
-	      }
-	      if (isStartish(topLevelType)) {
-	        startCoords.x = getAxisCoordOfEvent(Axis.x, nativeEvent);
-	        startCoords.y = getAxisCoordOfEvent(Axis.y, nativeEvent);
-	      } else if (isEndish(topLevelType)) {
-	        startCoords.x = 0;
-	        startCoords.y = 0;
-	      }
-	      EventPropagators.accumulateTwoPhaseDispatches(event);
-	      return event;
-	    }
-
-	  };
-	}
-
-	module.exports = createTapEventPlugin;
-
-
-/***/ },
-/* 624 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	/**
-	 * Types of raw signals from the browser caught at the top level.
-	 */
-	var topLevelTypes = {
-	  topAbort: null,
-	  topAnimationEnd: null,
-	  topAnimationIteration: null,
-	  topAnimationStart: null,
-	  topBlur: null,
-	  topCanPlay: null,
-	  topCanPlayThrough: null,
-	  topChange: null,
-	  topClick: null,
-	  topCompositionEnd: null,
-	  topCompositionStart: null,
-	  topCompositionUpdate: null,
-	  topContextMenu: null,
-	  topCopy: null,
-	  topCut: null,
-	  topDoubleClick: null,
-	  topDrag: null,
-	  topDragEnd: null,
-	  topDragEnter: null,
-	  topDragExit: null,
-	  topDragLeave: null,
-	  topDragOver: null,
-	  topDragStart: null,
-	  topDrop: null,
-	  topDurationChange: null,
-	  topEmptied: null,
-	  topEncrypted: null,
-	  topEnded: null,
-	  topError: null,
-	  topFocus: null,
-	  topInput: null,
-	  topInvalid: null,
-	  topKeyDown: null,
-	  topKeyPress: null,
-	  topKeyUp: null,
-	  topLoad: null,
-	  topLoadedData: null,
-	  topLoadedMetadata: null,
-	  topLoadStart: null,
-	  topMouseDown: null,
-	  topMouseMove: null,
-	  topMouseOut: null,
-	  topMouseOver: null,
-	  topMouseUp: null,
-	  topPaste: null,
-	  topPause: null,
-	  topPlay: null,
-	  topPlaying: null,
-	  topProgress: null,
-	  topRateChange: null,
-	  topReset: null,
-	  topScroll: null,
-	  topSeeked: null,
-	  topSeeking: null,
-	  topSelectionChange: null,
-	  topStalled: null,
-	  topSubmit: null,
-	  topSuspend: null,
-	  topTextInput: null,
-	  topTimeUpdate: null,
-	  topTouchCancel: null,
-	  topTouchEnd: null,
-	  topTouchMove: null,
-	  topTouchStart: null,
-	  topTransitionEnd: null,
-	  topVolumeChange: null,
-	  topWaiting: null,
-	  topWheel: null
-	};
-
-	var EventConstants = {
-	  topLevelTypes: topLevelTypes
-	};
-
-	module.exports = EventConstants;
-
-/***/ },
-/* 625 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule TouchEventUtils
-	 */
-
-	var TouchEventUtils = {
-	  /**
-	   * Utility function for common case of extracting out the primary touch from a
-	   * touch event.
-	   * - `touchEnd` events usually do not have the `touches` property.
-	   *   http://stackoverflow.com/questions/3666929/
-	   *   mobile-sarai-touchend-event-not-firing-when-last-touch-is-removed
-	   *
-	   * @param {Event} nativeEvent Native event that may or may not be a touch.
-	   * @return {TouchesObject?} an object with pageX and pageY or null.
-	   */
-	  extractSingleTouch: function(nativeEvent) {
-	    var touches = nativeEvent.touches;
-	    var changedTouches = nativeEvent.changedTouches;
-	    var hasTouches = touches && touches.length > 0;
-	    var hasChangedTouches = changedTouches && changedTouches.length > 0;
-
-	    return !hasTouches && hasChangedTouches ? changedTouches[0] :
-	           hasTouches ? touches[0] :
-	           nativeEvent;
-	  }
-	};
-
-	module.exports = TouchEventUtils;
-
-
-/***/ },
-/* 626 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	/**
-	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	/**
-	 * Allows extraction of a minified key. Let's the build system minify keys
-	 * without losing the ability to dynamically use key strings as values
-	 * themselves. Pass in an object with a single key/val pair and it will return
-	 * you the string key of that single record. Suppose you want to grab the
-	 * value for a key 'className' inside of an object. Key/val minification may
-	 * have aliased that key to be 'xa12'. keyOf({className: null}) will return
-	 * 'xa12' in that case. Resolve keys you want to use once at startup time, then
-	 * reuse those resolutions.
-	 */
-	var keyOf = function keyOf(oneKeyObj) {
-	  var key;
-	  for (key in oneKeyObj) {
-	    if (!oneKeyObj.hasOwnProperty(key)) {
-	      continue;
-	    }
-	    return key;
-	  }
-	  return null;
-	};
-
-	module.exports = keyOf;
-
-/***/ },
-/* 627 */,
-/* 628 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _MuiThemeProvider = __webpack_require__(225);
-
-	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
-
-	var _getMuiTheme = __webpack_require__(312);
-
-	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var FormatToolbar = function (_React$Component) {
-	  _inherits(FormatToolbar, _React$Component);
-
-	  function FormatToolbar() {
-	    _classCallCheck(this, FormatToolbar);
-
-	    return _possibleConstructorReturn(this, (FormatToolbar.__proto__ || Object.getPrototypeOf(FormatToolbar)).apply(this, arguments));
-	  }
-
-	  _createClass(FormatToolbar, [{
-	    key: 'setHeader',
-	    value: function setHeader(num) {
-	      document.execCommand('formatBlock', false, 'h' + num);
-	    }
-	  }, {
-	    key: 'setParagraph',
-	    value: function setParagraph() {
-	      document.execCommand('formatBlock', false, 'p');
-	    }
-	  }, {
-	    key: 'setBlockquote',
-	    value: function setBlockquote() {
-	      document.execCommand('formatBlock', false, 'blockquote');
-	    }
-	  }, {
-	    key: 'setBold',
-	    value: function setBold() {
-	      document.execCommand('bold', false, null);
-	    }
-	  }, {
-	    key: 'setItalic',
-	    value: function setItalic() {
-	      document.execCommand('italic', false, null);
-	    }
-	  }, {
-	    key: 'insertLink',
-	    value: function insertLink() {
-	      url = prompt('Enter the link here: ', 'http:\/\/');
-	      document.execCommand('createlink', false, url);
-	    }
-	  }, {
-	    key: 'insertPhoto',
-	    value: function insertPhoto() {
-	      url = prompt('Enter the link here: ', 'http:\/\/');
-	      document.execCommand('insertimage', false, url);
-	    }
-	  }, {
-	    key: 'insertHorizontalRule',
-	    value: function insertHorizontalRule() {
-	      document.execCommand('insertHorizontalRule', false, null);
-	    }
-	  }, {
-	    key: 'insertOrderedList',
-	    value: function insertOrderedList() {
-	      document.execCommand('insertOrderedList', false, null);
-	    }
-	  }, {
-	    key: 'insertUnorderedList',
-	    value: function insertUnorderedList() {
-	      document.execCommand('insertUnorderedList', false, null);
-	    }
-
-	    //code, flashcards and tables.
-
-
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'format-toolbar' },
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'bold', onClick: this.setBold },
-	          _react2.default.createElement('i', { className: 'fa fa-bold' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'italic', onClick: this.setBold },
-	          _react2.default.createElement('i', { className: 'fa fa-italic' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'insertUnorderedList', onClick: this.insertUnorderedList },
-	          _react2.default.createElement('i', { className: 'fa fa-list-ul' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'insertOrderedList', onClick: this.insertOrderedList },
-	          _react2.default.createElement('i', { className: 'fa fa-list-ol' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h1', onClick: this.setHeader(1) },
-	          'H1'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h2', onClick: this.setHeader(2) },
-	          'H2'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h3', onClick: this.setHeader(3) },
-	          'H3'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h4', onClick: this.setHeader(4) },
-	          'H4'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h5', onClick: this.setHeader(5) },
-	          'H5'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h6', onClick: this.setHeader(6) },
-	          'H6'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'p', onClick: this.setParagraph },
-	          'P'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'blockquote', onClick: this.setBlockquote },
-	          _react2.default.createElement('i', { className: 'fa fa-indent' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'horizontalRule', onClick: this.insertHorizontalRule },
-	          _react2.default.createElement('i', { className: 'fa fa-minus' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'createlink', onClick: this.insertLink },
-	          _react2.default.createElement('i', { className: 'fa fa-link' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'insertimage', onClick: this.insertPhoto },
-	          _react2.default.createElement('i', { className: 'fa fa-image' })
-	        )
-	      );
-	    }
-	  }]);
-
-	  return FormatToolbar;
-	}(_react2.default.Component);
-
-	exports.default = FormatToolbar;
-
-/***/ },
-/* 629 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69859,7 +69026,7 @@
 
 	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
 
-	var _formatToolbar = __webpack_require__(628);
+	var _formatToolbar = __webpack_require__(434);
 
 	var _formatToolbar2 = _interopRequireDefault(_formatToolbar);
 
@@ -69875,7 +69042,7 @@
 
 	var ipc = __webpack_require__(222).ipcRenderer;
 
-	var shared = __webpack_require__(434);
+	var shared = __webpack_require__(435);
 
 	var FusionmodeEditor = function (_React$Component) {
 	  _inherits(FusionmodeEditor, _React$Component);
@@ -70056,6 +69223,848 @@
 	}(_react2.default.Component);
 
 	exports.default = (0, _reactRedux.connect)()(FusionmodeEditor);
+
+/***/ },
+/* 620 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _dialogFolderCreate = __webpack_require__(621);
+
+	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
+
+	var _reactRedux = __webpack_require__(177);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ipc = __webpack_require__(222).ipcRenderer;
+
+	var FolderContainerView = function (_React$Component) {
+	  _inherits(FolderContainerView, _React$Component);
+
+	  function FolderContainerView(props) {
+	    _classCallCheck(this, FolderContainerView);
+
+	    var _this = _possibleConstructorReturn(this, (FolderContainerView.__proto__ || Object.getPrototypeOf(FolderContainerView)).call(this, props));
+
+	    _this.state = {
+	      open: false,
+	      createFolderDialogOpen: false
+	    };
+
+	    _this.folderid = "0";
+	    _this.selectFolder = _this.selectFolder.bind(_this);
+	    _this.renderFolder = _this.renderFolder.bind(_this);
+	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(FolderContainerView, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.props.store.subscribe(this.storeDidUpdate);
+	    }
+	  }, {
+	    key: 'storeDidUpdate',
+	    value: function storeDidUpdate() {
+	      this.setState({ open: this.props.store.getState().sessionActive });
+	    }
+	  }, {
+	    key: 'findIndexOfFolder',
+	    value: function findIndexOfFolder(folderid) {
+	      var folders = this.props.store.getState().notes.folders;
+	      var length = folders.length;
+	      var i;
+	      for (i = 0; i < length; i++) {
+	        if (folders[i]._id == folderid) return i;
+	      }
+	      return null;
+	    }
+	  }, {
+	    key: 'openCreateFolderDialog',
+	    value: function openCreateFolderDialog() {
+	      console.log("Opening Create Folder Dialog");
+	      this.setState({ createFolderDialogOpen: true });
+	    }
+	  }, {
+	    key: 'createNewFolder',
+	    value: function createNewFolder(name) {
+	      console.log('Creating New Folder with name: ' + name);
+	      var data = { name: name };
+	      ipc.send('create-folder-request', data);
+	      this.closeCreateFolderDialog();
+	    }
+	  }, {
+	    key: 'closeCreateFolderDialog',
+	    value: function closeCreateFolderDialog() {
+	      console.log("Closing Create Folder Dialog");
+	      this.setState({ createFolderDialogOpen: false });
+	    }
+	  }, {
+	    key: 'selectFolder',
+	    value: function selectFolder(id, e) {
+	      console.log("Selected Folder: " + id);
+	      var index = this.findIndexOfFolder(id);
+	      this.props.store.dispatch({ type: 'SELECT_FOLDER', index: index });
+	      this.props.store.dispatch({ type: 'EDITOR_MODE' });
+	    }
+	  }, {
+	    key: 'deleteFolder',
+	    value: function deleteFolder(id, e) {
+	      console.log("Deleting Folder: " + id);
+	      var index = this.findIndexOfFolder(id);
+	      store.dispatch({ type: 'DELETE_FOLDER', index: index });
+	    }
+
+	    // <div className="folder-delete-btn" onClick={this.deleteFolder.bind(this, _id)}>X</div>
+
+	  }, {
+	    key: 'renderFolder',
+	    value: function renderFolder(_ref) {
+	      var name = _ref.name,
+	          _id = _ref._id;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { key: _id, className: 'folder-view', onClick: this.selectFolder.bind(this, _id) },
+	        name
+	      );
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      console.log("FolderviewContainer Rendering!!!!!");
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'folder-container-view' },
+	        this.props.store.getState().notes.folders.map(this.renderFolder, this),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'folder-view', onClick: function onClick() {
+	              return _this2.openCreateFolderDialog();
+	            } },
+	          'New +'
+	        ),
+	        _react2.default.createElement(_dialogFolderCreate2.default, {
+	          open: this.state.createFolderDialogOpen,
+	          close: function close() {
+	            return _this2.closeCreateFolderDialog();
+	          },
+	          createFolder: function createFolder(name) {
+	            return _this2.createNewFolder(name);
+	          }
+	        })
+	      );
+	    }
+	  }]);
+
+	  return FolderContainerView;
+	}(_react2.default.Component);
+
+	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
+
+/***/ },
+/* 621 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Dialog = __webpack_require__(429);
+
+	var _Dialog2 = _interopRequireDefault(_Dialog);
+
+	var _FlatButton = __webpack_require__(407);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	var _RaisedButton = __webpack_require__(375);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _menuTextField = __webpack_require__(410);
+
+	var _menuTextField2 = _interopRequireDefault(_menuTextField);
+
+	var _menuButton = __webpack_require__(374);
+
+	var _menuButton2 = _interopRequireDefault(_menuButton);
+
+	var _MuiThemeProvider = __webpack_require__(225);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(312);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DialogFolderCreate = function (_React$Component) {
+	  _inherits(DialogFolderCreate, _React$Component);
+
+	  function DialogFolderCreate(props) {
+	    _classCallCheck(this, DialogFolderCreate);
+
+	    var _this = _possibleConstructorReturn(this, (DialogFolderCreate.__proto__ || Object.getPrototypeOf(DialogFolderCreate)).call(this, props));
+
+	    _this.state = {
+	      value: ""
+	    };
+
+	    _this.handleChange = _this.handleChange.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(DialogFolderCreate, [{
+	    key: 'handleChange',
+	    value: function handleChange(event) {
+	      this.setState({
+	        value: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var actions = [_react2.default.createElement(_FlatButton2.default, {
+	        label: 'Cancel',
+	        primary: false,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this2.props.close();
+	        }
+	      }), _react2.default.createElement(_FlatButton2.default, {
+	        label: 'Create',
+	        primary: true,
+	        keyboardFocused: true,
+	        onTouchTap: function onTouchTap() {
+	          return _this2.props.createFolder(_this2.state.value);
+	        }
+	      })];
+
+	      return _react2.default.createElement(
+	        _MuiThemeProvider2.default,
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            _Dialog2.default,
+	            {
+	              title: 'Create New Folder',
+	              actions: actions,
+	              modal: false,
+	              open: this.props.open,
+	              onRequestClose: function onRequestClose() {
+	                return _this2.props.close();
+	              }
+	            },
+	            _react2.default.createElement(_menuTextField2.default, {
+	              hintStyle: { textAlign: 'left' },
+	              hintText: "Folder Name",
+	              value: this.state.value,
+	              onChange: this.handleChange
+	            })
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return DialogFolderCreate;
+	}(_react2.default.Component);
+
+	exports.default = DialogFolderCreate;
+
+/***/ },
+/* 622 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _menubar = __webpack_require__(221);
+
+	var _menubar2 = _interopRequireDefault(_menubar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _require = __webpack_require__(222),
+	    remote = _require.remote;
+
+	var Menu = remote.Menu,
+	    MenuItem = remote.MenuItem;
+
+
+	var ipc = __webpack_require__(222).ipcRenderer;
+
+	var MenubarTile = function (_React$Component) {
+	  _inherits(MenubarTile, _React$Component);
+
+	  function MenubarTile() {
+	    _classCallCheck(this, MenubarTile);
+
+	    var _this = _possibleConstructorReturn(this, (MenubarTile.__proto__ || Object.getPrototypeOf(MenubarTile)).call(this));
+
+	    _this.handleMenuClick = _this.handleMenuClick.bind(_this);
+	    _this.handleCloseClick = _this.handleCloseClick.bind(_this);
+	    _this.handleMaximizeClick = _this.handleMaximizeClick.bind(_this);
+	    _this.handleUnmaximizeClick = _this.handleUnmaximizeClick.bind(_this);
+	    _this.handleMinimizeClick = _this.handleMinimizeClick.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(MenubarTile, [{
+	    key: 'handleMenuClick',
+	    value: function handleMenuClick() {
+	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(this.props.store));
+	      menubar.popup();
+	    }
+	  }, {
+	    key: 'handleCloseClick',
+	    value: function handleCloseClick() {
+	      ipc.send('quit');
+	    }
+	  }, {
+	    key: 'handleMaximizeClick',
+	    value: function handleMaximizeClick() {
+	      ipc.send('maximize');
+	    }
+	  }, {
+	    key: 'handleUnmaximizeClick',
+	    value: function handleUnmaximizeClick() {
+	      ipc.send('unmaximize');
+	    }
+	  }, {
+	    key: 'handleMinimizeClick',
+	    value: function handleMinimizeClick() {
+	      ipc.send('minimize');
+	    }
+	  }, {
+	    key: 'minormax',
+	    value: function minormax() {
+	      if (!remote.getCurrentWindow().isMaximized()) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-tile window-tile', onClick: this.handleMaximizeClick },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            _react2.default.createElement('i', { className: 'icon-square', 'aria-hidden': 'true' })
+	          )
+	        );
+	      } else {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-tile window-tile', onClick: this.handleUnmaximizeClick },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            _react2.default.createElement('i', { className: 'icon-clone', 'aria-hidden': 'true' })
+	          )
+	        );
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (process.platform !== 'darwin') {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-custom' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'menubar-tile menu-bars', onClick: this.handleMenuClick },
+	            _react2.default.createElement(
+	              'span',
+	              null,
+	              _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'menubar-tile window-tile', onClick: this.handleCloseClick },
+	            _react2.default.createElement(
+	              'span',
+	              null,
+	              'X'
+	            )
+	          ),
+	          this.minormax(),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'menubar-tile window-tile', onClick: this.handleMinimizeClick },
+	            _react2.default.createElement(
+	              'span',
+	              null,
+	              '\u2014'
+	            )
+	          )
+	        );
+	      } else {
+	        return _react2.default.createElement('div', null);
+	      }
+	    }
+	  }]);
+
+	  return MenubarTile;
+	}(_react2.default.Component);
+
+	exports.default = MenubarTile;
+
+/***/ },
+/* 623 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var invariant = __webpack_require__(7);
+	var defaultClickRejectionStrategy = __webpack_require__(624);
+
+	var alreadyInjected = false;
+
+	module.exports = function injectTapEventPlugin (strategyOverrides) {
+	  strategyOverrides = strategyOverrides || {}
+	  var shouldRejectClick = strategyOverrides.shouldRejectClick || defaultClickRejectionStrategy;
+
+	  if (process.env.NODE_ENV !== 'production') {
+	    invariant(
+	      !alreadyInjected,
+	      'injectTapEventPlugin(): Can only be called once per application lifecycle.\n\n\
+	It is recommended to call injectTapEventPlugin() just before you call \
+	ReactDOM.render(). If you are using an external library which calls injectTapEventPlugin() \
+	itself, please contact the maintainer as it shouldn\'t be called in library code and \
+	should be injected by the application.'
+	    )
+	  }
+
+	  alreadyInjected = true;
+
+	  __webpack_require__(41).injection.injectEventPluginsByName({
+	    'TapEventPlugin':       __webpack_require__(625)(shouldRejectClick)
+	  });
+	};
+
+
+/***/ },
+/* 624 */
+/***/ function(module, exports) {
+
+	module.exports = function(lastTouchEvent, clickTimestamp) {
+	  if (lastTouchEvent && (clickTimestamp - lastTouchEvent) < 750) {
+	    return true;
+	  }
+	};
+
+
+/***/ },
+/* 625 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2014 Facebook, Inc.
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 *
+	 * @providesModule TapEventPlugin
+	 * @typechecks static-only
+	 */
+
+	"use strict";
+
+	var EventConstants = __webpack_require__(626);
+	var EventPluginUtils = __webpack_require__(43);
+	var EventPropagators = __webpack_require__(40);
+	var SyntheticUIEvent = __webpack_require__(74);
+	var TouchEventUtils = __webpack_require__(627);
+	var ViewportMetrics = __webpack_require__(75);
+
+	var keyOf = __webpack_require__(628);
+	var topLevelTypes = EventConstants.topLevelTypes;
+
+	var isStartish = EventPluginUtils.isStartish;
+	var isEndish = EventPluginUtils.isEndish;
+
+	var isTouch = function(topLevelType) {
+	  var touchTypes = [
+	    'topTouchCancel',
+	    'topTouchEnd',
+	    'topTouchStart',
+	    'topTouchMove'
+	  ];
+	  return touchTypes.indexOf(topLevelType) >= 0;
+	}
+
+	/**
+	 * Number of pixels that are tolerated in between a `touchStart` and `touchEnd`
+	 * in order to still be considered a 'tap' event.
+	 */
+	var tapMoveThreshold = 10;
+	var ignoreMouseThreshold = 750;
+	var startCoords = {x: null, y: null};
+	var lastTouchEvent = null;
+
+	var Axis = {
+	  x: {page: 'pageX', client: 'clientX', envScroll: 'currentPageScrollLeft'},
+	  y: {page: 'pageY', client: 'clientY', envScroll: 'currentPageScrollTop'}
+	};
+
+	function getAxisCoordOfEvent(axis, nativeEvent) {
+	  var singleTouch = TouchEventUtils.extractSingleTouch(nativeEvent);
+	  if (singleTouch) {
+	    return singleTouch[axis.page];
+	  }
+	  return axis.page in nativeEvent ?
+	    nativeEvent[axis.page] :
+	    nativeEvent[axis.client] + ViewportMetrics[axis.envScroll];
+	}
+
+	function getDistance(coords, nativeEvent) {
+	  var pageX = getAxisCoordOfEvent(Axis.x, nativeEvent);
+	  var pageY = getAxisCoordOfEvent(Axis.y, nativeEvent);
+	  return Math.pow(
+	    Math.pow(pageX - coords.x, 2) + Math.pow(pageY - coords.y, 2),
+	    0.5
+	  );
+	}
+
+	var touchEvents = [
+	  'topTouchStart',
+	  'topTouchCancel',
+	  'topTouchEnd',
+	  'topTouchMove',
+	];
+
+	var dependencies = [
+	  'topMouseDown',
+	  'topMouseMove',
+	  'topMouseUp',
+	].concat(touchEvents);
+
+	var eventTypes = {
+	  touchTap: {
+	    phasedRegistrationNames: {
+	      bubbled: keyOf({onTouchTap: null}),
+	      captured: keyOf({onTouchTapCapture: null})
+	    },
+	    dependencies: dependencies
+	  }
+	};
+
+	var now = (function() {
+	  if (Date.now) {
+	    return Date.now;
+	  } else {
+	    // IE8 support: http://stackoverflow.com/questions/9430357/please-explain-why-and-how-new-date-works-as-workaround-for-date-now-in
+	    return function () {
+	      return +new Date;
+	    }
+	  }
+	})();
+
+	function createTapEventPlugin(shouldRejectClick) {
+	  return {
+
+	    tapMoveThreshold: tapMoveThreshold,
+
+	    ignoreMouseThreshold: ignoreMouseThreshold,
+
+	    eventTypes: eventTypes,
+
+	    /**
+	     * @param {string} topLevelType Record from `EventConstants`.
+	     * @param {DOMEventTarget} targetInst The listening component root node.
+	     * @param {object} nativeEvent Native browser event.
+	     * @return {*} An accumulation of synthetic events.
+	     * @see {EventPluginHub.extractEvents}
+	     */
+	    extractEvents: function(
+	      topLevelType,
+	      targetInst,
+	      nativeEvent,
+	      nativeEventTarget
+	    ) {
+
+	      if (!isStartish(topLevelType) && !isEndish(topLevelType)) {
+	        return null;
+	      }
+
+	      if (isTouch(topLevelType)) {
+	        lastTouchEvent = now();
+	      } else {
+	        if (shouldRejectClick(lastTouchEvent, now())) {
+	          return null;
+	        }
+	      }
+
+	      var event = null;
+	      var distance = getDistance(startCoords, nativeEvent);
+	      if (isEndish(topLevelType) && distance < tapMoveThreshold) {
+	        event = SyntheticUIEvent.getPooled(
+	          eventTypes.touchTap,
+	          targetInst,
+	          nativeEvent,
+	          nativeEventTarget
+	        );
+	      }
+	      if (isStartish(topLevelType)) {
+	        startCoords.x = getAxisCoordOfEvent(Axis.x, nativeEvent);
+	        startCoords.y = getAxisCoordOfEvent(Axis.y, nativeEvent);
+	      } else if (isEndish(topLevelType)) {
+	        startCoords.x = 0;
+	        startCoords.y = 0;
+	      }
+	      EventPropagators.accumulateTwoPhaseDispatches(event);
+	      return event;
+	    }
+
+	  };
+	}
+
+	module.exports = createTapEventPlugin;
+
+
+/***/ },
+/* 626 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	'use strict';
+
+	/**
+	 * Types of raw signals from the browser caught at the top level.
+	 */
+	var topLevelTypes = {
+	  topAbort: null,
+	  topAnimationEnd: null,
+	  topAnimationIteration: null,
+	  topAnimationStart: null,
+	  topBlur: null,
+	  topCanPlay: null,
+	  topCanPlayThrough: null,
+	  topChange: null,
+	  topClick: null,
+	  topCompositionEnd: null,
+	  topCompositionStart: null,
+	  topCompositionUpdate: null,
+	  topContextMenu: null,
+	  topCopy: null,
+	  topCut: null,
+	  topDoubleClick: null,
+	  topDrag: null,
+	  topDragEnd: null,
+	  topDragEnter: null,
+	  topDragExit: null,
+	  topDragLeave: null,
+	  topDragOver: null,
+	  topDragStart: null,
+	  topDrop: null,
+	  topDurationChange: null,
+	  topEmptied: null,
+	  topEncrypted: null,
+	  topEnded: null,
+	  topError: null,
+	  topFocus: null,
+	  topInput: null,
+	  topInvalid: null,
+	  topKeyDown: null,
+	  topKeyPress: null,
+	  topKeyUp: null,
+	  topLoad: null,
+	  topLoadedData: null,
+	  topLoadedMetadata: null,
+	  topLoadStart: null,
+	  topMouseDown: null,
+	  topMouseMove: null,
+	  topMouseOut: null,
+	  topMouseOver: null,
+	  topMouseUp: null,
+	  topPaste: null,
+	  topPause: null,
+	  topPlay: null,
+	  topPlaying: null,
+	  topProgress: null,
+	  topRateChange: null,
+	  topReset: null,
+	  topScroll: null,
+	  topSeeked: null,
+	  topSeeking: null,
+	  topSelectionChange: null,
+	  topStalled: null,
+	  topSubmit: null,
+	  topSuspend: null,
+	  topTextInput: null,
+	  topTimeUpdate: null,
+	  topTouchCancel: null,
+	  topTouchEnd: null,
+	  topTouchMove: null,
+	  topTouchStart: null,
+	  topTransitionEnd: null,
+	  topVolumeChange: null,
+	  topWaiting: null,
+	  topWheel: null
+	};
+
+	var EventConstants = {
+	  topLevelTypes: topLevelTypes
+	};
+
+	module.exports = EventConstants;
+
+/***/ },
+/* 627 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-2014 Facebook, Inc.
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 *
+	 * @providesModule TouchEventUtils
+	 */
+
+	var TouchEventUtils = {
+	  /**
+	   * Utility function for common case of extracting out the primary touch from a
+	   * touch event.
+	   * - `touchEnd` events usually do not have the `touches` property.
+	   *   http://stackoverflow.com/questions/3666929/
+	   *   mobile-sarai-touchend-event-not-firing-when-last-touch-is-removed
+	   *
+	   * @param {Event} nativeEvent Native event that may or may not be a touch.
+	   * @return {TouchesObject?} an object with pageX and pageY or null.
+	   */
+	  extractSingleTouch: function(nativeEvent) {
+	    var touches = nativeEvent.touches;
+	    var changedTouches = nativeEvent.changedTouches;
+	    var hasTouches = touches && touches.length > 0;
+	    var hasChangedTouches = changedTouches && changedTouches.length > 0;
+
+	    return !hasTouches && hasChangedTouches ? changedTouches[0] :
+	           hasTouches ? touches[0] :
+	           nativeEvent;
+	  }
+	};
+
+	module.exports = TouchEventUtils;
+
+
+/***/ },
+/* 628 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	/**
+	 * Allows extraction of a minified key. Let's the build system minify keys
+	 * without losing the ability to dynamically use key strings as values
+	 * themselves. Pass in an object with a single key/val pair and it will return
+	 * you the string key of that single record. Suppose you want to grab the
+	 * value for a key 'className' inside of an object. Key/val minification may
+	 * have aliased that key to be 'xa12'. keyOf({className: null}) will return
+	 * 'xa12' in that case. Resolve keys you want to use once at startup time, then
+	 * reuse those resolutions.
+	 */
+	var keyOf = function keyOf(oneKeyObj) {
+	  var key;
+	  for (key in oneKeyObj) {
+	    if (!oneKeyObj.hasOwnProperty(key)) {
+	      continue;
+	    }
+	    return key;
+	  }
+	  return null;
+	};
+
+	module.exports = keyOf;
 
 /***/ }
 /******/ ]);
