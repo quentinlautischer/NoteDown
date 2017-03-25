@@ -84,15 +84,15 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _folderContainerView = __webpack_require__(610);
+	var _folderContainerView = __webpack_require__(618);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _menubarTile = __webpack_require__(612);
+	var _menubarTile = __webpack_require__(620);
 
 	var _menubarTile2 = _interopRequireDefault(_menubarTile);
 
-	var _reactTapEventPlugin = __webpack_require__(613);
+	var _reactTapEventPlugin = __webpack_require__(621);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -37646,10 +37646,10 @@
 	var shared = __webpack_require__(434);
 	var hljs = __webpack_require__(436);
 
-	var CodeMirror = __webpack_require__(619);
-	__webpack_require__(623);
-	__webpack_require__(624);
-	__webpack_require__(625);
+	var CodeMirror = __webpack_require__(610);
+	__webpack_require__(614);
+	__webpack_require__(615);
+	__webpack_require__(616);
 
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
@@ -56671,855 +56671,11 @@
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _dialogFolderCreate = __webpack_require__(611);
-
-	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
-
-	var _reactRedux = __webpack_require__(177);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ipc = __webpack_require__(222).ipcRenderer;
-
-	var FolderContainerView = function (_React$Component) {
-	  _inherits(FolderContainerView, _React$Component);
-
-	  function FolderContainerView(props) {
-	    _classCallCheck(this, FolderContainerView);
-
-	    var _this = _possibleConstructorReturn(this, (FolderContainerView.__proto__ || Object.getPrototypeOf(FolderContainerView)).call(this, props));
-
-	    _this.state = {
-	      open: false,
-	      createFolderDialogOpen: false
-	    };
-
-	    _this.folderid = "0";
-	    _this.selectFolder = _this.selectFolder.bind(_this);
-	    _this.renderFolder = _this.renderFolder.bind(_this);
-	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(FolderContainerView, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.props.store.subscribe(this.storeDidUpdate);
-	    }
-	  }, {
-	    key: 'storeDidUpdate',
-	    value: function storeDidUpdate() {
-	      this.setState({ open: this.props.store.getState().sessionActive });
-	    }
-	  }, {
-	    key: 'findIndexOfFolder',
-	    value: function findIndexOfFolder(folderid) {
-	      var folders = this.props.store.getState().notes.folders;
-	      var length = folders.length;
-	      var i;
-	      for (i = 0; i < length; i++) {
-	        if (folders[i]._id == folderid) return i;
-	      }
-	      return null;
-	    }
-	  }, {
-	    key: 'openCreateFolderDialog',
-	    value: function openCreateFolderDialog() {
-	      console.log("Opening Create Folder Dialog");
-	      this.setState({ createFolderDialogOpen: true });
-	    }
-	  }, {
-	    key: 'createNewFolder',
-	    value: function createNewFolder(name) {
-	      console.log('Creating New Folder with name: ' + name);
-	      var data = { name: name };
-	      ipc.send('create-folder-request', data);
-	      this.closeCreateFolderDialog();
-	    }
-	  }, {
-	    key: 'closeCreateFolderDialog',
-	    value: function closeCreateFolderDialog() {
-	      console.log("Closing Create Folder Dialog");
-	      this.setState({ createFolderDialogOpen: false });
-	    }
-	  }, {
-	    key: 'selectFolder',
-	    value: function selectFolder(id, e) {
-	      console.log("Selected Folder: " + id);
-	      var index = this.findIndexOfFolder(id);
-	      this.props.store.dispatch({ type: 'SELECT_FOLDER', index: index });
-	      this.props.store.dispatch({ type: 'EDITOR_MODE' });
-	    }
-	  }, {
-	    key: 'deleteFolder',
-	    value: function deleteFolder(id, e) {
-	      console.log("Deleting Folder: " + id);
-	      var index = this.findIndexOfFolder(id);
-	      store.dispatch({ type: 'DELETE_FOLDER', index: index });
-	    }
-
-	    // <div className="folder-delete-btn" onClick={this.deleteFolder.bind(this, _id)}>X</div>
-
-	  }, {
-	    key: 'renderFolder',
-	    value: function renderFolder(_ref) {
-	      var name = _ref.name,
-	          _id = _ref._id;
-
-	      return _react2.default.createElement(
-	        'div',
-	        { key: _id, className: 'folder-view', onClick: this.selectFolder.bind(this, _id) },
-	        name
-	      );
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      console.log("FolderviewContainer Rendering!!!!!");
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'folder-container-view' },
-	        this.props.store.getState().notes.folders.map(this.renderFolder, this),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'folder-view', onClick: function onClick() {
-	              return _this2.openCreateFolderDialog();
-	            } },
-	          'New +'
-	        ),
-	        _react2.default.createElement(_dialogFolderCreate2.default, {
-	          open: this.state.createFolderDialogOpen,
-	          close: function close() {
-	            return _this2.closeCreateFolderDialog();
-	          },
-	          createFolder: function createFolder(name) {
-	            return _this2.createNewFolder(name);
-	          }
-	        })
-	      );
-	    }
-	  }]);
-
-	  return FolderContainerView;
-	}(_react2.default.Component);
-
-	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
-
-/***/ },
-/* 611 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _Dialog = __webpack_require__(429);
-
-	var _Dialog2 = _interopRequireDefault(_Dialog);
-
-	var _FlatButton = __webpack_require__(407);
-
-	var _FlatButton2 = _interopRequireDefault(_FlatButton);
-
-	var _RaisedButton = __webpack_require__(375);
-
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
-	var _menuTextField = __webpack_require__(410);
-
-	var _menuTextField2 = _interopRequireDefault(_menuTextField);
-
-	var _menuButton = __webpack_require__(374);
-
-	var _menuButton2 = _interopRequireDefault(_menuButton);
-
-	var _MuiThemeProvider = __webpack_require__(225);
-
-	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
-
-	var _getMuiTheme = __webpack_require__(312);
-
-	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var DialogFolderCreate = function (_React$Component) {
-	  _inherits(DialogFolderCreate, _React$Component);
-
-	  function DialogFolderCreate(props) {
-	    _classCallCheck(this, DialogFolderCreate);
-
-	    var _this = _possibleConstructorReturn(this, (DialogFolderCreate.__proto__ || Object.getPrototypeOf(DialogFolderCreate)).call(this, props));
-
-	    _this.state = {
-	      value: ""
-	    };
-
-	    _this.handleChange = _this.handleChange.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(DialogFolderCreate, [{
-	    key: 'handleChange',
-	    value: function handleChange(event) {
-	      this.setState({
-	        value: event.target.value
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      var actions = [_react2.default.createElement(_FlatButton2.default, {
-	        label: 'Cancel',
-	        primary: false,
-	        keyboardFocused: false,
-	        onTouchTap: function onTouchTap() {
-	          return _this2.props.close();
-	        }
-	      }), _react2.default.createElement(_FlatButton2.default, {
-	        label: 'Create',
-	        primary: true,
-	        keyboardFocused: true,
-	        onTouchTap: function onTouchTap() {
-	          return _this2.props.createFolder(_this2.state.value);
-	        }
-	      })];
-
-	      return _react2.default.createElement(
-	        _MuiThemeProvider2.default,
-	        null,
-	        _react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement(
-	            _Dialog2.default,
-	            {
-	              title: 'Create New Folder',
-	              actions: actions,
-	              modal: false,
-	              open: this.props.open,
-	              onRequestClose: function onRequestClose() {
-	                return _this2.props.close();
-	              }
-	            },
-	            _react2.default.createElement(_menuTextField2.default, {
-	              hintStyle: { textAlign: 'left' },
-	              hintText: "Folder Name",
-	              value: this.state.value,
-	              onChange: this.handleChange
-	            })
-	          )
-	        )
-	      );
-	    }
-	  }]);
-
-	  return DialogFolderCreate;
-	}(_react2.default.Component);
-
-	exports.default = DialogFolderCreate;
-
-/***/ },
-/* 612 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _menubar = __webpack_require__(221);
-
-	var _menubar2 = _interopRequireDefault(_menubar);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var _require = __webpack_require__(222),
-	    remote = _require.remote;
-
-	var Menu = remote.Menu,
-	    MenuItem = remote.MenuItem;
-
-
-	var ipc = __webpack_require__(222).ipcRenderer;
-
-	var MenubarTile = function (_React$Component) {
-	  _inherits(MenubarTile, _React$Component);
-
-	  function MenubarTile() {
-	    _classCallCheck(this, MenubarTile);
-
-	    var _this = _possibleConstructorReturn(this, (MenubarTile.__proto__ || Object.getPrototypeOf(MenubarTile)).call(this));
-
-	    _this.handleMenuClick = _this.handleMenuClick.bind(_this);
-	    _this.handleCloseClick = _this.handleCloseClick.bind(_this);
-	    _this.handleMaximizeClick = _this.handleMaximizeClick.bind(_this);
-	    _this.handleUnmaximizeClick = _this.handleUnmaximizeClick.bind(_this);
-	    _this.handleMinimizeClick = _this.handleMinimizeClick.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(MenubarTile, [{
-	    key: 'handleMenuClick',
-	    value: function handleMenuClick() {
-	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(this.props.store));
-	      menubar.popup();
-	    }
-	  }, {
-	    key: 'handleCloseClick',
-	    value: function handleCloseClick() {
-	      ipc.send('quit');
-	    }
-	  }, {
-	    key: 'handleMaximizeClick',
-	    value: function handleMaximizeClick() {
-	      ipc.send('maximize');
-	    }
-	  }, {
-	    key: 'handleUnmaximizeClick',
-	    value: function handleUnmaximizeClick() {
-	      ipc.send('unmaximize');
-	    }
-	  }, {
-	    key: 'handleMinimizeClick',
-	    value: function handleMinimizeClick() {
-	      ipc.send('minimize');
-	    }
-	  }, {
-	    key: 'minormax',
-	    value: function minormax() {
-	      console.log('remote current window state: ' + remote.getCurrentWindow().isMaximized());
-	      if (!remote.getCurrentWindow().isMaximized()) {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'menubar-tile window-tile', onClick: this.handleMaximizeClick },
-	          _react2.default.createElement(
-	            'span',
-	            null,
-	            _react2.default.createElement('i', { className: 'icon-square', 'aria-hidden': 'true' })
-	          )
-	        );
-	      } else {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'menubar-tile window-tile', onClick: this.handleUnmaximizeClick },
-	          _react2.default.createElement(
-	            'span',
-	            null,
-	            _react2.default.createElement('i', { className: 'icon-clone', 'aria-hidden': 'true' })
-	          )
-	        );
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      console.log("Rendering menubar");
-	      if (process.platform !== 'darwin') {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'menubar-custom' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'menubar-tile menu-bars', onClick: this.handleMenuClick },
-	            _react2.default.createElement(
-	              'span',
-	              null,
-	              _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'menubar-tile window-tile', onClick: this.handleCloseClick },
-	            _react2.default.createElement(
-	              'span',
-	              null,
-	              'X'
-	            )
-	          ),
-	          this.minormax(),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'menubar-tile window-tile', onClick: this.handleMinimizeClick },
-	            _react2.default.createElement(
-	              'span',
-	              null,
-	              '\u2014'
-	            )
-	          )
-	        );
-	      } else {
-	        return _react2.default.createElement('div', null);
-	      }
-	    }
-	  }]);
-
-	  return MenubarTile;
-	}(_react2.default.Component);
-
-	exports.default = MenubarTile;
-
-/***/ },
-/* 613 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(614);
-
-	var alreadyInjected = false;
-
-	module.exports = function injectTapEventPlugin (strategyOverrides) {
-	  strategyOverrides = strategyOverrides || {}
-	  var shouldRejectClick = strategyOverrides.shouldRejectClick || defaultClickRejectionStrategy;
-
-	  if (process.env.NODE_ENV !== 'production') {
-	    invariant(
-	      !alreadyInjected,
-	      'injectTapEventPlugin(): Can only be called once per application lifecycle.\n\n\
-	It is recommended to call injectTapEventPlugin() just before you call \
-	ReactDOM.render(). If you are using an external library which calls injectTapEventPlugin() \
-	itself, please contact the maintainer as it shouldn\'t be called in library code and \
-	should be injected by the application.'
-	    )
-	  }
-
-	  alreadyInjected = true;
-
-	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(615)(shouldRejectClick)
-	  });
-	};
-
-
-/***/ },
-/* 614 */
-/***/ function(module, exports) {
-
-	module.exports = function(lastTouchEvent, clickTimestamp) {
-	  if (lastTouchEvent && (clickTimestamp - lastTouchEvent) < 750) {
-	    return true;
-	  }
-	};
-
-
-/***/ },
-/* 615 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule TapEventPlugin
-	 * @typechecks static-only
-	 */
-
-	"use strict";
-
-	var EventConstants = __webpack_require__(616);
-	var EventPluginUtils = __webpack_require__(43);
-	var EventPropagators = __webpack_require__(40);
-	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(617);
-	var ViewportMetrics = __webpack_require__(75);
-
-	var keyOf = __webpack_require__(618);
-	var topLevelTypes = EventConstants.topLevelTypes;
-
-	var isStartish = EventPluginUtils.isStartish;
-	var isEndish = EventPluginUtils.isEndish;
-
-	var isTouch = function(topLevelType) {
-	  var touchTypes = [
-	    'topTouchCancel',
-	    'topTouchEnd',
-	    'topTouchStart',
-	    'topTouchMove'
-	  ];
-	  return touchTypes.indexOf(topLevelType) >= 0;
-	}
-
-	/**
-	 * Number of pixels that are tolerated in between a `touchStart` and `touchEnd`
-	 * in order to still be considered a 'tap' event.
-	 */
-	var tapMoveThreshold = 10;
-	var ignoreMouseThreshold = 750;
-	var startCoords = {x: null, y: null};
-	var lastTouchEvent = null;
-
-	var Axis = {
-	  x: {page: 'pageX', client: 'clientX', envScroll: 'currentPageScrollLeft'},
-	  y: {page: 'pageY', client: 'clientY', envScroll: 'currentPageScrollTop'}
-	};
-
-	function getAxisCoordOfEvent(axis, nativeEvent) {
-	  var singleTouch = TouchEventUtils.extractSingleTouch(nativeEvent);
-	  if (singleTouch) {
-	    return singleTouch[axis.page];
-	  }
-	  return axis.page in nativeEvent ?
-	    nativeEvent[axis.page] :
-	    nativeEvent[axis.client] + ViewportMetrics[axis.envScroll];
-	}
-
-	function getDistance(coords, nativeEvent) {
-	  var pageX = getAxisCoordOfEvent(Axis.x, nativeEvent);
-	  var pageY = getAxisCoordOfEvent(Axis.y, nativeEvent);
-	  return Math.pow(
-	    Math.pow(pageX - coords.x, 2) + Math.pow(pageY - coords.y, 2),
-	    0.5
-	  );
-	}
-
-	var touchEvents = [
-	  'topTouchStart',
-	  'topTouchCancel',
-	  'topTouchEnd',
-	  'topTouchMove',
-	];
-
-	var dependencies = [
-	  'topMouseDown',
-	  'topMouseMove',
-	  'topMouseUp',
-	].concat(touchEvents);
-
-	var eventTypes = {
-	  touchTap: {
-	    phasedRegistrationNames: {
-	      bubbled: keyOf({onTouchTap: null}),
-	      captured: keyOf({onTouchTapCapture: null})
-	    },
-	    dependencies: dependencies
-	  }
-	};
-
-	var now = (function() {
-	  if (Date.now) {
-	    return Date.now;
-	  } else {
-	    // IE8 support: http://stackoverflow.com/questions/9430357/please-explain-why-and-how-new-date-works-as-workaround-for-date-now-in
-	    return function () {
-	      return +new Date;
-	    }
-	  }
-	})();
-
-	function createTapEventPlugin(shouldRejectClick) {
-	  return {
-
-	    tapMoveThreshold: tapMoveThreshold,
-
-	    ignoreMouseThreshold: ignoreMouseThreshold,
-
-	    eventTypes: eventTypes,
-
-	    /**
-	     * @param {string} topLevelType Record from `EventConstants`.
-	     * @param {DOMEventTarget} targetInst The listening component root node.
-	     * @param {object} nativeEvent Native browser event.
-	     * @return {*} An accumulation of synthetic events.
-	     * @see {EventPluginHub.extractEvents}
-	     */
-	    extractEvents: function(
-	      topLevelType,
-	      targetInst,
-	      nativeEvent,
-	      nativeEventTarget
-	    ) {
-
-	      if (!isStartish(topLevelType) && !isEndish(topLevelType)) {
-	        return null;
-	      }
-
-	      if (isTouch(topLevelType)) {
-	        lastTouchEvent = now();
-	      } else {
-	        if (shouldRejectClick(lastTouchEvent, now())) {
-	          return null;
-	        }
-	      }
-
-	      var event = null;
-	      var distance = getDistance(startCoords, nativeEvent);
-	      if (isEndish(topLevelType) && distance < tapMoveThreshold) {
-	        event = SyntheticUIEvent.getPooled(
-	          eventTypes.touchTap,
-	          targetInst,
-	          nativeEvent,
-	          nativeEventTarget
-	        );
-	      }
-	      if (isStartish(topLevelType)) {
-	        startCoords.x = getAxisCoordOfEvent(Axis.x, nativeEvent);
-	        startCoords.y = getAxisCoordOfEvent(Axis.y, nativeEvent);
-	      } else if (isEndish(topLevelType)) {
-	        startCoords.x = 0;
-	        startCoords.y = 0;
-	      }
-	      EventPropagators.accumulateTwoPhaseDispatches(event);
-	      return event;
-	    }
-
-	  };
-	}
-
-	module.exports = createTapEventPlugin;
-
-
-/***/ },
-/* 616 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	/**
-	 * Types of raw signals from the browser caught at the top level.
-	 */
-	var topLevelTypes = {
-	  topAbort: null,
-	  topAnimationEnd: null,
-	  topAnimationIteration: null,
-	  topAnimationStart: null,
-	  topBlur: null,
-	  topCanPlay: null,
-	  topCanPlayThrough: null,
-	  topChange: null,
-	  topClick: null,
-	  topCompositionEnd: null,
-	  topCompositionStart: null,
-	  topCompositionUpdate: null,
-	  topContextMenu: null,
-	  topCopy: null,
-	  topCut: null,
-	  topDoubleClick: null,
-	  topDrag: null,
-	  topDragEnd: null,
-	  topDragEnter: null,
-	  topDragExit: null,
-	  topDragLeave: null,
-	  topDragOver: null,
-	  topDragStart: null,
-	  topDrop: null,
-	  topDurationChange: null,
-	  topEmptied: null,
-	  topEncrypted: null,
-	  topEnded: null,
-	  topError: null,
-	  topFocus: null,
-	  topInput: null,
-	  topInvalid: null,
-	  topKeyDown: null,
-	  topKeyPress: null,
-	  topKeyUp: null,
-	  topLoad: null,
-	  topLoadedData: null,
-	  topLoadedMetadata: null,
-	  topLoadStart: null,
-	  topMouseDown: null,
-	  topMouseMove: null,
-	  topMouseOut: null,
-	  topMouseOver: null,
-	  topMouseUp: null,
-	  topPaste: null,
-	  topPause: null,
-	  topPlay: null,
-	  topPlaying: null,
-	  topProgress: null,
-	  topRateChange: null,
-	  topReset: null,
-	  topScroll: null,
-	  topSeeked: null,
-	  topSeeking: null,
-	  topSelectionChange: null,
-	  topStalled: null,
-	  topSubmit: null,
-	  topSuspend: null,
-	  topTextInput: null,
-	  topTimeUpdate: null,
-	  topTouchCancel: null,
-	  topTouchEnd: null,
-	  topTouchMove: null,
-	  topTouchStart: null,
-	  topTransitionEnd: null,
-	  topVolumeChange: null,
-	  topWaiting: null,
-	  topWheel: null
-	};
-
-	var EventConstants = {
-	  topLevelTypes: topLevelTypes
-	};
-
-	module.exports = EventConstants;
-
-/***/ },
-/* 617 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule TouchEventUtils
-	 */
-
-	var TouchEventUtils = {
-	  /**
-	   * Utility function for common case of extracting out the primary touch from a
-	   * touch event.
-	   * - `touchEnd` events usually do not have the `touches` property.
-	   *   http://stackoverflow.com/questions/3666929/
-	   *   mobile-sarai-touchend-event-not-firing-when-last-touch-is-removed
-	   *
-	   * @param {Event} nativeEvent Native event that may or may not be a touch.
-	   * @return {TouchesObject?} an object with pageX and pageY or null.
-	   */
-	  extractSingleTouch: function(nativeEvent) {
-	    var touches = nativeEvent.touches;
-	    var changedTouches = nativeEvent.changedTouches;
-	    var hasTouches = touches && touches.length > 0;
-	    var hasChangedTouches = changedTouches && changedTouches.length > 0;
-
-	    return !hasTouches && hasChangedTouches ? changedTouches[0] :
-	           hasTouches ? touches[0] :
-	           nativeEvent;
-	  }
-	};
-
-	module.exports = TouchEventUtils;
-
-
-/***/ },
-/* 618 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	/**
-	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	/**
-	 * Allows extraction of a minified key. Let's the build system minify keys
-	 * without losing the ability to dynamically use key strings as values
-	 * themselves. Pass in an object with a single key/val pair and it will return
-	 * you the string key of that single record. Suppose you want to grab the
-	 * value for a key 'className' inside of an object. Key/val minification may
-	 * have aliased that key to be 'xa12'. keyOf({className: null}) will return
-	 * 'xa12' in that case. Resolve keys you want to use once at startup time, then
-	 * reuse those resolutions.
-	 */
-	var keyOf = function keyOf(oneKeyObj) {
-	  var key;
-	  for (key in oneKeyObj) {
-	    if (!oneKeyObj.hasOwnProperty(key)) {
-	      continue;
-	    }
-	    return key;
-	  }
-	  return null;
-	};
-
-	module.exports = keyOf;
-
-/***/ },
-/* 619 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(31);
 	var findDOMNode = ReactDOM.findDOMNode;
-	var className = __webpack_require__(620);
-	var debounce = __webpack_require__(621);
+	var className = __webpack_require__(611);
+	var debounce = __webpack_require__(612);
 
 	function normalizeLineEndings(str) {
 		if (!str) return str;
@@ -57547,7 +56703,7 @@
 			};
 		},
 		getCodeMirrorInstance: function getCodeMirrorInstance() {
-			return this.props.codeMirrorInstance || __webpack_require__(622);
+			return this.props.codeMirrorInstance || __webpack_require__(613);
 		},
 		getInitialState: function getInitialState() {
 			return {
@@ -57626,7 +56782,7 @@
 	module.exports = CodeMirror;
 
 /***/ },
-/* 620 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -57680,7 +56836,7 @@
 
 
 /***/ },
-/* 621 */
+/* 612 */
 /***/ function(module, exports) {
 
 	/**
@@ -58063,7 +57219,7 @@
 
 
 /***/ },
-/* 622 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -67374,7 +66530,7 @@
 
 
 /***/ },
-/* 623 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -67382,7 +66538,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(622));
+	    mod(__webpack_require__(613));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -68182,7 +67338,7 @@
 
 
 /***/ },
-/* 624 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -68190,7 +67346,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(622));
+	    mod(__webpack_require__(613));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -68582,7 +67738,7 @@
 
 
 /***/ },
-/* 625 */
+/* 616 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -68590,7 +67746,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(622), __webpack_require__(624), __webpack_require__(626));
+	    mod(__webpack_require__(613), __webpack_require__(615), __webpack_require__(617));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "../xml/xml", "../meta"], mod);
 	  else // Plain browser env
@@ -69396,7 +68552,7 @@
 
 
 /***/ },
-/* 626 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -69404,7 +68560,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(622));
+	    mod(__webpack_require__(613));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -69614,6 +68770,850 @@
 	  };
 	});
 
+
+/***/ },
+/* 618 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _dialogFolderCreate = __webpack_require__(619);
+
+	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
+
+	var _reactRedux = __webpack_require__(177);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ipc = __webpack_require__(222).ipcRenderer;
+
+	var FolderContainerView = function (_React$Component) {
+	  _inherits(FolderContainerView, _React$Component);
+
+	  function FolderContainerView(props) {
+	    _classCallCheck(this, FolderContainerView);
+
+	    var _this = _possibleConstructorReturn(this, (FolderContainerView.__proto__ || Object.getPrototypeOf(FolderContainerView)).call(this, props));
+
+	    _this.state = {
+	      open: false,
+	      createFolderDialogOpen: false
+	    };
+
+	    _this.folderid = "0";
+	    _this.selectFolder = _this.selectFolder.bind(_this);
+	    _this.renderFolder = _this.renderFolder.bind(_this);
+	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(FolderContainerView, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.props.store.subscribe(this.storeDidUpdate);
+	    }
+	  }, {
+	    key: 'storeDidUpdate',
+	    value: function storeDidUpdate() {
+	      this.setState({ open: this.props.store.getState().sessionActive });
+	    }
+	  }, {
+	    key: 'findIndexOfFolder',
+	    value: function findIndexOfFolder(folderid) {
+	      var folders = this.props.store.getState().notes.folders;
+	      var length = folders.length;
+	      var i;
+	      for (i = 0; i < length; i++) {
+	        if (folders[i]._id == folderid) return i;
+	      }
+	      return null;
+	    }
+	  }, {
+	    key: 'openCreateFolderDialog',
+	    value: function openCreateFolderDialog() {
+	      console.log("Opening Create Folder Dialog");
+	      this.setState({ createFolderDialogOpen: true });
+	    }
+	  }, {
+	    key: 'createNewFolder',
+	    value: function createNewFolder(name) {
+	      console.log('Creating New Folder with name: ' + name);
+	      var data = { name: name };
+	      ipc.send('create-folder-request', data);
+	      this.closeCreateFolderDialog();
+	    }
+	  }, {
+	    key: 'closeCreateFolderDialog',
+	    value: function closeCreateFolderDialog() {
+	      console.log("Closing Create Folder Dialog");
+	      this.setState({ createFolderDialogOpen: false });
+	    }
+	  }, {
+	    key: 'selectFolder',
+	    value: function selectFolder(id, e) {
+	      console.log("Selected Folder: " + id);
+	      var index = this.findIndexOfFolder(id);
+	      this.props.store.dispatch({ type: 'SELECT_FOLDER', index: index });
+	      this.props.store.dispatch({ type: 'EDITOR_MODE' });
+	    }
+	  }, {
+	    key: 'deleteFolder',
+	    value: function deleteFolder(id, e) {
+	      console.log("Deleting Folder: " + id);
+	      var index = this.findIndexOfFolder(id);
+	      store.dispatch({ type: 'DELETE_FOLDER', index: index });
+	    }
+
+	    // <div className="folder-delete-btn" onClick={this.deleteFolder.bind(this, _id)}>X</div>
+
+	  }, {
+	    key: 'renderFolder',
+	    value: function renderFolder(_ref) {
+	      var name = _ref.name,
+	          _id = _ref._id;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { key: _id, className: 'folder-view', onClick: this.selectFolder.bind(this, _id) },
+	        name
+	      );
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      console.log("FolderviewContainer Rendering!!!!!");
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'folder-container-view' },
+	        this.props.store.getState().notes.folders.map(this.renderFolder, this),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'folder-view', onClick: function onClick() {
+	              return _this2.openCreateFolderDialog();
+	            } },
+	          'New +'
+	        ),
+	        _react2.default.createElement(_dialogFolderCreate2.default, {
+	          open: this.state.createFolderDialogOpen,
+	          close: function close() {
+	            return _this2.closeCreateFolderDialog();
+	          },
+	          createFolder: function createFolder(name) {
+	            return _this2.createNewFolder(name);
+	          }
+	        })
+	      );
+	    }
+	  }]);
+
+	  return FolderContainerView;
+	}(_react2.default.Component);
+
+	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
+
+/***/ },
+/* 619 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Dialog = __webpack_require__(429);
+
+	var _Dialog2 = _interopRequireDefault(_Dialog);
+
+	var _FlatButton = __webpack_require__(407);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	var _RaisedButton = __webpack_require__(375);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _menuTextField = __webpack_require__(410);
+
+	var _menuTextField2 = _interopRequireDefault(_menuTextField);
+
+	var _menuButton = __webpack_require__(374);
+
+	var _menuButton2 = _interopRequireDefault(_menuButton);
+
+	var _MuiThemeProvider = __webpack_require__(225);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(312);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DialogFolderCreate = function (_React$Component) {
+	  _inherits(DialogFolderCreate, _React$Component);
+
+	  function DialogFolderCreate(props) {
+	    _classCallCheck(this, DialogFolderCreate);
+
+	    var _this = _possibleConstructorReturn(this, (DialogFolderCreate.__proto__ || Object.getPrototypeOf(DialogFolderCreate)).call(this, props));
+
+	    _this.state = {
+	      value: ""
+	    };
+
+	    _this.handleChange = _this.handleChange.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(DialogFolderCreate, [{
+	    key: 'handleChange',
+	    value: function handleChange(event) {
+	      this.setState({
+	        value: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var actions = [_react2.default.createElement(_FlatButton2.default, {
+	        label: 'Cancel',
+	        primary: false,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this2.props.close();
+	        }
+	      }), _react2.default.createElement(_FlatButton2.default, {
+	        label: 'Create',
+	        primary: true,
+	        keyboardFocused: true,
+	        onTouchTap: function onTouchTap() {
+	          return _this2.props.createFolder(_this2.state.value);
+	        }
+	      })];
+
+	      return _react2.default.createElement(
+	        _MuiThemeProvider2.default,
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            _Dialog2.default,
+	            {
+	              title: 'Create New Folder',
+	              actions: actions,
+	              modal: false,
+	              open: this.props.open,
+	              onRequestClose: function onRequestClose() {
+	                return _this2.props.close();
+	              }
+	            },
+	            _react2.default.createElement(_menuTextField2.default, {
+	              hintStyle: { textAlign: 'left' },
+	              hintText: "Folder Name",
+	              value: this.state.value,
+	              onChange: this.handleChange
+	            })
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return DialogFolderCreate;
+	}(_react2.default.Component);
+
+	exports.default = DialogFolderCreate;
+
+/***/ },
+/* 620 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _menubar = __webpack_require__(221);
+
+	var _menubar2 = _interopRequireDefault(_menubar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _require = __webpack_require__(222),
+	    remote = _require.remote;
+
+	var Menu = remote.Menu,
+	    MenuItem = remote.MenuItem;
+
+
+	var ipc = __webpack_require__(222).ipcRenderer;
+
+	var MenubarTile = function (_React$Component) {
+	  _inherits(MenubarTile, _React$Component);
+
+	  function MenubarTile() {
+	    _classCallCheck(this, MenubarTile);
+
+	    var _this = _possibleConstructorReturn(this, (MenubarTile.__proto__ || Object.getPrototypeOf(MenubarTile)).call(this));
+
+	    _this.handleMenuClick = _this.handleMenuClick.bind(_this);
+	    _this.handleCloseClick = _this.handleCloseClick.bind(_this);
+	    _this.handleMaximizeClick = _this.handleMaximizeClick.bind(_this);
+	    _this.handleUnmaximizeClick = _this.handleUnmaximizeClick.bind(_this);
+	    _this.handleMinimizeClick = _this.handleMinimizeClick.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(MenubarTile, [{
+	    key: 'handleMenuClick',
+	    value: function handleMenuClick() {
+	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(this.props.store));
+	      menubar.popup();
+	    }
+	  }, {
+	    key: 'handleCloseClick',
+	    value: function handleCloseClick() {
+	      ipc.send('quit');
+	    }
+	  }, {
+	    key: 'handleMaximizeClick',
+	    value: function handleMaximizeClick() {
+	      ipc.send('maximize');
+	    }
+	  }, {
+	    key: 'handleUnmaximizeClick',
+	    value: function handleUnmaximizeClick() {
+	      ipc.send('unmaximize');
+	    }
+	  }, {
+	    key: 'handleMinimizeClick',
+	    value: function handleMinimizeClick() {
+	      ipc.send('minimize');
+	    }
+	  }, {
+	    key: 'minormax',
+	    value: function minormax() {
+	      console.log('remote current window state: ' + remote.getCurrentWindow().isMaximized());
+	      if (!remote.getCurrentWindow().isMaximized()) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-tile window-tile', onClick: this.handleMaximizeClick },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            _react2.default.createElement('i', { className: 'icon-square', 'aria-hidden': 'true' })
+	          )
+	        );
+	      } else {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-tile window-tile', onClick: this.handleUnmaximizeClick },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            _react2.default.createElement('i', { className: 'icon-clone', 'aria-hidden': 'true' })
+	          )
+	        );
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      console.log("Rendering menubar");
+	      if (process.platform !== 'darwin') {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'menubar-custom' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'menubar-tile menu-bars', onClick: this.handleMenuClick },
+	            _react2.default.createElement(
+	              'span',
+	              null,
+	              _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'menubar-tile window-tile', onClick: this.handleCloseClick },
+	            _react2.default.createElement(
+	              'span',
+	              null,
+	              'X'
+	            )
+	          ),
+	          this.minormax(),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'menubar-tile window-tile', onClick: this.handleMinimizeClick },
+	            _react2.default.createElement(
+	              'span',
+	              null,
+	              '\u2014'
+	            )
+	          )
+	        );
+	      } else {
+	        return _react2.default.createElement('div', null);
+	      }
+	    }
+	  }]);
+
+	  return MenubarTile;
+	}(_react2.default.Component);
+
+	exports.default = MenubarTile;
+
+/***/ },
+/* 621 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var invariant = __webpack_require__(7);
+	var defaultClickRejectionStrategy = __webpack_require__(622);
+
+	var alreadyInjected = false;
+
+	module.exports = function injectTapEventPlugin (strategyOverrides) {
+	  strategyOverrides = strategyOverrides || {}
+	  var shouldRejectClick = strategyOverrides.shouldRejectClick || defaultClickRejectionStrategy;
+
+	  if (process.env.NODE_ENV !== 'production') {
+	    invariant(
+	      !alreadyInjected,
+	      'injectTapEventPlugin(): Can only be called once per application lifecycle.\n\n\
+	It is recommended to call injectTapEventPlugin() just before you call \
+	ReactDOM.render(). If you are using an external library which calls injectTapEventPlugin() \
+	itself, please contact the maintainer as it shouldn\'t be called in library code and \
+	should be injected by the application.'
+	    )
+	  }
+
+	  alreadyInjected = true;
+
+	  __webpack_require__(41).injection.injectEventPluginsByName({
+	    'TapEventPlugin':       __webpack_require__(623)(shouldRejectClick)
+	  });
+	};
+
+
+/***/ },
+/* 622 */
+/***/ function(module, exports) {
+
+	module.exports = function(lastTouchEvent, clickTimestamp) {
+	  if (lastTouchEvent && (clickTimestamp - lastTouchEvent) < 750) {
+	    return true;
+	  }
+	};
+
+
+/***/ },
+/* 623 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2014 Facebook, Inc.
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 *
+	 * @providesModule TapEventPlugin
+	 * @typechecks static-only
+	 */
+
+	"use strict";
+
+	var EventConstants = __webpack_require__(624);
+	var EventPluginUtils = __webpack_require__(43);
+	var EventPropagators = __webpack_require__(40);
+	var SyntheticUIEvent = __webpack_require__(74);
+	var TouchEventUtils = __webpack_require__(625);
+	var ViewportMetrics = __webpack_require__(75);
+
+	var keyOf = __webpack_require__(626);
+	var topLevelTypes = EventConstants.topLevelTypes;
+
+	var isStartish = EventPluginUtils.isStartish;
+	var isEndish = EventPluginUtils.isEndish;
+
+	var isTouch = function(topLevelType) {
+	  var touchTypes = [
+	    'topTouchCancel',
+	    'topTouchEnd',
+	    'topTouchStart',
+	    'topTouchMove'
+	  ];
+	  return touchTypes.indexOf(topLevelType) >= 0;
+	}
+
+	/**
+	 * Number of pixels that are tolerated in between a `touchStart` and `touchEnd`
+	 * in order to still be considered a 'tap' event.
+	 */
+	var tapMoveThreshold = 10;
+	var ignoreMouseThreshold = 750;
+	var startCoords = {x: null, y: null};
+	var lastTouchEvent = null;
+
+	var Axis = {
+	  x: {page: 'pageX', client: 'clientX', envScroll: 'currentPageScrollLeft'},
+	  y: {page: 'pageY', client: 'clientY', envScroll: 'currentPageScrollTop'}
+	};
+
+	function getAxisCoordOfEvent(axis, nativeEvent) {
+	  var singleTouch = TouchEventUtils.extractSingleTouch(nativeEvent);
+	  if (singleTouch) {
+	    return singleTouch[axis.page];
+	  }
+	  return axis.page in nativeEvent ?
+	    nativeEvent[axis.page] :
+	    nativeEvent[axis.client] + ViewportMetrics[axis.envScroll];
+	}
+
+	function getDistance(coords, nativeEvent) {
+	  var pageX = getAxisCoordOfEvent(Axis.x, nativeEvent);
+	  var pageY = getAxisCoordOfEvent(Axis.y, nativeEvent);
+	  return Math.pow(
+	    Math.pow(pageX - coords.x, 2) + Math.pow(pageY - coords.y, 2),
+	    0.5
+	  );
+	}
+
+	var touchEvents = [
+	  'topTouchStart',
+	  'topTouchCancel',
+	  'topTouchEnd',
+	  'topTouchMove',
+	];
+
+	var dependencies = [
+	  'topMouseDown',
+	  'topMouseMove',
+	  'topMouseUp',
+	].concat(touchEvents);
+
+	var eventTypes = {
+	  touchTap: {
+	    phasedRegistrationNames: {
+	      bubbled: keyOf({onTouchTap: null}),
+	      captured: keyOf({onTouchTapCapture: null})
+	    },
+	    dependencies: dependencies
+	  }
+	};
+
+	var now = (function() {
+	  if (Date.now) {
+	    return Date.now;
+	  } else {
+	    // IE8 support: http://stackoverflow.com/questions/9430357/please-explain-why-and-how-new-date-works-as-workaround-for-date-now-in
+	    return function () {
+	      return +new Date;
+	    }
+	  }
+	})();
+
+	function createTapEventPlugin(shouldRejectClick) {
+	  return {
+
+	    tapMoveThreshold: tapMoveThreshold,
+
+	    ignoreMouseThreshold: ignoreMouseThreshold,
+
+	    eventTypes: eventTypes,
+
+	    /**
+	     * @param {string} topLevelType Record from `EventConstants`.
+	     * @param {DOMEventTarget} targetInst The listening component root node.
+	     * @param {object} nativeEvent Native browser event.
+	     * @return {*} An accumulation of synthetic events.
+	     * @see {EventPluginHub.extractEvents}
+	     */
+	    extractEvents: function(
+	      topLevelType,
+	      targetInst,
+	      nativeEvent,
+	      nativeEventTarget
+	    ) {
+
+	      if (!isStartish(topLevelType) && !isEndish(topLevelType)) {
+	        return null;
+	      }
+
+	      if (isTouch(topLevelType)) {
+	        lastTouchEvent = now();
+	      } else {
+	        if (shouldRejectClick(lastTouchEvent, now())) {
+	          return null;
+	        }
+	      }
+
+	      var event = null;
+	      var distance = getDistance(startCoords, nativeEvent);
+	      if (isEndish(topLevelType) && distance < tapMoveThreshold) {
+	        event = SyntheticUIEvent.getPooled(
+	          eventTypes.touchTap,
+	          targetInst,
+	          nativeEvent,
+	          nativeEventTarget
+	        );
+	      }
+	      if (isStartish(topLevelType)) {
+	        startCoords.x = getAxisCoordOfEvent(Axis.x, nativeEvent);
+	        startCoords.y = getAxisCoordOfEvent(Axis.y, nativeEvent);
+	      } else if (isEndish(topLevelType)) {
+	        startCoords.x = 0;
+	        startCoords.y = 0;
+	      }
+	      EventPropagators.accumulateTwoPhaseDispatches(event);
+	      return event;
+	    }
+
+	  };
+	}
+
+	module.exports = createTapEventPlugin;
+
+
+/***/ },
+/* 624 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	'use strict';
+
+	/**
+	 * Types of raw signals from the browser caught at the top level.
+	 */
+	var topLevelTypes = {
+	  topAbort: null,
+	  topAnimationEnd: null,
+	  topAnimationIteration: null,
+	  topAnimationStart: null,
+	  topBlur: null,
+	  topCanPlay: null,
+	  topCanPlayThrough: null,
+	  topChange: null,
+	  topClick: null,
+	  topCompositionEnd: null,
+	  topCompositionStart: null,
+	  topCompositionUpdate: null,
+	  topContextMenu: null,
+	  topCopy: null,
+	  topCut: null,
+	  topDoubleClick: null,
+	  topDrag: null,
+	  topDragEnd: null,
+	  topDragEnter: null,
+	  topDragExit: null,
+	  topDragLeave: null,
+	  topDragOver: null,
+	  topDragStart: null,
+	  topDrop: null,
+	  topDurationChange: null,
+	  topEmptied: null,
+	  topEncrypted: null,
+	  topEnded: null,
+	  topError: null,
+	  topFocus: null,
+	  topInput: null,
+	  topInvalid: null,
+	  topKeyDown: null,
+	  topKeyPress: null,
+	  topKeyUp: null,
+	  topLoad: null,
+	  topLoadedData: null,
+	  topLoadedMetadata: null,
+	  topLoadStart: null,
+	  topMouseDown: null,
+	  topMouseMove: null,
+	  topMouseOut: null,
+	  topMouseOver: null,
+	  topMouseUp: null,
+	  topPaste: null,
+	  topPause: null,
+	  topPlay: null,
+	  topPlaying: null,
+	  topProgress: null,
+	  topRateChange: null,
+	  topReset: null,
+	  topScroll: null,
+	  topSeeked: null,
+	  topSeeking: null,
+	  topSelectionChange: null,
+	  topStalled: null,
+	  topSubmit: null,
+	  topSuspend: null,
+	  topTextInput: null,
+	  topTimeUpdate: null,
+	  topTouchCancel: null,
+	  topTouchEnd: null,
+	  topTouchMove: null,
+	  topTouchStart: null,
+	  topTransitionEnd: null,
+	  topVolumeChange: null,
+	  topWaiting: null,
+	  topWheel: null
+	};
+
+	var EventConstants = {
+	  topLevelTypes: topLevelTypes
+	};
+
+	module.exports = EventConstants;
+
+/***/ },
+/* 625 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-2014 Facebook, Inc.
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 *
+	 * @providesModule TouchEventUtils
+	 */
+
+	var TouchEventUtils = {
+	  /**
+	   * Utility function for common case of extracting out the primary touch from a
+	   * touch event.
+	   * - `touchEnd` events usually do not have the `touches` property.
+	   *   http://stackoverflow.com/questions/3666929/
+	   *   mobile-sarai-touchend-event-not-firing-when-last-touch-is-removed
+	   *
+	   * @param {Event} nativeEvent Native event that may or may not be a touch.
+	   * @return {TouchesObject?} an object with pageX and pageY or null.
+	   */
+	  extractSingleTouch: function(nativeEvent) {
+	    var touches = nativeEvent.touches;
+	    var changedTouches = nativeEvent.changedTouches;
+	    var hasTouches = touches && touches.length > 0;
+	    var hasChangedTouches = changedTouches && changedTouches.length > 0;
+
+	    return !hasTouches && hasChangedTouches ? changedTouches[0] :
+	           hasTouches ? touches[0] :
+	           nativeEvent;
+	  }
+	};
+
+	module.exports = TouchEventUtils;
+
+
+/***/ },
+/* 626 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	/**
+	 * Allows extraction of a minified key. Let's the build system minify keys
+	 * without losing the ability to dynamically use key strings as values
+	 * themselves. Pass in an object with a single key/val pair and it will return
+	 * you the string key of that single record. Suppose you want to grab the
+	 * value for a key 'className' inside of an object. Key/val minification may
+	 * have aliased that key to be 'xa12'. keyOf({className: null}) will return
+	 * 'xa12' in that case. Resolve keys you want to use once at startup time, then
+	 * reuse those resolutions.
+	 */
+	var keyOf = function keyOf(oneKeyObj) {
+	  var key;
+	  for (key in oneKeyObj) {
+	    if (!oneKeyObj.hasOwnProperty(key)) {
+	      continue;
+	    }
+	    return key;
+	  }
+	  return null;
+	};
+
+	module.exports = keyOf;
 
 /***/ }
 /******/ ]);
