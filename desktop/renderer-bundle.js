@@ -39602,7 +39602,7 @@
 	  //Span-level elements
 	  var span_array = [{ content: str }];
 
-	  check_links(span_array);
+	  check_images(span_array);
 
 	  return render_span(span_array);
 	}
@@ -39783,7 +39783,28 @@
 	  }
 	}
 
-	function check_links(span_array) {}
+	function check_images(span_array) {
+	  var patt = /!\[(.+?)\]\((.+?)\)/;
+	  var match;
+
+	  for (var s = 0; s < span_array.length; s++) {
+	    if (span_array[s].tag == null) {
+	      var content = span_array[s].content;
+	      if ((match = patt.exec(content)) != null) {
+	        var alt = match[1];
+	        var src = match[2];
+
+	        var raw1 = { content: content.slice(0, match.index) };
+	        var image = { tag: 'a', content: '<img src="' + src + '" alt="' + alt + '" />' };
+	        var raw2 = { content: content.slice(match.index + match[0].length, content.length) };
+
+	        span_array.splice(s, 1, raw1, image, raw2);
+	        s++;
+	        break;
+	      }
+	    }
+	  }
+	}
 
 	/* Functions to convert content extracted from MarkDown to HTML (for flashcards) */
 	function getFrontContent(front) {
