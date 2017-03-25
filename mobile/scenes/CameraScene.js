@@ -13,7 +13,8 @@ export default class CameraScene extends Component {
         this.camera.capture()
         .then((data) => this.props.navigator.push({
             title: 'Confirm Photo',
-            content: data
+            content: data,
+            socket: this.props.socket
         }))
         .catch(err => console.error(err));
     }

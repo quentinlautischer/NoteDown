@@ -15,7 +15,7 @@ var HOST = "localhost"; // allows me to test on android
 const PORT = '3000';
 
 export default class PhotoConfirmScene extends Component {
-    confirmPhoto() {
+    encodePhoto() {
         let data = ''
         RNFetchBlob.fs.readStream(
             // file path
@@ -36,8 +36,8 @@ export default class PhotoConfirmScene extends Component {
                     console.log('oops', err)
                 })
                 ifstream.onEnd(() => {
-                    this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
-                    this.socket.emit('request-photo-supply', { 'photo': data });
+                    // this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
+                    this.props.socket.emit('request-photo-supply', { 'photo': data });
                 })
             })
     }
@@ -52,7 +52,7 @@ export default class PhotoConfirmScene extends Component {
                 />
                 <TouchableHighlight
                     style={styles.check}
-                    onPress={this.confirmPhoto.bind(this)}>
+                    onPress={this.encodePhoto.bind(this)}>
                     <Icon name='check' size={28} color='#ffffff' />
                 </TouchableHighlight>
             </View>
