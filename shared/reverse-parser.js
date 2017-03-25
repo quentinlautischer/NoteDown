@@ -76,12 +76,15 @@ function parseItalic(str) {
 
 function parseLists(str) {
     // simple, un-nested list
+    var listTypes = [
+        { type: 'ul', point: '* ' },
+        { type: 'ol', point: '1. ' }
+    ];
 
-    var pattern = /<ul>((\s*<li>([\s\S]*?)<\/li>\s*)*)<\/ul>/m;
-    str = parseListsInner(str, pattern, '* ');
-
-    pattern = /<ol>((\s*<li>([\s\S]*?)<\/li>\s*)*)<\/ol>/m;
-    str = parseListsInner(str, pattern, '1. '); // little hacky to just use 1 for everything, might fix later
+    listTypes.forEach(function(ele) {
+        var pattern = '<${ele.type}>((\s*<li>([\s\S]*?)</li>\s*)*)</${ele.type}>';
+        str = parseListsInner(str, new RegExp(pattern, 'm'), ele.point);
+    });
 
     return str;
 }
@@ -95,5 +98,20 @@ function parseListsInner(str, pattern, replacer) {
         str = str.replace(match[0], listElements);
         match = pattern.exec(str);
     }
+    return str;
+}
+
+
+
+
+function parseLists(str) {
+    // simple, un-nested list
+
+    var pattern = /<ul>((\s*<li>([\s\S]*?)<\/li>\s*)*)<\/ul>/m;
+    str = parseListsInner(str, pattern, '* ');
+
+    pattern = /<ol>((\s*<li>([\s\S]*?)<\/li>\s*)*)<\/ol>/m;
+    str = parseListsInner(str, pattern, '1. '); // little hacky to just use 1 for everything, might fix later
+
     return str;
 }
