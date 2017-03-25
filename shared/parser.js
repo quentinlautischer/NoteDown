@@ -155,16 +155,14 @@ function check_blockquote(blocks) {
 }
 
 function check_hrule(blocks) {
-  var patt1 = /^[ ]{0,3}(?:\*[ ]{0,2})+\s*$/;
-  var patt2 = /^[ ]{0,3}(?:-[ ]{0,2})+\s*$/;
-  var patt3 = /^[ ]{0,3}(?:_[ ]{0,2})+\s*$/;
+  var patt = /^[ ]{0,3}(-|_|\*)[ ]{0,2}(?:\1[ ]{0,2}){2,}\s*$/;
   var match;
 
   for (var b = 0; b < blocks.length; b++) {
     if (blocks[b].tag == null) {
       var content = blocks[b].content;
       for (var l = 0; l < content.length; l++) {
-        if ((match = patt1.exec(content[l])) != null || (match = patt2.exec(content[l])) != null || (match = patt3.exec(content[l])) != null) {
+        if ((match = patt.exec(content[l])) != null) {
 
           var raw1 = {content:content.slice(0,l)};
           var header_atx = {tag:'hr'};
@@ -230,6 +228,40 @@ function check_images(span_array) {
       }
     }
   }
+}
+
+// Functions to help with span-level parsing.
+function array_regex(regex_array, span_array) {
+  //Searches raw text in a span array for an array of regex patterns, in the proper order.
+  //Regex patterns must have global 'g' tag.
+  //Returns array of three-integer arrays, one for each pattern: an array index, start character index, and end character index.
+  
+  if (regex_array.length == 0 || span_array.length == 0) { return []; }
+  var match;
+  for (var s = 0; s < span_array.length; s++) {
+    if (span_array[s].tag == null && (match = regex_array[0].exec(span_array[s].content)) != null) {
+      var result = [[s, match.index, match.index + match[0].length]];
+      var next = array_regex(regex_array.slice(1, regex_array.length),
+          span_array_slice(span_array, [s, match.index + match[0].length], [span_array.length, span_array[span_array.length-1].length])); //Find the remaining patterns in the remaining array.
+      if (next == null) { return null; }
+      for (var r = 0; r < next.length; r++) {
+        next[r][0] += s;
+        next[r][1] += match.index + match[0].length;
+        next[r][2] += match.index + match[0].length;
+        result.push(next[r]);
+      }
+      return result;
+    }
+  }
+  return null;
+}
+
+function span_array_slice(span_array, coord1, coord2) {
+  //Slices a span array like the slice() function, but in 2 dimensions.
+  //Takes in two-integer arrays as coordinates (one for the object index, one for the character index)
+  span_array[coord1[0]] = span_array[coord1[0]].slice(coord1[1], span_array[coord1[0]].length);
+  span_array[coord2[0]] = span_array[coord2[0]].slice(0, coord2[1]);
+  return span_array.slice(coord1[0], coord2[0]+1);
 }
 
 /* Functions to convert content extracted from MarkDown to HTML (for flashcards) */
