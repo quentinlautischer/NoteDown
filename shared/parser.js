@@ -65,7 +65,7 @@ function render_block(blocks) {
 function render_span(span) {
   var result = '';
   for (var i = 0; i < span.length; i++) {
-    result += block.content;
+    result += span[i].content;
   }
   return result;
 }
@@ -127,9 +127,8 @@ function check_blockquote(blocks) {
       for (var l = 0; l < content.length; l++) {
         if ((match = patt.exec(content[l])) != null) {
           var inner_content = '';
-          var end = l;
           var same_block = true; //Keeps track of inner blockquote blocks
-          while (true) {
+          for (var end = l; end < content.length; end++) {
             if ((match = patt.exec(content[end])) != null) {
               inner_content += match[1] + '\n';
               same_block = true;
@@ -139,8 +138,6 @@ function check_blockquote(blocks) {
               same_block = false;
             } else if (same_block) { inner_content += content[end] + '\n'; }
             else { break; }
-            end++;
-            if (end >= content.length) { break; }
           }
           inner_content = parse_blocks(inner_content, false);
 
@@ -160,13 +157,14 @@ function check_blockquote(blocks) {
 function check_hrule(blocks) {
   var patt1 = /^[ ]{0,3}(?:\*[ ]{0,2})+\s*$/;
   var patt2 = /^[ ]{0,3}(?:-[ ]{0,2})+\s*$/;
+  var patt3 = /^[ ]{0,3}(?:_[ ]{0,2})+\s*$/;
   var match;
 
   for (var b = 0; b < blocks.length; b++) {
     if (blocks[b].tag == null) {
       var content = blocks[b].content;
       for (var l = 0; l < content.length; l++) {
-        if ((match = patt1.exec(content[l])) != null || (match = patt2.exec(content[l])) != null) {
+        if ((match = patt1.exec(content[l])) != null || (match = patt2.exec(content[l])) != null || (match = patt3.exec(content[l])) != null) {
 
           var raw1 = {content:content.slice(0,l)};
           var header_atx = {tag:'hr'};
@@ -199,7 +197,7 @@ function check_paragraph(blocks) {
           }
 
           var raw1 = {content:content.slice(0,l)};
-          var paragraph = {tag:'p', content:inner_content};
+          var paragraph = {tag:'p', content:parse_span(inner_content)};
           var raw2 = {content:content.slice(end,content.length)};
 
           blocks.splice(b, 1, raw1, paragraph, raw2);
