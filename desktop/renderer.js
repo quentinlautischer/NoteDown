@@ -17,11 +17,14 @@ import MenubarTile from './components/menubarTile';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
+var hljs = require('highlight.js');
+
 const ipc = require('electron').ipcRenderer;
 const {remote} = require('electron');
 const fs = require('fs')
 const {Menu, MenuItem} = remote;
 const {dialog} = remote;
+
 
 class App extends React.Component {
   constructor() {
@@ -32,6 +35,7 @@ class App extends React.Component {
 
   // This is temp for now --- Cant figure out how to have the DOM update on store subs.
   componentDidMount(){
+    hljs.initHighlighting();
     store.subscribe( this.storeDidUpdate.bind(this) );
   }
 

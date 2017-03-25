@@ -10,6 +10,12 @@ import { connect } from 'react-redux';
 var ipc = require('electron').ipcRenderer;
 
 var shared = require('../../shared/parser.js');
+var hljs = require('highlight.js');
+
+var CodeMirror = require('react-codemirror');
+require('codemirror/mode/javascript/javascript');
+require('codemirror/mode/xml/xml');
+require('codemirror/mode/markdown/markdown');
 
 class DualmodeEditor extends React.Component {
   constructor() {
@@ -108,8 +114,16 @@ class DualmodeEditor extends React.Component {
     
     return false;
   }
-
+// <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
+//           {this.getContent()}
+//         </textarea>
   render() {
+    hljs.initHighlighting();
+    var options = {
+      lineNumbers: true,
+      mode: 'javascript'
+    };
+    //console.log(hljs.highlight("python", '<pre><code class="python">def foo():</code></pre>', true));
     return (
       <div className="dualMode-container"
         onDragOver={this.preventDefault}
@@ -117,9 +131,14 @@ class DualmodeEditor extends React.Component {
         onDragEnd={this.preventDefault}
         onDrop={this.drop}
       >
-        <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
-          {this.getContent()}
-        </textarea>
+        
+        <CodeMirror 
+          id="userText"
+          className="markdown-input-editor" 
+          value={this.getContent()} 
+          onChange={this.handleChange} 
+          options={options} 
+        />
         <div className="render-container">
           <div className="toc-nav-show"><i className="icon-bars" aria-hidden="true"></i></div>
           <TocNav store={this.props.store} info={this.getContent()} scrollTo={id => this.scrollTo(id)}/>
