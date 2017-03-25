@@ -32,7 +32,7 @@ export default class CameraScene extends Component {
                     <TouchableHighlight
                         style={styles.capture}
                         onPress={this.takePicture.bind(this)}>
-                        <Icon name='camera' size={28} color='#ffffff' />
+                        <Icon name='camera' size={35} color='#ffffff' />
                     </TouchableHighlight>
                 </Camera>
             </View>

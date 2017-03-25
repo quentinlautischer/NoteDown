@@ -33,7 +33,6 @@ export default class PhotoConfirmScene extends Component {
     }
 
     render() {
-        console.log(this.props.content);
         return(
             <View style={styles.container}>
                 <Image
@@ -43,7 +42,7 @@ export default class PhotoConfirmScene extends Component {
                 <TouchableHighlight
                     style={styles.check}
                     onPress={this.encodePhoto.bind(this)}>
-                    <Icon name='check' size={28} color='#ffffff' />
+                    <Icon name='check' size={35} color='#ffffff' />
                 </TouchableHighlight>
             </View>
         );
