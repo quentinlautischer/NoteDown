@@ -258,8 +258,8 @@ photoRequest = function(socket, data) {
   console.log('photo-request');
 }
 
-photoSupplyRequest = function(data) {
-  console.log('photo-supply-request');
+photoSupplyRequest = function(socket, data) {
+  console.log('photo-supply-request ' + data.photo);
 }
 
 console.log("server running");

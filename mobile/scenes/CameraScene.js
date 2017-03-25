@@ -31,7 +31,7 @@ export default class CameraScene extends Component {
                     <TouchableHighlight
                         style={styles.capture}
                         onPress={this.takePicture.bind(this)}>
-                        <Icon name='camera' size={28} color='#000000' />
+                        <Icon name='camera' size={28} color='#ffffff' />
                     </TouchableHighlight>
                 </Camera>
             </View>
@@ -52,9 +52,9 @@ const styles = StyleSheet.create({
     },
     capture: {
         flex: 0,
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        padding: 10,
-        margin: 40
+        padding: 15,
+        borderRadius: 10,
+        backgroundColor: 'black',
+        marginBottom: 40
     }
 });

@@ -16,6 +16,7 @@ import java.util.List;
 import com.github.yamill.orientation.OrientationPackage; // orientation
 import com.BV.LinearGradient.LinearGradientPackage; // gradient
 import com.lwansbrough.RCTCamera.RCTCameraPackage; // camera
+import com.RNFetchBlob.RNFetchBlobPackage; // fetch blob
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -31,7 +32,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new OrientationPackage(),
           new LinearGradientPackage(),
-          new RCTCameraPackage()
+          new RCTCameraPackage(),
+          new RNFetchBlobPackage()
       );
     }
   };
