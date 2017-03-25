@@ -8,11 +8,7 @@ import {
     TouchableHighlight
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import SocketIOClient from 'socket.io-client';
 import RNFetchBlob from 'react-native-fetch-blob';
-
-var HOST = "localhost"; // allows me to test on android
-const PORT = '3000';
 
 export default class PhotoConfirmScene extends Component {
     encodePhoto() {
