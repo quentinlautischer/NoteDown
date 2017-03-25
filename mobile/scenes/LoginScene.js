@@ -44,7 +44,8 @@ export default class LoginScene extends Component {
                 console.log("Mobile client pulled data: ", data);
                 this.props.navigator.push({
                     title: 'Main Menu',
-                    content: data
+                    content: data,
+                    socket: this.socket
                 });
             }
         });

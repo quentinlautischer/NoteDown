@@ -11,7 +11,8 @@ export default class MenuScene extends Component {
     navigate(){
         this.props.navigator.push({
             title: arguments[0],
-            content: this.props.content
+            content: this.props.content,
+            socket: this.props.socket
         })
     }
 
@@ -23,6 +24,9 @@ export default class MenuScene extends Component {
                 </TouchableHighlight>
                 <TouchableHighlight onPress = {this.navigate.bind(this, 'Flashcards Menu')}>
                     <MenuButton text='Flashcards' />
+                </TouchableHighlight>
+                <TouchableHighlight onPress = {this.navigate.bind(this, 'Camera')}>
+                    <MenuButton text='Camera Mode' />
                 </TouchableHighlight>
             </View>
         )
