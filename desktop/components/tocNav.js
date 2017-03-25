@@ -44,7 +44,7 @@ class TocNav extends React.Component {
     for(i=0; i < pages.length; i++){
       array.push(this.extractPageHeader(pages[i]));
     }
-    console.log(`Array: ${array}`);
+    // console.log(`Array: ${array}`);
     return array;
   }
 
@@ -150,7 +150,7 @@ class TocNav extends React.Component {
 
   render() {
     var state = this.props.store.getState();
-    console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
+    // console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
     this.array = this.generateHeaderArray(this.props.info);
     this.pagesArray = this.generatePagesArray();
     if (this.state.zoom == 'in') {
