@@ -18,25 +18,19 @@ export default class PhotoConfirmScene extends Component {
     encodePhoto() {
         let data = ''
         RNFetchBlob.fs.readStream(
-            // file path
-            this.props.content.path,
-            // encoding, should be one of `base64`, `utf8`, `ascii`
-            'base64',
-            // (optional) buffer size, default to 4096 (4095 for BASE64 encoded data)
-            // when reading file in BASE64 encoding, buffer size must be multiples of 3.
-            4095)
+            this.props.content.path, // path to photo
+            'base64', // encoding type
+            4095) // buffer size
             .then((ifstream) => {
                 ifstream.open()
                 ifstream.onData((chunk) => {
-                    // when encoding is `ascii`, chunk will be an array contains numbers
-                    // otherwise it will be a string
                     data += chunk
                 })
                 ifstream.onError((err) => {
                     console.log('oops', err)
+                    // maybe should alert user or something
                 })
                 ifstream.onEnd(() => {
-                    // this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
                     this.props.socket.emit('request-photo-put', { 'photo': data });
                 })
             })
