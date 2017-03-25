@@ -5,6 +5,7 @@ console.log(reverseParse(`
     <h4>This is heading 4</h4>
     <p>here's a link: <a href="http://myurl.com">mylink</a></p>
     <h5>This is heading 5</h5>
+    <p>An image <img src="imgurl" alt="myimg"> <- right there</p>
     <h6>This is heading 6</h6>
     <h1>This is another <b>BOLD</b> heading 1</h1>
     <p>This is some text.</p>
@@ -32,14 +33,25 @@ console.log(reverseParse(`
     </ul>
 `));
 
-
+// entry point
 function reverseParse(str) {
+    str = parseBlockElements(str);
+    str = parseSpanElements(str);
+    return str;
+}
+
+function parseBlockElements(str) {
     str = parseHeaders(str);
     str = parseParagraphs(str);
+    str = parseLists(str);
+    return str;
+}
+
+function parseSpanElements(str) {
     str = parseBold(str);
     str = parseItalic(str);
-    str = parseLists(str);
     str = parseLinks(str);
+    str = parseImgs(str);
     return str;
 }
 
@@ -117,13 +129,22 @@ function parseLists(str) {
 
 function parseLinks(str) {
     pattern = /(<a href="(\S*?)">(.*?)<\/a>)/;
+    return parseLinkOrImgContent(str);
+}
+
+function parseImgs(str) {
+    pattern = /(<img src="(\S*?)" alt="(.*?)">)/;
+    return parseLinkOrImgContent(str,'!');
+}
+
+function parseLinkOrImgContent(str, startModifier='') {
     var match = pattern.exec(str);
     while (match != null) {
         var whole = match[1];
         var url = match[2];
         var title = match[3];
 
-        str = str.replace(whole, '[' + title + '](' + url + ')');
+        str = str.replace(whole, startModifier + '[' + title + '](' + url + ')');
         match = pattern.exec(str);
     }
     return str;
