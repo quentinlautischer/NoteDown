@@ -3,6 +3,7 @@ console.log(reverseParse(`
     <h2>This is heading 2</h2>
     <h3>This is heading 3</h3>
     <h4>This is heading 4</h4>
+    <p>here's a link: <a href="http://myurl.com">mylink</a></p>
     <h5>This is heading 5</h5>
     <h6>This is heading 6</h6>
     <h1>This is another <b>BOLD</b> heading 1</h1>
@@ -38,6 +39,7 @@ function reverseParse(str) {
     str = parseBold(str);
     str = parseItalic(str);
     str = parseLists(str);
+    str = parseLinks(str);
     return str;
 }
 
@@ -101,9 +103,6 @@ function parseListsInner(str, pattern, replacer) {
     return str;
 }
 
-
-
-
 function parseLists(str) {
     // simple, un-nested list
 
@@ -113,5 +112,19 @@ function parseLists(str) {
     pattern = /<ol>((\s*<li>([\s\S]*?)<\/li>\s*)*)<\/ol>/m;
     str = parseListsInner(str, pattern, '1. '); // little hacky to just use 1 for everything, might fix later
 
+    return str;
+}
+
+function parseLinks(str) {
+    pattern = /(<a href="(\S*?)">(.*?)<\/a>)/;
+    var match = pattern.exec(str);
+    while (match != null) {
+        var whole = match[1];
+        var url = match[2];
+        var title = match[3];
+
+        str = str.replace(whole, '[' + title + '](' + url + ')');
+        match = pattern.exec(str);
+    }
     return str;
 }
