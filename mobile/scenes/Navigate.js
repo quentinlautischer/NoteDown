@@ -26,15 +26,15 @@ export default class Navigate extends Component {
         // it more intuitive to call scenes by what they do, rather than a meaningless
         // number I need to look up each time.
         const routes = [
-            {title: 'Login', index: 0},
-            {title: 'Main Menu', index: 1},
-            {title: 'Folders', index: 2},
-            {title: 'Flashcards Menu', index: 3},
-            {title: 'View Notes', index: 4},
-            {title: 'Edit Notes', index: 5},
-            {title: 'View Flashcard', index: 6},
-            {title: 'Camera', index: 7},
-            {title: 'Confirm Photo', index: 8}
+            {title: 'Login'},
+            {title: 'Main Menu'},
+            {title: 'Folders'},
+            {title: 'Flashcards Menu'},
+            {title: 'View Notes'},
+            {title: 'Edit Notes'},
+            {title: 'View Flashcard'},
+            {title: 'Camera'},
+            {title: 'Confirm Photo'}
         ];
         return (
             <Navigator
@@ -49,9 +49,9 @@ export default class Navigate extends Component {
                     } else if (route.title === 'Flashcards Menu') {
                         return <FlashcardsMenuScene navigator={navigator} content={route.content} socket={route.socket} />
                     } else if (route.title === 'View Notes') {
-                        return <NotesViewScene navigator={navigator} content={route.content} />
+                        return <NotesViewScene navigator={navigator} content={route.content} socket={route.socket} />
                     } else if (route.title === 'Edit Notes') {
-                        return <NotesEditScene navigator={navigator} content={route.content} />
+                        return <NotesEditScene navigator={navigator} content={route.content} index={route.index}/>
                     } else if (route.title === 'View Flashcard') {
                         return <FlashcardViewScene navigator={navigator} content={route.content} />
                     } else if (route.title === 'Camera') {
