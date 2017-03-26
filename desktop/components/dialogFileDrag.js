@@ -62,6 +62,11 @@ class DialogFileDrag extends React.Component {
     var currentContent = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
     var content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](${this.props.filepath})${currentContent.slice(cursor_pos)}`;
     
+    this.props.store.dispatch({
+      type: 'INSERT_IMAGE',
+      
+    });
+
     this.props.store.dispatch({ 
       type: 'PAGE_CONTENT_CHANGE', 
       content: content,

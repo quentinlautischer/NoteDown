@@ -10,6 +10,7 @@ const http = require('http');
 
 // var HOST = '127.0.0.1';
 var HOST = 'localhost'; // allows me to test on android
+// var HOST  = 'https://mighty-garden-9993.herokuapp.com/'
 var PORT = '3000';
 var io = require('socket.io-client');
 
@@ -74,7 +75,8 @@ app.on('maximize', function () {
 })
 
 function initServerComm() {
-  socket = io('http://' + HOST + ':' + PORT);
+  // socket = io('http://' + HOST + ':' + PORT);
+  socket = io(HOST);
 
   socket.on('data', (data) => {
     console.log('received data from server');

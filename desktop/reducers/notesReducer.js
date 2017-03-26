@@ -2,6 +2,8 @@ import update from 'immutability-helper';
 
 import createReducer from './reducerUtilities'
 
+var fs = require("fs");
+
 function setNotes(state, action){
   console.log(`Setting Notes: ${action.notes}`);
   return action.notes;
@@ -52,6 +54,17 @@ function pageContentChange(state, action){
   });
 }
 
+function addPhoto(state, action) {
+  // filepath, label,
+  var filepath  = action.filepath;
+  fs.readFile(filepath, 'binary', function(err, original_data){
+    var base64Image = new Buffer(original_data, 'binary').toString('base64');
+    
+  })
+
+  return
+}
+
 const initial_state = {
   userid: null, 
   images: [], 
@@ -72,7 +85,8 @@ const notesReducer = createReducer(initial_state, {
   'DELETE_FOLDER': deleteFolder,
   'ADD_PAGE': addPage,
   'DELETE_PAGE': deletePage,
-  'PAGE_CONTENT_CHANGE': pageContentChange
+  'PAGE_CONTENT_CHANGE': pageContentChange,
+  'ADD_PHOTO': addPhoto
 });
 
 export default notesReducer;

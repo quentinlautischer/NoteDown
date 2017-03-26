@@ -227,6 +227,12 @@ const menubar_template_builder = function(store) {
         role: 'pasteandmatchstyle'
       },
       {
+        label: 'Insert Photo',
+        enabled: is_quickmode(state),
+        visible: is_quickmode(state),
+        click () { menuLogin(store) }
+      },
+      {
         role: 'delete'
       },
       {
