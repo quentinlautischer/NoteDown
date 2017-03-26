@@ -32,6 +32,11 @@ console.log(
             <ol>
                 <li>1i</li>
                 <li>1i</li>
+                <ul>
+                    <li>1ii</li>
+                    <li>1ii</li>
+                    <li>1ii</li>
+                </ul>
                 <li>1i</li>
             </ol>
             <li>1</li>
@@ -42,6 +47,11 @@ console.log(
         <li>2</li>
         <ul>
             <li>2i</li>
+            <ul>
+                <li>2ii</li>
+                <li>2ii</li>
+                <li>2ii</li>
+            </ul>
             <li>2i</li>
             <li>2i</li>
         </ul>
@@ -51,6 +61,22 @@ console.log(
         <li>3</li>
         <li>3</li>
         <li>3</li>
+    </ul>
+
+    <ul>
+        <li>4</li>
+        <li>4</li>
+        <ul>
+            <li>4i</li>
+            <li>4i</li>
+            <ul>
+                <li>4ii</li>
+                <li>4ii</li>
+                <li>4ii</li>
+            </ul>
+            <li>4i</li>
+        </ul>
+        <li>4</li>
     </ul>
 `)
 );
@@ -149,21 +175,28 @@ function parseLists(str) {
         { type: 'ul', point: '* ' }
     ];
 
-    listTypes.forEach(function(ele) {
-        var pattern = '<' + ele.type + '>((\\s*<li>([\\s\\S]*?)</li>\\s*)*)</' + ele.type + '>';
-        str = parseListsInner(str, new RegExp(pattern, 'm'), ele.point);
-    });
+    do {
+        listTypes.forEach(function(ele) {
+            var pattern = `<${ele.type}>([^ou]*)</${ele.type}>`;
+            str = parseListsInner(str, new RegExp(pattern, 'm'), ele.point); //'  '.repeat(2 - i) +
+        });
+        var done = true;
+        listTypes.forEach(function(ele) {
+            var pattern = `<${ele.type}>([^ou]*)</${ele.type}>`;
+            if (RegExp(pattern, 'm').exec(str) !== null) {
+                done = false; // finished matching all lists
+            }
+        });
+    } while (!done);
 
     return str;
 }
 
 function parseListsInner(str, pattern, replacer) {
     var match = pattern.exec(str);
-
     while (match != null) {
         var listElements = match[1];
-        listElements = parseLists(listElements);
-        listElements = replaceAll(listElements, /( *<li>([\s\S]*?)<\/li>)/, replacer);
+        listElements = replaceAll(listElements, /( *<li>(.*?)<\/li>)/, replacer);
         str = str.replace(match[0], listElements);
         match = pattern.exec(str);
     }
