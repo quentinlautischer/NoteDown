@@ -309,7 +309,7 @@ function check_backslash_escape(span_array) {
 }
 
 function check_links(span_array) {
-  var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)s*\)/;
+  var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)s*\)?/;
   var match;
   
   for (var s = 0; s < span_array.length; s++) {
