@@ -1,18 +1,33 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text,
+    TextInput,
     Navigator,
     TouchableHighlight,
     StyleSheet
 } from 'react-native';
 
 export default class NotesEditScene extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            text: this.props.content.pages[this.props.index].content
+        }
+    }
+
     render() {
         return (
             <View style={styles.view}>
-                <Text>Edit Notes Here</Text>
-                <Text>Editing {this.props.content.name}</Text>
+                <TextInput
+                    style={styles.editor}
+                    multiline={true}
+                    autoFocus={true}
+                    onChangeText={(text) => {
+                        this.setState({text});
+                    }}
+                    value={this.state.text}
+                />
             </View>
         )
     }
@@ -20,6 +35,13 @@ export default class NotesEditScene extends Component {
 
 const styles = StyleSheet.create({
     view: {
-        marginTop:45
+        flex: 1,
+        marginTop:45,
+        backgroundColor: 'white',
+        padding: 15
+    },
+    editor: {
+        flex: 1,
+        textAlignVertical: 'top'
     }
 });

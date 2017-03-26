@@ -26,9 +26,11 @@ export default class NotesViewScene extends Component {
 
     // external navigation (to completely different scenes)
     navigate() {
+        console.log('navigating with index ' + this.state.index);
         this.props.navigator.push({
             title: arguments[0],
-            content: this.props.content
+            content: this.props.content,
+            index: this.state.index
         })
     }
 
