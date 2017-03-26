@@ -1,0 +1,12 @@
+**/node_modules/
+**/.sass-cache/
+
+**/*.log
+*.DS_Store
+
+db/data/db/
+db/data/db/*
+db/data/db/*.wt
+db/data/db/*.turtle
+
+node_modules/*
