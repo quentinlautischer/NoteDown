@@ -41,10 +41,16 @@ function parse_blocks(str, allow_raw) {
   //Block-level elements
   var block_array = [{content:str.split('\n')}];
 
+  check_codeblock(block_array);
+  check_codeblock_lang(block_array);
   check_header_setext(block_array);
   check_header_atx(block_array);
   check_blockquote(block_array);
   check_hrule(block_array);
+  check_flashcard(block_array);
+  check_list_ordered(block_array);
+  check_list_unordered(block_array);
+  check_table(block_array);
   check_paragraph(block_array);
   
   if (!allow_raw) {
@@ -201,6 +207,59 @@ function check_hrule(blocks) {
       }
     }
   }
+}
+
+function check_codeblock(blocks) {
+}
+
+function check_codeblock_lang(blocks) {
+  var patt = /^```(.*)$/;
+  var match;
+  var codeblocks;
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null) {
+          var class = match[1];
+          var inner_content = '';
+          var open = true;
+          for (var end = l+1; end < content.length; end++) {
+            if ((match = patt.exec(content[l])) != null && match[1] == null) {
+              open = false;
+              break;
+            } else {
+              if (end == l+1) { inner_content += '\n'; }
+              inner_content += content[l];
+            }
+          }
+          if (open) { break; }
+          var raw1 = {content:content.slice(0,l)};
+          var code = {tag:'code', content:parse_span(inner_content)};
+          if (class != null) { code.attrs = ['class', class]; }
+          var pre = {tag:'pre', content:render_block([code])};
+          var raw2 = {content:content.slice(end+1,content.length)};
+
+          blocks.splice(b, 1, raw1, pre, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
+}
+
+function check_flashcard(blocks) {
+}
+
+function check_list_ordered(blocks) {
+}
+
+function check_list_unordered(blocks) {
+}
+
+function check_table(blocks) {
 }
 
 function check_paragraph(blocks) {
