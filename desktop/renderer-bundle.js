@@ -40176,7 +40176,40 @@
 	  }
 	}
 
-	function check_codeblock(blocks) {}
+	function check_codeblock(blocks) {
+	  var patt = /^(?:[ ]{4}|\t)(.*)$/;
+	  var match;
+
+	  for (var b = 0; b < blocks.length; b++) {
+	    if (blocks[b].tag == null) {
+	      var content = blocks[b].content;
+	      for (var l = 0; l < content.length; l++) {
+	        if ((match = patt.exec(content[l])) != null) {
+	          var inner_content = '';
+	          for (var end = l; end < content.length; end++) {
+	            if ((match = patt.exec(content[end])) != null) {
+	              inner_content += match[1] + '\n';
+	            } else if (content[end].trim().length == 0) {
+	              //End of block may mean end of blockquote
+	              inner_content += '\n';
+	            } else {
+	              break;
+	            }
+	          }
+
+	          var raw1 = { content: content.slice(0, l) };
+	          var code = { tag: 'code', content: inner_content };
+	          var pre = { tag: 'pre', content: render_block([code]) };
+	          var raw2 = { content: content.slice(end, content.length) };
+
+	          blocks.splice(b, 1, raw1, pre, raw2);
+	          b++;
+	          break;
+	        }
+	      }
+	    }
+	  }
+	}
 
 	function check_codeblock_lang(blocks) {
 	  var patt = /^```(.*)$/;
