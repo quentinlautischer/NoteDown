@@ -27,20 +27,30 @@ console.log(
 
     <p>
         <ul>
-            <li>Coffee</li>
-            <li>Tea</li>
-            <li>Milk</li>
+            <li>1</li>
+            <li>1</li>
+            <ol>
+                <li>1i</li>
+                <li>1i</li>
+                <li>1i</li>
+            </ol>
+            <li>1</li>
         </ul>
     </p>
     <ol>
-        <li>One</li>
-        <li>Two</li>
-        <li>Three</li>
+        <li>2</li>
+        <li>2</li>
+        <ul>
+            <li>2i</li>
+            <li>2i</li>
+            <li>2i</li>
+        </ul>
+        <li>2</li>
     </ol>
     <ul>
-        <li>a</li>
-        <li>b</li>
-        <li>c</li>
+        <li>3</li>
+        <li>3</li>
+        <li>3</li>
     </ul>
 `)
 );
@@ -135,13 +145,12 @@ function parseHorizontalRule(str) {
 function parseLists(str) {
     // simple, un-nested list
     var listTypes = [
-        { type: 'ul', point: '* ' },
-        { type: 'ol', point: '1. ' }
+        { type: 'ol', point: '1. ' },
+        { type: 'ul', point: '* ' }
     ];
 
     listTypes.forEach(function(ele) {
         var pattern = '<' + ele.type + '>((\\s*<li>([\\s\\S]*?)</li>\\s*)*)</' + ele.type + '>';
-        console.log(pattern);
         str = parseListsInner(str, new RegExp(pattern, 'm'), ele.point);
     });
 
@@ -153,6 +162,7 @@ function parseListsInner(str, pattern, replacer) {
 
     while (match != null) {
         var listElements = match[1];
+        listElements = parseLists(listElements);
         listElements = replaceAll(listElements, /( *<li>([\s\S]*?)<\/li>)/, replacer);
         str = str.replace(match[0], listElements);
         match = pattern.exec(str);
