@@ -10,6 +10,7 @@ console.log(reverseParse(`
     <h1>This is another <b>BOLD</b> heading 1</h1>
     <p>This is some text.</p>
     <h2>This is another heading 2</h2>
+    <hr>
     <p>This is some other text.</p>
     <p><strong>strong</strong> text is kind of like <b>bold</b> text, and <em>emphasized</em> text is kind of like <i>italic</i> text</p>
     <p>What happens if I nest bold in italic? <i>italic<b>both</b>italic</i></p>
@@ -33,6 +34,11 @@ console.log(reverseParse(`
     </ul>
 `));
 
+
+// CAN RUN THIS AS
+//  $ node reverse-parser.js
+// from command line to see how it works
+
 // entry point
 function reverseParse(str) {
     str = parseBlockElements(str);
@@ -52,6 +58,7 @@ function parseSpanElements(str) {
     str = parseItalic(str);
     str = parseLinks(str);
     str = parseImgs(str);
+    str = parseHorizontalRule(str);
     return str;
 }
 
@@ -86,6 +93,16 @@ function parseBold(str) {
 function parseItalic(str) {
     str = replaceAll(str, /(<i>(.*?)<\/i>)/, '*', '*');
     return replaceAll(str, /(<em>(.*?)<\/em>)/, '*', '*');
+}
+
+function parseHorizontalRule(str) {
+    var pattern = /(\s*<hr>)/;
+    var match = pattern.exec(str);
+    while (match != null) {
+        str = str.replace(match[1], '\n***\n');
+        match = pattern.exec(str);
+    }
+    return str;
 }
 
 function parseLists(str) {
@@ -149,3 +166,5 @@ function parseLinkOrImgContent(str, startModifier='') {
     }
     return str;
 }
+
+module.exports.parseHTML = reverseParse;
