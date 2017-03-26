@@ -1,8 +1,37 @@
 
 import flashcardTemplate from './models/flashcardTemplate.js';
 
-function parse(str) {
+var global_store, global_imageMapper; //global vars to be called by image links
+
+function parsex(str, store, imageMapper) {
   //The main parsing function.
+  // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
+  var store = {
+    images: [{
+      guid: 24,
+      data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+    }]
+  }
+  var imageMapper = function(guid, store){
+    switch (guid){
+      case 24:
+        return store.images[0].data;
+      default:
+        return "";
+    }
+  }
+
+  global_store = store;
+  global_imageMapper = imageMapper;
+
+  // ![label](@:24)
+  // pass the guid found in the .md
+  // into imageMapper(guid, store) as well as the store parameter
+  // this should output the base64 encoding...
+  // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
+  // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
+  console.log(imageMapper(24, store));
+  
   return parse_blocks(str, false);
 }
 
@@ -16,10 +45,16 @@ function parse_blocks(str, allow_raw) {
   //Block-level elements
   var block_array = [{content:str.split('\n')}];
 
+  check_codeblock(block_array);
+  check_codeblock_lang(block_array);
   check_header_setext(block_array);
   check_header_atx(block_array);
   check_blockquote(block_array);
   check_hrule(block_array);
+  check_flashcard(block_array);
+  check_list_ordered(block_array);
+  check_list_unordered(block_array);
+  check_table(block_array);
   check_paragraph(block_array);
   
   if (!allow_raw) {
@@ -36,7 +71,7 @@ function parse_span(str) {
   var span_array = [{content:str}];
 
   check_backslash_escape(span_array);
-  check_images(span_array);
+  check_links(span_array);
   
   return render_span(span_array);
 }
@@ -178,6 +213,59 @@ function check_hrule(blocks) {
   }
 }
 
+function check_codeblock(blocks) {
+}
+
+function check_codeblock_lang(blocks) {
+  var patt = /^```(.*)$/;
+  var match;
+  var codeblocks;
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null) {
+          var code_class = match[1];
+          var inner_content = '';
+          var open = true;
+          for (var end = l+1; end < content.length; end++) {
+            if ((match = patt.exec(content[end])) != null) {
+              open = false;
+              break;
+            } else {
+              if (end > l+1) { inner_content += '\n'; }
+              inner_content += content[end];
+            }
+          }
+          if (open) { break; }
+          var raw1 = {content:content.slice(0,l)};
+          var code = {tag:'code', content:inner_content};
+          if (code_class != null) { code.attrs = ['class', code_class]; }
+          var pre = {tag:'pre', content:render_block([code])};
+          var raw2 = {content:content.slice(end+1,content.length)};
+
+          blocks.splice(b, 1, raw1, pre, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
+}
+
+function check_flashcard(blocks) {
+}
+
+function check_list_ordered(blocks) {
+}
+
+function check_list_unordered(blocks) {
+}
+
+function check_table(blocks) {
+}
+
 function check_paragraph(blocks) {
   var patt = /^[ ]{0,3}(.+)$/;
   var match;
@@ -220,23 +308,38 @@ function check_backslash_escape(span_array) {
   }
 }
 
-function check_images(span_array) {
-  var patt = /!\[(.+?)\]\((.+?)\)/;
+function check_links(span_array) {
+  var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)s*\)/;
   var match;
   
   for (var s = 0; s < span_array.length; s++) {
     if (span_array[s].tag == null) {
       var content = span_array[s].content;
       if ((match = patt.exec(content)) != null) {
-        var alt = match[1];
-        var src = match[2];
-
+        var alt = match[2];
+        var src = match[3];
+        var title = match[5]; //may be null
+        
         var raw1 = {content:content.slice(0,match.index)};
-        var image = {tag:'a', content:'<img src="' + src + '" alt="' + alt + '" />'};
         var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
 
-        span_array.splice(s, 1, raw1, image, raw2);
-        s++;
+        if (match[1].length == 0) {
+          var a1 = {tag:'a', content:'<a href="' + src + (title == null ? '' : ('" title="' + title)) + '">'};
+          var content = {content:alt};
+          var a2 = {tag:'a', content:'</a>'};
+          span_array.splice(s, 1, raw1, a1, content, a2, raw2);
+          s+=3;
+        } else {
+          
+          if (src.slice(0,2) == '@:') {
+            var guid = src.slice(2,src.length);
+            var data = global_imageMapper(guid, global_store);
+            src = 'data:image/jpeg;base64, ' + data;
+          }
+          var image = {tag:'img', content:'<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : ('" title="' + title)) + '" />'};
+          span_array.splice(s, 1, raw1, image, raw2);
+          s++;
+        }
         break;
       }
     }
@@ -300,7 +403,7 @@ function makeFlashcard(front, back, hints) {
 }
 
 module.exports = {
-    parse: parse,
+    parsex: parsex,
     makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
 }
 

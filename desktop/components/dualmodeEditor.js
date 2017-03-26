@@ -4,7 +4,8 @@ import TextField from 'react';
 import Renderer from './renderer';
 import TocNav from './tocNav';
 import DialogFileDrag from './dialogFileDrag';
-import FormatToolbar from './formatToolbar'
+import FormatToolbar from './formatToolbar';
+
 
 import { connect } from 'react-redux';
 
@@ -17,6 +18,8 @@ var CodeMirror = require('react-codemirror');
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/xml/xml');
 require('codemirror/mode/markdown/markdown');
+
+
 
 class DualmodeEditor extends React.Component {
   constructor() {
@@ -31,10 +34,16 @@ class DualmodeEditor extends React.Component {
     this.handleCodeMirrorChange = this.handleCodeMirrorChange.bind(this);
     this.storeDidUpdate = this.storeDidUpdate.bind(this);
     this.drop = this.drop.bind(this);
+
+    this.unsubscribe = null;
   }
 
   componentDidMount(){
-    this.props.store.subscribe( this.storeDidUpdate );
+    this.unsubscribe = this.props.store.subscribe( () => this.storeDidUpdate );
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   storeDidUpdate(){
@@ -103,6 +112,7 @@ class DualmodeEditor extends React.Component {
     var rendered = '';
     rendered = shared.parse(content);
     this.setState({ rendered_content: rendered });
+    shared.parsex("str", this.props.store, function() {return ""});
   }
 
   drop(e) {
@@ -126,9 +136,6 @@ class DualmodeEditor extends React.Component {
     
     return false;
   }
-// <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
-//           {this.getContent()}
-//         </textarea>
 
   render() {
     hljs.initHighlighting();

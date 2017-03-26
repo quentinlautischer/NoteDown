@@ -30,12 +30,35 @@ function setUser(state, action) {
   return Object.assign({}, state, {userid: action.userid});
 }
 
-function selectFolder(state, action){
+function selectFolder(state, action) {
   return Object.assign({}, state, {folderIndex: action.index});
 }
 
-function selectPage(state, action){
+function selectPage(state, action) {
   return Object.assign({}, state, {pageIndex: action.index});
+}
+
+function showSnackbar(state, action) {
+  return Object.assign({}, state, 
+    {snackbar: {
+      open: true,
+      msg: action.msg,
+      time: action.time || 4000,
+      action: action.action || function(){ return null }
+      }  
+    });
+}
+
+function closeSnackbar(state, action) {
+  return Object.assign({}, state, {snackbar: {open: false, msg: ""}});
+}
+
+function showPhotoAlert(state, action) {
+  return Object.assign({}, state, {photoAlert: {open: true}});
+}
+
+function closePhotoAlert(state, action) {
+  return Object.assign({}, state, {photoAlert: {open: false}});
 }
 
 const initial_state = {
@@ -43,7 +66,15 @@ const initial_state = {
   userid: null,
   folderIndex: 0,
   pageIndex: 0,
-  quickmode_filepath: null
+  quickmode_filepath: null,
+  snackbar: {
+    open: false,
+    time: 4000,
+    msg: ""
+  },
+  photoAlert: {
+    open: false
+  }
 }
 
 const appReducer = createReducer(initial_state, {
@@ -55,7 +86,11 @@ const appReducer = createReducer(initial_state, {
   'SET_QUICK_FILEPATH': setQuickFilepath,
   'SET_USER': setUser,
   'SELECT_FOLDER': selectFolder,
-  'SELECT_PAGE': selectPage
+  'SELECT_PAGE': selectPage,
+  'SHOW_SNACKBAR': showSnackbar,
+  'CLOSE_SNACKBAR': closeSnackbar,
+  'PHOTO_ALERT': showPhotoAlert,
+  'CLOSE_PHOTO_ALERT': closePhotoAlert
 });
 
 export default appReducer;

@@ -75,8 +75,8 @@ app.on('maximize', function () {
 })
 
 function initServerComm() {
-  // socket = io('http://' + HOST + ':' + PORT);
-  socket = io(HOST);
+  socket = io('http://' + HOST + ':' + PORT);
+  // socket = io(HOST);
 
   socket.on('data', (data) => {
     console.log('received data from server');

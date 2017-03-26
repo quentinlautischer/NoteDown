@@ -60,7 +60,14 @@ class DialogFileDrag extends React.Component {
     var state = this.props.store.getState();
     var cursor_pos = state.editor.cursor_position;
     var currentContent = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
-    var content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](${this.props.filepath})${currentContent.slice(cursor_pos)}`;
+    
+    var content = "";
+    var sample = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+    if (state.state.userid) {
+      content = `${currentContent.slice(0, cursor_pos)}<img width="350px" alt="${this.state.value}" src="data:image/jpeg;base64, ${sample}" />${currentContent.slice(cursor_pos)}`;
+    } else {
+      content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](${this.props.filepath})${currentContent.slice(cursor_pos)}`;
+    }
     
     this.props.store.dispatch({
       type: 'INSERT_IMAGE',

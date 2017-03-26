@@ -15,6 +15,13 @@ import FusionmodeEditor from './components/fusionmodeEditor';
 import FolderContainerView from './components/folderContainerView';
 import MenubarTile from './components/menubarTile';
 
+import DialogFileDrag from './components/dialogFileDrag';
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
+import Snackbar from 'material-ui/Snackbar';
+
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
@@ -56,6 +63,12 @@ class App extends React.Component {
           <div>
             <MenubarTile store={store}/>
             <StartMenu store={store}/>
+            <Snackbar
+              open={store.getState().state.snackbar.open}
+              message={store.getState().state.snackbar.msg}
+              autoHideDuration={store.getState().state.snackbar.time}
+              onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
+            />
           </div>
         );
       case 'editor':
@@ -63,6 +76,18 @@ class App extends React.Component {
           <div>
             <MenubarTile store={store}/>
             <DualmodeEditor store={store}/>
+            <Snackbar
+              open={store.getState().state.snackbar.open}
+              message={store.getState().state.snackbar.msg}
+              autoHideDuration={store.getState().state.snackbar.time}
+              onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
+            />
+            <DialogFileDrag
+              open={store.getState().state.photoAlert.open} 
+              close={() => store.dispatch({type: 'CLOSE_PHOTO_ALERT'})}
+              filepath={"none"}
+              store={store} 
+            />
           </div>
         );
       case 'folderview':
@@ -70,6 +95,13 @@ class App extends React.Component {
           <div>
             <MenubarTile store={store}/>
             <FolderContainerView store={store}/>
+            <Snackbar
+              open={store.getState().state.snackbar.open}
+              message={store.getState().state.snackbar.msg}
+              autoHideDuration={store.getState().state.snackbar.time}
+              onActionTouchTap={store.getState().state.snackbar.action}
+              onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
+            />
           </div>
         );
       case 'fusion':
@@ -77,6 +109,12 @@ class App extends React.Component {
           <div>
             <MenubarTile store={store}/>
             <FusionmodeEditor store={store}/>
+            <Snackbar
+              open={store.getState().state.snackbar.open}
+              message={store.getState().state.snackbar.msg}
+              autoHideDuration={store.getState().state.snackbar.time}
+              onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
+            />
           </div>
         )
       default: 
@@ -171,7 +209,9 @@ document.addEventListener('drop', event => event.preventDefault())
 
 ReactDOM.render(
   <Provider store={ store }>
-    <App/>
+    <MuiThemeProvider>
+      <App/>
+    </MuiThemeProvider>
   </Provider>,
   document.getElementById('notedown-app')
 );

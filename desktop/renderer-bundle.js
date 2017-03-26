@@ -96,7 +96,23 @@
 
 	var _menubarTile2 = _interopRequireDefault(_menubarTile);
 
-	var _reactTapEventPlugin = __webpack_require__(623);
+	var _dialogFileDrag = __webpack_require__(428);
+
+	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
+
+	var _MuiThemeProvider = __webpack_require__(225);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(312);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	var _Snackbar = __webpack_require__(623);
+
+	var _Snackbar2 = _interopRequireDefault(_Snackbar);
+
+	var _reactTapEventPlugin = __webpack_require__(628);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -163,28 +179,69 @@
 	            'div',
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_startMenu2.default, { store: store })
+	            _react2.default.createElement(_startMenu2.default, { store: store }),
+	            _react2.default.createElement(_Snackbar2.default, {
+	              open: store.getState().state.snackbar.open,
+	              message: store.getState().state.snackbar.msg,
+	              autoHideDuration: store.getState().state.snackbar.time,
+	              onRequestClose: function onRequestClose() {
+	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              }
+	            })
 	          );
 	        case 'editor':
 	          return _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_dualmodeEditor2.default, { store: store })
+	            _react2.default.createElement(_dualmodeEditor2.default, { store: store }),
+	            _react2.default.createElement(_Snackbar2.default, {
+	              open: store.getState().state.snackbar.open,
+	              message: store.getState().state.snackbar.msg,
+	              autoHideDuration: store.getState().state.snackbar.time,
+	              onRequestClose: function onRequestClose() {
+	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              }
+	            }),
+	            _react2.default.createElement(_dialogFileDrag2.default, {
+	              open: store.getState().state.photoAlert.open,
+	              close: function close() {
+	                return store.dispatch({ type: 'CLOSE_PHOTO_ALERT' });
+	              },
+	              filepath: "none",
+	              store: store
+	            })
 	          );
 	        case 'folderview':
 	          return _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_folderContainerView2.default, { store: store })
+	            _react2.default.createElement(_folderContainerView2.default, { store: store }),
+	            _react2.default.createElement(_Snackbar2.default, {
+	              open: store.getState().state.snackbar.open,
+	              message: store.getState().state.snackbar.msg,
+	              autoHideDuration: store.getState().state.snackbar.time,
+	              onActionTouchTap: store.getState().state.snackbar.action,
+	              onRequestClose: function onRequestClose() {
+	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              }
+	            })
 	          );
 	        case 'fusion':
 	          return _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_fusionmodeEditor2.default, { store: store })
+	            _react2.default.createElement(_fusionmodeEditor2.default, { store: store }),
+	            _react2.default.createElement(_Snackbar2.default, {
+	              open: store.getState().state.snackbar.open,
+	              message: store.getState().state.snackbar.msg,
+	              autoHideDuration: store.getState().state.snackbar.time,
+	              onRequestClose: function onRequestClose() {
+	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              }
+	            })
 	          );
 	        default:
 	          return _react2.default.createElement(
@@ -295,7 +352,11 @@
 	_reactDom2.default.render(_react2.default.createElement(
 	  _reactRedux.Provider,
 	  { store: store },
-	  _react2.default.createElement(App, null)
+	  _react2.default.createElement(
+	    _MuiThemeProvider2.default,
+	    null,
+	    _react2.default.createElement(App, null)
+	  )
 	), document.getElementById('notedown-app'));
 
 /***/ },
@@ -23774,12 +23835,44 @@
 	  return Object.assign({}, state, { pageIndex: action.index });
 	}
 
+	function showSnackbar(state, action) {
+	  return Object.assign({}, state, { snackbar: {
+	      open: true,
+	      msg: action.msg,
+	      time: action.time || 4000,
+	      action: action.action || function () {
+	        return null;
+	      }
+	    }
+	  });
+	}
+
+	function closeSnackbar(state, action) {
+	  return Object.assign({}, state, { snackbar: { open: false, msg: "" } });
+	}
+
+	function showPhotoAlert(state, action) {
+	  return Object.assign({}, state, { photoAlert: { open: true } });
+	}
+
+	function closePhotoAlert(state, action) {
+	  return Object.assign({}, state, { photoAlert: { open: false } });
+	}
+
 	var initial_state = {
 	  mode: 'menu',
 	  userid: null,
 	  folderIndex: 0,
 	  pageIndex: 0,
-	  quickmode_filepath: null
+	  quickmode_filepath: null,
+	  snackbar: {
+	    open: false,
+	    time: 4000,
+	    msg: ""
+	  },
+	  photoAlert: {
+	    open: false
+	  }
 	};
 
 	var appReducer = (0, _reducerUtilities2.default)(initial_state, {
@@ -23791,7 +23884,11 @@
 	  'SET_QUICK_FILEPATH': setQuickFilepath,
 	  'SET_USER': setUser,
 	  'SELECT_FOLDER': selectFolder,
-	  'SELECT_PAGE': selectPage
+	  'SELECT_PAGE': selectPage,
+	  'SHOW_SNACKBAR': showSnackbar,
+	  'CLOSE_SNACKBAR': closeSnackbar,
+	  'PHOTO_ALERT': showPhotoAlert,
+	  'CLOSE_PHOTO_ALERT': closePhotoAlert
 	});
 
 	exports.default = appReducer;
@@ -24339,11 +24436,11 @@
 	  } else {
 	    fs.writeFile(store.getState().state.quickmode_filepath, store.getState().notes.folders[0].pages[0].content, function (err) {
 	      if (err) {
-	        alert("An error ocurred updating the file" + err.message);
+	        store.dispatch({ type: 'SHOW_SNACKBAR', msg: "An error occurred while saving file" });
 	        console.log(err);
 	        return;
 	      }
-	      alert("The file has been succesfully saved");
+	      store.dispatch({ type: 'SHOW_SNACKBAR', msg: "The file has been succesfully saved", time: 10000 });
 	    });
 	  }
 	}
@@ -24474,7 +24571,7 @@
 	      enabled: is_quickmode(state),
 	      visible: is_quickmode(state),
 	      click: function click() {
-	        menuLogin(store);
+	        store.dispatch({ type: 'PHOTO_ALERT' });
 	      }
 	    }, {
 	      role: 'delete'
@@ -37717,13 +37814,24 @@
 	    _this.handleCodeMirrorChange = _this.handleCodeMirrorChange.bind(_this);
 	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
 	    _this.drop = _this.drop.bind(_this);
+
+	    _this.unsubscribe = null;
 	    return _this;
 	  }
 
 	  _createClass(DualmodeEditor, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.store.subscribe(this.storeDidUpdate);
+	      var _this2 = this;
+
+	      this.unsubscribe = this.props.store.subscribe(function () {
+	        return _this2.storeDidUpdate;
+	      });
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.unsubscribe();
 	    }
 	  }, {
 	    key: 'storeDidUpdate',
@@ -37801,6 +37909,9 @@
 	      var rendered = '';
 	      rendered = shared.parse(content);
 	      this.setState({ rendered_content: rendered });
+	      shared.parsex("str", this.props.store, function () {
+	        return "";
+	      });
 	    }
 	  }, {
 	    key: 'drop',
@@ -37845,14 +37956,10 @@
 
 	      return false;
 	    }
-	    // <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
-	    //           {this.getContent()}
-	    //         </textarea>
-
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      hljs.initHighlighting();
 	      var options = {
@@ -37885,7 +37992,7 @@
 	            _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
 	          ),
 	          _react2.default.createElement(_tocNav2.default, { store: this.props.store, info: this.getContent(), scrollTo: function scrollTo(id) {
-	              return _this2.scrollTo(id);
+	              return _this3.scrollTo(id);
 	            } }),
 	          _react2.default.createElement('div', { id: 'renderField', className: 'markdown-output-renderer',
 	            dangerouslySetInnerHTML: { __html: this.state.rendered_content } })
@@ -37893,7 +38000,7 @@
 	        _react2.default.createElement(_dialogFileDrag2.default, {
 	          open: this.state.fileDragDialogOpen,
 	          close: function close() {
-	            return _this2.closeFileDragDialog();
+	            return _this3.closeFileDragDialog();
 	          },
 	          filepath: this.state.fileDragEventFilepath,
 	          store: this.props.store
@@ -38499,7 +38606,14 @@
 	      var state = this.props.store.getState();
 	      var cursor_pos = state.editor.cursor_position;
 	      var currentContent = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
-	      var content = currentContent.slice(0, cursor_pos) + '![' + this.state.value + '](' + this.props.filepath + ')' + currentContent.slice(cursor_pos);
+
+	      var content = "";
+	      var sample = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+	      if (state.state.userid) {
+	        content = currentContent.slice(0, cursor_pos) + '<img width="350px" alt="' + this.state.value + '" src="data:image/jpeg;base64, ' + sample + '" />' + currentContent.slice(cursor_pos);
+	      } else {
+	        content = currentContent.slice(0, cursor_pos) + '![' + this.state.value + '](' + this.props.filepath + ')' + currentContent.slice(cursor_pos);
+	      }
 
 	      this.props.store.dispatch({
 	        type: 'INSERT_IMAGE'
@@ -39830,7 +39944,7 @@
 /* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var _flashcardTemplate = __webpack_require__(436);
 
@@ -39838,8 +39952,37 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function parse(str) {
+	var global_store, global_imageMapper; //global vars to be called by image links
+
+	function parsex(str, store, imageMapper) {
 	  //The main parsing function.
+	  // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
+	  var store = {
+	    images: [{
+	      guid: 24,
+	      data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+	    }]
+	  };
+	  var imageMapper = function imageMapper(guid, store) {
+	    switch (guid) {
+	      case 24:
+	        return store.images[0].data;
+	      default:
+	        return "";
+	    }
+	  };
+
+	  global_store = store;
+	  global_imageMapper = imageMapper;
+
+	  // ![label](@:24)
+	  // pass the guid found in the .md
+	  // into imageMapper(guid, store) as well as the store parameter
+	  // this should output the base64 encoding...
+	  // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
+	  // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
+	  console.log(imageMapper(24, store));
+
 	  return parse_blocks(str, false);
 	}
 
@@ -39853,10 +39996,16 @@
 	  //Block-level elements
 	  var block_array = [{ content: str.split('\n') }];
 
+	  check_codeblock(block_array);
+	  check_codeblock_lang(block_array);
 	  check_header_setext(block_array);
 	  check_header_atx(block_array);
 	  check_blockquote(block_array);
 	  check_hrule(block_array);
+	  check_flashcard(block_array);
+	  check_list_ordered(block_array);
+	  check_list_unordered(block_array);
+	  check_table(block_array);
 	  check_paragraph(block_array);
 
 	  if (!allow_raw) {
@@ -39876,7 +40025,7 @@
 	  var span_array = [{ content: str }];
 
 	  check_backslash_escape(span_array);
-	  check_images(span_array);
+	  check_links(span_array);
 
 	  return render_span(span_array);
 	}
@@ -40023,6 +40172,60 @@
 	  }
 	}
 
+	function check_codeblock(blocks) {}
+
+	function check_codeblock_lang(blocks) {
+	  var patt = /^```(.*)$/;
+	  var match;
+	  var codeblocks;
+
+	  for (var b = 0; b < blocks.length; b++) {
+	    if (blocks[b].tag == null) {
+	      var content = blocks[b].content;
+	      for (var l = 0; l < content.length; l++) {
+	        if ((match = patt.exec(content[l])) != null) {
+	          var code_class = match[1];
+	          var inner_content = '';
+	          var open = true;
+	          for (var end = l + 1; end < content.length; end++) {
+	            if ((match = patt.exec(content[end])) != null) {
+	              open = false;
+	              break;
+	            } else {
+	              if (end > l + 1) {
+	                inner_content += '\n';
+	              }
+	              inner_content += content[end];
+	            }
+	          }
+	          if (open) {
+	            break;
+	          }
+	          var raw1 = { content: content.slice(0, l) };
+	          var code = { tag: 'code', content: inner_content };
+	          if (code_class != null) {
+	            code.attrs = ['class', code_class];
+	          }
+	          var pre = { tag: 'pre', content: render_block([code]) };
+	          var raw2 = { content: content.slice(end + 1, content.length) };
+
+	          blocks.splice(b, 1, raw1, pre, raw2);
+	          b++;
+	          break;
+	        }
+	      }
+	    }
+	  }
+	}
+
+	function check_flashcard(blocks) {}
+
+	function check_list_ordered(blocks) {}
+
+	function check_list_unordered(blocks) {}
+
+	function check_table(blocks) {}
+
 	function check_paragraph(blocks) {
 	  var patt = /^[ ]{0,3}(.+)$/;
 	  var match;
@@ -40066,23 +40269,38 @@
 	  }
 	}
 
-	function check_images(span_array) {
-	  var patt = /!\[(.+?)\]\((.+?)\)/;
+	function check_links(span_array) {
+	  var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)s*\)/;
 	  var match;
 
 	  for (var s = 0; s < span_array.length; s++) {
 	    if (span_array[s].tag == null) {
 	      var content = span_array[s].content;
 	      if ((match = patt.exec(content)) != null) {
-	        var alt = match[1];
-	        var src = match[2];
+	        var alt = match[2];
+	        var src = match[3];
+	        var title = match[5]; //may be null
 
 	        var raw1 = { content: content.slice(0, match.index) };
-	        var image = { tag: 'a', content: '<img src="' + src + '" alt="' + alt + '" />' };
 	        var raw2 = { content: content.slice(match.index + match[0].length, content.length) };
 
-	        span_array.splice(s, 1, raw1, image, raw2);
-	        s++;
+	        if (match[1].length == 0) {
+	          var a1 = { tag: 'a', content: '<a href="' + src + (title == null ? '' : '" title="' + title) + '">' };
+	          var content = { content: alt };
+	          var a2 = { tag: 'a', content: '</a>' };
+	          span_array.splice(s, 1, raw1, a1, content, a2, raw2);
+	          s += 3;
+	        } else {
+
+	          if (src.slice(0, 2) == '@:') {
+	            var guid = src.slice(2, src.length);
+	            var data = global_imageMapper(guid, global_store);
+	            src = 'data:image/jpeg;base64, ' + data;
+	          }
+	          var image = { tag: 'img', content: '<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : '" title="' + title) + '" />' };
+	          span_array.splice(s, 1, raw1, image, raw2);
+	          s++;
+	        }
 	        break;
 	      }
 	    }
@@ -40146,7 +40364,7 @@
 	}
 
 	module.exports = {
-	  parse: parse,
+	  parsex: parsex,
 	  makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
 	};
 
@@ -69345,13 +69563,20 @@
 	    _this.selectFolder = _this.selectFolder.bind(_this);
 	    _this.renderFolder = _this.renderFolder.bind(_this);
 	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
+
+	    _this.unsubscribe = null;
 	    return _this;
 	  }
 
 	  _createClass(FolderContainerView, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.store.subscribe(this.storeDidUpdate);
+	      this.unsubscribe = this.props.store.subscribe(this.storeDidUpdate);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.unsubscribe();
 	    }
 	  }, {
 	    key: 'storeDidUpdate',
@@ -69739,8 +69964,790 @@
 /* 623 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _Snackbar = __webpack_require__(624);
+
+	var _Snackbar2 = _interopRequireDefault(_Snackbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _Snackbar2.default;
+
+/***/ },
+/* 624 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(377);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(382);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(226);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(252);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(253);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(257);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(304);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(383);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(384);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _ClickAwayListener = __webpack_require__(625);
+
+	var _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);
+
+	var _SnackbarBody = __webpack_require__(626);
+
+	var _SnackbarBody2 = _interopRequireDefault(_SnackbarBody);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context, state) {
+	  var _context$muiTheme = context.muiTheme,
+	      desktopSubheaderHeight = _context$muiTheme.baseTheme.spacing.desktopSubheaderHeight,
+	      zIndex = _context$muiTheme.zIndex;
+	  var open = state.open;
+
+
+	  var styles = {
+	    root: {
+	      position: 'fixed',
+	      left: '50%',
+	      display: 'flex',
+	      bottom: 0,
+	      zIndex: zIndex.snackbar,
+	      visibility: open ? 'visible' : 'hidden',
+	      transform: open ? 'translate(-50%, 0)' : 'translate(-50%, ' + desktopSubheaderHeight + 'px)',
+	      transition: _transitions2.default.easeOut('400ms', 'transform') + ', ' + _transitions2.default.easeOut('400ms', 'visibility')
+	    }
+	  };
+
+	  return styles;
+	}
+
+	var Snackbar = function (_Component) {
+	  (0, _inherits3.default)(Snackbar, _Component);
+
+	  function Snackbar() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Snackbar);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Snackbar.__proto__ || (0, _getPrototypeOf2.default)(Snackbar)).call.apply(_ref, [this].concat(args))), _this), _this.componentClickAway = function () {
+	      if (_this.timerTransitionId) {
+	        // If transitioning, don't close the snackbar.
+	        return;
+	      }
+
+	      if (_this.props.open !== null && _this.props.onRequestClose) {
+	        _this.props.onRequestClose('clickaway');
+	      } else {
+	        _this.setState({ open: false });
+	      }
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Snackbar, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.setState({
+	        open: this.props.open,
+	        message: this.props.message,
+	        action: this.props.action
+	      });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      if (this.state.open) {
+	        this.setAutoHideTimer();
+	        this.setTransitionTimer();
+	      }
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var _this2 = this;
+
+	      if (this.props.open && nextProps.open && (nextProps.message !== this.props.message || nextProps.action !== this.props.action)) {
+	        this.setState({
+	          open: false
+	        });
+
+	        clearTimeout(this.timerOneAtTheTimeId);
+	        this.timerOneAtTheTimeId = setTimeout(function () {
+	          _this2.setState({
+	            message: nextProps.message,
+	            action: nextProps.action,
+	            open: true
+	          });
+	        }, 400);
+	      } else {
+	        var open = nextProps.open;
+
+	        this.setState({
+	          open: open !== null ? open : this.state.open,
+	          message: nextProps.message,
+	          action: nextProps.action
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps, prevState) {
+	      if (prevState.open !== this.state.open) {
+	        if (this.state.open) {
+	          this.setAutoHideTimer();
+	          this.setTransitionTimer();
+	        } else {
+	          clearTimeout(this.timerAutoHideId);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      clearTimeout(this.timerAutoHideId);
+	      clearTimeout(this.timerTransitionId);
+	      clearTimeout(this.timerOneAtTheTimeId);
+	    }
+	  }, {
+	    key: 'setAutoHideTimer',
+
+
+	    // Timer that controls delay before snackbar auto hides
+	    value: function setAutoHideTimer() {
+	      var _this3 = this;
+
+	      var autoHideDuration = this.props.autoHideDuration;
+
+	      if (autoHideDuration > 0) {
+	        clearTimeout(this.timerAutoHideId);
+	        this.timerAutoHideId = setTimeout(function () {
+	          if (_this3.props.open !== null && _this3.props.onRequestClose) {
+	            _this3.props.onRequestClose('timeout');
+	          } else {
+	            _this3.setState({ open: false });
+	          }
+	        }, autoHideDuration);
+	      }
+	    }
+
+	    // Timer that controls delay before click-away events are captured (based on when animation completes)
+
+	  }, {
+	    key: 'setTransitionTimer',
+	    value: function setTransitionTimer() {
+	      var _this4 = this;
+
+	      this.timerTransitionId = setTimeout(function () {
+	        _this4.timerTransitionId = undefined;
+	      }, 400);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          autoHideDuration = _props.autoHideDuration,
+	          contentStyle = _props.contentStyle,
+	          bodyStyle = _props.bodyStyle,
+	          messageProp = _props.message,
+	          onRequestClose = _props.onRequestClose,
+	          onActionTouchTap = _props.onActionTouchTap,
+	          style = _props.style,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['autoHideDuration', 'contentStyle', 'bodyStyle', 'message', 'onRequestClose', 'onActionTouchTap', 'style']);
+	      var _state = this.state,
+	          action = _state.action,
+	          message = _state.message,
+	          open = _state.open;
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context, this.state);
+
+	      return _react2.default.createElement(
+	        _ClickAwayListener2.default,
+	        { onClickAway: open ? this.componentClickAway : null },
+	        _react2.default.createElement(
+	          'div',
+	          (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	          _react2.default.createElement(_SnackbarBody2.default, {
+	            action: action,
+	            contentStyle: contentStyle,
+	            message: message,
+	            open: open,
+	            onActionTouchTap: onActionTouchTap,
+	            style: bodyStyle
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	  return Snackbar;
+	}(_react.Component);
+
+	Snackbar.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? Snackbar.propTypes = {
+	  /**
+	   * The label for the action on the snackbar.
+	   */
+	  action: _react.PropTypes.node,
+	  /**
+	   * The number of milliseconds to wait before automatically dismissing.
+	   * If no value is specified the snackbar will dismiss normally.
+	   * If a value is provided the snackbar can still be dismissed normally.
+	   * If a snackbar is dismissed before the timer expires, the timer will be cleared.
+	   */
+	  autoHideDuration: _react.PropTypes.number,
+	  /**
+	   * Override the inline-styles of the body element.
+	   */
+	  bodyStyle: _react.PropTypes.object,
+	  /**
+	   * The css class name of the root element.
+	   */
+	  className: _react.PropTypes.string,
+	  /**
+	   * Override the inline-styles of the content element.
+	   */
+	  contentStyle: _react.PropTypes.object,
+	  /**
+	   * The message to be displayed.
+	   *
+	   * (Note: If the message is an element or array, and the `Snackbar` may re-render while it is still open,
+	   * ensure that the same object remains as the `message` property if you want to avoid the `Snackbar` hiding and
+	   * showing again)
+	   */
+	  message: _react.PropTypes.node.isRequired,
+	  /**
+	   * Fired when the action button is touchtapped.
+	   *
+	   * @param {object} event Action button event.
+	   */
+	  onActionTouchTap: _react.PropTypes.func,
+	  /**
+	   * Fired when the `Snackbar` is requested to be closed by a click outside the `Snackbar`, or after the
+	   * `autoHideDuration` timer expires.
+	   *
+	   * Typically `onRequestClose` is used to set state in the parent component, which is used to control the `Snackbar`
+	   * `open` prop.
+	   *
+	   * The `reason` parameter can optionally be used to control the response to `onRequestClose`,
+	   * for example ignoring `clickaway`.
+	   *
+	   * @param {string} reason Can be:`"timeout"` (`autoHideDuration` expired) or: `"clickaway"`
+	   */
+	  onRequestClose: _react.PropTypes.func,
+	  /**
+	   * Controls whether the `Snackbar` is opened or not.
+	   */
+	  open: _react.PropTypes.bool.isRequired,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+	exports.default = Snackbar;
+
+/***/ },
+/* 625 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(226);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(252);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(253);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(257);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(304);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _react = __webpack_require__(1);
+
+	var _reactDom = __webpack_require__(31);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _events = __webpack_require__(389);
+
+	var _events2 = _interopRequireDefault(_events);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var isDescendant = function isDescendant(el, target) {
+	  if (target !== null) {
+	    return el === target || isDescendant(el, target.parentNode);
+	  }
+	  return false;
+	};
+
+	var clickAwayEvents = ['mouseup', 'touchend'];
+	var bind = function bind(callback) {
+	  return clickAwayEvents.forEach(function (event) {
+	    return _events2.default.on(document, event, callback);
+	  });
+	};
+	var unbind = function unbind(callback) {
+	  return clickAwayEvents.forEach(function (event) {
+	    return _events2.default.off(document, event, callback);
+	  });
+	};
+
+	var ClickAwayListener = function (_Component) {
+	  (0, _inherits3.default)(ClickAwayListener, _Component);
+
+	  function ClickAwayListener() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, ClickAwayListener);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = ClickAwayListener.__proto__ || (0, _getPrototypeOf2.default)(ClickAwayListener)).call.apply(_ref, [this].concat(args))), _this), _this.handleClickAway = function (event) {
+	      if (event.defaultPrevented) {
+	        return;
+	      }
+
+	      // IE11 support, which trigger the handleClickAway even after the unbind
+	      if (_this.isCurrentlyMounted) {
+	        var el = _reactDom2.default.findDOMNode(_this);
+
+	        if (document.documentElement.contains(event.target) && !isDescendant(el, event.target)) {
+	          _this.props.onClickAway(event);
+	        }
+	      }
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(ClickAwayListener, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.isCurrentlyMounted = true;
+	      if (this.props.onClickAway) {
+	        bind(this.handleClickAway);
+	      }
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps) {
+	      if (prevProps.onClickAway !== this.props.onClickAway) {
+	        unbind(this.handleClickAway);
+	        if (this.props.onClickAway) {
+	          bind(this.handleClickAway);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.isCurrentlyMounted = false;
+	      unbind(this.handleClickAway);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return this.props.children;
+	    }
+	  }]);
+	  return ClickAwayListener;
+	}(_react.Component);
+
+	process.env.NODE_ENV !== "production" ? ClickAwayListener.propTypes = {
+	  children: _react.PropTypes.element,
+	  onClickAway: _react.PropTypes.func
+	} : void 0;
+	exports.default = ClickAwayListener;
+
+/***/ },
+/* 626 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.SnackbarBody = undefined;
+
+	var _extends2 = __webpack_require__(377);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(382);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _simpleAssign = __webpack_require__(383);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(384);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _withWidth = __webpack_require__(627);
+
+	var _withWidth2 = _interopRequireDefault(_withWidth);
+
+	var _FlatButton = __webpack_require__(407);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context) {
+	  var open = props.open,
+	      width = props.width;
+	  var _context$muiTheme = context.muiTheme,
+	      _context$muiTheme$bas = _context$muiTheme.baseTheme,
+	      _context$muiTheme$bas2 = _context$muiTheme$bas.spacing,
+	      desktopGutter = _context$muiTheme$bas2.desktopGutter,
+	      desktopSubheaderHeight = _context$muiTheme$bas2.desktopSubheaderHeight,
+	      fontFamily = _context$muiTheme$bas.fontFamily,
+	      _context$muiTheme$sna = _context$muiTheme.snackbar,
+	      backgroundColor = _context$muiTheme$sna.backgroundColor,
+	      textColor = _context$muiTheme$sna.textColor,
+	      actionColor = _context$muiTheme$sna.actionColor;
+
+
+	  var isSmall = width === _withWidth.SMALL;
+
+	  var styles = {
+	    root: {
+	      fontFamily: fontFamily,
+	      backgroundColor: backgroundColor,
+	      padding: '0 ' + desktopGutter + 'px',
+	      height: desktopSubheaderHeight,
+	      lineHeight: desktopSubheaderHeight + 'px',
+	      borderRadius: isSmall ? 0 : 2,
+	      maxWidth: isSmall ? 'inherit' : 568,
+	      minWidth: isSmall ? 'inherit' : 288,
+	      width: isSmall ? 'calc(100vw - ' + desktopGutter * 2 + 'px)' : 'auto',
+	      flexGrow: isSmall ? 1 : 0
+	    },
+	    content: {
+	      fontSize: 14,
+	      color: textColor,
+	      opacity: open ? 1 : 0,
+	      transition: open ? _transitions2.default.easeOut('500ms', 'opacity', '100ms') : _transitions2.default.easeOut('400ms', 'opacity')
+	    },
+	    action: {
+	      color: actionColor,
+	      float: 'right',
+	      marginTop: 6,
+	      marginRight: -16,
+	      marginLeft: desktopGutter,
+	      backgroundColor: 'transparent'
+	    }
+	  };
+
+	  return styles;
+	}
+
+	var SnackbarBody = exports.SnackbarBody = function SnackbarBody(props, context) {
+	  var action = props.action,
+	      contentStyle = props.contentStyle,
+	      message = props.message,
+	      open = props.open,
+	      onActionTouchTap = props.onActionTouchTap,
+	      style = props.style,
+	      other = (0, _objectWithoutProperties3.default)(props, ['action', 'contentStyle', 'message', 'open', 'onActionTouchTap', 'style']);
+	  var prepareStyles = context.muiTheme.prepareStyles;
+
+	  var styles = getStyles(props, context);
+
+	  var actionButton = action && _react2.default.createElement(_FlatButton2.default, {
+	    style: styles.action,
+	    label: action,
+	    onTouchTap: onActionTouchTap
+	  });
+
+	  return _react2.default.createElement(
+	    'div',
+	    (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	    _react2.default.createElement(
+	      'div',
+	      { style: prepareStyles((0, _simpleAssign2.default)(styles.content, contentStyle)) },
+	      _react2.default.createElement(
+	        'span',
+	        null,
+	        message
+	      ),
+	      actionButton
+	    )
+	  );
+	};
+
+	process.env.NODE_ENV !== "production" ? SnackbarBody.propTypes = {
+	  /**
+	   * The label for the action on the snackbar.
+	   */
+	  action: _react.PropTypes.node,
+	  /**
+	   * Override the inline-styles of the content element.
+	   */
+	  contentStyle: _react.PropTypes.object,
+	  /**
+	   * The message to be displayed.
+	   *
+	   * (Note: If the message is an element or array, and the `Snackbar` may re-render while it is still open,
+	   * ensure that the same object remains as the `message` property if you want to avoid the `Snackbar` hiding and
+	   * showing again)
+	   */
+	  message: _react.PropTypes.node.isRequired,
+	  /**
+	   * Fired when the action button is touchtapped.
+	   *
+	   * @param {object} event Action button event.
+	   */
+	  onActionTouchTap: _react.PropTypes.func,
+	  /**
+	   * @ignore
+	   * Controls whether the `Snackbar` is opened or not.
+	   */
+	  open: _react.PropTypes.bool.isRequired,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  /**
+	   * @ignore
+	   * Width of the screen.
+	   */
+	  width: _react.PropTypes.number.isRequired
+	} : void 0;
+
+	SnackbarBody.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+
+	exports.default = (0, _withWidth2.default)()(SnackbarBody);
+
+/***/ },
+/* 627 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.LARGE = exports.MEDIUM = exports.SMALL = undefined;
+
+	var _extends2 = __webpack_require__(377);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _getPrototypeOf = __webpack_require__(226);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(252);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(253);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(257);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(304);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	exports.default = withWidth;
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactEventListener = __webpack_require__(414);
+
+	var _reactEventListener2 = _interopRequireDefault(_reactEventListener);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var SMALL = exports.SMALL = 1;
+	var MEDIUM = exports.MEDIUM = 2;
+	var LARGE = exports.LARGE = 3;
+
+	function withWidth() {
+	  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var _options$largeWidth = options.largeWidth,
+	      largeWidth = _options$largeWidth === undefined ? 992 : _options$largeWidth,
+	      _options$mediumWidth = options.mediumWidth,
+	      mediumWidth = _options$mediumWidth === undefined ? 768 : _options$mediumWidth,
+	      _options$resizeInterv = options.resizeInterval,
+	      resizeInterval = _options$resizeInterv === undefined ? 166 : _options$resizeInterv;
+
+
+	  return function (MyComponent) {
+	    return function (_Component) {
+	      (0, _inherits3.default)(WithWidth, _Component);
+
+	      function WithWidth() {
+	        var _ref;
+
+	        var _temp, _this, _ret;
+
+	        (0, _classCallCheck3.default)(this, WithWidth);
+
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
+	        }
+
+	        return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = WithWidth.__proto__ || (0, _getPrototypeOf2.default)(WithWidth)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	          width: null
+	        }, _this.handleResize = function () {
+	          clearTimeout(_this.deferTimer);
+	          _this.deferTimer = setTimeout(function () {
+	            _this.updateWidth();
+	          }, resizeInterval);
+	        }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	      }
+
+	      (0, _createClass3.default)(WithWidth, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	          this.updateWidth();
+	        }
+	      }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	          clearTimeout(this.deferTimer);
+	        }
+	      }, {
+	        key: 'updateWidth',
+	        value: function updateWidth() {
+	          var innerWidth = window.innerWidth;
+	          var width = void 0;
+
+	          if (innerWidth >= largeWidth) {
+	            width = LARGE;
+	          } else if (innerWidth >= mediumWidth) {
+	            width = MEDIUM;
+	          } else {
+	            // innerWidth < 768
+	            width = SMALL;
+	          }
+
+	          if (width !== this.state.width) {
+	            this.setState({
+	              width: width
+	            });
+	          }
+	        }
+	      }, {
+	        key: 'render',
+	        value: function render() {
+	          var width = this.state.width;
+
+	          /**
+	           * When rendering the component on the server,
+	           * we have no idea about the screen width.
+	           * In order to prevent blinks and help the reconciliation
+	           * we are not rendering the component.
+	           *
+	           * A better alternative would be to send client hints.
+	           * But the browser support of this API is low:
+	           * http://caniuse.com/#search=client%20hint
+	           */
+	          if (width === null) {
+	            return null;
+	          }
+
+	          return _react2.default.createElement(
+	            _reactEventListener2.default,
+	            { target: 'window', onResize: this.handleResize },
+	            _react2.default.createElement(MyComponent, (0, _extends3.default)({
+	              width: width
+	            }, this.props))
+	          );
+	        }
+	      }]);
+	      return WithWidth;
+	    }(_react.Component);
+	  };
+	}
+
+/***/ },
+/* 628 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(624);
+	var defaultClickRejectionStrategy = __webpack_require__(629);
 
 	var alreadyInjected = false;
 
@@ -69762,13 +70769,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(625)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(630)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 624 */
+/* 629 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -69779,7 +70786,7 @@
 
 
 /***/ },
-/* 625 */
+/* 630 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -69803,14 +70810,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(626);
+	var EventConstants = __webpack_require__(631);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(627);
+	var TouchEventUtils = __webpack_require__(632);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(628);
+	var keyOf = __webpack_require__(633);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -69956,7 +70963,7 @@
 
 
 /***/ },
-/* 626 */
+/* 631 */
 /***/ function(module, exports) {
 
 	/**
@@ -70052,7 +71059,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 627 */
+/* 632 */
 /***/ function(module, exports) {
 
 	/**
@@ -70100,7 +71107,7 @@
 
 
 /***/ },
-/* 628 */
+/* 633 */
 /***/ function(module, exports) {
 
 	"use strict";
