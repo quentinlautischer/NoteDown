@@ -1,6 +1,31 @@
 
 import flashcardTemplate from './models/flashcardTemplate.js';
 
+function parsex(str, store, imageMapper) {
+  // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
+  var store = {
+    images: [{
+      guid: 24,
+      data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+    }]
+  }
+  var imageMapper = function(guid, store){
+    switch (guid){
+      case 24:
+        return store.images[0].data;
+      default:
+        return "";
+    }
+  }
+  // ![label](@:24)
+  // pass the guid found in the .md
+  // into imageMapper(guid, store) as well as the store parameter
+  // this should output the base64 encoding...
+  // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
+  // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
+  console.log(imageMapper(24, store));
+}
+
 function parse(str) {
   //The main parsing function.
   return parse_blocks(str, false);
@@ -232,7 +257,7 @@ function check_images(span_array) {
         var src = match[2];
 
         var raw1 = {content:content.slice(0,match.index)};
-        var image = {tag:'a', content:'<img src="' + src + '" alt="' + alt + '" />'};
+        var image = {tag:'a', content:'<img src="' + src + '" alt="' + alt + '" width="400px"/>'};
         var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
 
         span_array.splice(s, 1, raw1, image, raw2);
@@ -301,6 +326,7 @@ function makeFlashcard(front, back, hints) {
 
 module.exports = {
     parse: parse,
+    parsex: parsex,
     makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
 }
 

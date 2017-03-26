@@ -17,11 +17,17 @@ class FolderContainerView extends React.Component {
     this.selectFolder = this.selectFolder.bind(this);
     this.renderFolder = this.renderFolder.bind(this);
     this.storeDidUpdate = this.storeDidUpdate.bind(this);
+
+    this.unsubscribe = null;
   }
 
 
   componentDidMount(){
-    this.props.store.subscribe( this.storeDidUpdate );
+   this.unsubscribe = this.props.store.subscribe( this.storeDidUpdate );
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   storeDidUpdate(){

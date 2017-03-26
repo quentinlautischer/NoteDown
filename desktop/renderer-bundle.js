@@ -84,19 +84,35 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _fusionmodeEditor = __webpack_require__(619);
+	var _fusionmodeEditor = __webpack_require__(618);
 
 	var _fusionmodeEditor2 = _interopRequireDefault(_fusionmodeEditor);
 
-	var _folderContainerView = __webpack_require__(620);
+	var _folderContainerView = __webpack_require__(619);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _menubarTile = __webpack_require__(622);
+	var _menubarTile = __webpack_require__(621);
 
 	var _menubarTile2 = _interopRequireDefault(_menubarTile);
 
-	var _reactTapEventPlugin = __webpack_require__(623);
+	var _dialogFileDrag = __webpack_require__(428);
+
+	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
+
+	var _MuiThemeProvider = __webpack_require__(225);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(312);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	var _Snackbar = __webpack_require__(622);
+
+	var _Snackbar2 = _interopRequireDefault(_Snackbar);
+
+	var _reactTapEventPlugin = __webpack_require__(627);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -110,7 +126,7 @@
 
 	(0, _reactTapEventPlugin2.default)();
 
-	var hljs = __webpack_require__(437);
+	var hljs = __webpack_require__(436);
 
 	var ipc = __webpack_require__(223).ipcRenderer;
 
@@ -163,28 +179,69 @@
 	            'div',
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_startMenu2.default, { store: store })
+	            _react2.default.createElement(_startMenu2.default, { store: store }),
+	            _react2.default.createElement(_Snackbar2.default, {
+	              open: store.getState().state.snackbar.open,
+	              message: store.getState().state.snackbar.msg,
+	              autoHideDuration: store.getState().state.snackbar.time,
+	              onRequestClose: function onRequestClose() {
+	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              }
+	            })
 	          );
 	        case 'editor':
 	          return _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_dualmodeEditor2.default, { store: store })
+	            _react2.default.createElement(_dualmodeEditor2.default, { store: store }),
+	            _react2.default.createElement(_Snackbar2.default, {
+	              open: store.getState().state.snackbar.open,
+	              message: store.getState().state.snackbar.msg,
+	              autoHideDuration: store.getState().state.snackbar.time,
+	              onRequestClose: function onRequestClose() {
+	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              }
+	            }),
+	            _react2.default.createElement(_dialogFileDrag2.default, {
+	              open: store.getState().state.photoAlert.open,
+	              close: function close() {
+	                return store.dispatch({ type: 'CLOSE_PHOTO_ALERT' });
+	              },
+	              filepath: "none",
+	              store: store
+	            })
 	          );
 	        case 'folderview':
 	          return _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_folderContainerView2.default, { store: store })
+	            _react2.default.createElement(_folderContainerView2.default, { store: store }),
+	            _react2.default.createElement(_Snackbar2.default, {
+	              open: store.getState().state.snackbar.open,
+	              message: store.getState().state.snackbar.msg,
+	              autoHideDuration: store.getState().state.snackbar.time,
+	              onActionTouchTap: store.getState().state.snackbar.action,
+	              onRequestClose: function onRequestClose() {
+	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              }
+	            })
 	          );
 	        case 'fusion':
 	          return _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_fusionmodeEditor2.default, { store: store })
+	            _react2.default.createElement(_fusionmodeEditor2.default, { store: store }),
+	            _react2.default.createElement(_Snackbar2.default, {
+	              open: store.getState().state.snackbar.open,
+	              message: store.getState().state.snackbar.msg,
+	              autoHideDuration: store.getState().state.snackbar.time,
+	              onRequestClose: function onRequestClose() {
+	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              }
+	            })
 	          );
 	        default:
 	          return _react2.default.createElement(
@@ -295,7 +352,11 @@
 	_reactDom2.default.render(_react2.default.createElement(
 	  _reactRedux.Provider,
 	  { store: store },
-	  _react2.default.createElement(App, null)
+	  _react2.default.createElement(
+	    _MuiThemeProvider2.default,
+	    null,
+	    _react2.default.createElement(App, null)
+	  )
 	), document.getElementById('notedown-app'));
 
 /***/ },
@@ -23774,12 +23835,44 @@
 	  return Object.assign({}, state, { pageIndex: action.index });
 	}
 
+	function showSnackbar(state, action) {
+	  return Object.assign({}, state, { snackbar: {
+	      open: true,
+	      msg: action.msg,
+	      time: action.time || 4000,
+	      action: action.action || function () {
+	        return null;
+	      }
+	    }
+	  });
+	}
+
+	function closeSnackbar(state, action) {
+	  return Object.assign({}, state, { snackbar: { open: false, msg: "" } });
+	}
+
+	function showPhotoAlert(state, action) {
+	  return Object.assign({}, state, { photoAlert: { open: true } });
+	}
+
+	function closePhotoAlert(state, action) {
+	  return Object.assign({}, state, { photoAlert: { open: false } });
+	}
+
 	var initial_state = {
 	  mode: 'menu',
 	  userid: null,
 	  folderIndex: 0,
 	  pageIndex: 0,
-	  quickmode_filepath: null
+	  quickmode_filepath: null,
+	  snackbar: {
+	    open: false,
+	    time: 4000,
+	    msg: ""
+	  },
+	  photoAlert: {
+	    open: false
+	  }
 	};
 
 	var appReducer = (0, _reducerUtilities2.default)(initial_state, {
@@ -23791,7 +23884,11 @@
 	  'SET_QUICK_FILEPATH': setQuickFilepath,
 	  'SET_USER': setUser,
 	  'SELECT_FOLDER': selectFolder,
-	  'SELECT_PAGE': selectPage
+	  'SELECT_PAGE': selectPage,
+	  'SHOW_SNACKBAR': showSnackbar,
+	  'CLOSE_SNACKBAR': closeSnackbar,
+	  'PHOTO_ALERT': showPhotoAlert,
+	  'CLOSE_PHOTO_ALERT': closePhotoAlert
 	});
 
 	exports.default = appReducer;
@@ -24339,11 +24436,11 @@
 	  } else {
 	    fs.writeFile(store.getState().state.quickmode_filepath, store.getState().notes.folders[0].pages[0].content, function (err) {
 	      if (err) {
-	        alert("An error ocurred updating the file" + err.message);
+	        store.dispatch({ type: 'SHOW_SNACKBAR', msg: "An error occurred while saving file" });
 	        console.log(err);
 	        return;
 	      }
-	      alert("The file has been succesfully saved");
+	      store.dispatch({ type: 'SHOW_SNACKBAR', msg: "The file has been succesfully saved", time: 10000 });
 	    });
 	  }
 	}
@@ -24474,7 +24571,7 @@
 	      enabled: is_quickmode(state),
 	      visible: is_quickmode(state),
 	      click: function click() {
-	        menuLogin(store);
+	        store.dispatch({ type: 'PHOTO_ALERT' });
 	      }
 	    }, {
 	      role: 'delete'
@@ -37692,12 +37789,12 @@
 	var ipc = __webpack_require__(223).ipcRenderer;
 
 	var shared = __webpack_require__(435);
-	var hljs = __webpack_require__(437);
+	var hljs = __webpack_require__(436);
 
-	var CodeMirror = __webpack_require__(611);
+	var CodeMirror = __webpack_require__(610);
+	__webpack_require__(614);
 	__webpack_require__(615);
 	__webpack_require__(616);
-	__webpack_require__(617);
 
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
@@ -37717,13 +37814,24 @@
 	    _this.handleCodeMirrorChange = _this.handleCodeMirrorChange.bind(_this);
 	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
 	    _this.drop = _this.drop.bind(_this);
+
+	    _this.unsubscribe = null;
 	    return _this;
 	  }
 
 	  _createClass(DualmodeEditor, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.store.subscribe(this.storeDidUpdate);
+	      var _this2 = this;
+
+	      this.unsubscribe = this.props.store.subscribe(function () {
+	        return _this2.storeDidUpdate;
+	      });
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.unsubscribe();
 	    }
 	  }, {
 	    key: 'storeDidUpdate',
@@ -37801,6 +37909,9 @@
 	      var rendered = '';
 	      rendered = shared.parse(content);
 	      this.setState({ rendered_content: rendered });
+	      shared.parsex("str", this.props.store, function () {
+	        return "";
+	      });
 	    }
 	  }, {
 	    key: 'drop',
@@ -37845,14 +37956,10 @@
 
 	      return false;
 	    }
-	    // <textarea id="userText" value={this.getContent()} className="markdown-input-editor" onChange={this.handleChange}>
-	    //           {this.getContent()}
-	    //         </textarea>
-
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      hljs.initHighlighting();
 	      var options = {
@@ -37885,7 +37992,7 @@
 	            _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
 	          ),
 	          _react2.default.createElement(_tocNav2.default, { store: this.props.store, info: this.getContent(), scrollTo: function scrollTo(id) {
-	              return _this2.scrollTo(id);
+	              return _this3.scrollTo(id);
 	            } }),
 	          _react2.default.createElement('div', { id: 'renderField', className: 'markdown-output-renderer',
 	            dangerouslySetInnerHTML: { __html: this.state.rendered_content } })
@@ -37893,7 +38000,7 @@
 	        _react2.default.createElement(_dialogFileDrag2.default, {
 	          open: this.state.fileDragDialogOpen,
 	          close: function close() {
-	            return _this2.closeFileDragDialog();
+	            return _this3.closeFileDragDialog();
 	          },
 	          filepath: this.state.fileDragEventFilepath,
 	          store: this.props.store
@@ -38499,7 +38606,14 @@
 	      var state = this.props.store.getState();
 	      var cursor_pos = state.editor.cursor_position;
 	      var currentContent = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
-	      var content = currentContent.slice(0, cursor_pos) + '![' + this.state.value + '](' + this.props.filepath + ')' + currentContent.slice(cursor_pos);
+
+	      var content = "";
+	      var sample = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+	      if (state.state.userid) {
+	        content = currentContent.slice(0, cursor_pos) + '<img width="350px" alt="' + this.state.value + '" src="data:image/jpeg;base64, ' + sample + '" />' + currentContent.slice(cursor_pos);
+	      } else {
+	        content = currentContent.slice(0, cursor_pos) + '![' + this.state.value + '](' + this.props.filepath + ')' + currentContent.slice(cursor_pos);
+	      }
 
 	      this.props.store.dispatch({
 	        type: 'INSERT_IMAGE'
@@ -39830,13 +39944,38 @@
 /* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
-	var _flashcardTemplate = __webpack_require__(436);
+	var _flashcardTemplate = __webpack_require__(633);
 
 	var _flashcardTemplate2 = _interopRequireDefault(_flashcardTemplate);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function parsex(str, store, imageMapper) {
+	  // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
+	  var store = {
+	    images: [{
+	      guid: 24,
+	      data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+	    }]
+	  };
+	  var imageMapper = function imageMapper(guid, store) {
+	    switch (guid) {
+	      case 24:
+	        return store.images[0].data;
+	      default:
+	        return "";
+	    }
+	  };
+	  // ![label](@:24)
+	  // pass the guid found in the .md
+	  // into imageMapper(guid, store) as well as the store parameter
+	  // this should output the base64 encoding...
+	  // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
+	  // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
+	  console.log(imageMapper(24, store));
+	}
 
 	function parse(str) {
 	  //The main parsing function.
@@ -40078,7 +40217,7 @@
 	        var src = match[2];
 
 	        var raw1 = { content: content.slice(0, match.index) };
-	        var image = { tag: 'a', content: '<img src="' + src + '" alt="' + alt + '" />' };
+	        var image = { tag: 'a', content: '<img src="' + src + '" alt="' + alt + '" width="400px"/>' };
 	        var raw2 = { content: content.slice(match.index + match[0].length, content.length) };
 
 	        span_array.splice(s, 1, raw1, image, raw2);
@@ -40147,6 +40286,7 @@
 
 	module.exports = {
 	  parse: parse,
+	  parsex: parsex,
 	  makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
 	};
 
@@ -40154,214 +40294,187 @@
 
 /***/ },
 /* 436 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	var html1 = "\n<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>\n  <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->\n<div class='flashcard-container'>\n    <div id='flipper' class='flashcard-flipper'>\n        <div class='front'>\n            <i id='hints-button' class=\"fa fa-question-circle-o\"></i>\n            <div id='front-content' class='content'>\n                <div class='middle'>\n                    <div id='front-inner-content' class='inner'>\n";
-
-	var html2 = "\n</div>\n</div>\n</div>\n</div>\n<div class='back'>\n<i id='front-button' class=\"fa fa-arrow-left\"></i>\n<div id='back-content' class='content'>\n<div class='middle'>\n<div id='solution' class='inner'>\n    <div id='back-inner-content'>\n";
-
-	var html3 = "\n</div>\n<div id='ranking'>\n    <table>\n        <tr id='ranking-row'>\n            <td><p class='circle'>1</p></td>\n            <td><p class='circle'>2</p></td>\n            <td><p class='circle'>3</p></td>\n        </tr>\n    </table>\n</div>\n</div>\n<div id='hints' class='inner'>\n<div id='hints-inner-content'>\n";
-
-	var html4 = "\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n";
-
-	var css = "\n<style>\n    .flashcard-container {\n        font-family: Tahoma, Geneva, sans-serif;\n        perspective: 1000px; /* adds realistic-looking perspective to flip action */\n        background-color: transparent;\n        width: 80%;\n        font-size: 1em;\n        color: black;\n    }\n\n    #flipper {\n        transition: width 1s, height 1s, transform 1s;\n        transform-style: preserve-3d;\n        position: relative;\n        width: 100%;\n        padding: 25%;\n        box-sizing: border-box;\n    }\n\n    .front,\n    .back {\n        /* not sure how much of this is needed for Electron */\n        -webkit-backface-visibility: hidden;\n        -moz-backface-visibility: hidden;\n        -o-backface-visibility: hidden;\n        backface-visibility: hidden;\n\n        width: 100%;\n        height: 100%;\n        position: absolute;\n        top: 0;\n        left: 0;\n        background-color: #e7fef8;\n        border: thick solid black;\n        border-radius: 5px;\n    }\n\n    .front {\n        z-index: 2; /* moves the front forward */\n        transform: rotateY(0deg);\n    }\n\n    .back {\n        transform: rotateY(180deg);\n    }\n\n    /* flip the pane when clicked */\n    .rotateBack {\n        transform: rotateY(-180deg);\n    }\n\n    .rotateHint {\n        transform: rotateY(180deg);\n    }\n\n    /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */\n    .content {\n        display: table;\n        position: absolute;\n        height: 100%;\n        width: 100%;\n    }\n\n    .middle {\n        display: table-cell;\n        vertical-align: middle;\n        text-align: center;\n    }\n\n    .inner {\n        margin-left: auto;\n        margin-right: auto;\n    }\n\n    #back-inner-content p,\n    #hints-inner-content p {\n        border-bottom: thin solid #0aaf82;\n        text-align: center;\n        margin-left: 20px;\n        margin-right: 20px;\n        visibility: hidden;\n    }\n\n    i {\n      position: absolute;\n      padding: 10px;\n    }\n\n    .fa {\n      font-size: 1.5em;\n    }\n\n    #hints-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n    }\n\n    #front-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n        display: none;\n    }\n\n    #ranking {\n      width: 100%;\n      position: absolute;\n      bottom: 5px;\n      visibility: hidden; /* don't allow ranking til all the solution is visible */\n    }\n\n    table {\n      display: inline; /* allows it to be centred */\n    }\n\n    td p {\n      margin: 0 30px; /* space between cells */\n    }\n\n    /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle\n    by Jawad\n    accessed 03/18/17 */\n    .circle {\n        width: 2em;\n        height: 2em;\n        border-radius: 50%;\n        font-size: 1em;\n        color: white;\n        line-height: 2em;\n        text-align: center;\n        background: #0aaf82;\n    }\n\n    .circle:hover {\n        color: #0aaf82;\n        background-color: black;\n    }\n</style>\n";
-
-	var js = "\n<script>\n    document.getElementById('front-content').onclick = handleClick;\n    document.getElementById('back-content').onclick = handleClick;\n    document.getElementById('hints-button').onclick = clickedShowHints;\n    document.getElementById('front-button').onclick = clickedShowFront;\n\n    var viewingHints = false;\n    var viewingSolution = false;\n    var solutionIndex = 0;\n    var hintIndex = 0;\n\n    function handleClick() {\n        if (viewingHints) {\n          showNextHint();\n          return;\n        }\n        showSolutionSide();\n    }\n\n    function clickedShowHints() {\n        remove('solution', 'hints-button');\n        display('hints');\n        if(document.getElementById('hints').childElementCount > 0) {\n            document.getElementById('hint0').style.visibility = 'visible';\n            hintIndex += 1;\n        }\n\n        viewingHints = true;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function clickedShowFront() {\n        remove('front-button');\n        display('hints-button');\n\n        viewingHints = false;\n        hintIndex = 0;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function remove() { // sets display of args (ids) to 'none'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'none');\n        }\n    }\n\n    function display() { // sets display of args (ids) to 'inline'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'inline');\n        }\n    }\n\n    function setDisplay(id, display) { // sets element 'id' to display 'display'\n        document.getElementById(id).style.display = display;\n    }\n\n    function flipFinished() { // called after a flip event to update what's displayed\n        if (viewingHints) {\n            display('front-button');\n        } else if (!viewingSolution) {\n            hideChildren(document.getElementById('back-inner-content'), 'solution');\n            hideChildren(document.getElementById('hints-inner-content'), 'hint');\n            document.getElementById('ranking').style.visibility = 'hidden';\n            display('hints-button');\n        }\n    }\n\n    function hideChildren(ele, id) {\n        for (var index = 0; index < ele.childElementCount; index++) {\n          document.getElementById(id + index).style.visibility = 'hidden';\n        }\n    }\n\n    function showNextHint() {\n        var hintsDiv = document.getElementById('hints-inner-content');\n        if (hintIndex < hintsDiv.childElementCount) {\n          document.getElementById('hint' + hintIndex).style.visibility = 'visible';\n          hintIndex += 1;\n        }\n    }\n\n    function resetCard() { // flips back to front after solution viewed, resetting everything\n        solutionIndex = 0;\n        viewingHints = false;\n        viewingSolution = false;\n        document.getElementById('flipper').classList.toggle('rotateBack');\n    }\n\n    function showNextSolutionStep() {\n        document.getElementById('solution' + solutionIndex++).style.visibility = 'visible';\n    }\n\n    function showSolutionSide() {\n        remove('hints', 'hints-button', 'front-button');\n        display('solution');\n\n        var solutionElementCount = document.getElementById('back-inner-content').childElementCount;\n        if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point\n            resetCard();\n            return;\n        }\n\n        if (solutionIndex === 0) { // flip to back!\n            viewingSolution = true;\n            document.getElementById('flipper').classList.toggle('rotateBack');\n        } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution\n            document.getElementById('ranking').style.visibility = 'visible';\n        }\n        showNextSolutionStep();\n    }\n\n    // The following is used to help with flashcard content display during card rotations.\n    // It allows the display to be updated when the rotation (flip) completes.\n    /* From Modernizr */\n    function whichTransitionEvent(){\n        var t;\n        var el = document.createElement('fakeelement');\n\n        // allows it to work on many browsers\n        var transitions = {\n            'transition':'transitionend',\n            'OTransition':'oTransitionEnd',\n            'MozTransition':'transitionend',\n            'WebkitTransition':'webkitTransitionEnd'\n        }\n\n        for(t in transitions){\n            if( el.style[t] !== undefined ){\n                return transitions[t];\n            }\n        }\n    }\n\n    // listen for transition to end\n    var transitionEvent = whichTransitionEvent();\n    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);\n</script>\n";
-
-	module.exports = {
-	    html1: html1,
-	    html2: html2,
-	    html3: html3,
-	    html4: html4,
-	    css: css,
-	    js: js
-	};
-
-/***/ },
-/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hljs = __webpack_require__(438);
+	var hljs = __webpack_require__(437);
 
-	hljs.registerLanguage('1c', __webpack_require__(439));
-	hljs.registerLanguage('abnf', __webpack_require__(440));
-	hljs.registerLanguage('accesslog', __webpack_require__(441));
-	hljs.registerLanguage('actionscript', __webpack_require__(442));
-	hljs.registerLanguage('ada', __webpack_require__(443));
-	hljs.registerLanguage('apache', __webpack_require__(444));
-	hljs.registerLanguage('applescript', __webpack_require__(445));
-	hljs.registerLanguage('cpp', __webpack_require__(446));
-	hljs.registerLanguage('arduino', __webpack_require__(447));
-	hljs.registerLanguage('armasm', __webpack_require__(448));
-	hljs.registerLanguage('xml', __webpack_require__(449));
-	hljs.registerLanguage('asciidoc', __webpack_require__(450));
-	hljs.registerLanguage('aspectj', __webpack_require__(451));
-	hljs.registerLanguage('autohotkey', __webpack_require__(452));
-	hljs.registerLanguage('autoit', __webpack_require__(453));
-	hljs.registerLanguage('avrasm', __webpack_require__(454));
-	hljs.registerLanguage('awk', __webpack_require__(455));
-	hljs.registerLanguage('axapta', __webpack_require__(456));
-	hljs.registerLanguage('bash', __webpack_require__(457));
-	hljs.registerLanguage('basic', __webpack_require__(458));
-	hljs.registerLanguage('bnf', __webpack_require__(459));
-	hljs.registerLanguage('brainfuck', __webpack_require__(460));
-	hljs.registerLanguage('cal', __webpack_require__(461));
-	hljs.registerLanguage('capnproto', __webpack_require__(462));
-	hljs.registerLanguage('ceylon', __webpack_require__(463));
-	hljs.registerLanguage('clean', __webpack_require__(464));
-	hljs.registerLanguage('clojure', __webpack_require__(465));
-	hljs.registerLanguage('clojure-repl', __webpack_require__(466));
-	hljs.registerLanguage('cmake', __webpack_require__(467));
-	hljs.registerLanguage('coffeescript', __webpack_require__(468));
-	hljs.registerLanguage('coq', __webpack_require__(469));
-	hljs.registerLanguage('cos', __webpack_require__(470));
-	hljs.registerLanguage('crmsh', __webpack_require__(471));
-	hljs.registerLanguage('crystal', __webpack_require__(472));
-	hljs.registerLanguage('cs', __webpack_require__(473));
-	hljs.registerLanguage('csp', __webpack_require__(474));
-	hljs.registerLanguage('css', __webpack_require__(475));
-	hljs.registerLanguage('d', __webpack_require__(476));
-	hljs.registerLanguage('markdown', __webpack_require__(477));
-	hljs.registerLanguage('dart', __webpack_require__(478));
-	hljs.registerLanguage('delphi', __webpack_require__(479));
-	hljs.registerLanguage('diff', __webpack_require__(480));
-	hljs.registerLanguage('django', __webpack_require__(481));
-	hljs.registerLanguage('dns', __webpack_require__(482));
-	hljs.registerLanguage('dockerfile', __webpack_require__(483));
-	hljs.registerLanguage('dos', __webpack_require__(484));
-	hljs.registerLanguage('dsconfig', __webpack_require__(485));
-	hljs.registerLanguage('dts', __webpack_require__(486));
-	hljs.registerLanguage('dust', __webpack_require__(487));
-	hljs.registerLanguage('ebnf', __webpack_require__(488));
-	hljs.registerLanguage('elixir', __webpack_require__(489));
-	hljs.registerLanguage('elm', __webpack_require__(490));
-	hljs.registerLanguage('ruby', __webpack_require__(491));
-	hljs.registerLanguage('erb', __webpack_require__(492));
-	hljs.registerLanguage('erlang-repl', __webpack_require__(493));
-	hljs.registerLanguage('erlang', __webpack_require__(494));
-	hljs.registerLanguage('excel', __webpack_require__(495));
-	hljs.registerLanguage('fix', __webpack_require__(496));
-	hljs.registerLanguage('flix', __webpack_require__(497));
-	hljs.registerLanguage('fortran', __webpack_require__(498));
-	hljs.registerLanguage('fsharp', __webpack_require__(499));
-	hljs.registerLanguage('gams', __webpack_require__(500));
-	hljs.registerLanguage('gauss', __webpack_require__(501));
-	hljs.registerLanguage('gcode', __webpack_require__(502));
-	hljs.registerLanguage('gherkin', __webpack_require__(503));
-	hljs.registerLanguage('glsl', __webpack_require__(504));
-	hljs.registerLanguage('go', __webpack_require__(505));
-	hljs.registerLanguage('golo', __webpack_require__(506));
-	hljs.registerLanguage('gradle', __webpack_require__(507));
-	hljs.registerLanguage('groovy', __webpack_require__(508));
-	hljs.registerLanguage('haml', __webpack_require__(509));
-	hljs.registerLanguage('handlebars', __webpack_require__(510));
-	hljs.registerLanguage('haskell', __webpack_require__(511));
-	hljs.registerLanguage('haxe', __webpack_require__(512));
-	hljs.registerLanguage('hsp', __webpack_require__(513));
-	hljs.registerLanguage('htmlbars', __webpack_require__(514));
-	hljs.registerLanguage('http', __webpack_require__(515));
-	hljs.registerLanguage('hy', __webpack_require__(516));
-	hljs.registerLanguage('inform7', __webpack_require__(517));
-	hljs.registerLanguage('ini', __webpack_require__(518));
-	hljs.registerLanguage('irpf90', __webpack_require__(519));
-	hljs.registerLanguage('java', __webpack_require__(520));
-	hljs.registerLanguage('javascript', __webpack_require__(521));
-	hljs.registerLanguage('json', __webpack_require__(522));
-	hljs.registerLanguage('julia', __webpack_require__(523));
-	hljs.registerLanguage('kotlin', __webpack_require__(524));
-	hljs.registerLanguage('lasso', __webpack_require__(525));
-	hljs.registerLanguage('ldif', __webpack_require__(526));
-	hljs.registerLanguage('leaf', __webpack_require__(527));
-	hljs.registerLanguage('less', __webpack_require__(528));
-	hljs.registerLanguage('lisp', __webpack_require__(529));
-	hljs.registerLanguage('livecodeserver', __webpack_require__(530));
-	hljs.registerLanguage('livescript', __webpack_require__(531));
-	hljs.registerLanguage('llvm', __webpack_require__(532));
-	hljs.registerLanguage('lsl', __webpack_require__(533));
-	hljs.registerLanguage('lua', __webpack_require__(534));
-	hljs.registerLanguage('makefile', __webpack_require__(535));
-	hljs.registerLanguage('mathematica', __webpack_require__(536));
-	hljs.registerLanguage('matlab', __webpack_require__(537));
-	hljs.registerLanguage('maxima', __webpack_require__(538));
-	hljs.registerLanguage('mel', __webpack_require__(539));
-	hljs.registerLanguage('mercury', __webpack_require__(540));
-	hljs.registerLanguage('mipsasm', __webpack_require__(541));
-	hljs.registerLanguage('mizar', __webpack_require__(542));
-	hljs.registerLanguage('perl', __webpack_require__(543));
-	hljs.registerLanguage('mojolicious', __webpack_require__(544));
-	hljs.registerLanguage('monkey', __webpack_require__(545));
-	hljs.registerLanguage('moonscript', __webpack_require__(546));
-	hljs.registerLanguage('n1ql', __webpack_require__(547));
-	hljs.registerLanguage('nginx', __webpack_require__(548));
-	hljs.registerLanguage('nimrod', __webpack_require__(549));
-	hljs.registerLanguage('nix', __webpack_require__(550));
-	hljs.registerLanguage('nsis', __webpack_require__(551));
-	hljs.registerLanguage('objectivec', __webpack_require__(552));
-	hljs.registerLanguage('ocaml', __webpack_require__(553));
-	hljs.registerLanguage('openscad', __webpack_require__(554));
-	hljs.registerLanguage('oxygene', __webpack_require__(555));
-	hljs.registerLanguage('parser3', __webpack_require__(556));
-	hljs.registerLanguage('pf', __webpack_require__(557));
-	hljs.registerLanguage('php', __webpack_require__(558));
-	hljs.registerLanguage('pony', __webpack_require__(559));
-	hljs.registerLanguage('powershell', __webpack_require__(560));
-	hljs.registerLanguage('processing', __webpack_require__(561));
-	hljs.registerLanguage('profile', __webpack_require__(562));
-	hljs.registerLanguage('prolog', __webpack_require__(563));
-	hljs.registerLanguage('protobuf', __webpack_require__(564));
-	hljs.registerLanguage('puppet', __webpack_require__(565));
-	hljs.registerLanguage('purebasic', __webpack_require__(566));
-	hljs.registerLanguage('python', __webpack_require__(567));
-	hljs.registerLanguage('q', __webpack_require__(568));
-	hljs.registerLanguage('qml', __webpack_require__(569));
-	hljs.registerLanguage('r', __webpack_require__(570));
-	hljs.registerLanguage('rib', __webpack_require__(571));
-	hljs.registerLanguage('roboconf', __webpack_require__(572));
-	hljs.registerLanguage('rsl', __webpack_require__(573));
-	hljs.registerLanguage('ruleslanguage', __webpack_require__(574));
-	hljs.registerLanguage('rust', __webpack_require__(575));
-	hljs.registerLanguage('scala', __webpack_require__(576));
-	hljs.registerLanguage('scheme', __webpack_require__(577));
-	hljs.registerLanguage('scilab', __webpack_require__(578));
-	hljs.registerLanguage('scss', __webpack_require__(579));
-	hljs.registerLanguage('smali', __webpack_require__(580));
-	hljs.registerLanguage('smalltalk', __webpack_require__(581));
-	hljs.registerLanguage('sml', __webpack_require__(582));
-	hljs.registerLanguage('sqf', __webpack_require__(583));
-	hljs.registerLanguage('sql', __webpack_require__(584));
-	hljs.registerLanguage('stan', __webpack_require__(585));
-	hljs.registerLanguage('stata', __webpack_require__(586));
-	hljs.registerLanguage('step21', __webpack_require__(587));
-	hljs.registerLanguage('stylus', __webpack_require__(588));
-	hljs.registerLanguage('subunit', __webpack_require__(589));
-	hljs.registerLanguage('swift', __webpack_require__(590));
-	hljs.registerLanguage('taggerscript', __webpack_require__(591));
-	hljs.registerLanguage('yaml', __webpack_require__(592));
-	hljs.registerLanguage('tap', __webpack_require__(593));
-	hljs.registerLanguage('tcl', __webpack_require__(594));
-	hljs.registerLanguage('tex', __webpack_require__(595));
-	hljs.registerLanguage('thrift', __webpack_require__(596));
-	hljs.registerLanguage('tp', __webpack_require__(597));
-	hljs.registerLanguage('twig', __webpack_require__(598));
-	hljs.registerLanguage('typescript', __webpack_require__(599));
-	hljs.registerLanguage('vala', __webpack_require__(600));
-	hljs.registerLanguage('vbnet', __webpack_require__(601));
-	hljs.registerLanguage('vbscript', __webpack_require__(602));
-	hljs.registerLanguage('vbscript-html', __webpack_require__(603));
-	hljs.registerLanguage('verilog', __webpack_require__(604));
-	hljs.registerLanguage('vhdl', __webpack_require__(605));
-	hljs.registerLanguage('vim', __webpack_require__(606));
-	hljs.registerLanguage('x86asm', __webpack_require__(607));
-	hljs.registerLanguage('xl', __webpack_require__(608));
-	hljs.registerLanguage('xquery', __webpack_require__(609));
-	hljs.registerLanguage('zephir', __webpack_require__(610));
+	hljs.registerLanguage('1c', __webpack_require__(438));
+	hljs.registerLanguage('abnf', __webpack_require__(439));
+	hljs.registerLanguage('accesslog', __webpack_require__(440));
+	hljs.registerLanguage('actionscript', __webpack_require__(441));
+	hljs.registerLanguage('ada', __webpack_require__(442));
+	hljs.registerLanguage('apache', __webpack_require__(443));
+	hljs.registerLanguage('applescript', __webpack_require__(444));
+	hljs.registerLanguage('cpp', __webpack_require__(445));
+	hljs.registerLanguage('arduino', __webpack_require__(446));
+	hljs.registerLanguage('armasm', __webpack_require__(447));
+	hljs.registerLanguage('xml', __webpack_require__(448));
+	hljs.registerLanguage('asciidoc', __webpack_require__(449));
+	hljs.registerLanguage('aspectj', __webpack_require__(450));
+	hljs.registerLanguage('autohotkey', __webpack_require__(451));
+	hljs.registerLanguage('autoit', __webpack_require__(452));
+	hljs.registerLanguage('avrasm', __webpack_require__(453));
+	hljs.registerLanguage('awk', __webpack_require__(454));
+	hljs.registerLanguage('axapta', __webpack_require__(455));
+	hljs.registerLanguage('bash', __webpack_require__(456));
+	hljs.registerLanguage('basic', __webpack_require__(457));
+	hljs.registerLanguage('bnf', __webpack_require__(458));
+	hljs.registerLanguage('brainfuck', __webpack_require__(459));
+	hljs.registerLanguage('cal', __webpack_require__(460));
+	hljs.registerLanguage('capnproto', __webpack_require__(461));
+	hljs.registerLanguage('ceylon', __webpack_require__(462));
+	hljs.registerLanguage('clean', __webpack_require__(463));
+	hljs.registerLanguage('clojure', __webpack_require__(464));
+	hljs.registerLanguage('clojure-repl', __webpack_require__(465));
+	hljs.registerLanguage('cmake', __webpack_require__(466));
+	hljs.registerLanguage('coffeescript', __webpack_require__(467));
+	hljs.registerLanguage('coq', __webpack_require__(468));
+	hljs.registerLanguage('cos', __webpack_require__(469));
+	hljs.registerLanguage('crmsh', __webpack_require__(470));
+	hljs.registerLanguage('crystal', __webpack_require__(471));
+	hljs.registerLanguage('cs', __webpack_require__(472));
+	hljs.registerLanguage('csp', __webpack_require__(473));
+	hljs.registerLanguage('css', __webpack_require__(474));
+	hljs.registerLanguage('d', __webpack_require__(475));
+	hljs.registerLanguage('markdown', __webpack_require__(476));
+	hljs.registerLanguage('dart', __webpack_require__(477));
+	hljs.registerLanguage('delphi', __webpack_require__(478));
+	hljs.registerLanguage('diff', __webpack_require__(479));
+	hljs.registerLanguage('django', __webpack_require__(480));
+	hljs.registerLanguage('dns', __webpack_require__(481));
+	hljs.registerLanguage('dockerfile', __webpack_require__(482));
+	hljs.registerLanguage('dos', __webpack_require__(483));
+	hljs.registerLanguage('dsconfig', __webpack_require__(484));
+	hljs.registerLanguage('dts', __webpack_require__(485));
+	hljs.registerLanguage('dust', __webpack_require__(486));
+	hljs.registerLanguage('ebnf', __webpack_require__(487));
+	hljs.registerLanguage('elixir', __webpack_require__(488));
+	hljs.registerLanguage('elm', __webpack_require__(489));
+	hljs.registerLanguage('ruby', __webpack_require__(490));
+	hljs.registerLanguage('erb', __webpack_require__(491));
+	hljs.registerLanguage('erlang-repl', __webpack_require__(492));
+	hljs.registerLanguage('erlang', __webpack_require__(493));
+	hljs.registerLanguage('excel', __webpack_require__(494));
+	hljs.registerLanguage('fix', __webpack_require__(495));
+	hljs.registerLanguage('flix', __webpack_require__(496));
+	hljs.registerLanguage('fortran', __webpack_require__(497));
+	hljs.registerLanguage('fsharp', __webpack_require__(498));
+	hljs.registerLanguage('gams', __webpack_require__(499));
+	hljs.registerLanguage('gauss', __webpack_require__(500));
+	hljs.registerLanguage('gcode', __webpack_require__(501));
+	hljs.registerLanguage('gherkin', __webpack_require__(502));
+	hljs.registerLanguage('glsl', __webpack_require__(503));
+	hljs.registerLanguage('go', __webpack_require__(504));
+	hljs.registerLanguage('golo', __webpack_require__(505));
+	hljs.registerLanguage('gradle', __webpack_require__(506));
+	hljs.registerLanguage('groovy', __webpack_require__(507));
+	hljs.registerLanguage('haml', __webpack_require__(508));
+	hljs.registerLanguage('handlebars', __webpack_require__(509));
+	hljs.registerLanguage('haskell', __webpack_require__(510));
+	hljs.registerLanguage('haxe', __webpack_require__(511));
+	hljs.registerLanguage('hsp', __webpack_require__(512));
+	hljs.registerLanguage('htmlbars', __webpack_require__(513));
+	hljs.registerLanguage('http', __webpack_require__(514));
+	hljs.registerLanguage('hy', __webpack_require__(515));
+	hljs.registerLanguage('inform7', __webpack_require__(516));
+	hljs.registerLanguage('ini', __webpack_require__(517));
+	hljs.registerLanguage('irpf90', __webpack_require__(518));
+	hljs.registerLanguage('java', __webpack_require__(519));
+	hljs.registerLanguage('javascript', __webpack_require__(520));
+	hljs.registerLanguage('json', __webpack_require__(521));
+	hljs.registerLanguage('julia', __webpack_require__(522));
+	hljs.registerLanguage('kotlin', __webpack_require__(523));
+	hljs.registerLanguage('lasso', __webpack_require__(524));
+	hljs.registerLanguage('ldif', __webpack_require__(525));
+	hljs.registerLanguage('leaf', __webpack_require__(526));
+	hljs.registerLanguage('less', __webpack_require__(527));
+	hljs.registerLanguage('lisp', __webpack_require__(528));
+	hljs.registerLanguage('livecodeserver', __webpack_require__(529));
+	hljs.registerLanguage('livescript', __webpack_require__(530));
+	hljs.registerLanguage('llvm', __webpack_require__(531));
+	hljs.registerLanguage('lsl', __webpack_require__(532));
+	hljs.registerLanguage('lua', __webpack_require__(533));
+	hljs.registerLanguage('makefile', __webpack_require__(534));
+	hljs.registerLanguage('mathematica', __webpack_require__(535));
+	hljs.registerLanguage('matlab', __webpack_require__(536));
+	hljs.registerLanguage('maxima', __webpack_require__(537));
+	hljs.registerLanguage('mel', __webpack_require__(538));
+	hljs.registerLanguage('mercury', __webpack_require__(539));
+	hljs.registerLanguage('mipsasm', __webpack_require__(540));
+	hljs.registerLanguage('mizar', __webpack_require__(541));
+	hljs.registerLanguage('perl', __webpack_require__(542));
+	hljs.registerLanguage('mojolicious', __webpack_require__(543));
+	hljs.registerLanguage('monkey', __webpack_require__(544));
+	hljs.registerLanguage('moonscript', __webpack_require__(545));
+	hljs.registerLanguage('n1ql', __webpack_require__(546));
+	hljs.registerLanguage('nginx', __webpack_require__(547));
+	hljs.registerLanguage('nimrod', __webpack_require__(548));
+	hljs.registerLanguage('nix', __webpack_require__(549));
+	hljs.registerLanguage('nsis', __webpack_require__(550));
+	hljs.registerLanguage('objectivec', __webpack_require__(551));
+	hljs.registerLanguage('ocaml', __webpack_require__(552));
+	hljs.registerLanguage('openscad', __webpack_require__(553));
+	hljs.registerLanguage('oxygene', __webpack_require__(554));
+	hljs.registerLanguage('parser3', __webpack_require__(555));
+	hljs.registerLanguage('pf', __webpack_require__(556));
+	hljs.registerLanguage('php', __webpack_require__(557));
+	hljs.registerLanguage('pony', __webpack_require__(558));
+	hljs.registerLanguage('powershell', __webpack_require__(559));
+	hljs.registerLanguage('processing', __webpack_require__(560));
+	hljs.registerLanguage('profile', __webpack_require__(561));
+	hljs.registerLanguage('prolog', __webpack_require__(562));
+	hljs.registerLanguage('protobuf', __webpack_require__(563));
+	hljs.registerLanguage('puppet', __webpack_require__(564));
+	hljs.registerLanguage('purebasic', __webpack_require__(565));
+	hljs.registerLanguage('python', __webpack_require__(566));
+	hljs.registerLanguage('q', __webpack_require__(567));
+	hljs.registerLanguage('qml', __webpack_require__(568));
+	hljs.registerLanguage('r', __webpack_require__(569));
+	hljs.registerLanguage('rib', __webpack_require__(570));
+	hljs.registerLanguage('roboconf', __webpack_require__(571));
+	hljs.registerLanguage('rsl', __webpack_require__(572));
+	hljs.registerLanguage('ruleslanguage', __webpack_require__(573));
+	hljs.registerLanguage('rust', __webpack_require__(574));
+	hljs.registerLanguage('scala', __webpack_require__(575));
+	hljs.registerLanguage('scheme', __webpack_require__(576));
+	hljs.registerLanguage('scilab', __webpack_require__(577));
+	hljs.registerLanguage('scss', __webpack_require__(578));
+	hljs.registerLanguage('smali', __webpack_require__(579));
+	hljs.registerLanguage('smalltalk', __webpack_require__(580));
+	hljs.registerLanguage('sml', __webpack_require__(581));
+	hljs.registerLanguage('sqf', __webpack_require__(582));
+	hljs.registerLanguage('sql', __webpack_require__(583));
+	hljs.registerLanguage('stan', __webpack_require__(584));
+	hljs.registerLanguage('stata', __webpack_require__(585));
+	hljs.registerLanguage('step21', __webpack_require__(586));
+	hljs.registerLanguage('stylus', __webpack_require__(587));
+	hljs.registerLanguage('subunit', __webpack_require__(588));
+	hljs.registerLanguage('swift', __webpack_require__(589));
+	hljs.registerLanguage('taggerscript', __webpack_require__(590));
+	hljs.registerLanguage('yaml', __webpack_require__(591));
+	hljs.registerLanguage('tap', __webpack_require__(592));
+	hljs.registerLanguage('tcl', __webpack_require__(593));
+	hljs.registerLanguage('tex', __webpack_require__(594));
+	hljs.registerLanguage('thrift', __webpack_require__(595));
+	hljs.registerLanguage('tp', __webpack_require__(596));
+	hljs.registerLanguage('twig', __webpack_require__(597));
+	hljs.registerLanguage('typescript', __webpack_require__(598));
+	hljs.registerLanguage('vala', __webpack_require__(599));
+	hljs.registerLanguage('vbnet', __webpack_require__(600));
+	hljs.registerLanguage('vbscript', __webpack_require__(601));
+	hljs.registerLanguage('vbscript-html', __webpack_require__(602));
+	hljs.registerLanguage('verilog', __webpack_require__(603));
+	hljs.registerLanguage('vhdl', __webpack_require__(604));
+	hljs.registerLanguage('vim', __webpack_require__(605));
+	hljs.registerLanguage('x86asm', __webpack_require__(606));
+	hljs.registerLanguage('xl', __webpack_require__(607));
+	hljs.registerLanguage('xquery', __webpack_require__(608));
+	hljs.registerLanguage('zephir', __webpack_require__(609));
 
 	module.exports = hljs;
 
 /***/ },
-/* 438 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -41191,7 +41304,7 @@
 
 
 /***/ },
-/* 439 */
+/* 438 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -41274,7 +41387,7 @@
 	};
 
 /***/ },
-/* 440 */
+/* 439 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41349,7 +41462,7 @@
 	};
 
 /***/ },
-/* 441 */
+/* 440 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41391,7 +41504,7 @@
 	};
 
 /***/ },
-/* 442 */
+/* 441 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41469,7 +41582,7 @@
 	};
 
 /***/ },
-/* 443 */
+/* 442 */
 /***/ function(module, exports) {
 
 	module.exports = // We try to support full Ada2012
@@ -41646,7 +41759,7 @@
 	};
 
 /***/ },
-/* 444 */
+/* 443 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41696,7 +41809,7 @@
 	};
 
 /***/ },
-/* 445 */
+/* 444 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41786,7 +41899,7 @@
 	};
 
 /***/ },
-/* 446 */
+/* 445 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41956,7 +42069,7 @@
 	};
 
 /***/ },
-/* 447 */
+/* 446 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42060,7 +42173,7 @@
 	};
 
 /***/ },
-/* 448 */
+/* 447 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42156,7 +42269,7 @@
 	};
 
 /***/ },
-/* 449 */
+/* 448 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42263,7 +42376,7 @@
 	};
 
 /***/ },
-/* 450 */
+/* 449 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42455,7 +42568,7 @@
 	};
 
 /***/ },
-/* 451 */
+/* 450 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -42603,7 +42716,7 @@
 	};
 
 /***/ },
-/* 452 */
+/* 451 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42655,7 +42768,7 @@
 	};
 
 /***/ },
-/* 453 */
+/* 452 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42795,7 +42908,7 @@
 	};
 
 /***/ },
-/* 454 */
+/* 453 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42861,7 +42974,7 @@
 	};
 
 /***/ },
-/* 455 */
+/* 454 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42918,7 +43031,7 @@
 	};
 
 /***/ },
-/* 456 */
+/* 455 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42953,7 +43066,7 @@
 	};
 
 /***/ },
-/* 457 */
+/* 456 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43032,7 +43145,7 @@
 	};
 
 /***/ },
-/* 458 */
+/* 457 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43087,7 +43200,7 @@
 	};
 
 /***/ },
-/* 459 */
+/* 458 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -43120,7 +43233,7 @@
 	};
 
 /***/ },
-/* 460 */
+/* 459 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -43161,7 +43274,7 @@
 	};
 
 /***/ },
-/* 461 */
+/* 460 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43245,7 +43358,7 @@
 	};
 
 /***/ },
-/* 462 */
+/* 461 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43298,7 +43411,7 @@
 	};
 
 /***/ },
-/* 463 */
+/* 462 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43369,7 +43482,7 @@
 	};
 
 /***/ },
-/* 464 */
+/* 463 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43398,7 +43511,7 @@
 	};
 
 /***/ },
-/* 465 */
+/* 464 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43497,7 +43610,7 @@
 	};
 
 /***/ },
-/* 466 */
+/* 465 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43516,7 +43629,7 @@
 	};
 
 /***/ },
-/* 467 */
+/* 466 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43558,7 +43671,7 @@
 	};
 
 /***/ },
-/* 468 */
+/* 467 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43708,7 +43821,7 @@
 	};
 
 /***/ },
-/* 469 */
+/* 468 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43779,7 +43892,7 @@
 	};
 
 /***/ },
-/* 470 */
+/* 469 */
 /***/ function(module, exports) {
 
 	module.exports = function cos (hljs) {
@@ -43907,7 +44020,7 @@
 	};
 
 /***/ },
-/* 471 */
+/* 470 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44005,7 +44118,7 @@
 	};
 
 /***/ },
-/* 472 */
+/* 471 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44186,7 +44299,7 @@
 	};
 
 /***/ },
-/* 473 */
+/* 472 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44357,7 +44470,7 @@
 	};
 
 /***/ },
-/* 474 */
+/* 473 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44383,7 +44496,7 @@
 	};
 
 /***/ },
-/* 475 */
+/* 474 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44492,7 +44605,7 @@
 	};
 
 /***/ },
-/* 476 */
+/* 475 */
 /***/ function(module, exports) {
 
 	module.exports = /**
@@ -44754,7 +44867,7 @@
 	};
 
 /***/ },
-/* 477 */
+/* 476 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44866,7 +44979,7 @@
 	};
 
 /***/ },
-/* 478 */
+/* 477 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -44971,7 +45084,7 @@
 	};
 
 /***/ },
-/* 479 */
+/* 478 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45044,7 +45157,7 @@
 	};
 
 /***/ },
-/* 480 */
+/* 479 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45088,7 +45201,7 @@
 	};
 
 /***/ },
-/* 481 */
+/* 480 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45156,7 +45269,7 @@
 	};
 
 /***/ },
-/* 482 */
+/* 481 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45189,7 +45302,7 @@
 	};
 
 /***/ },
-/* 483 */
+/* 482 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45215,7 +45328,7 @@
 	};
 
 /***/ },
-/* 484 */
+/* 483 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45271,7 +45384,7 @@
 	};
 
 /***/ },
-/* 485 */
+/* 484 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45322,7 +45435,7 @@
 	};
 
 /***/ },
-/* 486 */
+/* 485 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45450,7 +45563,7 @@
 	};
 
 /***/ },
-/* 487 */
+/* 486 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45486,7 +45599,7 @@
 	};
 
 /***/ },
-/* 488 */
+/* 487 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45523,7 +45636,7 @@
 	};
 
 /***/ },
-/* 489 */
+/* 488 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45624,7 +45737,7 @@
 	};
 
 /***/ },
-/* 490 */
+/* 489 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45711,7 +45824,7 @@
 	};
 
 /***/ },
-/* 491 */
+/* 490 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45891,7 +46004,7 @@
 	};
 
 /***/ },
-/* 492 */
+/* 491 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45910,7 +46023,7 @@
 	};
 
 /***/ },
-/* 493 */
+/* 492 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45960,7 +46073,7 @@
 	};
 
 /***/ },
-/* 494 */
+/* 493 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46110,7 +46223,7 @@
 	};
 
 /***/ },
-/* 495 */
+/* 494 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46162,7 +46275,7 @@
 	};
 
 /***/ },
-/* 496 */
+/* 495 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46195,7 +46308,7 @@
 	};
 
 /***/ },
-/* 497 */
+/* 496 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -46244,7 +46357,7 @@
 	};
 
 /***/ },
-/* 498 */
+/* 497 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46319,7 +46432,7 @@
 	};
 
 /***/ },
-/* 499 */
+/* 498 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46382,7 +46495,7 @@
 	};
 
 /***/ },
-/* 500 */
+/* 499 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -46540,7 +46653,7 @@
 	};
 
 /***/ },
-/* 501 */
+/* 500 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46768,7 +46881,7 @@
 	};
 
 /***/ },
-/* 502 */
+/* 501 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46839,7 +46952,7 @@
 	};
 
 /***/ },
-/* 503 */
+/* 502 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -46880,7 +46993,7 @@
 	};
 
 /***/ },
-/* 504 */
+/* 503 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47001,7 +47114,7 @@
 	};
 
 /***/ },
-/* 505 */
+/* 504 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47059,7 +47172,7 @@
 	};
 
 /***/ },
-/* 506 */
+/* 505 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47086,7 +47199,7 @@
 	};
 
 /***/ },
-/* 507 */
+/* 506 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47125,7 +47238,7 @@
 	};
 
 /***/ },
-/* 508 */
+/* 507 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47223,7 +47336,7 @@
 	};
 
 /***/ },
-/* 509 */
+/* 508 */
 /***/ function(module, exports) {
 
 	module.exports = // TODO support filter tags like :javascript, support inline HTML
@@ -47334,7 +47447,7 @@
 	};
 
 /***/ },
-/* 510 */
+/* 509 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47372,7 +47485,7 @@
 	};
 
 /***/ },
-/* 511 */
+/* 510 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47498,7 +47611,7 @@
 	};
 
 /***/ },
-/* 512 */
+/* 511 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47614,7 +47727,7 @@
 	};
 
 /***/ },
-/* 513 */
+/* 512 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47664,7 +47777,7 @@
 	};
 
 /***/ },
-/* 514 */
+/* 513 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47739,7 +47852,7 @@
 	};
 
 /***/ },
-/* 515 */
+/* 514 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47784,7 +47897,7 @@
 	};
 
 /***/ },
-/* 516 */
+/* 515 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47890,7 +48003,7 @@
 	};
 
 /***/ },
-/* 517 */
+/* 516 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47951,7 +48064,7 @@
 	};
 
 /***/ },
-/* 518 */
+/* 517 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48021,7 +48134,7 @@
 	};
 
 /***/ },
-/* 519 */
+/* 518 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48101,7 +48214,7 @@
 	};
 
 /***/ },
-/* 520 */
+/* 519 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48213,7 +48326,7 @@
 	};
 
 /***/ },
-/* 521 */
+/* 520 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48388,7 +48501,7 @@
 	};
 
 /***/ },
-/* 522 */
+/* 521 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48429,7 +48542,7 @@
 	};
 
 /***/ },
-/* 523 */
+/* 522 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48611,7 +48724,7 @@
 	};
 
 /***/ },
-/* 524 */
+/* 523 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48789,7 +48902,7 @@
 	};
 
 /***/ },
-/* 525 */
+/* 524 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48956,7 +49069,7 @@
 	};
 
 /***/ },
-/* 526 */
+/* 525 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48983,7 +49096,7 @@
 	};
 
 /***/ },
-/* 527 */
+/* 526 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -49027,7 +49140,7 @@
 	};
 
 /***/ },
-/* 528 */
+/* 527 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49171,7 +49284,7 @@
 	};
 
 /***/ },
-/* 529 */
+/* 528 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49278,7 +49391,7 @@
 	};
 
 /***/ },
-/* 530 */
+/* 529 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49439,7 +49552,7 @@
 	};
 
 /***/ },
-/* 531 */
+/* 530 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49592,7 +49705,7 @@
 	};
 
 /***/ },
-/* 532 */
+/* 531 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49685,7 +49798,7 @@
 	};
 
 /***/ },
-/* 533 */
+/* 532 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49772,7 +49885,7 @@
 	};
 
 /***/ },
-/* 534 */
+/* 533 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49842,7 +49955,7 @@
 	};
 
 /***/ },
-/* 535 */
+/* 534 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49891,7 +50004,7 @@
 	};
 
 /***/ },
-/* 536 */
+/* 535 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49953,7 +50066,7 @@
 	};
 
 /***/ },
-/* 537 */
+/* 536 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50045,7 +50158,7 @@
 	};
 
 /***/ },
-/* 538 */
+/* 537 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50455,7 +50568,7 @@
 	};
 
 /***/ },
-/* 539 */
+/* 538 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50684,7 +50797,7 @@
 	};
 
 /***/ },
-/* 540 */
+/* 539 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50770,7 +50883,7 @@
 	};
 
 /***/ },
-/* 541 */
+/* 540 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50860,7 +50973,7 @@
 	};
 
 /***/ },
-/* 542 */
+/* 541 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50883,7 +50996,7 @@
 	};
 
 /***/ },
-/* 543 */
+/* 542 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51044,7 +51157,7 @@
 	};
 
 /***/ },
-/* 544 */
+/* 543 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51073,7 +51186,7 @@
 	};
 
 /***/ },
-/* 545 */
+/* 544 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51152,7 +51265,7 @@
 	};
 
 /***/ },
-/* 546 */
+/* 545 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51268,7 +51381,7 @@
 	};
 
 /***/ },
-/* 547 */
+/* 546 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51341,7 +51454,7 @@
 	};
 
 /***/ },
-/* 548 */
+/* 547 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51438,7 +51551,7 @@
 	};
 
 /***/ },
-/* 549 */
+/* 548 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51497,7 +51610,7 @@
 	};
 
 /***/ },
-/* 550 */
+/* 549 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51550,7 +51663,7 @@
 	};
 
 /***/ },
-/* 551 */
+/* 550 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51660,7 +51773,7 @@
 	};
 
 /***/ },
-/* 552 */
+/* 551 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51755,7 +51868,7 @@
 	};
 
 /***/ },
-/* 553 */
+/* 552 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51830,7 +51943,7 @@
 	};
 
 /***/ },
-/* 554 */
+/* 553 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51891,7 +52004,7 @@
 	};
 
 /***/ },
-/* 555 */
+/* 554 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51965,7 +52078,7 @@
 	};
 
 /***/ },
-/* 556 */
+/* 555 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52017,7 +52130,7 @@
 	};
 
 /***/ },
-/* 557 */
+/* 556 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52073,7 +52186,7 @@
 	};
 
 /***/ },
-/* 558 */
+/* 557 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52204,7 +52317,7 @@
 	};
 
 /***/ },
-/* 559 */
+/* 558 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52299,7 +52412,7 @@
 	};
 
 /***/ },
-/* 560 */
+/* 559 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52384,7 +52497,7 @@
 	};
 
 /***/ },
-/* 561 */
+/* 560 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52436,7 +52549,7 @@
 	};
 
 /***/ },
-/* 562 */
+/* 561 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52470,7 +52583,7 @@
 	};
 
 /***/ },
-/* 563 */
+/* 562 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52562,7 +52675,7 @@
 	};
 
 /***/ },
-/* 564 */
+/* 563 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52602,7 +52715,7 @@
 	};
 
 /***/ },
-/* 565 */
+/* 564 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52721,7 +52834,7 @@
 	};
 
 /***/ },
-/* 566 */
+/* 565 */
 /***/ function(module, exports) {
 
 	module.exports = // Base deafult colors in PB IDE: background: #FFFFDF; foreground: #000000;
@@ -52783,7 +52896,7 @@
 	};
 
 /***/ },
-/* 567 */
+/* 566 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52903,7 +53016,7 @@
 	};
 
 /***/ },
-/* 568 */
+/* 567 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52930,7 +53043,7 @@
 	};
 
 /***/ },
-/* 569 */
+/* 568 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53103,7 +53216,7 @@
 	};
 
 /***/ },
-/* 570 */
+/* 569 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53177,7 +53290,7 @@
 	};
 
 /***/ },
-/* 571 */
+/* 570 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53208,7 +53321,7 @@
 	};
 
 /***/ },
-/* 572 */
+/* 571 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53279,7 +53392,7 @@
 	};
 
 /***/ },
-/* 573 */
+/* 572 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53319,7 +53432,7 @@
 	};
 
 /***/ },
-/* 574 */
+/* 573 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53384,7 +53497,7 @@
 	};
 
 /***/ },
-/* 575 */
+/* 574 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53496,7 +53609,7 @@
 	};
 
 /***/ },
-/* 576 */
+/* 575 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53615,7 +53728,7 @@
 	};
 
 /***/ },
-/* 577 */
+/* 576 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53763,7 +53876,7 @@
 	};
 
 /***/ },
-/* 578 */
+/* 577 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53821,7 +53934,7 @@
 	};
 
 /***/ },
-/* 579 */
+/* 578 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53923,7 +54036,7 @@
 	};
 
 /***/ },
-/* 580 */
+/* 579 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53983,7 +54096,7 @@
 	};
 
 /***/ },
-/* 581 */
+/* 580 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54037,7 +54150,7 @@
 	};
 
 /***/ },
-/* 582 */
+/* 581 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54107,7 +54220,7 @@
 	};
 
 /***/ },
-/* 583 */
+/* 582 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54482,7 +54595,7 @@
 	};
 
 /***/ },
-/* 584 */
+/* 583 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54646,7 +54759,7 @@
 	};
 
 /***/ },
-/* 585 */
+/* 584 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54733,7 +54846,7 @@
 	};
 
 /***/ },
-/* 586 */
+/* 585 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54775,7 +54888,7 @@
 	};
 
 /***/ },
-/* 587 */
+/* 586 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54826,7 +54939,7 @@
 	};
 
 /***/ },
-/* 588 */
+/* 587 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55284,7 +55397,7 @@
 	};
 
 /***/ },
-/* 589 */
+/* 588 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55322,7 +55435,7 @@
 	};
 
 /***/ },
-/* 590 */
+/* 589 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55443,7 +55556,7 @@
 	};
 
 /***/ },
-/* 591 */
+/* 590 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55491,7 +55604,7 @@
 	};
 
 /***/ },
-/* 592 */
+/* 591 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55583,7 +55696,7 @@
 	};
 
 /***/ },
-/* 593 */
+/* 592 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55623,7 +55736,7 @@
 	};
 
 /***/ },
-/* 594 */
+/* 593 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55688,7 +55801,7 @@
 	};
 
 /***/ },
-/* 595 */
+/* 594 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55754,7 +55867,7 @@
 	};
 
 /***/ },
-/* 596 */
+/* 595 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55793,7 +55906,7 @@
 	};
 
 /***/ },
-/* 597 */
+/* 596 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55881,7 +55994,7 @@
 	};
 
 /***/ },
-/* 598 */
+/* 597 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55951,7 +56064,7 @@
 	};
 
 /***/ },
-/* 599 */
+/* 598 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56111,7 +56224,7 @@
 	};
 
 /***/ },
-/* 600 */
+/* 599 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56165,7 +56278,7 @@
 	};
 
 /***/ },
-/* 601 */
+/* 600 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56225,7 +56338,7 @@
 	};
 
 /***/ },
-/* 602 */
+/* 601 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56268,7 +56381,7 @@
 	};
 
 /***/ },
-/* 603 */
+/* 602 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56284,7 +56397,7 @@
 	};
 
 /***/ },
-/* 604 */
+/* 603 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56387,7 +56500,7 @@
 	};
 
 /***/ },
-/* 605 */
+/* 604 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56452,7 +56565,7 @@
 	};
 
 /***/ },
-/* 606 */
+/* 605 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56562,7 +56675,7 @@
 	};
 
 /***/ },
-/* 607 */
+/* 606 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56702,7 +56815,7 @@
 	};
 
 /***/ },
-/* 608 */
+/* 607 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56779,7 +56892,7 @@
 	};
 
 /***/ },
-/* 609 */
+/* 608 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56854,7 +56967,7 @@
 	};
 
 /***/ },
-/* 610 */
+/* 609 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56965,7 +57078,7 @@
 	};
 
 /***/ },
-/* 611 */
+/* 610 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56973,8 +57086,8 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(31);
 	var findDOMNode = ReactDOM.findDOMNode;
-	var className = __webpack_require__(612);
-	var debounce = __webpack_require__(613);
+	var className = __webpack_require__(611);
+	var debounce = __webpack_require__(612);
 
 	function normalizeLineEndings(str) {
 		if (!str) return str;
@@ -57002,7 +57115,7 @@
 			};
 		},
 		getCodeMirrorInstance: function getCodeMirrorInstance() {
-			return this.props.codeMirrorInstance || __webpack_require__(614);
+			return this.props.codeMirrorInstance || __webpack_require__(613);
 		},
 		getInitialState: function getInitialState() {
 			return {
@@ -57081,7 +57194,7 @@
 	module.exports = CodeMirror;
 
 /***/ },
-/* 612 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -57135,7 +57248,7 @@
 
 
 /***/ },
-/* 613 */
+/* 612 */
 /***/ function(module, exports) {
 
 	/**
@@ -57518,7 +57631,7 @@
 
 
 /***/ },
-/* 614 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -66829,7 +66942,7 @@
 
 
 /***/ },
-/* 615 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -66837,7 +66950,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(614));
+	    mod(__webpack_require__(613));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -67637,7 +67750,7 @@
 
 
 /***/ },
-/* 616 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -67645,7 +67758,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(614));
+	    mod(__webpack_require__(613));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -68037,7 +68150,7 @@
 
 
 /***/ },
-/* 617 */
+/* 616 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -68045,7 +68158,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(614), __webpack_require__(616), __webpack_require__(618));
+	    mod(__webpack_require__(613), __webpack_require__(615), __webpack_require__(617));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "../xml/xml", "../meta"], mod);
 	  else // Plain browser env
@@ -68851,7 +68964,7 @@
 
 
 /***/ },
-/* 618 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -68859,7 +68972,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(614));
+	    mod(__webpack_require__(613));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -69071,7 +69184,7 @@
 
 
 /***/ },
-/* 619 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69297,7 +69410,7 @@
 	exports.default = (0, _reactRedux.connect)()(FusionmodeEditor);
 
 /***/ },
-/* 620 */
+/* 619 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69312,7 +69425,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _dialogFolderCreate = __webpack_require__(621);
+	var _dialogFolderCreate = __webpack_require__(620);
 
 	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
 
@@ -69345,13 +69458,20 @@
 	    _this.selectFolder = _this.selectFolder.bind(_this);
 	    _this.renderFolder = _this.renderFolder.bind(_this);
 	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
+
+	    _this.unsubscribe = null;
 	    return _this;
 	  }
 
 	  _createClass(FolderContainerView, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.store.subscribe(this.storeDidUpdate);
+	      this.unsubscribe = this.props.store.subscribe(this.storeDidUpdate);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.unsubscribe();
 	    }
 	  }, {
 	    key: 'storeDidUpdate',
@@ -69455,7 +69575,7 @@
 	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
 
 /***/ },
-/* 621 */
+/* 620 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69585,7 +69705,7 @@
 	exports.default = DialogFolderCreate;
 
 /***/ },
-/* 622 */
+/* 621 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69736,11 +69856,793 @@
 	exports.default = MenubarTile;
 
 /***/ },
+/* 622 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _Snackbar = __webpack_require__(623);
+
+	var _Snackbar2 = _interopRequireDefault(_Snackbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _Snackbar2.default;
+
+/***/ },
 /* 623 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(377);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(382);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(226);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(252);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(253);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(257);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(304);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(383);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(384);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _ClickAwayListener = __webpack_require__(624);
+
+	var _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);
+
+	var _SnackbarBody = __webpack_require__(625);
+
+	var _SnackbarBody2 = _interopRequireDefault(_SnackbarBody);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context, state) {
+	  var _context$muiTheme = context.muiTheme,
+	      desktopSubheaderHeight = _context$muiTheme.baseTheme.spacing.desktopSubheaderHeight,
+	      zIndex = _context$muiTheme.zIndex;
+	  var open = state.open;
+
+
+	  var styles = {
+	    root: {
+	      position: 'fixed',
+	      left: '50%',
+	      display: 'flex',
+	      bottom: 0,
+	      zIndex: zIndex.snackbar,
+	      visibility: open ? 'visible' : 'hidden',
+	      transform: open ? 'translate(-50%, 0)' : 'translate(-50%, ' + desktopSubheaderHeight + 'px)',
+	      transition: _transitions2.default.easeOut('400ms', 'transform') + ', ' + _transitions2.default.easeOut('400ms', 'visibility')
+	    }
+	  };
+
+	  return styles;
+	}
+
+	var Snackbar = function (_Component) {
+	  (0, _inherits3.default)(Snackbar, _Component);
+
+	  function Snackbar() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Snackbar);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Snackbar.__proto__ || (0, _getPrototypeOf2.default)(Snackbar)).call.apply(_ref, [this].concat(args))), _this), _this.componentClickAway = function () {
+	      if (_this.timerTransitionId) {
+	        // If transitioning, don't close the snackbar.
+	        return;
+	      }
+
+	      if (_this.props.open !== null && _this.props.onRequestClose) {
+	        _this.props.onRequestClose('clickaway');
+	      } else {
+	        _this.setState({ open: false });
+	      }
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Snackbar, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.setState({
+	        open: this.props.open,
+	        message: this.props.message,
+	        action: this.props.action
+	      });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      if (this.state.open) {
+	        this.setAutoHideTimer();
+	        this.setTransitionTimer();
+	      }
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var _this2 = this;
+
+	      if (this.props.open && nextProps.open && (nextProps.message !== this.props.message || nextProps.action !== this.props.action)) {
+	        this.setState({
+	          open: false
+	        });
+
+	        clearTimeout(this.timerOneAtTheTimeId);
+	        this.timerOneAtTheTimeId = setTimeout(function () {
+	          _this2.setState({
+	            message: nextProps.message,
+	            action: nextProps.action,
+	            open: true
+	          });
+	        }, 400);
+	      } else {
+	        var open = nextProps.open;
+
+	        this.setState({
+	          open: open !== null ? open : this.state.open,
+	          message: nextProps.message,
+	          action: nextProps.action
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps, prevState) {
+	      if (prevState.open !== this.state.open) {
+	        if (this.state.open) {
+	          this.setAutoHideTimer();
+	          this.setTransitionTimer();
+	        } else {
+	          clearTimeout(this.timerAutoHideId);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      clearTimeout(this.timerAutoHideId);
+	      clearTimeout(this.timerTransitionId);
+	      clearTimeout(this.timerOneAtTheTimeId);
+	    }
+	  }, {
+	    key: 'setAutoHideTimer',
+
+
+	    // Timer that controls delay before snackbar auto hides
+	    value: function setAutoHideTimer() {
+	      var _this3 = this;
+
+	      var autoHideDuration = this.props.autoHideDuration;
+
+	      if (autoHideDuration > 0) {
+	        clearTimeout(this.timerAutoHideId);
+	        this.timerAutoHideId = setTimeout(function () {
+	          if (_this3.props.open !== null && _this3.props.onRequestClose) {
+	            _this3.props.onRequestClose('timeout');
+	          } else {
+	            _this3.setState({ open: false });
+	          }
+	        }, autoHideDuration);
+	      }
+	    }
+
+	    // Timer that controls delay before click-away events are captured (based on when animation completes)
+
+	  }, {
+	    key: 'setTransitionTimer',
+	    value: function setTransitionTimer() {
+	      var _this4 = this;
+
+	      this.timerTransitionId = setTimeout(function () {
+	        _this4.timerTransitionId = undefined;
+	      }, 400);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          autoHideDuration = _props.autoHideDuration,
+	          contentStyle = _props.contentStyle,
+	          bodyStyle = _props.bodyStyle,
+	          messageProp = _props.message,
+	          onRequestClose = _props.onRequestClose,
+	          onActionTouchTap = _props.onActionTouchTap,
+	          style = _props.style,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['autoHideDuration', 'contentStyle', 'bodyStyle', 'message', 'onRequestClose', 'onActionTouchTap', 'style']);
+	      var _state = this.state,
+	          action = _state.action,
+	          message = _state.message,
+	          open = _state.open;
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context, this.state);
+
+	      return _react2.default.createElement(
+	        _ClickAwayListener2.default,
+	        { onClickAway: open ? this.componentClickAway : null },
+	        _react2.default.createElement(
+	          'div',
+	          (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	          _react2.default.createElement(_SnackbarBody2.default, {
+	            action: action,
+	            contentStyle: contentStyle,
+	            message: message,
+	            open: open,
+	            onActionTouchTap: onActionTouchTap,
+	            style: bodyStyle
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	  return Snackbar;
+	}(_react.Component);
+
+	Snackbar.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? Snackbar.propTypes = {
+	  /**
+	   * The label for the action on the snackbar.
+	   */
+	  action: _react.PropTypes.node,
+	  /**
+	   * The number of milliseconds to wait before automatically dismissing.
+	   * If no value is specified the snackbar will dismiss normally.
+	   * If a value is provided the snackbar can still be dismissed normally.
+	   * If a snackbar is dismissed before the timer expires, the timer will be cleared.
+	   */
+	  autoHideDuration: _react.PropTypes.number,
+	  /**
+	   * Override the inline-styles of the body element.
+	   */
+	  bodyStyle: _react.PropTypes.object,
+	  /**
+	   * The css class name of the root element.
+	   */
+	  className: _react.PropTypes.string,
+	  /**
+	   * Override the inline-styles of the content element.
+	   */
+	  contentStyle: _react.PropTypes.object,
+	  /**
+	   * The message to be displayed.
+	   *
+	   * (Note: If the message is an element or array, and the `Snackbar` may re-render while it is still open,
+	   * ensure that the same object remains as the `message` property if you want to avoid the `Snackbar` hiding and
+	   * showing again)
+	   */
+	  message: _react.PropTypes.node.isRequired,
+	  /**
+	   * Fired when the action button is touchtapped.
+	   *
+	   * @param {object} event Action button event.
+	   */
+	  onActionTouchTap: _react.PropTypes.func,
+	  /**
+	   * Fired when the `Snackbar` is requested to be closed by a click outside the `Snackbar`, or after the
+	   * `autoHideDuration` timer expires.
+	   *
+	   * Typically `onRequestClose` is used to set state in the parent component, which is used to control the `Snackbar`
+	   * `open` prop.
+	   *
+	   * The `reason` parameter can optionally be used to control the response to `onRequestClose`,
+	   * for example ignoring `clickaway`.
+	   *
+	   * @param {string} reason Can be:`"timeout"` (`autoHideDuration` expired) or: `"clickaway"`
+	   */
+	  onRequestClose: _react.PropTypes.func,
+	  /**
+	   * Controls whether the `Snackbar` is opened or not.
+	   */
+	  open: _react.PropTypes.bool.isRequired,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+	exports.default = Snackbar;
+
+/***/ },
+/* 624 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(226);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(252);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(253);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(257);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(304);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _react = __webpack_require__(1);
+
+	var _reactDom = __webpack_require__(31);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _events = __webpack_require__(389);
+
+	var _events2 = _interopRequireDefault(_events);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var isDescendant = function isDescendant(el, target) {
+	  if (target !== null) {
+	    return el === target || isDescendant(el, target.parentNode);
+	  }
+	  return false;
+	};
+
+	var clickAwayEvents = ['mouseup', 'touchend'];
+	var bind = function bind(callback) {
+	  return clickAwayEvents.forEach(function (event) {
+	    return _events2.default.on(document, event, callback);
+	  });
+	};
+	var unbind = function unbind(callback) {
+	  return clickAwayEvents.forEach(function (event) {
+	    return _events2.default.off(document, event, callback);
+	  });
+	};
+
+	var ClickAwayListener = function (_Component) {
+	  (0, _inherits3.default)(ClickAwayListener, _Component);
+
+	  function ClickAwayListener() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, ClickAwayListener);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = ClickAwayListener.__proto__ || (0, _getPrototypeOf2.default)(ClickAwayListener)).call.apply(_ref, [this].concat(args))), _this), _this.handleClickAway = function (event) {
+	      if (event.defaultPrevented) {
+	        return;
+	      }
+
+	      // IE11 support, which trigger the handleClickAway even after the unbind
+	      if (_this.isCurrentlyMounted) {
+	        var el = _reactDom2.default.findDOMNode(_this);
+
+	        if (document.documentElement.contains(event.target) && !isDescendant(el, event.target)) {
+	          _this.props.onClickAway(event);
+	        }
+	      }
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(ClickAwayListener, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.isCurrentlyMounted = true;
+	      if (this.props.onClickAway) {
+	        bind(this.handleClickAway);
+	      }
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps) {
+	      if (prevProps.onClickAway !== this.props.onClickAway) {
+	        unbind(this.handleClickAway);
+	        if (this.props.onClickAway) {
+	          bind(this.handleClickAway);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.isCurrentlyMounted = false;
+	      unbind(this.handleClickAway);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return this.props.children;
+	    }
+	  }]);
+	  return ClickAwayListener;
+	}(_react.Component);
+
+	process.env.NODE_ENV !== "production" ? ClickAwayListener.propTypes = {
+	  children: _react.PropTypes.element,
+	  onClickAway: _react.PropTypes.func
+	} : void 0;
+	exports.default = ClickAwayListener;
+
+/***/ },
+/* 625 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.SnackbarBody = undefined;
+
+	var _extends2 = __webpack_require__(377);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(382);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _simpleAssign = __webpack_require__(383);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(384);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _withWidth = __webpack_require__(626);
+
+	var _withWidth2 = _interopRequireDefault(_withWidth);
+
+	var _FlatButton = __webpack_require__(407);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context) {
+	  var open = props.open,
+	      width = props.width;
+	  var _context$muiTheme = context.muiTheme,
+	      _context$muiTheme$bas = _context$muiTheme.baseTheme,
+	      _context$muiTheme$bas2 = _context$muiTheme$bas.spacing,
+	      desktopGutter = _context$muiTheme$bas2.desktopGutter,
+	      desktopSubheaderHeight = _context$muiTheme$bas2.desktopSubheaderHeight,
+	      fontFamily = _context$muiTheme$bas.fontFamily,
+	      _context$muiTheme$sna = _context$muiTheme.snackbar,
+	      backgroundColor = _context$muiTheme$sna.backgroundColor,
+	      textColor = _context$muiTheme$sna.textColor,
+	      actionColor = _context$muiTheme$sna.actionColor;
+
+
+	  var isSmall = width === _withWidth.SMALL;
+
+	  var styles = {
+	    root: {
+	      fontFamily: fontFamily,
+	      backgroundColor: backgroundColor,
+	      padding: '0 ' + desktopGutter + 'px',
+	      height: desktopSubheaderHeight,
+	      lineHeight: desktopSubheaderHeight + 'px',
+	      borderRadius: isSmall ? 0 : 2,
+	      maxWidth: isSmall ? 'inherit' : 568,
+	      minWidth: isSmall ? 'inherit' : 288,
+	      width: isSmall ? 'calc(100vw - ' + desktopGutter * 2 + 'px)' : 'auto',
+	      flexGrow: isSmall ? 1 : 0
+	    },
+	    content: {
+	      fontSize: 14,
+	      color: textColor,
+	      opacity: open ? 1 : 0,
+	      transition: open ? _transitions2.default.easeOut('500ms', 'opacity', '100ms') : _transitions2.default.easeOut('400ms', 'opacity')
+	    },
+	    action: {
+	      color: actionColor,
+	      float: 'right',
+	      marginTop: 6,
+	      marginRight: -16,
+	      marginLeft: desktopGutter,
+	      backgroundColor: 'transparent'
+	    }
+	  };
+
+	  return styles;
+	}
+
+	var SnackbarBody = exports.SnackbarBody = function SnackbarBody(props, context) {
+	  var action = props.action,
+	      contentStyle = props.contentStyle,
+	      message = props.message,
+	      open = props.open,
+	      onActionTouchTap = props.onActionTouchTap,
+	      style = props.style,
+	      other = (0, _objectWithoutProperties3.default)(props, ['action', 'contentStyle', 'message', 'open', 'onActionTouchTap', 'style']);
+	  var prepareStyles = context.muiTheme.prepareStyles;
+
+	  var styles = getStyles(props, context);
+
+	  var actionButton = action && _react2.default.createElement(_FlatButton2.default, {
+	    style: styles.action,
+	    label: action,
+	    onTouchTap: onActionTouchTap
+	  });
+
+	  return _react2.default.createElement(
+	    'div',
+	    (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	    _react2.default.createElement(
+	      'div',
+	      { style: prepareStyles((0, _simpleAssign2.default)(styles.content, contentStyle)) },
+	      _react2.default.createElement(
+	        'span',
+	        null,
+	        message
+	      ),
+	      actionButton
+	    )
+	  );
+	};
+
+	process.env.NODE_ENV !== "production" ? SnackbarBody.propTypes = {
+	  /**
+	   * The label for the action on the snackbar.
+	   */
+	  action: _react.PropTypes.node,
+	  /**
+	   * Override the inline-styles of the content element.
+	   */
+	  contentStyle: _react.PropTypes.object,
+	  /**
+	   * The message to be displayed.
+	   *
+	   * (Note: If the message is an element or array, and the `Snackbar` may re-render while it is still open,
+	   * ensure that the same object remains as the `message` property if you want to avoid the `Snackbar` hiding and
+	   * showing again)
+	   */
+	  message: _react.PropTypes.node.isRequired,
+	  /**
+	   * Fired when the action button is touchtapped.
+	   *
+	   * @param {object} event Action button event.
+	   */
+	  onActionTouchTap: _react.PropTypes.func,
+	  /**
+	   * @ignore
+	   * Controls whether the `Snackbar` is opened or not.
+	   */
+	  open: _react.PropTypes.bool.isRequired,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  /**
+	   * @ignore
+	   * Width of the screen.
+	   */
+	  width: _react.PropTypes.number.isRequired
+	} : void 0;
+
+	SnackbarBody.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+
+	exports.default = (0, _withWidth2.default)()(SnackbarBody);
+
+/***/ },
+/* 626 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.LARGE = exports.MEDIUM = exports.SMALL = undefined;
+
+	var _extends2 = __webpack_require__(377);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _getPrototypeOf = __webpack_require__(226);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(252);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(253);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(257);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(304);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	exports.default = withWidth;
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactEventListener = __webpack_require__(414);
+
+	var _reactEventListener2 = _interopRequireDefault(_reactEventListener);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var SMALL = exports.SMALL = 1;
+	var MEDIUM = exports.MEDIUM = 2;
+	var LARGE = exports.LARGE = 3;
+
+	function withWidth() {
+	  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var _options$largeWidth = options.largeWidth,
+	      largeWidth = _options$largeWidth === undefined ? 992 : _options$largeWidth,
+	      _options$mediumWidth = options.mediumWidth,
+	      mediumWidth = _options$mediumWidth === undefined ? 768 : _options$mediumWidth,
+	      _options$resizeInterv = options.resizeInterval,
+	      resizeInterval = _options$resizeInterv === undefined ? 166 : _options$resizeInterv;
+
+
+	  return function (MyComponent) {
+	    return function (_Component) {
+	      (0, _inherits3.default)(WithWidth, _Component);
+
+	      function WithWidth() {
+	        var _ref;
+
+	        var _temp, _this, _ret;
+
+	        (0, _classCallCheck3.default)(this, WithWidth);
+
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
+	        }
+
+	        return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = WithWidth.__proto__ || (0, _getPrototypeOf2.default)(WithWidth)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	          width: null
+	        }, _this.handleResize = function () {
+	          clearTimeout(_this.deferTimer);
+	          _this.deferTimer = setTimeout(function () {
+	            _this.updateWidth();
+	          }, resizeInterval);
+	        }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	      }
+
+	      (0, _createClass3.default)(WithWidth, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	          this.updateWidth();
+	        }
+	      }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	          clearTimeout(this.deferTimer);
+	        }
+	      }, {
+	        key: 'updateWidth',
+	        value: function updateWidth() {
+	          var innerWidth = window.innerWidth;
+	          var width = void 0;
+
+	          if (innerWidth >= largeWidth) {
+	            width = LARGE;
+	          } else if (innerWidth >= mediumWidth) {
+	            width = MEDIUM;
+	          } else {
+	            // innerWidth < 768
+	            width = SMALL;
+	          }
+
+	          if (width !== this.state.width) {
+	            this.setState({
+	              width: width
+	            });
+	          }
+	        }
+	      }, {
+	        key: 'render',
+	        value: function render() {
+	          var width = this.state.width;
+
+	          /**
+	           * When rendering the component on the server,
+	           * we have no idea about the screen width.
+	           * In order to prevent blinks and help the reconciliation
+	           * we are not rendering the component.
+	           *
+	           * A better alternative would be to send client hints.
+	           * But the browser support of this API is low:
+	           * http://caniuse.com/#search=client%20hint
+	           */
+	          if (width === null) {
+	            return null;
+	          }
+
+	          return _react2.default.createElement(
+	            _reactEventListener2.default,
+	            { target: 'window', onResize: this.handleResize },
+	            _react2.default.createElement(MyComponent, (0, _extends3.default)({
+	              width: width
+	            }, this.props))
+	          );
+	        }
+	      }]);
+	      return WithWidth;
+	    }(_react.Component);
+	  };
+	}
+
+/***/ },
+/* 627 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(624);
+	var defaultClickRejectionStrategy = __webpack_require__(628);
 
 	var alreadyInjected = false;
 
@@ -69762,13 +70664,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(625)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(629)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 624 */
+/* 628 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -69779,7 +70681,7 @@
 
 
 /***/ },
-/* 625 */
+/* 629 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -69803,14 +70705,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(626);
+	var EventConstants = __webpack_require__(630);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(627);
+	var TouchEventUtils = __webpack_require__(631);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(628);
+	var keyOf = __webpack_require__(632);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -69956,7 +70858,7 @@
 
 
 /***/ },
-/* 626 */
+/* 630 */
 /***/ function(module, exports) {
 
 	/**
@@ -70052,7 +70954,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 627 */
+/* 631 */
 /***/ function(module, exports) {
 
 	/**
@@ -70100,7 +71002,7 @@
 
 
 /***/ },
-/* 628 */
+/* 632 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -70137,6 +71039,33 @@
 	};
 
 	module.exports = keyOf;
+
+/***/ },
+/* 633 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var html1 = "\n<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>\n  <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->\n<div class='flashcard-container'>\n    <div id='flipper' class='flashcard-flipper'>\n        <div class='front'>\n            <i id='hints-button' class=\"fa fa-question-circle-o\"></i>\n            <div id='front-content' class='content'>\n                <div class='middle'>\n                    <div id='front-inner-content' class='inner'>\n";
+
+	var html2 = "\n</div>\n</div>\n</div>\n</div>\n<div class='back'>\n<i id='front-button' class=\"fa fa-arrow-left\"></i>\n<div id='back-content' class='content'>\n<div class='middle'>\n<div id='solution' class='inner'>\n    <div id='back-inner-content'>\n";
+
+	var html3 = "\n</div>\n<div id='ranking'>\n    <table>\n        <tr id='ranking-row'>\n            <td><p class='circle'>1</p></td>\n            <td><p class='circle'>2</p></td>\n            <td><p class='circle'>3</p></td>\n        </tr>\n    </table>\n</div>\n</div>\n<div id='hints' class='inner'>\n<div id='hints-inner-content'>\n";
+
+	var html4 = "\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n";
+
+	var css = "\n<style>\n    .flashcard-container {\n        font-family: Tahoma, Geneva, sans-serif;\n        perspective: 1000px; /* adds realistic-looking perspective to flip action */\n        background-color: transparent;\n        width: 80%;\n        font-size: 1em;\n        color: black;\n    }\n\n    #flipper {\n        transition: width 1s, height 1s, transform 1s;\n        transform-style: preserve-3d;\n        position: relative;\n        width: 100%;\n        padding: 25%;\n        box-sizing: border-box;\n    }\n\n    .front,\n    .back {\n        /* not sure how much of this is needed for Electron */\n        -webkit-backface-visibility: hidden;\n        -moz-backface-visibility: hidden;\n        -o-backface-visibility: hidden;\n        backface-visibility: hidden;\n\n        width: 100%;\n        height: 100%;\n        position: absolute;\n        top: 0;\n        left: 0;\n        background-color: #e7fef8;\n        border: thick solid black;\n        border-radius: 5px;\n    }\n\n    .front {\n        z-index: 2; /* moves the front forward */\n        transform: rotateY(0deg);\n    }\n\n    .back {\n        transform: rotateY(180deg);\n    }\n\n    /* flip the pane when clicked */\n    .rotateBack {\n        transform: rotateY(-180deg);\n    }\n\n    .rotateHint {\n        transform: rotateY(180deg);\n    }\n\n    /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */\n    .content {\n        display: table;\n        position: absolute;\n        height: 100%;\n        width: 100%;\n    }\n\n    .middle {\n        display: table-cell;\n        vertical-align: middle;\n        text-align: center;\n    }\n\n    .inner {\n        margin-left: auto;\n        margin-right: auto;\n    }\n\n    #back-inner-content p,\n    #hints-inner-content p {\n        border-bottom: thin solid #0aaf82;\n        text-align: center;\n        margin-left: 20px;\n        margin-right: 20px;\n        visibility: hidden;\n    }\n\n    i {\n      position: absolute;\n      padding: 10px;\n    }\n\n    .fa {\n      font-size: 1.5em;\n    }\n\n    #hints-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n    }\n\n    #front-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n        display: none;\n    }\n\n    #ranking {\n      width: 100%;\n      position: absolute;\n      bottom: 5px;\n      visibility: hidden; /* don't allow ranking til all the solution is visible */\n    }\n\n    table {\n      display: inline; /* allows it to be centred */\n    }\n\n    td p {\n      margin: 0 30px; /* space between cells */\n    }\n\n    /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle\n    by Jawad\n    accessed 03/18/17 */\n    .circle {\n        width: 2em;\n        height: 2em;\n        border-radius: 50%;\n        font-size: 1em;\n        color: white;\n        line-height: 2em;\n        text-align: center;\n        background: #0aaf82;\n    }\n\n    .circle:hover {\n        color: #0aaf82;\n        background-color: black;\n    }\n</style>\n";
+
+	var js = "\n<script>\n    document.getElementById('front-content').onclick = handleClick;\n    document.getElementById('back-content').onclick = handleClick;\n    document.getElementById('hints-button').onclick = clickedShowHints;\n    document.getElementById('front-button').onclick = clickedShowFront;\n\n    var viewingHints = false;\n    var viewingSolution = false;\n    var solutionIndex = 0;\n    var hintIndex = 0;\n\n    function handleClick() {\n        if (viewingHints) {\n          showNextHint();\n          return;\n        }\n        showSolutionSide();\n    }\n\n    function clickedShowHints() {\n        remove('solution', 'hints-button');\n        display('hints');\n        if(document.getElementById('hints').childElementCount > 0) {\n            document.getElementById('hint0').style.visibility = 'visible';\n            hintIndex += 1;\n        }\n\n        viewingHints = true;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function clickedShowFront() {\n        remove('front-button');\n        display('hints-button');\n\n        viewingHints = false;\n        hintIndex = 0;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function remove() { // sets display of args (ids) to 'none'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'none');\n        }\n    }\n\n    function display() { // sets display of args (ids) to 'inline'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'inline');\n        }\n    }\n\n    function setDisplay(id, display) { // sets element 'id' to display 'display'\n        document.getElementById(id).style.display = display;\n    }\n\n    function flipFinished() { // called after a flip event to update what's displayed\n        if (viewingHints) {\n            display('front-button');\n        } else if (!viewingSolution) {\n            hideChildren(document.getElementById('back-inner-content'), 'solution');\n            hideChildren(document.getElementById('hints-inner-content'), 'hint');\n            document.getElementById('ranking').style.visibility = 'hidden';\n            display('hints-button');\n        }\n    }\n\n    function hideChildren(ele, id) {\n        for (var index = 0; index < ele.childElementCount; index++) {\n          document.getElementById(id + index).style.visibility = 'hidden';\n        }\n    }\n\n    function showNextHint() {\n        var hintsDiv = document.getElementById('hints-inner-content');\n        if (hintIndex < hintsDiv.childElementCount) {\n          document.getElementById('hint' + hintIndex).style.visibility = 'visible';\n          hintIndex += 1;\n        }\n    }\n\n    function resetCard() { // flips back to front after solution viewed, resetting everything\n        solutionIndex = 0;\n        viewingHints = false;\n        viewingSolution = false;\n        document.getElementById('flipper').classList.toggle('rotateBack');\n    }\n\n    function showNextSolutionStep() {\n        document.getElementById('solution' + solutionIndex++).style.visibility = 'visible';\n    }\n\n    function showSolutionSide() {\n        remove('hints', 'hints-button', 'front-button');\n        display('solution');\n\n        var solutionElementCount = document.getElementById('back-inner-content').childElementCount;\n        if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point\n            resetCard();\n            return;\n        }\n\n        if (solutionIndex === 0) { // flip to back!\n            viewingSolution = true;\n            document.getElementById('flipper').classList.toggle('rotateBack');\n        } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution\n            document.getElementById('ranking').style.visibility = 'visible';\n        }\n        showNextSolutionStep();\n    }\n\n    // The following is used to help with flashcard content display during card rotations.\n    // It allows the display to be updated when the rotation (flip) completes.\n    /* From Modernizr */\n    function whichTransitionEvent(){\n        var t;\n        var el = document.createElement('fakeelement');\n\n        // allows it to work on many browsers\n        var transitions = {\n            'transition':'transitionend',\n            'OTransition':'oTransitionEnd',\n            'MozTransition':'transitionend',\n            'WebkitTransition':'webkitTransitionEnd'\n        }\n\n        for(t in transitions){\n            if( el.style[t] !== undefined ){\n                return transitions[t];\n            }\n        }\n    }\n\n    // listen for transition to end\n    var transitionEvent = whichTransitionEvent();\n    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);\n</script>\n";
+
+	module.exports = {
+	    html1: html1,
+	    html2: html2,
+	    html3: html3,
+	    html4: html4,
+	    css: css,
+	    js: js
+	};
 
 /***/ }
 /******/ ]);

@@ -89,11 +89,11 @@ function menuSave(store) {
   } else {
     fs.writeFile(store.getState().state.quickmode_filepath, store.getState().notes.folders[0].pages[0].content, function (err) {
     if(err){
-      alert("An error ocurred updating the file"+ err.message);
+      store.dispatch({type: 'SHOW_SNACKBAR', msg: "An error occurred while saving file"});
       console.log(err);
       return;
     }
-    alert("The file has been succesfully saved");
+    store.dispatch({type: 'SHOW_SNACKBAR', msg: "The file has been succesfully saved", time:10000});
     }); 
   }
 }
@@ -230,7 +230,7 @@ const menubar_template_builder = function(store) {
         label: 'Insert Photo',
         enabled: is_quickmode(state),
         visible: is_quickmode(state),
-        click () { menuLogin(store) }
+        click () { store.dispatch({type: 'PHOTO_ALERT'}) }
       },
       {
         role: 'delete'
