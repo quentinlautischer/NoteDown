@@ -68,11 +68,11 @@
 
 	var _notesReducer2 = _interopRequireDefault(_notesReducer);
 
-	var _editorReducer = __webpack_require__(220);
+	var _editorReducer = __webpack_require__(221);
 
 	var _editorReducer2 = _interopRequireDefault(_editorReducer);
 
-	var _menubar = __webpack_require__(221);
+	var _menubar = __webpack_require__(222);
 
 	var _menubar2 = _interopRequireDefault(_menubar);
 
@@ -112,12 +112,12 @@
 
 	var hljs = __webpack_require__(437);
 
-	var ipc = __webpack_require__(222).ipcRenderer;
+	var ipc = __webpack_require__(223).ipcRenderer;
 
-	var _require = __webpack_require__(222),
+	var _require = __webpack_require__(223),
 	    remote = _require.remote;
 
-	var fs = __webpack_require__(223);
+	var fs = __webpack_require__(220);
 	var Menu = remote.Menu,
 	    MenuItem = remote.MenuItem;
 	var dialog = remote.dialog;
@@ -24112,7 +24112,7 @@
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var fs = __webpack_require__(223);
+	var fs = __webpack_require__(220);
 
 	function setNotes(state, action) {
 	  console.log('Setting Notes: ' + action.notes);
@@ -24191,6 +24191,12 @@
 
 /***/ },
 /* 220 */
+/***/ function(module, exports) {
+
+	module.exports = require("fs");
+
+/***/ },
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24235,7 +24241,7 @@
 	exports.default = editorReducer;
 
 /***/ },
-/* 221 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24244,18 +24250,18 @@
 	  value: true
 	});
 
-	var _require = __webpack_require__(222),
+	var _require = __webpack_require__(223),
 	    app = _require.app,
 	    Menu = _require.Menu;
 
-	var _require2 = __webpack_require__(222),
+	var _require2 = __webpack_require__(223),
 	    remote = _require2.remote;
 
-	var fs = __webpack_require__(223);
+	var fs = __webpack_require__(220);
 	var dialog = remote.dialog;
 
 
-	var ipc = __webpack_require__(222).ipcRenderer;
+	var ipc = __webpack_require__(223).ipcRenderer;
 
 	////////////////////////////////////////////////////////
 	/// Bool Queries
@@ -24532,7 +24538,7 @@
 	    }, {
 	      label: 'Learn More',
 	      click: function click() {
-	        __webpack_require__(222).shell.openExternal('http://electron.atom.io');
+	        __webpack_require__(223).shell.openExternal('http://electron.atom.io');
 	      }
 	    }]
 	  }];
@@ -24598,16 +24604,10 @@
 	exports.default = menubar_template_builder;
 
 /***/ },
-/* 222 */
-/***/ function(module, exports) {
-
-	module.exports = require("electron");
-
-/***/ },
 /* 223 */
 /***/ function(module, exports) {
 
-	module.exports = require("fs");
+	module.exports = require("electron");
 
 /***/ },
 /* 224 */
@@ -24667,7 +24667,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ipc = __webpack_require__(222).ipcRenderer;
+	var ipc = __webpack_require__(223).ipcRenderer;
 
 	var StartMenu = function (_React$Component) {
 	  _inherits(StartMenu, _React$Component);
@@ -37689,7 +37689,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ipc = __webpack_require__(222).ipcRenderer;
+	var ipc = __webpack_require__(223).ipcRenderer;
 
 	var shared = __webpack_require__(435);
 	var hljs = __webpack_require__(437);
@@ -39875,6 +39875,7 @@
 	  //Span-level elements
 	  var span_array = [{ content: str }];
 
+	  check_backslash_escape(span_array);
 	  check_images(span_array);
 
 	  return render_span(span_array);
@@ -40051,6 +40052,17 @@
 	        }
 	      }
 	    }
+	  }
+	}
+
+	function check_backslash_escape(span_array) {
+	  for (var s = 0; s < span_array.length; s++) {
+	    var content = span_array[s].content;
+	    content = content.replace(/\\\\/g, '&bsol;').replace(/\\`/g, '&grave;').replace(/\\\*/g, '&ast;').replace(/\\_/g, '&lowbar;');
+	    content = content.replace(/\\\{/g, '&lbrace;').replace(/\\\}/g, '&rbrace;').replace(/\\\[/g, '&lbrack;').replace(/\\\]/g, '&rbrack;');
+	    content = content.replace(/\\\(/g, '&lpar;').replace(/\\\)/g, '&rpar;').replace(/\\#/g, '&num;').replace(/\\\+/g, '&plus;');
+	    content = content.replace(/\\-/g, '&minus;').replace(/\\\./g, '&period;').replace(/\\!/g, '&excl;').replace(/\\\|/g, '&vert;');
+	    span_array[s].content = content;
 	  }
 	}
 
@@ -69100,7 +69112,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ipc = __webpack_require__(222).ipcRenderer;
+	var ipc = __webpack_require__(223).ipcRenderer;
 
 	var shared = __webpack_require__(435);
 
@@ -69314,7 +69326,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ipc = __webpack_require__(222).ipcRenderer;
+	var ipc = __webpack_require__(223).ipcRenderer;
 
 	var FolderContainerView = function (_React$Component) {
 	  _inherits(FolderContainerView, _React$Component);
@@ -69588,7 +69600,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _menubar = __webpack_require__(221);
+	var _menubar = __webpack_require__(222);
 
 	var _menubar2 = _interopRequireDefault(_menubar);
 
@@ -69600,14 +69612,14 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _require = __webpack_require__(222),
+	var _require = __webpack_require__(223),
 	    remote = _require.remote;
 
 	var Menu = remote.Menu,
 	    MenuItem = remote.MenuItem;
 
 
-	var ipc = __webpack_require__(222).ipcRenderer;
+	var ipc = __webpack_require__(223).ipcRenderer;
 
 	var MenubarTile = function (_React$Component) {
 	  _inherits(MenubarTile, _React$Component);

@@ -3,11 +3,14 @@ console.log(reverseParse(`
     <h2>This is heading 2</h2>
     <h3>This is heading 3</h3>
     <h4>This is heading 4</h4>
+    <p>here's a link: <a href="http://myurl.com">mylink</a></p>
     <h5>This is heading 5</h5>
+    <p>An image <img src="imgurl" alt="myimg"> <- right there</p>
     <h6>This is heading 6</h6>
     <h1>This is another <b>BOLD</b> heading 1</h1>
     <p>This is some text.</p>
     <h2>This is another heading 2</h2>
+    <hr>
     <p>This is some other text.</p>
     <p><strong>strong</strong> text is kind of like <b>bold</b> text, and <em>emphasized</em> text is kind of like <i>italic</i> text</p>
     <p>What happens if I nest bold in italic? <i>italic<b>both</b>italic</i></p>
@@ -32,12 +35,30 @@ console.log(reverseParse(`
 `));
 
 
+// CAN RUN THIS AS
+//  $ node reverse-parser.js
+// from command line to see how it works
+
+// entry point
 function reverseParse(str) {
+    str = parseBlockElements(str);
+    str = parseSpanElements(str);
+    return str;
+}
+
+function parseBlockElements(str) {
     str = parseHeaders(str);
     str = parseParagraphs(str);
+    str = parseLists(str);
+    return str;
+}
+
+function parseSpanElements(str) {
     str = parseBold(str);
     str = parseItalic(str);
-    str = parseLists(str);
+    str = parseLinks(str);
+    str = parseImgs(str);
+    str = parseHorizontalRule(str);
     return str;
 }
 
@@ -74,6 +95,16 @@ function parseItalic(str) {
     return replaceAll(str, /(<em>(.*?)<\/em>)/, '*', '*');
 }
 
+function parseHorizontalRule(str) {
+    var pattern = /(\s*<hr>)/;
+    var match = pattern.exec(str);
+    while (match != null) {
+        str = str.replace(match[1], '\n***\n');
+        match = pattern.exec(str);
+    }
+    return str;
+}
+
 function parseLists(str) {
     // simple, un-nested list
     var listTypes = [
@@ -101,9 +132,6 @@ function parseListsInner(str, pattern, replacer) {
     return str;
 }
 
-
-
-
 function parseLists(str) {
     // simple, un-nested list
 
@@ -115,3 +143,28 @@ function parseLists(str) {
 
     return str;
 }
+
+function parseLinks(str) {
+    pattern = /(<a href="(\S*?)">(.*?)<\/a>)/;
+    return parseLinkOrImgContent(str);
+}
+
+function parseImgs(str) {
+    pattern = /(<img src="(\S*?)" alt="(.*?)">)/;
+    return parseLinkOrImgContent(str,'!');
+}
+
+function parseLinkOrImgContent(str, startModifier='') {
+    var match = pattern.exec(str);
+    while (match != null) {
+        var whole = match[1];
+        var url = match[2];
+        var title = match[3];
+
+        str = str.replace(whole, startModifier + '[' + title + '](' + url + ')');
+        match = pattern.exec(str);
+    }
+    return str;
+}
+
+module.exports.parseHTML = reverseParse;
