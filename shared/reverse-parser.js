@@ -26,58 +26,41 @@ console.log(
     <p> Here is a snippet of code: <code>var i = 0</code></p>
 
     <p>
-        <ul>
-            <li>1</li>
-            <li>1</li>
-            <ol>
-                <li>1i</li>
-                <li>1i</li>
+        <ol>
+            <li>2</li>
+            <li>2</li>
+            <ul>
+                <li>2i</li>
                 <ul>
-                    <li>1ii</li>
-                    <li>1ii</li>
-                    <li>1ii</li>
+                    <li>2ii</li>
+                    <li>2ii</li>
+                    <li>2ii</li>
                 </ul>
-                <li>1i</li>
-            </ol>
-            <li>1</li>
+                <li>2i</li>
+                <li>2i</li>
+            </ul>
+            <li>2</li>
+        </ol>
+    </p>
+    <p>
+        <ul>
+            <li>3</li>
+            <li>3</li>
+            <li>3</li>
         </ul>
     </p>
-    <ol>
-        <li>2</li>
-        <li>2</li>
+    <p>
         <ul>
-            <li>2i</li>
+            <li>4</li>
+            <li>4</li>
             <ul>
-                <li>2ii</li>
-                <li>2ii</li>
-                <li>2ii</li>
+                <li>4i</li>
+                <li>4i</li>
+                <li>4i</li>
             </ul>
-            <li>2i</li>
-            <li>2i</li>
+            <li>4</li>
         </ul>
-        <li>2</li>
-    </ol>
-    <ul>
-        <li>3</li>
-        <li>3</li>
-        <li>3</li>
-    </ul>
-
-    <ul>
-        <li>4</li>
-        <li>4</li>
-        <ul>
-            <li>4i</li>
-            <li>4i</li>
-            <ul>
-                <li>4ii</li>
-                <li>4ii</li>
-                <li>4ii</li>
-            </ul>
-            <li>4i</li>
-        </ul>
-        <li>4</li>
-    </ul>
+    </p>
 `)
 );
 
@@ -169,35 +152,51 @@ function parseHorizontalRule(str) {
 }
 
 function parseLists(str) {
-    // simple, un-nested list
-    var listTypes = [
-        { type: 'ol', point: '1. ' },
-        { type: 'ul', point: '* ' }
-    ];
+        var pattern = /\s*<[ou]l>([^ou]*)<\/[ou]l>/m;
+        var match = pattern.exec(str);
+        var maxLevel = 0;
 
-    do {
-        listTypes.forEach(function(ele) {
-            var pattern = `<${ele.type}>([^ou]*)</${ele.type}>`;
-            str = parseListsInner(str, new RegExp(pattern, 'm'), ele.point); //'  '.repeat(2 - i) +
-        });
-        var done = true;
-        listTypes.forEach(function(ele) {
-            var pattern = `<${ele.type}>([^ou]*)</${ele.type}>`;
-            if (RegExp(pattern, 'm').exec(str) !== null) {
-                done = false; // finished matching all lists
+        var level;
+        while (match != null) {
+            var listElements = match[1];
+            if (!listElements.includes('<0>')) {
+                level = 0;
+            } else {
+                level += 1;
+                maxLevel = Math.max(level, maxLevel);
             }
-        });
-    } while (!done);
+            var replacer = match[0].includes('<ul>') ? '* ' : '1. ';
+            listElements = parseListsReplaceAll(listElements, /( *<li>(.*?)<\/li>)/, replacer, level);
+            str = str.replace(match[0], listElements);
+            match = pattern.exec(str);
 
+        }
+
+        for (var i = 0; i <= maxLevel; i++) {
+            str = parseListsReplaceSpaces(str, maxLevel, i);
+        }
+
+        return str;
+}
+
+function parseListsReplaceAll(str, pattern, mdStart, level) {
+    var match = pattern.exec(str);
+    while (match != null) {
+        var whole = match[1];
+        var inner = match[2];
+        str = str.replace(whole, '<' + level + '>' + mdStart + inner);
+        match = pattern.exec(str);
+    }
     return str;
 }
 
-function parseListsInner(str, pattern, replacer) {
+function parseListsReplaceSpaces(str, max, num) {
+    var pattern = new RegExp('<(' + num + ')>');
     var match = pattern.exec(str);
     while (match != null) {
-        var listElements = match[1];
-        listElements = replaceAll(listElements, /( *<li>(.*?)<\/li>)/, replacer);
-        str = str.replace(match[0], listElements);
+        var whole = match[0];
+        var inner = match[1];
+        str = str.replace(whole, '\t'.repeat(max - num));
         match = pattern.exec(str);
     }
     return str;
