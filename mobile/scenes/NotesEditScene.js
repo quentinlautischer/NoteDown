@@ -12,7 +12,7 @@ export default class NotesEditScene extends Component {
         super(props);
 
         this.state = {
-            text: this.props.content.pages[this.props.index].content
+            text: this.props.folder.pages[this.props.index].content
         }
     }
 
@@ -25,6 +25,8 @@ export default class NotesEditScene extends Component {
                     autoFocus={true}
                     onChangeText={(text) => {
                         this.setState({text});
+                        this.props.socket.emit('request-push-data', this.props.content.data);
+                        console.log('pushed');
                     }}
                     value={this.state.text}
                 />

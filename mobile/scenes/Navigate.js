@@ -49,11 +49,11 @@ export default class Navigate extends Component {
                     } else if (route.title === 'Flashcards Menu') {
                         return <FlashcardsMenuScene navigator={navigator} content={route.content} socket={route.socket} />
                     } else if (route.title === 'View Notes') {
-                        return <NotesViewScene navigator={navigator} content={route.content} socket={route.socket} />
+                        return <NotesViewScene navigator={navigator} content={route.content} socket={route.socket} folder={route.folder} />
                     } else if (route.title === 'Edit Notes') {
-                        return <NotesEditScene navigator={navigator} content={route.content} index={route.index}/>
+                        return <NotesEditScene navigator={navigator} content={route.content} socket={route.socket} folder={route.folder} index={route.index} />
                     } else if (route.title === 'View Flashcard') {
-                        return <FlashcardViewScene navigator={navigator} content={route.content} />
+                        return <FlashcardViewScene navigator={navigator}  content={route.content} socket={route.socket} />
                     } else if (route.title === 'Camera') {
                         return <CameraScene navigator={navigator} socket={route.socket} />
                     } else if (route.title === 'Confirm Photo') {
@@ -105,6 +105,14 @@ export default class Navigate extends Component {
                                         <Text>Go to Flashcards</Text>
                                     </TouchableHighlight>
                                 );
+                            } else if (route.title === 'Edit Notes') {
+                                return(
+                                    <TouchableHighlight
+                                        style={styles.largeNavButton}
+                                        onPress={navigator.__onRightNavButtonPressed}>
+                                        <Icon name='content-save' size={35} color='#000000' />
+                                    </TouchableHighlight>
+                                );
                             } else {
                                 return null;
                             }
@@ -126,6 +134,10 @@ var styles = StyleSheet.create({
         backgroundColor: '#0aaf82'
     },
     navButton: {
-        margin:7 // keeps the button off the edge of the page
+        margin: 7 // keeps the button off the edge of the page
+    },
+    largeNavButton: {
+        marginTop: 4,
+        marginRight: 7
     }
 });
