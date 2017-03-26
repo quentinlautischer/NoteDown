@@ -1,4 +1,5 @@
-console.log(reverseParse(`
+console.log(
+    reverseParse(`
     <h1>This is heading 1</h1>
     <h2>This is heading 2</h2>
     <h3>This is heading 3</h3>
@@ -41,7 +42,8 @@ console.log(reverseParse(`
         <li>b</li>
         <li>c</li>
     </ul>
-`));
+`)
+);
 
 
 // CAN RUN THIS AS
@@ -138,7 +140,8 @@ function parseLists(str) {
     ];
 
     listTypes.forEach(function(ele) {
-        var pattern = '<${ele.type}>((\s*<li>([\s\S]*?)</li>\s*)*)</${ele.type}>';
+        var pattern = '<' + ele.type + '>((\\s*<li>([\\s\\S]*?)</li>\\s*)*)</' + ele.type + '>';
+        console.log(pattern);
         str = parseListsInner(str, new RegExp(pattern, 'm'), ele.point);
     });
 
@@ -154,18 +157,6 @@ function parseListsInner(str, pattern, replacer) {
         str = str.replace(match[0], listElements);
         match = pattern.exec(str);
     }
-    return str;
-}
-
-function parseLists(str) {
-    // simple, un-nested list
-
-    var pattern = /<ul>((\s*<li>([\s\S]*?)<\/li>\s*)*)<\/ul>/m;
-    str = parseListsInner(str, pattern, '* ');
-
-    pattern = /<ol>((\s*<li>([\s\S]*?)<\/li>\s*)*)<\/ol>/m;
-    str = parseListsInner(str, pattern, '1. '); // little hacky to just use 1 for everything, might fix later
-
     return str;
 }
 
