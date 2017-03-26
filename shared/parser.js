@@ -3,7 +3,7 @@ import flashcardTemplate from './models/flashcardTemplate.js';
 
 var global_store, global_imageMapper; //global vars to be called by image links
 
-function parsex(str, store, imageMapper) {
+function parse(str, store, imageMapper) {
   //The main parsing function.
   // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
   var store = {
@@ -30,7 +30,6 @@ function parsex(str, store, imageMapper) {
   // this should output the base64 encoding...
   // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
   // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
-  console.log(imageMapper(24, store));
   
   return parse_blocks(str, false);
 }
@@ -214,6 +213,36 @@ function check_hrule(blocks) {
 }
 
 function check_codeblock(blocks) {
+  var patt = /^(?:[ ]{4}|\t)(.*)$/;
+  var match;
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null) {
+          var inner_content = '';
+          for (var end = l; end < content.length; end++) {
+            if ((match = patt.exec(content[end])) != null) {
+              inner_content += match[1] + '\n';
+            }
+            else if (content[end].trim().length == 0) { //End of block may mean end of blockquote
+              inner_content += '\n';
+            } else { break; }
+          }
+
+          var raw1 = {content:content.slice(0,l)};
+          var code = {tag:'code', content:inner_content};
+          var pre = {tag:'pre', content:render_block([code])};
+          var raw2 = {content:content.slice(end,content.length)};
+
+          blocks.splice(b, 1, raw1, pre, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
 }
 
 function check_codeblock_lang(blocks) {
@@ -255,6 +284,26 @@ function check_codeblock_lang(blocks) {
 }
 
 function check_flashcard(blocks) {
+  var patt = /^\{(.+)\}$/
+  var match = [];
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length - 2; l++) {
+        for (var m = 0; m < 3; m++) { match.push(patt.exec(content[l+m])); }
+        if (match[0] != null && match[1] != null && match[2] != null) {
+          var raw1 = {content:content.slice(0,l)};
+          var flashcard = {tag:'div', content:makeFlashcard(match[0][1], match[2][1].split('|'), match[1][1].split('|'))};
+          var raw2 = {content:content.slice(l+3,content.length)};
+
+          blocks.splice(b, 1, raw1, flashcard, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
 }
 
 function check_list_ordered(blocks) {
@@ -309,7 +358,7 @@ function check_backslash_escape(span_array) {
 }
 
 function check_links(span_array) {
-  var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)s*\)/;
+  var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)s*\)?/;
   var match;
   
   for (var s = 0; s < span_array.length; s++) {
@@ -330,7 +379,6 @@ function check_links(span_array) {
           span_array.splice(s, 1, raw1, a1, content, a2, raw2);
           s+=3;
         } else {
-          
           if (src.slice(0,2) == '@:') {
             var guid = src.slice(2,src.length);
             var data = global_imageMapper(guid, global_store);
@@ -403,7 +451,7 @@ function makeFlashcard(front, back, hints) {
 }
 
 module.exports = {
-    parsex: parsex,
+    parse: parse,
     makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
 }
 
