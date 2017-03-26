@@ -254,6 +254,26 @@ function check_codeblock_lang(blocks) {
 }
 
 function check_flashcard(blocks) {
+  var patt = /^\{(.+)\}$/
+  var match = [];
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length - 2; l++) {
+        for (var m = 0; m < 3; m++) { match.push(patt.exec(content[l+m])); }
+        if (match[0] != null && match[1] != null && match[2] != null) {
+          var raw1 = {content:content.slice(0,l)};
+          var flashcard = {tag:'div', content:makeFlashcard(match[0][1], match[2][1].split('|'), match[1][1].split('|'))};
+          var raw2 = {content:content.slice(l+3,content.length)};
+
+          blocks.splice(b, 1, raw1, flashcard, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
 }
 
 function check_list_ordered(blocks) {
