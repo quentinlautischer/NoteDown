@@ -15,6 +15,15 @@ console.log(reverseParse(`
     <p><strong>strong</strong> text is kind of like <b>bold</b> text, and <em>emphasized</em> text is kind of like <i>italic</i> text</p>
     <p>What happens if I nest bold in italic? <i>italic<b>both</b>italic</i></p>
     <p>What happens if I nest italic in bold? <b>bold<i>both</i>bold</b></p>
+
+    <blockquote>This is a blockquote</blockquote>
+
+    <pre><code>def foo(): return 1</code></pre>
+
+    <pre><code class="python">def foo(): return 1</code></pre>
+
+    <p> Here is a snippet of code: <code>var i = 0</code></p>
+
     <p>
         <ul>
             <li>Coffee</li>
@@ -50,6 +59,8 @@ function parseBlockElements(str) {
     str = parseHeaders(str);
     str = parseParagraphs(str);
     str = parseLists(str);
+    str = parseBlockquotes(str);
+    str = parseCode(str);
     return str;
 }
 
@@ -93,6 +104,20 @@ function parseBold(str) {
 function parseItalic(str) {
     str = replaceAll(str, /(<i>(.*?)<\/i>)/, '*', '*');
     return replaceAll(str, /(<em>(.*?)<\/em>)/, '*', '*');
+}
+
+function parseBlockquotes(str) {
+    var pattern = new RegExp('( *<blockquote>(.*?)</blockquote>)');
+    str = replaceAll(str, pattern, '> ');
+    return str;
+}
+
+function parseCode(str) {
+    var pattern = new RegExp('( *<pre><code>(.*?)</code></pre>)');
+    str = replaceAll(str, pattern, '```\n', '\n```');
+    pattern = new RegExp('(<code>(.*?)</code>)');
+    str = replaceAll(str, pattern, '`', '`');
+    return str;
 }
 
 function parseHorizontalRule(str) {
@@ -159,9 +184,9 @@ function parseLinkOrImgContent(str, startModifier='') {
     while (match != null) {
         var whole = match[1];
         var url = match[2];
-        var title = match[3];
+        var label = match[3];
 
-        str = str.replace(whole, startModifier + '[' + title + '](' + url + ')');
+        str = str.replace(whole, startModifier + '[' + label + '](' + url + ')');
         match = pattern.exec(str);
     }
     return str;
