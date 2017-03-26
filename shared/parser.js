@@ -1,7 +1,10 @@
 
 import flashcardTemplate from './models/flashcardTemplate.js';
 
+var global_store, global_imageMapper; //global vars to be called by image links
+
 function parsex(str, store, imageMapper) {
+  //The main parsing function.
   // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
   var store = {
     images: [{
@@ -17,6 +20,10 @@ function parsex(str, store, imageMapper) {
         return "";
     }
   }
+
+  global_store = store;
+  global_imageMapper = imageMapper;
+
   // ![label](@:24)
   // pass the guid found in the .md
   // into imageMapper(guid, store) as well as the store parameter
@@ -24,10 +31,7 @@ function parsex(str, store, imageMapper) {
   // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
   // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
   console.log(imageMapper(24, store));
-}
-
-function parse(str) {
-  //The main parsing function.
+  
   return parse_blocks(str, false);
 }
 
@@ -67,7 +71,7 @@ function parse_span(str) {
   var span_array = [{content:str}];
 
   check_backslash_escape(span_array);
-  check_images(span_array);
+  check_links(span_array);
   
   return render_span(span_array);
 }
@@ -222,22 +226,22 @@ function check_codeblock_lang(blocks) {
       var content = blocks[b].content;
       for (var l = 0; l < content.length; l++) {
         if ((match = patt.exec(content[l])) != null) {
-          var class = match[1];
+          var code_class = match[1];
           var inner_content = '';
           var open = true;
           for (var end = l+1; end < content.length; end++) {
-            if ((match = patt.exec(content[l])) != null && match[1] == null) {
+            if ((match = patt.exec(content[end])) != null) {
               open = false;
               break;
             } else {
-              if (end == l+1) { inner_content += '\n'; }
-              inner_content += content[l];
+              if (end > l+1) { inner_content += '\n'; }
+              inner_content += content[end];
             }
           }
           if (open) { break; }
           var raw1 = {content:content.slice(0,l)};
-          var code = {tag:'code', content:parse_span(inner_content)};
-          if (class != null) { code.attrs = ['class', class]; }
+          var code = {tag:'code', content:inner_content};
+          if (code_class != null) { code.attrs = ['class', code_class]; }
           var pre = {tag:'pre', content:render_block([code])};
           var raw2 = {content:content.slice(end+1,content.length)};
 
@@ -304,19 +308,26 @@ function check_backslash_escape(span_array) {
   }
 }
 
-function check_images(span_array) {
-  var patt = /!\[(.+?)\]\((.+?)\)/;
+function check_links(span_array) {
+  var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)s*\)/;
   var match;
   
   for (var s = 0; s < span_array.length; s++) {
     if (span_array[s].tag == null) {
       var content = span_array[s].content;
       if ((match = patt.exec(content)) != null) {
-        var alt = match[1];
-        var src = match[2];
-
+        var alt = match[2];
+        var src = match[3];
+        var title = match[5]; //may be null
+        
+        if (src.slice(0,2) == '@:') {
+          var guid = src.slice(2,src.length);
+          var data = global_imageMapper(guid, global_store);
+          src = 'data:image/jpeg;base64, ' + data;
+        }
+        
         var raw1 = {content:content.slice(0,match.index)};
-        var image = {tag:'a', content:'<img src="' + src + '" alt="' + alt + '" width="400px"/>'};
+        var image = {tag:'a', content:'<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : ('" title="' + title)) + '" width="400px"/>'};
         var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
 
         span_array.splice(s, 1, raw1, image, raw2);
