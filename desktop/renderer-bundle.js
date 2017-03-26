@@ -37906,12 +37906,10 @@
 	  }, {
 	    key: 'parse',
 	    value: function parse(content) {
-	      var rendered = '';
-	      rendered = shared.parse(content);
-	      this.setState({ rendered_content: rendered });
-	      shared.parsex("str", this.props.store, function () {
+	      var rendered = shared.parse(content, this.props.store, function () {
 	        return "";
 	      });
+	      this.setState({ rendered_content: rendered });
 	    }
 	  }, {
 	    key: 'drop',
@@ -38607,10 +38605,17 @@
 	      var cursor_pos = state.editor.cursor_position;
 	      var currentContent = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
 
+	      // var content = "";
+	      // var sample = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+	      // if (state.state.userid) {
+	      //   content = `${currentContent.slice(0, cursor_pos)}<img width="350px" alt="${this.state.value}" src="data:image/jpeg;base64, ${sample}" />${currentContent.slice(cursor_pos)}`;
+	      // } else {
+	      //   content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](${this.props.filepath})${currentContent.slice(cursor_pos)}`;
+	      // }
+
 	      var content = "";
-	      var sample = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
 	      if (state.state.userid) {
-	        content = currentContent.slice(0, cursor_pos) + '<img width="350px" alt="' + this.state.value + '" src="data:image/jpeg;base64, ' + sample + '" />' + currentContent.slice(cursor_pos);
+	        content = currentContent.slice(0, cursor_pos) + '![label](@:24)' + currentContent.slice(cursor_pos);
 	      } else {
 	        content = currentContent.slice(0, cursor_pos) + '![' + this.state.value + '](' + this.props.filepath + ')' + currentContent.slice(cursor_pos);
 	      }
@@ -39954,7 +39959,7 @@
 
 	var global_store, global_imageMapper; //global vars to be called by image links
 
-	function parsex(str, store, imageMapper) {
+	function parse(str, store, imageMapper) {
 	  //The main parsing function.
 	  // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
 	  var store = {
@@ -39981,7 +39986,6 @@
 	  // this should output the base64 encoding...
 	  // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
 	  // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
-	  console.log(imageMapper(24, store));
 
 	  return parse_blocks(str, false);
 	}
@@ -40291,7 +40295,6 @@
 	          span_array.splice(s, 1, raw1, a1, content, a2, raw2);
 	          s += 3;
 	        } else {
-
 	          if (src.slice(0, 2) == '@:') {
 	            var guid = src.slice(2, src.length);
 	            var data = global_imageMapper(guid, global_store);
@@ -40364,7 +40367,7 @@
 	}
 
 	module.exports = {
-	  parsex: parsex,
+	  parse: parse,
 	  makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
 	};
 
@@ -69422,8 +69425,9 @@
 	  }, {
 	    key: 'parse',
 	    value: function parse(content) {
-	      var rendered = '';
-	      rendered = shared.parse(content);
+	      var rendered = shared.parse(content, this.props.store, function () {
+	        return "";
+	      });
 	      this.setState({ rendered_content: rendered });
 	    }
 	  }, {
