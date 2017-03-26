@@ -403,7 +403,6 @@ function makeFlashcard(front, back, hints) {
 }
 
 module.exports = {
-    parse: parse,
     parsex: parsex,
     makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
 }
