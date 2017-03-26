@@ -35,6 +35,7 @@ function parse_span(str) {
   //Span-level elements
   var span_array = [{content:str}];
 
+  check_backslash_escape(span_array);
   check_images(span_array);
   
   return render_span(span_array);
@@ -204,6 +205,18 @@ function check_paragraph(blocks) {
         }
       }
     }
+  }
+}
+
+
+function check_backslash_escape(span_array) {
+  for (var s = 0; s < span_array.length; s++) {
+    var content = span_array[s].content;
+    content = content.replace(/\\\\/g, '&bsol;').replace(/\\`/g, '&grave;').replace(/\\\*/g, '&ast;').replace(/\\_/g, '&lowbar;');
+    content = content.replace(/\\\{/g, '&lbrace;').replace(/\\\}/g, '&rbrace;').replace(/\\\[/g, '&lbrack;').replace(/\\\]/g, '&rbrack;');
+    content = content.replace(/\\\(/g, '&lpar;').replace(/\\\)/g, '&rpar;').replace(/\\#/g, '&num;').replace(/\\\+/g, '&plus;');
+    content = content.replace(/\\-/g, '&minus;').replace(/\\\./g, '&period;').replace(/\\!/g, '&excl;').replace(/\\\|/g, '&vert;');
+    span_array[s].content = content;
   }
 }
 
