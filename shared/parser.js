@@ -320,18 +320,26 @@ function check_links(span_array) {
         var src = match[3];
         var title = match[5]; //may be null
         
-        if (src.slice(0,2) == '@:') {
-          var guid = src.slice(2,src.length);
-          var data = global_imageMapper(guid, global_store);
-          src = 'data:image/jpeg;base64, ' + data;
-        }
-        
         var raw1 = {content:content.slice(0,match.index)};
-        var image = {tag:'a', content:'<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : ('" title="' + title)) + '" width="400px"/>'};
         var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
 
-        span_array.splice(s, 1, raw1, image, raw2);
-        s++;
+        if (match[1].length == 0) {
+          var a1 = {tag:'a', content:'<a href="' + src + (title == null ? '' : ('" title="' + title)) + '">'};
+          var content = {content:alt};
+          var a2 = {tag:'a', content:'</a>'};
+          span_array.splice(s, 1, raw1, a1, content, a2, raw2);
+          s+=3;
+        } else {
+          
+          if (src.slice(0,2) == '@:') {
+            var guid = src.slice(2,src.length);
+            var data = global_imageMapper(guid, global_store);
+            src = 'data:image/jpeg;base64, ' + data;
+          }
+          var image = {tag:'img', content:'<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : ('" title="' + title)) + '" />'};
+          span_array.splice(s, 1, raw1, image, raw2);
+          s++;
+        }
         break;
       }
     }

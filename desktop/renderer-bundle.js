@@ -84,15 +84,15 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _fusionmodeEditor = __webpack_require__(618);
+	var _fusionmodeEditor = __webpack_require__(619);
 
 	var _fusionmodeEditor2 = _interopRequireDefault(_fusionmodeEditor);
 
-	var _folderContainerView = __webpack_require__(619);
+	var _folderContainerView = __webpack_require__(620);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _menubarTile = __webpack_require__(621);
+	var _menubarTile = __webpack_require__(622);
 
 	var _menubarTile2 = _interopRequireDefault(_menubarTile);
 
@@ -108,11 +108,11 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	var _Snackbar = __webpack_require__(622);
+	var _Snackbar = __webpack_require__(623);
 
 	var _Snackbar2 = _interopRequireDefault(_Snackbar);
 
-	var _reactTapEventPlugin = __webpack_require__(627);
+	var _reactTapEventPlugin = __webpack_require__(628);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -126,7 +126,7 @@
 
 	(0, _reactTapEventPlugin2.default)();
 
-	var hljs = __webpack_require__(436);
+	var hljs = __webpack_require__(437);
 
 	var ipc = __webpack_require__(223).ipcRenderer;
 
@@ -37789,12 +37789,12 @@
 	var ipc = __webpack_require__(223).ipcRenderer;
 
 	var shared = __webpack_require__(435);
-	var hljs = __webpack_require__(436);
+	var hljs = __webpack_require__(437);
 
-	var CodeMirror = __webpack_require__(610);
-	__webpack_require__(614);
+	var CodeMirror = __webpack_require__(611);
 	__webpack_require__(615);
 	__webpack_require__(616);
+	__webpack_require__(617);
 
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
@@ -39946,13 +39946,16 @@
 
 	"use strict";
 
-	var _flashcardTemplate = __webpack_require__(633);
+	var _flashcardTemplate = __webpack_require__(436);
 
 	var _flashcardTemplate2 = _interopRequireDefault(_flashcardTemplate);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var global_store, global_imageMapper; //global vars to be called by image links
+
 	function parsex(str, store, imageMapper) {
+	  //The main parsing function.
 	  // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
 	  var store = {
 	    images: [{
@@ -39968,6 +39971,10 @@
 	        return "";
 	    }
 	  };
+
+	  global_store = store;
+	  global_imageMapper = imageMapper;
+
 	  // ![label](@:24)
 	  // pass the guid found in the .md
 	  // into imageMapper(guid, store) as well as the store parameter
@@ -39975,10 +39982,7 @@
 	  // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
 	  // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
 	  console.log(imageMapper(24, store));
-	}
 
-	function parse(str) {
-	  //The main parsing function.
 	  return parse_blocks(str, false);
 	}
 
@@ -39992,10 +39996,16 @@
 	  //Block-level elements
 	  var block_array = [{ content: str.split('\n') }];
 
+	  check_codeblock(block_array);
+	  check_codeblock_lang(block_array);
 	  check_header_setext(block_array);
 	  check_header_atx(block_array);
 	  check_blockquote(block_array);
 	  check_hrule(block_array);
+	  check_flashcard(block_array);
+	  check_list_ordered(block_array);
+	  check_list_unordered(block_array);
+	  check_table(block_array);
 	  check_paragraph(block_array);
 
 	  if (!allow_raw) {
@@ -40015,7 +40025,7 @@
 	  var span_array = [{ content: str }];
 
 	  check_backslash_escape(span_array);
-	  check_images(span_array);
+	  check_links(span_array);
 
 	  return render_span(span_array);
 	}
@@ -40162,6 +40172,60 @@
 	  }
 	}
 
+	function check_codeblock(blocks) {}
+
+	function check_codeblock_lang(blocks) {
+	  var patt = /^```(.*)$/;
+	  var match;
+	  var codeblocks;
+
+	  for (var b = 0; b < blocks.length; b++) {
+	    if (blocks[b].tag == null) {
+	      var content = blocks[b].content;
+	      for (var l = 0; l < content.length; l++) {
+	        if ((match = patt.exec(content[l])) != null) {
+	          var code_class = match[1];
+	          var inner_content = '';
+	          var open = true;
+	          for (var end = l + 1; end < content.length; end++) {
+	            if ((match = patt.exec(content[end])) != null) {
+	              open = false;
+	              break;
+	            } else {
+	              if (end > l + 1) {
+	                inner_content += '\n';
+	              }
+	              inner_content += content[end];
+	            }
+	          }
+	          if (open) {
+	            break;
+	          }
+	          var raw1 = { content: content.slice(0, l) };
+	          var code = { tag: 'code', content: inner_content };
+	          if (code_class != null) {
+	            code.attrs = ['class', code_class];
+	          }
+	          var pre = { tag: 'pre', content: render_block([code]) };
+	          var raw2 = { content: content.slice(end + 1, content.length) };
+
+	          blocks.splice(b, 1, raw1, pre, raw2);
+	          b++;
+	          break;
+	        }
+	      }
+	    }
+	  }
+	}
+
+	function check_flashcard(blocks) {}
+
+	function check_list_ordered(blocks) {}
+
+	function check_list_unordered(blocks) {}
+
+	function check_table(blocks) {}
+
 	function check_paragraph(blocks) {
 	  var patt = /^[ ]{0,3}(.+)$/;
 	  var match;
@@ -40205,23 +40269,38 @@
 	  }
 	}
 
-	function check_images(span_array) {
-	  var patt = /!\[(.+?)\]\((.+?)\)/;
+	function check_links(span_array) {
+	  var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)s*\)/;
 	  var match;
 
 	  for (var s = 0; s < span_array.length; s++) {
 	    if (span_array[s].tag == null) {
 	      var content = span_array[s].content;
 	      if ((match = patt.exec(content)) != null) {
-	        var alt = match[1];
-	        var src = match[2];
+	        var alt = match[2];
+	        var src = match[3];
+	        var title = match[5]; //may be null
 
 	        var raw1 = { content: content.slice(0, match.index) };
-	        var image = { tag: 'a', content: '<img src="' + src + '" alt="' + alt + '" width="400px"/>' };
 	        var raw2 = { content: content.slice(match.index + match[0].length, content.length) };
 
-	        span_array.splice(s, 1, raw1, image, raw2);
-	        s++;
+	        if (match[1].length == 0) {
+	          var a1 = { tag: 'a', content: '<a href="' + src + (title == null ? '' : '" title="' + title) + '">' };
+	          var content = { content: alt };
+	          var a2 = { tag: 'a', content: '</a>' };
+	          span_array.splice(s, 1, raw1, a1, content, a2, raw2);
+	          s += 3;
+	        } else {
+
+	          if (src.slice(0, 2) == '@:') {
+	            var guid = src.slice(2, src.length);
+	            var data = global_imageMapper(guid, global_store);
+	            src = 'data:image/jpeg;base64, ' + data;
+	          }
+	          var image = { tag: 'img', content: '<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : '" title="' + title) + '" />' };
+	          span_array.splice(s, 1, raw1, image, raw2);
+	          s++;
+	        }
 	        break;
 	      }
 	    }
@@ -40294,187 +40373,214 @@
 
 /***/ },
 /* 436 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var html1 = "\n<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>\n  <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->\n<div class='flashcard-container'>\n    <div id='flipper' class='flashcard-flipper'>\n        <div class='front'>\n            <i id='hints-button' class=\"fa fa-question-circle-o\"></i>\n            <div id='front-content' class='content'>\n                <div class='middle'>\n                    <div id='front-inner-content' class='inner'>\n";
+
+	var html2 = "\n</div>\n</div>\n</div>\n</div>\n<div class='back'>\n<i id='front-button' class=\"fa fa-arrow-left\"></i>\n<div id='back-content' class='content'>\n<div class='middle'>\n<div id='solution' class='inner'>\n    <div id='back-inner-content'>\n";
+
+	var html3 = "\n</div>\n<div id='ranking'>\n    <table>\n        <tr id='ranking-row'>\n            <td><p class='circle'>1</p></td>\n            <td><p class='circle'>2</p></td>\n            <td><p class='circle'>3</p></td>\n        </tr>\n    </table>\n</div>\n</div>\n<div id='hints' class='inner'>\n<div id='hints-inner-content'>\n";
+
+	var html4 = "\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n";
+
+	var css = "\n<style>\n    .flashcard-container {\n        font-family: Tahoma, Geneva, sans-serif;\n        perspective: 1000px; /* adds realistic-looking perspective to flip action */\n        background-color: transparent;\n        width: 80%;\n        font-size: 1em;\n        color: black;\n    }\n\n    #flipper {\n        transition: width 1s, height 1s, transform 1s;\n        transform-style: preserve-3d;\n        position: relative;\n        width: 100%;\n        padding: 25%;\n        box-sizing: border-box;\n    }\n\n    .front,\n    .back {\n        /* not sure how much of this is needed for Electron */\n        -webkit-backface-visibility: hidden;\n        -moz-backface-visibility: hidden;\n        -o-backface-visibility: hidden;\n        backface-visibility: hidden;\n\n        width: 100%;\n        height: 100%;\n        position: absolute;\n        top: 0;\n        left: 0;\n        background-color: #e7fef8;\n        border: thick solid black;\n        border-radius: 5px;\n    }\n\n    .front {\n        z-index: 2; /* moves the front forward */\n        transform: rotateY(0deg);\n    }\n\n    .back {\n        transform: rotateY(180deg);\n    }\n\n    /* flip the pane when clicked */\n    .rotateBack {\n        transform: rotateY(-180deg);\n    }\n\n    .rotateHint {\n        transform: rotateY(180deg);\n    }\n\n    /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */\n    .content {\n        display: table;\n        position: absolute;\n        height: 100%;\n        width: 100%;\n    }\n\n    .middle {\n        display: table-cell;\n        vertical-align: middle;\n        text-align: center;\n    }\n\n    .inner {\n        margin-left: auto;\n        margin-right: auto;\n    }\n\n    #back-inner-content p,\n    #hints-inner-content p {\n        border-bottom: thin solid #0aaf82;\n        text-align: center;\n        margin-left: 20px;\n        margin-right: 20px;\n        visibility: hidden;\n    }\n\n    i {\n      position: absolute;\n      padding: 10px;\n    }\n\n    .fa {\n      font-size: 1.5em;\n    }\n\n    #hints-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n    }\n\n    #front-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n        display: none;\n    }\n\n    #ranking {\n      width: 100%;\n      position: absolute;\n      bottom: 5px;\n      visibility: hidden; /* don't allow ranking til all the solution is visible */\n    }\n\n    table {\n      display: inline; /* allows it to be centred */\n    }\n\n    td p {\n      margin: 0 30px; /* space between cells */\n    }\n\n    /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle\n    by Jawad\n    accessed 03/18/17 */\n    .circle {\n        width: 2em;\n        height: 2em;\n        border-radius: 50%;\n        font-size: 1em;\n        color: white;\n        line-height: 2em;\n        text-align: center;\n        background: #0aaf82;\n    }\n\n    .circle:hover {\n        color: #0aaf82;\n        background-color: black;\n    }\n</style>\n";
+
+	var js = "\n<script>\n    document.getElementById('front-content').onclick = handleClick;\n    document.getElementById('back-content').onclick = handleClick;\n    document.getElementById('hints-button').onclick = clickedShowHints;\n    document.getElementById('front-button').onclick = clickedShowFront;\n\n    var viewingHints = false;\n    var viewingSolution = false;\n    var solutionIndex = 0;\n    var hintIndex = 0;\n\n    function handleClick() {\n        if (viewingHints) {\n          showNextHint();\n          return;\n        }\n        showSolutionSide();\n    }\n\n    function clickedShowHints() {\n        remove('solution', 'hints-button');\n        display('hints');\n        if(document.getElementById('hints').childElementCount > 0) {\n            document.getElementById('hint0').style.visibility = 'visible';\n            hintIndex += 1;\n        }\n\n        viewingHints = true;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function clickedShowFront() {\n        remove('front-button');\n        display('hints-button');\n\n        viewingHints = false;\n        hintIndex = 0;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function remove() { // sets display of args (ids) to 'none'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'none');\n        }\n    }\n\n    function display() { // sets display of args (ids) to 'inline'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'inline');\n        }\n    }\n\n    function setDisplay(id, display) { // sets element 'id' to display 'display'\n        document.getElementById(id).style.display = display;\n    }\n\n    function flipFinished() { // called after a flip event to update what's displayed\n        if (viewingHints) {\n            display('front-button');\n        } else if (!viewingSolution) {\n            hideChildren(document.getElementById('back-inner-content'), 'solution');\n            hideChildren(document.getElementById('hints-inner-content'), 'hint');\n            document.getElementById('ranking').style.visibility = 'hidden';\n            display('hints-button');\n        }\n    }\n\n    function hideChildren(ele, id) {\n        for (var index = 0; index < ele.childElementCount; index++) {\n          document.getElementById(id + index).style.visibility = 'hidden';\n        }\n    }\n\n    function showNextHint() {\n        var hintsDiv = document.getElementById('hints-inner-content');\n        if (hintIndex < hintsDiv.childElementCount) {\n          document.getElementById('hint' + hintIndex).style.visibility = 'visible';\n          hintIndex += 1;\n        }\n    }\n\n    function resetCard() { // flips back to front after solution viewed, resetting everything\n        solutionIndex = 0;\n        viewingHints = false;\n        viewingSolution = false;\n        document.getElementById('flipper').classList.toggle('rotateBack');\n    }\n\n    function showNextSolutionStep() {\n        document.getElementById('solution' + solutionIndex++).style.visibility = 'visible';\n    }\n\n    function showSolutionSide() {\n        remove('hints', 'hints-button', 'front-button');\n        display('solution');\n\n        var solutionElementCount = document.getElementById('back-inner-content').childElementCount;\n        if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point\n            resetCard();\n            return;\n        }\n\n        if (solutionIndex === 0) { // flip to back!\n            viewingSolution = true;\n            document.getElementById('flipper').classList.toggle('rotateBack');\n        } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution\n            document.getElementById('ranking').style.visibility = 'visible';\n        }\n        showNextSolutionStep();\n    }\n\n    // The following is used to help with flashcard content display during card rotations.\n    // It allows the display to be updated when the rotation (flip) completes.\n    /* From Modernizr */\n    function whichTransitionEvent(){\n        var t;\n        var el = document.createElement('fakeelement');\n\n        // allows it to work on many browsers\n        var transitions = {\n            'transition':'transitionend',\n            'OTransition':'oTransitionEnd',\n            'MozTransition':'transitionend',\n            'WebkitTransition':'webkitTransitionEnd'\n        }\n\n        for(t in transitions){\n            if( el.style[t] !== undefined ){\n                return transitions[t];\n            }\n        }\n    }\n\n    // listen for transition to end\n    var transitionEvent = whichTransitionEvent();\n    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);\n</script>\n";
+
+	module.exports = {
+	    html1: html1,
+	    html2: html2,
+	    html3: html3,
+	    html4: html4,
+	    css: css,
+	    js: js
+	};
+
+/***/ },
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hljs = __webpack_require__(437);
+	var hljs = __webpack_require__(438);
 
-	hljs.registerLanguage('1c', __webpack_require__(438));
-	hljs.registerLanguage('abnf', __webpack_require__(439));
-	hljs.registerLanguage('accesslog', __webpack_require__(440));
-	hljs.registerLanguage('actionscript', __webpack_require__(441));
-	hljs.registerLanguage('ada', __webpack_require__(442));
-	hljs.registerLanguage('apache', __webpack_require__(443));
-	hljs.registerLanguage('applescript', __webpack_require__(444));
-	hljs.registerLanguage('cpp', __webpack_require__(445));
-	hljs.registerLanguage('arduino', __webpack_require__(446));
-	hljs.registerLanguage('armasm', __webpack_require__(447));
-	hljs.registerLanguage('xml', __webpack_require__(448));
-	hljs.registerLanguage('asciidoc', __webpack_require__(449));
-	hljs.registerLanguage('aspectj', __webpack_require__(450));
-	hljs.registerLanguage('autohotkey', __webpack_require__(451));
-	hljs.registerLanguage('autoit', __webpack_require__(452));
-	hljs.registerLanguage('avrasm', __webpack_require__(453));
-	hljs.registerLanguage('awk', __webpack_require__(454));
-	hljs.registerLanguage('axapta', __webpack_require__(455));
-	hljs.registerLanguage('bash', __webpack_require__(456));
-	hljs.registerLanguage('basic', __webpack_require__(457));
-	hljs.registerLanguage('bnf', __webpack_require__(458));
-	hljs.registerLanguage('brainfuck', __webpack_require__(459));
-	hljs.registerLanguage('cal', __webpack_require__(460));
-	hljs.registerLanguage('capnproto', __webpack_require__(461));
-	hljs.registerLanguage('ceylon', __webpack_require__(462));
-	hljs.registerLanguage('clean', __webpack_require__(463));
-	hljs.registerLanguage('clojure', __webpack_require__(464));
-	hljs.registerLanguage('clojure-repl', __webpack_require__(465));
-	hljs.registerLanguage('cmake', __webpack_require__(466));
-	hljs.registerLanguage('coffeescript', __webpack_require__(467));
-	hljs.registerLanguage('coq', __webpack_require__(468));
-	hljs.registerLanguage('cos', __webpack_require__(469));
-	hljs.registerLanguage('crmsh', __webpack_require__(470));
-	hljs.registerLanguage('crystal', __webpack_require__(471));
-	hljs.registerLanguage('cs', __webpack_require__(472));
-	hljs.registerLanguage('csp', __webpack_require__(473));
-	hljs.registerLanguage('css', __webpack_require__(474));
-	hljs.registerLanguage('d', __webpack_require__(475));
-	hljs.registerLanguage('markdown', __webpack_require__(476));
-	hljs.registerLanguage('dart', __webpack_require__(477));
-	hljs.registerLanguage('delphi', __webpack_require__(478));
-	hljs.registerLanguage('diff', __webpack_require__(479));
-	hljs.registerLanguage('django', __webpack_require__(480));
-	hljs.registerLanguage('dns', __webpack_require__(481));
-	hljs.registerLanguage('dockerfile', __webpack_require__(482));
-	hljs.registerLanguage('dos', __webpack_require__(483));
-	hljs.registerLanguage('dsconfig', __webpack_require__(484));
-	hljs.registerLanguage('dts', __webpack_require__(485));
-	hljs.registerLanguage('dust', __webpack_require__(486));
-	hljs.registerLanguage('ebnf', __webpack_require__(487));
-	hljs.registerLanguage('elixir', __webpack_require__(488));
-	hljs.registerLanguage('elm', __webpack_require__(489));
-	hljs.registerLanguage('ruby', __webpack_require__(490));
-	hljs.registerLanguage('erb', __webpack_require__(491));
-	hljs.registerLanguage('erlang-repl', __webpack_require__(492));
-	hljs.registerLanguage('erlang', __webpack_require__(493));
-	hljs.registerLanguage('excel', __webpack_require__(494));
-	hljs.registerLanguage('fix', __webpack_require__(495));
-	hljs.registerLanguage('flix', __webpack_require__(496));
-	hljs.registerLanguage('fortran', __webpack_require__(497));
-	hljs.registerLanguage('fsharp', __webpack_require__(498));
-	hljs.registerLanguage('gams', __webpack_require__(499));
-	hljs.registerLanguage('gauss', __webpack_require__(500));
-	hljs.registerLanguage('gcode', __webpack_require__(501));
-	hljs.registerLanguage('gherkin', __webpack_require__(502));
-	hljs.registerLanguage('glsl', __webpack_require__(503));
-	hljs.registerLanguage('go', __webpack_require__(504));
-	hljs.registerLanguage('golo', __webpack_require__(505));
-	hljs.registerLanguage('gradle', __webpack_require__(506));
-	hljs.registerLanguage('groovy', __webpack_require__(507));
-	hljs.registerLanguage('haml', __webpack_require__(508));
-	hljs.registerLanguage('handlebars', __webpack_require__(509));
-	hljs.registerLanguage('haskell', __webpack_require__(510));
-	hljs.registerLanguage('haxe', __webpack_require__(511));
-	hljs.registerLanguage('hsp', __webpack_require__(512));
-	hljs.registerLanguage('htmlbars', __webpack_require__(513));
-	hljs.registerLanguage('http', __webpack_require__(514));
-	hljs.registerLanguage('hy', __webpack_require__(515));
-	hljs.registerLanguage('inform7', __webpack_require__(516));
-	hljs.registerLanguage('ini', __webpack_require__(517));
-	hljs.registerLanguage('irpf90', __webpack_require__(518));
-	hljs.registerLanguage('java', __webpack_require__(519));
-	hljs.registerLanguage('javascript', __webpack_require__(520));
-	hljs.registerLanguage('json', __webpack_require__(521));
-	hljs.registerLanguage('julia', __webpack_require__(522));
-	hljs.registerLanguage('kotlin', __webpack_require__(523));
-	hljs.registerLanguage('lasso', __webpack_require__(524));
-	hljs.registerLanguage('ldif', __webpack_require__(525));
-	hljs.registerLanguage('leaf', __webpack_require__(526));
-	hljs.registerLanguage('less', __webpack_require__(527));
-	hljs.registerLanguage('lisp', __webpack_require__(528));
-	hljs.registerLanguage('livecodeserver', __webpack_require__(529));
-	hljs.registerLanguage('livescript', __webpack_require__(530));
-	hljs.registerLanguage('llvm', __webpack_require__(531));
-	hljs.registerLanguage('lsl', __webpack_require__(532));
-	hljs.registerLanguage('lua', __webpack_require__(533));
-	hljs.registerLanguage('makefile', __webpack_require__(534));
-	hljs.registerLanguage('mathematica', __webpack_require__(535));
-	hljs.registerLanguage('matlab', __webpack_require__(536));
-	hljs.registerLanguage('maxima', __webpack_require__(537));
-	hljs.registerLanguage('mel', __webpack_require__(538));
-	hljs.registerLanguage('mercury', __webpack_require__(539));
-	hljs.registerLanguage('mipsasm', __webpack_require__(540));
-	hljs.registerLanguage('mizar', __webpack_require__(541));
-	hljs.registerLanguage('perl', __webpack_require__(542));
-	hljs.registerLanguage('mojolicious', __webpack_require__(543));
-	hljs.registerLanguage('monkey', __webpack_require__(544));
-	hljs.registerLanguage('moonscript', __webpack_require__(545));
-	hljs.registerLanguage('n1ql', __webpack_require__(546));
-	hljs.registerLanguage('nginx', __webpack_require__(547));
-	hljs.registerLanguage('nimrod', __webpack_require__(548));
-	hljs.registerLanguage('nix', __webpack_require__(549));
-	hljs.registerLanguage('nsis', __webpack_require__(550));
-	hljs.registerLanguage('objectivec', __webpack_require__(551));
-	hljs.registerLanguage('ocaml', __webpack_require__(552));
-	hljs.registerLanguage('openscad', __webpack_require__(553));
-	hljs.registerLanguage('oxygene', __webpack_require__(554));
-	hljs.registerLanguage('parser3', __webpack_require__(555));
-	hljs.registerLanguage('pf', __webpack_require__(556));
-	hljs.registerLanguage('php', __webpack_require__(557));
-	hljs.registerLanguage('pony', __webpack_require__(558));
-	hljs.registerLanguage('powershell', __webpack_require__(559));
-	hljs.registerLanguage('processing', __webpack_require__(560));
-	hljs.registerLanguage('profile', __webpack_require__(561));
-	hljs.registerLanguage('prolog', __webpack_require__(562));
-	hljs.registerLanguage('protobuf', __webpack_require__(563));
-	hljs.registerLanguage('puppet', __webpack_require__(564));
-	hljs.registerLanguage('purebasic', __webpack_require__(565));
-	hljs.registerLanguage('python', __webpack_require__(566));
-	hljs.registerLanguage('q', __webpack_require__(567));
-	hljs.registerLanguage('qml', __webpack_require__(568));
-	hljs.registerLanguage('r', __webpack_require__(569));
-	hljs.registerLanguage('rib', __webpack_require__(570));
-	hljs.registerLanguage('roboconf', __webpack_require__(571));
-	hljs.registerLanguage('rsl', __webpack_require__(572));
-	hljs.registerLanguage('ruleslanguage', __webpack_require__(573));
-	hljs.registerLanguage('rust', __webpack_require__(574));
-	hljs.registerLanguage('scala', __webpack_require__(575));
-	hljs.registerLanguage('scheme', __webpack_require__(576));
-	hljs.registerLanguage('scilab', __webpack_require__(577));
-	hljs.registerLanguage('scss', __webpack_require__(578));
-	hljs.registerLanguage('smali', __webpack_require__(579));
-	hljs.registerLanguage('smalltalk', __webpack_require__(580));
-	hljs.registerLanguage('sml', __webpack_require__(581));
-	hljs.registerLanguage('sqf', __webpack_require__(582));
-	hljs.registerLanguage('sql', __webpack_require__(583));
-	hljs.registerLanguage('stan', __webpack_require__(584));
-	hljs.registerLanguage('stata', __webpack_require__(585));
-	hljs.registerLanguage('step21', __webpack_require__(586));
-	hljs.registerLanguage('stylus', __webpack_require__(587));
-	hljs.registerLanguage('subunit', __webpack_require__(588));
-	hljs.registerLanguage('swift', __webpack_require__(589));
-	hljs.registerLanguage('taggerscript', __webpack_require__(590));
-	hljs.registerLanguage('yaml', __webpack_require__(591));
-	hljs.registerLanguage('tap', __webpack_require__(592));
-	hljs.registerLanguage('tcl', __webpack_require__(593));
-	hljs.registerLanguage('tex', __webpack_require__(594));
-	hljs.registerLanguage('thrift', __webpack_require__(595));
-	hljs.registerLanguage('tp', __webpack_require__(596));
-	hljs.registerLanguage('twig', __webpack_require__(597));
-	hljs.registerLanguage('typescript', __webpack_require__(598));
-	hljs.registerLanguage('vala', __webpack_require__(599));
-	hljs.registerLanguage('vbnet', __webpack_require__(600));
-	hljs.registerLanguage('vbscript', __webpack_require__(601));
-	hljs.registerLanguage('vbscript-html', __webpack_require__(602));
-	hljs.registerLanguage('verilog', __webpack_require__(603));
-	hljs.registerLanguage('vhdl', __webpack_require__(604));
-	hljs.registerLanguage('vim', __webpack_require__(605));
-	hljs.registerLanguage('x86asm', __webpack_require__(606));
-	hljs.registerLanguage('xl', __webpack_require__(607));
-	hljs.registerLanguage('xquery', __webpack_require__(608));
-	hljs.registerLanguage('zephir', __webpack_require__(609));
+	hljs.registerLanguage('1c', __webpack_require__(439));
+	hljs.registerLanguage('abnf', __webpack_require__(440));
+	hljs.registerLanguage('accesslog', __webpack_require__(441));
+	hljs.registerLanguage('actionscript', __webpack_require__(442));
+	hljs.registerLanguage('ada', __webpack_require__(443));
+	hljs.registerLanguage('apache', __webpack_require__(444));
+	hljs.registerLanguage('applescript', __webpack_require__(445));
+	hljs.registerLanguage('cpp', __webpack_require__(446));
+	hljs.registerLanguage('arduino', __webpack_require__(447));
+	hljs.registerLanguage('armasm', __webpack_require__(448));
+	hljs.registerLanguage('xml', __webpack_require__(449));
+	hljs.registerLanguage('asciidoc', __webpack_require__(450));
+	hljs.registerLanguage('aspectj', __webpack_require__(451));
+	hljs.registerLanguage('autohotkey', __webpack_require__(452));
+	hljs.registerLanguage('autoit', __webpack_require__(453));
+	hljs.registerLanguage('avrasm', __webpack_require__(454));
+	hljs.registerLanguage('awk', __webpack_require__(455));
+	hljs.registerLanguage('axapta', __webpack_require__(456));
+	hljs.registerLanguage('bash', __webpack_require__(457));
+	hljs.registerLanguage('basic', __webpack_require__(458));
+	hljs.registerLanguage('bnf', __webpack_require__(459));
+	hljs.registerLanguage('brainfuck', __webpack_require__(460));
+	hljs.registerLanguage('cal', __webpack_require__(461));
+	hljs.registerLanguage('capnproto', __webpack_require__(462));
+	hljs.registerLanguage('ceylon', __webpack_require__(463));
+	hljs.registerLanguage('clean', __webpack_require__(464));
+	hljs.registerLanguage('clojure', __webpack_require__(465));
+	hljs.registerLanguage('clojure-repl', __webpack_require__(466));
+	hljs.registerLanguage('cmake', __webpack_require__(467));
+	hljs.registerLanguage('coffeescript', __webpack_require__(468));
+	hljs.registerLanguage('coq', __webpack_require__(469));
+	hljs.registerLanguage('cos', __webpack_require__(470));
+	hljs.registerLanguage('crmsh', __webpack_require__(471));
+	hljs.registerLanguage('crystal', __webpack_require__(472));
+	hljs.registerLanguage('cs', __webpack_require__(473));
+	hljs.registerLanguage('csp', __webpack_require__(474));
+	hljs.registerLanguage('css', __webpack_require__(475));
+	hljs.registerLanguage('d', __webpack_require__(476));
+	hljs.registerLanguage('markdown', __webpack_require__(477));
+	hljs.registerLanguage('dart', __webpack_require__(478));
+	hljs.registerLanguage('delphi', __webpack_require__(479));
+	hljs.registerLanguage('diff', __webpack_require__(480));
+	hljs.registerLanguage('django', __webpack_require__(481));
+	hljs.registerLanguage('dns', __webpack_require__(482));
+	hljs.registerLanguage('dockerfile', __webpack_require__(483));
+	hljs.registerLanguage('dos', __webpack_require__(484));
+	hljs.registerLanguage('dsconfig', __webpack_require__(485));
+	hljs.registerLanguage('dts', __webpack_require__(486));
+	hljs.registerLanguage('dust', __webpack_require__(487));
+	hljs.registerLanguage('ebnf', __webpack_require__(488));
+	hljs.registerLanguage('elixir', __webpack_require__(489));
+	hljs.registerLanguage('elm', __webpack_require__(490));
+	hljs.registerLanguage('ruby', __webpack_require__(491));
+	hljs.registerLanguage('erb', __webpack_require__(492));
+	hljs.registerLanguage('erlang-repl', __webpack_require__(493));
+	hljs.registerLanguage('erlang', __webpack_require__(494));
+	hljs.registerLanguage('excel', __webpack_require__(495));
+	hljs.registerLanguage('fix', __webpack_require__(496));
+	hljs.registerLanguage('flix', __webpack_require__(497));
+	hljs.registerLanguage('fortran', __webpack_require__(498));
+	hljs.registerLanguage('fsharp', __webpack_require__(499));
+	hljs.registerLanguage('gams', __webpack_require__(500));
+	hljs.registerLanguage('gauss', __webpack_require__(501));
+	hljs.registerLanguage('gcode', __webpack_require__(502));
+	hljs.registerLanguage('gherkin', __webpack_require__(503));
+	hljs.registerLanguage('glsl', __webpack_require__(504));
+	hljs.registerLanguage('go', __webpack_require__(505));
+	hljs.registerLanguage('golo', __webpack_require__(506));
+	hljs.registerLanguage('gradle', __webpack_require__(507));
+	hljs.registerLanguage('groovy', __webpack_require__(508));
+	hljs.registerLanguage('haml', __webpack_require__(509));
+	hljs.registerLanguage('handlebars', __webpack_require__(510));
+	hljs.registerLanguage('haskell', __webpack_require__(511));
+	hljs.registerLanguage('haxe', __webpack_require__(512));
+	hljs.registerLanguage('hsp', __webpack_require__(513));
+	hljs.registerLanguage('htmlbars', __webpack_require__(514));
+	hljs.registerLanguage('http', __webpack_require__(515));
+	hljs.registerLanguage('hy', __webpack_require__(516));
+	hljs.registerLanguage('inform7', __webpack_require__(517));
+	hljs.registerLanguage('ini', __webpack_require__(518));
+	hljs.registerLanguage('irpf90', __webpack_require__(519));
+	hljs.registerLanguage('java', __webpack_require__(520));
+	hljs.registerLanguage('javascript', __webpack_require__(521));
+	hljs.registerLanguage('json', __webpack_require__(522));
+	hljs.registerLanguage('julia', __webpack_require__(523));
+	hljs.registerLanguage('kotlin', __webpack_require__(524));
+	hljs.registerLanguage('lasso', __webpack_require__(525));
+	hljs.registerLanguage('ldif', __webpack_require__(526));
+	hljs.registerLanguage('leaf', __webpack_require__(527));
+	hljs.registerLanguage('less', __webpack_require__(528));
+	hljs.registerLanguage('lisp', __webpack_require__(529));
+	hljs.registerLanguage('livecodeserver', __webpack_require__(530));
+	hljs.registerLanguage('livescript', __webpack_require__(531));
+	hljs.registerLanguage('llvm', __webpack_require__(532));
+	hljs.registerLanguage('lsl', __webpack_require__(533));
+	hljs.registerLanguage('lua', __webpack_require__(534));
+	hljs.registerLanguage('makefile', __webpack_require__(535));
+	hljs.registerLanguage('mathematica', __webpack_require__(536));
+	hljs.registerLanguage('matlab', __webpack_require__(537));
+	hljs.registerLanguage('maxima', __webpack_require__(538));
+	hljs.registerLanguage('mel', __webpack_require__(539));
+	hljs.registerLanguage('mercury', __webpack_require__(540));
+	hljs.registerLanguage('mipsasm', __webpack_require__(541));
+	hljs.registerLanguage('mizar', __webpack_require__(542));
+	hljs.registerLanguage('perl', __webpack_require__(543));
+	hljs.registerLanguage('mojolicious', __webpack_require__(544));
+	hljs.registerLanguage('monkey', __webpack_require__(545));
+	hljs.registerLanguage('moonscript', __webpack_require__(546));
+	hljs.registerLanguage('n1ql', __webpack_require__(547));
+	hljs.registerLanguage('nginx', __webpack_require__(548));
+	hljs.registerLanguage('nimrod', __webpack_require__(549));
+	hljs.registerLanguage('nix', __webpack_require__(550));
+	hljs.registerLanguage('nsis', __webpack_require__(551));
+	hljs.registerLanguage('objectivec', __webpack_require__(552));
+	hljs.registerLanguage('ocaml', __webpack_require__(553));
+	hljs.registerLanguage('openscad', __webpack_require__(554));
+	hljs.registerLanguage('oxygene', __webpack_require__(555));
+	hljs.registerLanguage('parser3', __webpack_require__(556));
+	hljs.registerLanguage('pf', __webpack_require__(557));
+	hljs.registerLanguage('php', __webpack_require__(558));
+	hljs.registerLanguage('pony', __webpack_require__(559));
+	hljs.registerLanguage('powershell', __webpack_require__(560));
+	hljs.registerLanguage('processing', __webpack_require__(561));
+	hljs.registerLanguage('profile', __webpack_require__(562));
+	hljs.registerLanguage('prolog', __webpack_require__(563));
+	hljs.registerLanguage('protobuf', __webpack_require__(564));
+	hljs.registerLanguage('puppet', __webpack_require__(565));
+	hljs.registerLanguage('purebasic', __webpack_require__(566));
+	hljs.registerLanguage('python', __webpack_require__(567));
+	hljs.registerLanguage('q', __webpack_require__(568));
+	hljs.registerLanguage('qml', __webpack_require__(569));
+	hljs.registerLanguage('r', __webpack_require__(570));
+	hljs.registerLanguage('rib', __webpack_require__(571));
+	hljs.registerLanguage('roboconf', __webpack_require__(572));
+	hljs.registerLanguage('rsl', __webpack_require__(573));
+	hljs.registerLanguage('ruleslanguage', __webpack_require__(574));
+	hljs.registerLanguage('rust', __webpack_require__(575));
+	hljs.registerLanguage('scala', __webpack_require__(576));
+	hljs.registerLanguage('scheme', __webpack_require__(577));
+	hljs.registerLanguage('scilab', __webpack_require__(578));
+	hljs.registerLanguage('scss', __webpack_require__(579));
+	hljs.registerLanguage('smali', __webpack_require__(580));
+	hljs.registerLanguage('smalltalk', __webpack_require__(581));
+	hljs.registerLanguage('sml', __webpack_require__(582));
+	hljs.registerLanguage('sqf', __webpack_require__(583));
+	hljs.registerLanguage('sql', __webpack_require__(584));
+	hljs.registerLanguage('stan', __webpack_require__(585));
+	hljs.registerLanguage('stata', __webpack_require__(586));
+	hljs.registerLanguage('step21', __webpack_require__(587));
+	hljs.registerLanguage('stylus', __webpack_require__(588));
+	hljs.registerLanguage('subunit', __webpack_require__(589));
+	hljs.registerLanguage('swift', __webpack_require__(590));
+	hljs.registerLanguage('taggerscript', __webpack_require__(591));
+	hljs.registerLanguage('yaml', __webpack_require__(592));
+	hljs.registerLanguage('tap', __webpack_require__(593));
+	hljs.registerLanguage('tcl', __webpack_require__(594));
+	hljs.registerLanguage('tex', __webpack_require__(595));
+	hljs.registerLanguage('thrift', __webpack_require__(596));
+	hljs.registerLanguage('tp', __webpack_require__(597));
+	hljs.registerLanguage('twig', __webpack_require__(598));
+	hljs.registerLanguage('typescript', __webpack_require__(599));
+	hljs.registerLanguage('vala', __webpack_require__(600));
+	hljs.registerLanguage('vbnet', __webpack_require__(601));
+	hljs.registerLanguage('vbscript', __webpack_require__(602));
+	hljs.registerLanguage('vbscript-html', __webpack_require__(603));
+	hljs.registerLanguage('verilog', __webpack_require__(604));
+	hljs.registerLanguage('vhdl', __webpack_require__(605));
+	hljs.registerLanguage('vim', __webpack_require__(606));
+	hljs.registerLanguage('x86asm', __webpack_require__(607));
+	hljs.registerLanguage('xl', __webpack_require__(608));
+	hljs.registerLanguage('xquery', __webpack_require__(609));
+	hljs.registerLanguage('zephir', __webpack_require__(610));
 
 	module.exports = hljs;
 
 /***/ },
-/* 437 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -41304,7 +41410,7 @@
 
 
 /***/ },
-/* 438 */
+/* 439 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -41387,7 +41493,7 @@
 	};
 
 /***/ },
-/* 439 */
+/* 440 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41462,7 +41568,7 @@
 	};
 
 /***/ },
-/* 440 */
+/* 441 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41504,7 +41610,7 @@
 	};
 
 /***/ },
-/* 441 */
+/* 442 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41582,7 +41688,7 @@
 	};
 
 /***/ },
-/* 442 */
+/* 443 */
 /***/ function(module, exports) {
 
 	module.exports = // We try to support full Ada2012
@@ -41759,7 +41865,7 @@
 	};
 
 /***/ },
-/* 443 */
+/* 444 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41809,7 +41915,7 @@
 	};
 
 /***/ },
-/* 444 */
+/* 445 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -41899,7 +42005,7 @@
 	};
 
 /***/ },
-/* 445 */
+/* 446 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42069,7 +42175,7 @@
 	};
 
 /***/ },
-/* 446 */
+/* 447 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42173,7 +42279,7 @@
 	};
 
 /***/ },
-/* 447 */
+/* 448 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42269,7 +42375,7 @@
 	};
 
 /***/ },
-/* 448 */
+/* 449 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42376,7 +42482,7 @@
 	};
 
 /***/ },
-/* 449 */
+/* 450 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42568,7 +42674,7 @@
 	};
 
 /***/ },
-/* 450 */
+/* 451 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -42716,7 +42822,7 @@
 	};
 
 /***/ },
-/* 451 */
+/* 452 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42768,7 +42874,7 @@
 	};
 
 /***/ },
-/* 452 */
+/* 453 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42908,7 +43014,7 @@
 	};
 
 /***/ },
-/* 453 */
+/* 454 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -42974,7 +43080,7 @@
 	};
 
 /***/ },
-/* 454 */
+/* 455 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43031,7 +43137,7 @@
 	};
 
 /***/ },
-/* 455 */
+/* 456 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43066,7 +43172,7 @@
 	};
 
 /***/ },
-/* 456 */
+/* 457 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43145,7 +43251,7 @@
 	};
 
 /***/ },
-/* 457 */
+/* 458 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43200,7 +43306,7 @@
 	};
 
 /***/ },
-/* 458 */
+/* 459 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -43233,7 +43339,7 @@
 	};
 
 /***/ },
-/* 459 */
+/* 460 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -43274,7 +43380,7 @@
 	};
 
 /***/ },
-/* 460 */
+/* 461 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43358,7 +43464,7 @@
 	};
 
 /***/ },
-/* 461 */
+/* 462 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43411,7 +43517,7 @@
 	};
 
 /***/ },
-/* 462 */
+/* 463 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43482,7 +43588,7 @@
 	};
 
 /***/ },
-/* 463 */
+/* 464 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43511,7 +43617,7 @@
 	};
 
 /***/ },
-/* 464 */
+/* 465 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43610,7 +43716,7 @@
 	};
 
 /***/ },
-/* 465 */
+/* 466 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43629,7 +43735,7 @@
 	};
 
 /***/ },
-/* 466 */
+/* 467 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43671,7 +43777,7 @@
 	};
 
 /***/ },
-/* 467 */
+/* 468 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43821,7 +43927,7 @@
 	};
 
 /***/ },
-/* 468 */
+/* 469 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -43892,7 +43998,7 @@
 	};
 
 /***/ },
-/* 469 */
+/* 470 */
 /***/ function(module, exports) {
 
 	module.exports = function cos (hljs) {
@@ -44020,7 +44126,7 @@
 	};
 
 /***/ },
-/* 470 */
+/* 471 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44118,7 +44224,7 @@
 	};
 
 /***/ },
-/* 471 */
+/* 472 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44299,7 +44405,7 @@
 	};
 
 /***/ },
-/* 472 */
+/* 473 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44470,7 +44576,7 @@
 	};
 
 /***/ },
-/* 473 */
+/* 474 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44496,7 +44602,7 @@
 	};
 
 /***/ },
-/* 474 */
+/* 475 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44605,7 +44711,7 @@
 	};
 
 /***/ },
-/* 475 */
+/* 476 */
 /***/ function(module, exports) {
 
 	module.exports = /**
@@ -44867,7 +44973,7 @@
 	};
 
 /***/ },
-/* 476 */
+/* 477 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -44979,7 +45085,7 @@
 	};
 
 /***/ },
-/* 477 */
+/* 478 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -45084,7 +45190,7 @@
 	};
 
 /***/ },
-/* 478 */
+/* 479 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45157,7 +45263,7 @@
 	};
 
 /***/ },
-/* 479 */
+/* 480 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45201,7 +45307,7 @@
 	};
 
 /***/ },
-/* 480 */
+/* 481 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45269,7 +45375,7 @@
 	};
 
 /***/ },
-/* 481 */
+/* 482 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45302,7 +45408,7 @@
 	};
 
 /***/ },
-/* 482 */
+/* 483 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45328,7 +45434,7 @@
 	};
 
 /***/ },
-/* 483 */
+/* 484 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45384,7 +45490,7 @@
 	};
 
 /***/ },
-/* 484 */
+/* 485 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45435,7 +45541,7 @@
 	};
 
 /***/ },
-/* 485 */
+/* 486 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45563,7 +45669,7 @@
 	};
 
 /***/ },
-/* 486 */
+/* 487 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45599,7 +45705,7 @@
 	};
 
 /***/ },
-/* 487 */
+/* 488 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45636,7 +45742,7 @@
 	};
 
 /***/ },
-/* 488 */
+/* 489 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45737,7 +45843,7 @@
 	};
 
 /***/ },
-/* 489 */
+/* 490 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -45824,7 +45930,7 @@
 	};
 
 /***/ },
-/* 490 */
+/* 491 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46004,7 +46110,7 @@
 	};
 
 /***/ },
-/* 491 */
+/* 492 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46023,7 +46129,7 @@
 	};
 
 /***/ },
-/* 492 */
+/* 493 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46073,7 +46179,7 @@
 	};
 
 /***/ },
-/* 493 */
+/* 494 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46223,7 +46329,7 @@
 	};
 
 /***/ },
-/* 494 */
+/* 495 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46275,7 +46381,7 @@
 	};
 
 /***/ },
-/* 495 */
+/* 496 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46308,7 +46414,7 @@
 	};
 
 /***/ },
-/* 496 */
+/* 497 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -46357,7 +46463,7 @@
 	};
 
 /***/ },
-/* 497 */
+/* 498 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46432,7 +46538,7 @@
 	};
 
 /***/ },
-/* 498 */
+/* 499 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46495,7 +46601,7 @@
 	};
 
 /***/ },
-/* 499 */
+/* 500 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -46653,7 +46759,7 @@
 	};
 
 /***/ },
-/* 500 */
+/* 501 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46881,7 +46987,7 @@
 	};
 
 /***/ },
-/* 501 */
+/* 502 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -46952,7 +47058,7 @@
 	};
 
 /***/ },
-/* 502 */
+/* 503 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -46993,7 +47099,7 @@
 	};
 
 /***/ },
-/* 503 */
+/* 504 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47114,7 +47220,7 @@
 	};
 
 /***/ },
-/* 504 */
+/* 505 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47172,7 +47278,7 @@
 	};
 
 /***/ },
-/* 505 */
+/* 506 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47199,7 +47305,7 @@
 	};
 
 /***/ },
-/* 506 */
+/* 507 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47238,7 +47344,7 @@
 	};
 
 /***/ },
-/* 507 */
+/* 508 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47336,7 +47442,7 @@
 	};
 
 /***/ },
-/* 508 */
+/* 509 */
 /***/ function(module, exports) {
 
 	module.exports = // TODO support filter tags like :javascript, support inline HTML
@@ -47447,7 +47553,7 @@
 	};
 
 /***/ },
-/* 509 */
+/* 510 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47485,7 +47591,7 @@
 	};
 
 /***/ },
-/* 510 */
+/* 511 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47611,7 +47717,7 @@
 	};
 
 /***/ },
-/* 511 */
+/* 512 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47727,7 +47833,7 @@
 	};
 
 /***/ },
-/* 512 */
+/* 513 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47777,7 +47883,7 @@
 	};
 
 /***/ },
-/* 513 */
+/* 514 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47852,7 +47958,7 @@
 	};
 
 /***/ },
-/* 514 */
+/* 515 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47897,7 +48003,7 @@
 	};
 
 /***/ },
-/* 515 */
+/* 516 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48003,7 +48109,7 @@
 	};
 
 /***/ },
-/* 516 */
+/* 517 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48064,7 +48170,7 @@
 	};
 
 /***/ },
-/* 517 */
+/* 518 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48134,7 +48240,7 @@
 	};
 
 /***/ },
-/* 518 */
+/* 519 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48214,7 +48320,7 @@
 	};
 
 /***/ },
-/* 519 */
+/* 520 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48326,7 +48432,7 @@
 	};
 
 /***/ },
-/* 520 */
+/* 521 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48501,7 +48607,7 @@
 	};
 
 /***/ },
-/* 521 */
+/* 522 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48542,7 +48648,7 @@
 	};
 
 /***/ },
-/* 522 */
+/* 523 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48724,7 +48830,7 @@
 	};
 
 /***/ },
-/* 523 */
+/* 524 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48902,7 +49008,7 @@
 	};
 
 /***/ },
-/* 524 */
+/* 525 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49069,7 +49175,7 @@
 	};
 
 /***/ },
-/* 525 */
+/* 526 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49096,7 +49202,7 @@
 	};
 
 /***/ },
-/* 526 */
+/* 527 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -49140,7 +49246,7 @@
 	};
 
 /***/ },
-/* 527 */
+/* 528 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49284,7 +49390,7 @@
 	};
 
 /***/ },
-/* 528 */
+/* 529 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49391,7 +49497,7 @@
 	};
 
 /***/ },
-/* 529 */
+/* 530 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49552,7 +49658,7 @@
 	};
 
 /***/ },
-/* 530 */
+/* 531 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49705,7 +49811,7 @@
 	};
 
 /***/ },
-/* 531 */
+/* 532 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49798,7 +49904,7 @@
 	};
 
 /***/ },
-/* 532 */
+/* 533 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49885,7 +49991,7 @@
 	};
 
 /***/ },
-/* 533 */
+/* 534 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -49955,7 +50061,7 @@
 	};
 
 /***/ },
-/* 534 */
+/* 535 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50004,7 +50110,7 @@
 	};
 
 /***/ },
-/* 535 */
+/* 536 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50066,7 +50172,7 @@
 	};
 
 /***/ },
-/* 536 */
+/* 537 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50158,7 +50264,7 @@
 	};
 
 /***/ },
-/* 537 */
+/* 538 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50568,7 +50674,7 @@
 	};
 
 /***/ },
-/* 538 */
+/* 539 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50797,7 +50903,7 @@
 	};
 
 /***/ },
-/* 539 */
+/* 540 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50883,7 +50989,7 @@
 	};
 
 /***/ },
-/* 540 */
+/* 541 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50973,7 +51079,7 @@
 	};
 
 /***/ },
-/* 541 */
+/* 542 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50996,7 +51102,7 @@
 	};
 
 /***/ },
-/* 542 */
+/* 543 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51157,7 +51263,7 @@
 	};
 
 /***/ },
-/* 543 */
+/* 544 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51186,7 +51292,7 @@
 	};
 
 /***/ },
-/* 544 */
+/* 545 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51265,7 +51371,7 @@
 	};
 
 /***/ },
-/* 545 */
+/* 546 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51381,7 +51487,7 @@
 	};
 
 /***/ },
-/* 546 */
+/* 547 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51454,7 +51560,7 @@
 	};
 
 /***/ },
-/* 547 */
+/* 548 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51551,7 +51657,7 @@
 	};
 
 /***/ },
-/* 548 */
+/* 549 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51610,7 +51716,7 @@
 	};
 
 /***/ },
-/* 549 */
+/* 550 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51663,7 +51769,7 @@
 	};
 
 /***/ },
-/* 550 */
+/* 551 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51773,7 +51879,7 @@
 	};
 
 /***/ },
-/* 551 */
+/* 552 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51868,7 +51974,7 @@
 	};
 
 /***/ },
-/* 552 */
+/* 553 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51943,7 +52049,7 @@
 	};
 
 /***/ },
-/* 553 */
+/* 554 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52004,7 +52110,7 @@
 	};
 
 /***/ },
-/* 554 */
+/* 555 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52078,7 +52184,7 @@
 	};
 
 /***/ },
-/* 555 */
+/* 556 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52130,7 +52236,7 @@
 	};
 
 /***/ },
-/* 556 */
+/* 557 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52186,7 +52292,7 @@
 	};
 
 /***/ },
-/* 557 */
+/* 558 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52317,7 +52423,7 @@
 	};
 
 /***/ },
-/* 558 */
+/* 559 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52412,7 +52518,7 @@
 	};
 
 /***/ },
-/* 559 */
+/* 560 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52497,7 +52603,7 @@
 	};
 
 /***/ },
-/* 560 */
+/* 561 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52549,7 +52655,7 @@
 	};
 
 /***/ },
-/* 561 */
+/* 562 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52583,7 +52689,7 @@
 	};
 
 /***/ },
-/* 562 */
+/* 563 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52675,7 +52781,7 @@
 	};
 
 /***/ },
-/* 563 */
+/* 564 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52715,7 +52821,7 @@
 	};
 
 /***/ },
-/* 564 */
+/* 565 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52834,7 +52940,7 @@
 	};
 
 /***/ },
-/* 565 */
+/* 566 */
 /***/ function(module, exports) {
 
 	module.exports = // Base deafult colors in PB IDE: background: #FFFFDF; foreground: #000000;
@@ -52896,7 +53002,7 @@
 	};
 
 /***/ },
-/* 566 */
+/* 567 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53016,7 +53122,7 @@
 	};
 
 /***/ },
-/* 567 */
+/* 568 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53043,7 +53149,7 @@
 	};
 
 /***/ },
-/* 568 */
+/* 569 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53216,7 +53322,7 @@
 	};
 
 /***/ },
-/* 569 */
+/* 570 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53290,7 +53396,7 @@
 	};
 
 /***/ },
-/* 570 */
+/* 571 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53321,7 +53427,7 @@
 	};
 
 /***/ },
-/* 571 */
+/* 572 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53392,7 +53498,7 @@
 	};
 
 /***/ },
-/* 572 */
+/* 573 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53432,7 +53538,7 @@
 	};
 
 /***/ },
-/* 573 */
+/* 574 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53497,7 +53603,7 @@
 	};
 
 /***/ },
-/* 574 */
+/* 575 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53609,7 +53715,7 @@
 	};
 
 /***/ },
-/* 575 */
+/* 576 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53728,7 +53834,7 @@
 	};
 
 /***/ },
-/* 576 */
+/* 577 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53876,7 +53982,7 @@
 	};
 
 /***/ },
-/* 577 */
+/* 578 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53934,7 +54040,7 @@
 	};
 
 /***/ },
-/* 578 */
+/* 579 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54036,7 +54142,7 @@
 	};
 
 /***/ },
-/* 579 */
+/* 580 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54096,7 +54202,7 @@
 	};
 
 /***/ },
-/* 580 */
+/* 581 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54150,7 +54256,7 @@
 	};
 
 /***/ },
-/* 581 */
+/* 582 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54220,7 +54326,7 @@
 	};
 
 /***/ },
-/* 582 */
+/* 583 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54595,7 +54701,7 @@
 	};
 
 /***/ },
-/* 583 */
+/* 584 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54759,7 +54865,7 @@
 	};
 
 /***/ },
-/* 584 */
+/* 585 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54846,7 +54952,7 @@
 	};
 
 /***/ },
-/* 585 */
+/* 586 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54888,7 +54994,7 @@
 	};
 
 /***/ },
-/* 586 */
+/* 587 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54939,7 +55045,7 @@
 	};
 
 /***/ },
-/* 587 */
+/* 588 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55397,7 +55503,7 @@
 	};
 
 /***/ },
-/* 588 */
+/* 589 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55435,7 +55541,7 @@
 	};
 
 /***/ },
-/* 589 */
+/* 590 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55556,7 +55662,7 @@
 	};
 
 /***/ },
-/* 590 */
+/* 591 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55604,7 +55710,7 @@
 	};
 
 /***/ },
-/* 591 */
+/* 592 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55696,7 +55802,7 @@
 	};
 
 /***/ },
-/* 592 */
+/* 593 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55736,7 +55842,7 @@
 	};
 
 /***/ },
-/* 593 */
+/* 594 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55801,7 +55907,7 @@
 	};
 
 /***/ },
-/* 594 */
+/* 595 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55867,7 +55973,7 @@
 	};
 
 /***/ },
-/* 595 */
+/* 596 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55906,7 +56012,7 @@
 	};
 
 /***/ },
-/* 596 */
+/* 597 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55994,7 +56100,7 @@
 	};
 
 /***/ },
-/* 597 */
+/* 598 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56064,7 +56170,7 @@
 	};
 
 /***/ },
-/* 598 */
+/* 599 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56224,7 +56330,7 @@
 	};
 
 /***/ },
-/* 599 */
+/* 600 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56278,7 +56384,7 @@
 	};
 
 /***/ },
-/* 600 */
+/* 601 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56338,7 +56444,7 @@
 	};
 
 /***/ },
-/* 601 */
+/* 602 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56381,7 +56487,7 @@
 	};
 
 /***/ },
-/* 602 */
+/* 603 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56397,7 +56503,7 @@
 	};
 
 /***/ },
-/* 603 */
+/* 604 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56500,7 +56606,7 @@
 	};
 
 /***/ },
-/* 604 */
+/* 605 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56565,7 +56671,7 @@
 	};
 
 /***/ },
-/* 605 */
+/* 606 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56675,7 +56781,7 @@
 	};
 
 /***/ },
-/* 606 */
+/* 607 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56815,7 +56921,7 @@
 	};
 
 /***/ },
-/* 607 */
+/* 608 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56892,7 +56998,7 @@
 	};
 
 /***/ },
-/* 608 */
+/* 609 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56967,7 +57073,7 @@
 	};
 
 /***/ },
-/* 609 */
+/* 610 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -57078,7 +57184,7 @@
 	};
 
 /***/ },
-/* 610 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57086,8 +57192,8 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(31);
 	var findDOMNode = ReactDOM.findDOMNode;
-	var className = __webpack_require__(611);
-	var debounce = __webpack_require__(612);
+	var className = __webpack_require__(612);
+	var debounce = __webpack_require__(613);
 
 	function normalizeLineEndings(str) {
 		if (!str) return str;
@@ -57115,7 +57221,7 @@
 			};
 		},
 		getCodeMirrorInstance: function getCodeMirrorInstance() {
-			return this.props.codeMirrorInstance || __webpack_require__(613);
+			return this.props.codeMirrorInstance || __webpack_require__(614);
 		},
 		getInitialState: function getInitialState() {
 			return {
@@ -57194,7 +57300,7 @@
 	module.exports = CodeMirror;
 
 /***/ },
-/* 611 */
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -57248,7 +57354,7 @@
 
 
 /***/ },
-/* 612 */
+/* 613 */
 /***/ function(module, exports) {
 
 	/**
@@ -57631,7 +57737,7 @@
 
 
 /***/ },
-/* 613 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -66942,7 +67048,7 @@
 
 
 /***/ },
-/* 614 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -66950,7 +67056,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(613));
+	    mod(__webpack_require__(614));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -67750,7 +67856,7 @@
 
 
 /***/ },
-/* 615 */
+/* 616 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -67758,7 +67864,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(613));
+	    mod(__webpack_require__(614));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -68150,7 +68256,7 @@
 
 
 /***/ },
-/* 616 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -68158,7 +68264,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(613), __webpack_require__(615), __webpack_require__(617));
+	    mod(__webpack_require__(614), __webpack_require__(616), __webpack_require__(618));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "../xml/xml", "../meta"], mod);
 	  else // Plain browser env
@@ -68964,7 +69070,7 @@
 
 
 /***/ },
-/* 617 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -68972,7 +69078,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(613));
+	    mod(__webpack_require__(614));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -69184,7 +69290,7 @@
 
 
 /***/ },
-/* 618 */
+/* 619 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69410,7 +69516,7 @@
 	exports.default = (0, _reactRedux.connect)()(FusionmodeEditor);
 
 /***/ },
-/* 619 */
+/* 620 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69425,7 +69531,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _dialogFolderCreate = __webpack_require__(620);
+	var _dialogFolderCreate = __webpack_require__(621);
 
 	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
 
@@ -69575,7 +69681,7 @@
 	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
 
 /***/ },
-/* 620 */
+/* 621 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69705,7 +69811,7 @@
 	exports.default = DialogFolderCreate;
 
 /***/ },
-/* 621 */
+/* 622 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69856,7 +69962,7 @@
 	exports.default = MenubarTile;
 
 /***/ },
-/* 622 */
+/* 623 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69866,7 +69972,7 @@
 	});
 	exports.default = undefined;
 
-	var _Snackbar = __webpack_require__(623);
+	var _Snackbar = __webpack_require__(624);
 
 	var _Snackbar2 = _interopRequireDefault(_Snackbar);
 
@@ -69875,7 +69981,7 @@
 	exports.default = _Snackbar2.default;
 
 /***/ },
-/* 623 */
+/* 624 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69924,11 +70030,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _ClickAwayListener = __webpack_require__(624);
+	var _ClickAwayListener = __webpack_require__(625);
 
 	var _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);
 
-	var _SnackbarBody = __webpack_require__(625);
+	var _SnackbarBody = __webpack_require__(626);
 
 	var _SnackbarBody2 = _interopRequireDefault(_SnackbarBody);
 
@@ -70189,7 +70295,7 @@
 	exports.default = Snackbar;
 
 /***/ },
-/* 624 */
+/* 625 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70319,7 +70425,7 @@
 	exports.default = ClickAwayListener;
 
 /***/ },
-/* 625 */
+/* 626 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70349,7 +70455,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _withWidth = __webpack_require__(626);
+	var _withWidth = __webpack_require__(627);
 
 	var _withWidth2 = _interopRequireDefault(_withWidth);
 
@@ -70488,7 +70594,7 @@
 	exports.default = (0, _withWidth2.default)()(SnackbarBody);
 
 /***/ },
-/* 626 */
+/* 627 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70638,11 +70744,11 @@
 	}
 
 /***/ },
-/* 627 */
+/* 628 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(628);
+	var defaultClickRejectionStrategy = __webpack_require__(629);
 
 	var alreadyInjected = false;
 
@@ -70664,13 +70770,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(629)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(630)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 628 */
+/* 629 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -70681,7 +70787,7 @@
 
 
 /***/ },
-/* 629 */
+/* 630 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -70705,14 +70811,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(630);
+	var EventConstants = __webpack_require__(631);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(631);
+	var TouchEventUtils = __webpack_require__(632);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(632);
+	var keyOf = __webpack_require__(633);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -70858,7 +70964,7 @@
 
 
 /***/ },
-/* 630 */
+/* 631 */
 /***/ function(module, exports) {
 
 	/**
@@ -70954,7 +71060,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 631 */
+/* 632 */
 /***/ function(module, exports) {
 
 	/**
@@ -71002,7 +71108,7 @@
 
 
 /***/ },
-/* 632 */
+/* 633 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -71039,33 +71145,6 @@
 	};
 
 	module.exports = keyOf;
-
-/***/ },
-/* 633 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	var html1 = "\n<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>\n  <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->\n<div class='flashcard-container'>\n    <div id='flipper' class='flashcard-flipper'>\n        <div class='front'>\n            <i id='hints-button' class=\"fa fa-question-circle-o\"></i>\n            <div id='front-content' class='content'>\n                <div class='middle'>\n                    <div id='front-inner-content' class='inner'>\n";
-
-	var html2 = "\n</div>\n</div>\n</div>\n</div>\n<div class='back'>\n<i id='front-button' class=\"fa fa-arrow-left\"></i>\n<div id='back-content' class='content'>\n<div class='middle'>\n<div id='solution' class='inner'>\n    <div id='back-inner-content'>\n";
-
-	var html3 = "\n</div>\n<div id='ranking'>\n    <table>\n        <tr id='ranking-row'>\n            <td><p class='circle'>1</p></td>\n            <td><p class='circle'>2</p></td>\n            <td><p class='circle'>3</p></td>\n        </tr>\n    </table>\n</div>\n</div>\n<div id='hints' class='inner'>\n<div id='hints-inner-content'>\n";
-
-	var html4 = "\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n";
-
-	var css = "\n<style>\n    .flashcard-container {\n        font-family: Tahoma, Geneva, sans-serif;\n        perspective: 1000px; /* adds realistic-looking perspective to flip action */\n        background-color: transparent;\n        width: 80%;\n        font-size: 1em;\n        color: black;\n    }\n\n    #flipper {\n        transition: width 1s, height 1s, transform 1s;\n        transform-style: preserve-3d;\n        position: relative;\n        width: 100%;\n        padding: 25%;\n        box-sizing: border-box;\n    }\n\n    .front,\n    .back {\n        /* not sure how much of this is needed for Electron */\n        -webkit-backface-visibility: hidden;\n        -moz-backface-visibility: hidden;\n        -o-backface-visibility: hidden;\n        backface-visibility: hidden;\n\n        width: 100%;\n        height: 100%;\n        position: absolute;\n        top: 0;\n        left: 0;\n        background-color: #e7fef8;\n        border: thick solid black;\n        border-radius: 5px;\n    }\n\n    .front {\n        z-index: 2; /* moves the front forward */\n        transform: rotateY(0deg);\n    }\n\n    .back {\n        transform: rotateY(180deg);\n    }\n\n    /* flip the pane when clicked */\n    .rotateBack {\n        transform: rotateY(-180deg);\n    }\n\n    .rotateHint {\n        transform: rotateY(180deg);\n    }\n\n    /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */\n    .content {\n        display: table;\n        position: absolute;\n        height: 100%;\n        width: 100%;\n    }\n\n    .middle {\n        display: table-cell;\n        vertical-align: middle;\n        text-align: center;\n    }\n\n    .inner {\n        margin-left: auto;\n        margin-right: auto;\n    }\n\n    #back-inner-content p,\n    #hints-inner-content p {\n        border-bottom: thin solid #0aaf82;\n        text-align: center;\n        margin-left: 20px;\n        margin-right: 20px;\n        visibility: hidden;\n    }\n\n    i {\n      position: absolute;\n      padding: 10px;\n    }\n\n    .fa {\n      font-size: 1.5em;\n    }\n\n    #hints-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n    }\n\n    #front-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n        display: none;\n    }\n\n    #ranking {\n      width: 100%;\n      position: absolute;\n      bottom: 5px;\n      visibility: hidden; /* don't allow ranking til all the solution is visible */\n    }\n\n    table {\n      display: inline; /* allows it to be centred */\n    }\n\n    td p {\n      margin: 0 30px; /* space between cells */\n    }\n\n    /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle\n    by Jawad\n    accessed 03/18/17 */\n    .circle {\n        width: 2em;\n        height: 2em;\n        border-radius: 50%;\n        font-size: 1em;\n        color: white;\n        line-height: 2em;\n        text-align: center;\n        background: #0aaf82;\n    }\n\n    .circle:hover {\n        color: #0aaf82;\n        background-color: black;\n    }\n</style>\n";
-
-	var js = "\n<script>\n    document.getElementById('front-content').onclick = handleClick;\n    document.getElementById('back-content').onclick = handleClick;\n    document.getElementById('hints-button').onclick = clickedShowHints;\n    document.getElementById('front-button').onclick = clickedShowFront;\n\n    var viewingHints = false;\n    var viewingSolution = false;\n    var solutionIndex = 0;\n    var hintIndex = 0;\n\n    function handleClick() {\n        if (viewingHints) {\n          showNextHint();\n          return;\n        }\n        showSolutionSide();\n    }\n\n    function clickedShowHints() {\n        remove('solution', 'hints-button');\n        display('hints');\n        if(document.getElementById('hints').childElementCount > 0) {\n            document.getElementById('hint0').style.visibility = 'visible';\n            hintIndex += 1;\n        }\n\n        viewingHints = true;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function clickedShowFront() {\n        remove('front-button');\n        display('hints-button');\n\n        viewingHints = false;\n        hintIndex = 0;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function remove() { // sets display of args (ids) to 'none'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'none');\n        }\n    }\n\n    function display() { // sets display of args (ids) to 'inline'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'inline');\n        }\n    }\n\n    function setDisplay(id, display) { // sets element 'id' to display 'display'\n        document.getElementById(id).style.display = display;\n    }\n\n    function flipFinished() { // called after a flip event to update what's displayed\n        if (viewingHints) {\n            display('front-button');\n        } else if (!viewingSolution) {\n            hideChildren(document.getElementById('back-inner-content'), 'solution');\n            hideChildren(document.getElementById('hints-inner-content'), 'hint');\n            document.getElementById('ranking').style.visibility = 'hidden';\n            display('hints-button');\n        }\n    }\n\n    function hideChildren(ele, id) {\n        for (var index = 0; index < ele.childElementCount; index++) {\n          document.getElementById(id + index).style.visibility = 'hidden';\n        }\n    }\n\n    function showNextHint() {\n        var hintsDiv = document.getElementById('hints-inner-content');\n        if (hintIndex < hintsDiv.childElementCount) {\n          document.getElementById('hint' + hintIndex).style.visibility = 'visible';\n          hintIndex += 1;\n        }\n    }\n\n    function resetCard() { // flips back to front after solution viewed, resetting everything\n        solutionIndex = 0;\n        viewingHints = false;\n        viewingSolution = false;\n        document.getElementById('flipper').classList.toggle('rotateBack');\n    }\n\n    function showNextSolutionStep() {\n        document.getElementById('solution' + solutionIndex++).style.visibility = 'visible';\n    }\n\n    function showSolutionSide() {\n        remove('hints', 'hints-button', 'front-button');\n        display('solution');\n\n        var solutionElementCount = document.getElementById('back-inner-content').childElementCount;\n        if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point\n            resetCard();\n            return;\n        }\n\n        if (solutionIndex === 0) { // flip to back!\n            viewingSolution = true;\n            document.getElementById('flipper').classList.toggle('rotateBack');\n        } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution\n            document.getElementById('ranking').style.visibility = 'visible';\n        }\n        showNextSolutionStep();\n    }\n\n    // The following is used to help with flashcard content display during card rotations.\n    // It allows the display to be updated when the rotation (flip) completes.\n    /* From Modernizr */\n    function whichTransitionEvent(){\n        var t;\n        var el = document.createElement('fakeelement');\n\n        // allows it to work on many browsers\n        var transitions = {\n            'transition':'transitionend',\n            'OTransition':'oTransitionEnd',\n            'MozTransition':'transitionend',\n            'WebkitTransition':'webkitTransitionEnd'\n        }\n\n        for(t in transitions){\n            if( el.style[t] !== undefined ){\n                return transitions[t];\n            }\n        }\n    }\n\n    // listen for transition to end\n    var transitionEvent = whichTransitionEvent();\n    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);\n</script>\n";
-
-	module.exports = {
-	    html1: html1,
-	    html2: html2,
-	    html3: html3,
-	    html4: html4,
-	    css: css,
-	    js: js
-	};
 
 /***/ }
 /******/ ]);
