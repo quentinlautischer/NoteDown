@@ -3,7 +3,7 @@ import flashcardTemplate from './models/flashcardTemplate.js';
 
 var global_store, global_imageMapper; //global vars to be called by image links
 
-function parsex(str, store, imageMapper) {
+function parse(str, store, imageMapper) {
   //The main parsing function.
   // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
   var store = {
@@ -30,7 +30,6 @@ function parsex(str, store, imageMapper) {
   // this should output the base64 encoding...
   // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
   // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
-  console.log(imageMapper(24, store));
   
   return parse_blocks(str, false);
 }
@@ -309,6 +308,7 @@ function check_backslash_escape(span_array) {
 }
 
 function check_links(span_array) {
+  console.log("Checking Links");
   var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)s*\)/;
   var match;
   
@@ -330,7 +330,7 @@ function check_links(span_array) {
           span_array.splice(s, 1, raw1, a1, content, a2, raw2);
           s+=3;
         } else {
-          
+          console.log("found image");
           if (src.slice(0,2) == '@:') {
             var guid = src.slice(2,src.length);
             var data = global_imageMapper(guid, global_store);
@@ -404,7 +404,6 @@ function makeFlashcard(front, back, hints) {
 
 module.exports = {
     parse: parse,
-    parsex: parsex,
     makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
 }
 

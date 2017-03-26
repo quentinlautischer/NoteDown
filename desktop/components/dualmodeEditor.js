@@ -109,10 +109,8 @@ class DualmodeEditor extends React.Component {
   }
 
   parse(content) {
-    var rendered = '';
-    rendered = shared.parse(content);
+    var rendered = shared.parse(content, this.props.store, function() {return ""});
     this.setState({ rendered_content: rendered });
-    shared.parsex("str", this.props.store, function() {return ""});
   }
 
   drop(e) {
