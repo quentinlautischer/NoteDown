@@ -40257,12 +40257,13 @@
 
 	function check_flashcard(blocks) {
 	  var patt = /^\{(.+)\}$/;
-	  var match = [];
+	  var match;
 
 	  for (var b = 0; b < blocks.length; b++) {
 	    if (blocks[b].tag == null) {
 	      var content = blocks[b].content;
 	      for (var l = 0; l < content.length - 2; l++) {
+	        match = [];
 	        for (var m = 0; m < 3; m++) {
 	          match.push(patt.exec(content[l + m]));
 	        }
