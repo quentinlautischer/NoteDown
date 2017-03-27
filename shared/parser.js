@@ -397,7 +397,7 @@ function check_list_unordered(blocks) {
 }
 
 function check_table(blocks) {
-  var patt = /^(?:\|\s+)?([:]?-{3,}[:]?\s+\|\s+)*[:]?-{3,}[:]?(?:\s+\|)?$/;
+  var patt = /^(?:\|\s*)?([:]?-{3,}[:]?\s*\|\s*)*[:]?-{3,}[:]?(?:\s*\|)?$/;
   var match;
   
   for (var b = 0; b < blocks.length; b++) {
