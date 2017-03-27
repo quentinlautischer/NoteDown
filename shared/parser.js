@@ -397,6 +397,68 @@ function check_list_unordered(blocks) {
 }
 
 function check_table(blocks) {
+  var patt = /^(?:\|\s+)?([:]?-{3,}[:]?\s+\|\s+)*[:]?-{3,}[:]?(?:\s+\|)?$/;
+  var match;
+  
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 1; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null && content[l-1].trim().length > 0) {
+          var headers = content[l-1].split('|');
+          var format_line = content[l].split('|');
+          var format = [];
+          for (var f = 0; f < format_line.length; f++) {
+            if (format_line[f].length == 0) {
+              format.push(null);
+              continue;
+            }
+            format_line[f] = format_line[f].trim();
+            var format_f = (format_line[f].charAt(0) == ':')
+                ? ((format_line[f].charAt(format_line[f].length-1) == ':') ? 'text-align: center;' : 'text-align: left;')
+                : ((format_line[f].charAt(format_line[f].length-1) == ':') ? 'text-align: right;' : null);
+            format.push(format_f);
+          }
+          var cells = [];
+          var end = l+1;
+          while (end < content.length && content[end].trim().length > 0) {
+            cells.push(content[end].split('|'));
+            end++;
+          }
+          var tr;
+          var tr_content = [];
+          var tbody_content = [];
+          for (var h = 0; h < headers.length; h++) {
+            if (headers[h].length == 0) { continue; }
+            var th = {tag:'th', content:parse_span(headers[h].trim())}
+            if (h < format.length && format[h] != null) { th.attributes = [['style', format[h]]]; }
+            tr_content.push(th);
+          }
+          tr = [{tag:'tr', content:render_block(tr_content)}];
+          var table_content = [{tag:'thead', content:render_block(tr)}];
+          for (var i = 0; i < cells.length; i++) {
+            tr_content = [];
+            for (var j = 0; j < cells[i].length; j++) {
+              if (cells[i][j].length == 0) { continue; }
+              var td = {tag:'td', content:parse_span(cells[i][j].trim())};
+              if (j < format.length && format[j] != null) { td.attributes = [['style', format[j]]]; }
+              tr_content.push(td);
+            }
+            tbody_content.push({tag:'tr', content:render_block(tr_content)});
+          }
+          table_content.push({tag:'tbody', content:render_block(tbody_content)});
+
+          var raw1 = {content:content.slice(0,l-1)};
+          var table = {tag:'table', content:render_block(table_content)};
+          var raw2 = {content:content.slice(end,content.length)};
+
+          blocks.splice(b, 1, raw1, table, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
 }
 
 function check_paragraph(blocks) {
