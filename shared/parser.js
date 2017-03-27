@@ -3,11 +3,13 @@ import flashcardTemplate from './models/flashcardTemplate.js';
 
 var global_store, global_imageMapper; //global vars to be called by image links
 
+var header_index;
+
 function parse(str, store, imageMapper) {
   //The main parsing function.
   global_store = store;
   global_imageMapper = imageMapper;
-  
+  header_index = 0;
   return parse_blocks(str, false);
 }
 
@@ -82,6 +84,14 @@ function render_span(span) {
   return result;
 }
 
+
+
+////////////////////////////////////////////
+/* Finds Header and returns <H1>Header</H1> 
+/       ======
+/ AND   Header and returns <H2>Header</H2>
+/       ------
+*/
 function check_header_setext(blocks) {
   var patt = /^(=+|-+)\s*$/;
   var match;
@@ -106,6 +116,10 @@ function check_header_setext(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds #(repeated i times) Header and 
+/ returns <H${i}>Header</H${i}> 
+*/
 function check_header_atx(blocks) {
   var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
   var match;

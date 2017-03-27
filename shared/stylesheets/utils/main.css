@@ -179,22 +179,22 @@
   .toc-li:hover {
     color: #feb255; }
 
-.toc-li-1 {
+.toc-li-h1 {
   margin-left: 0px; }
 
-.toc-li-2 {
+.toc-li-h2 {
   margin-left: 20px; }
 
-.toc-li-3 {
+.toc-li-h3 {
   margin-left: 40px; }
 
-.toc-li-4 {
+.toc-li-h4 {
   margin-left: 60px; }
 
-.toc-li-5 {
+.toc-li-h5 {
   margin-left: 80px; }
 
-.toc-li-6 {
+.toc-li-h6 {
   margin-left: 100px; }
 
 .toc-btn {

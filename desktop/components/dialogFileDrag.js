@@ -74,7 +74,7 @@ class DialogFileDrag extends React.Component {
     var guid = this.guid();
     var store = this.props.store;
     if (state.state.userid) {
-      content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](@:${guid})${currentContent.slice(cursor_pos)}`;
+      content = `![${label}](@:${guid})`;
       fs.readFile(this.props.filepath, 'binary', function(err, original_data){
         var base64Image = new Buffer(original_data, 'binary').toString('base64');
         store.dispatch({
@@ -87,15 +87,11 @@ class DialogFileDrag extends React.Component {
         });
       });
     } else {
-      content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](${this.props.filepath})${currentContent.slice(cursor_pos)}`;
+      content = `![${label}](${this.props.filepath})`;
     }
 
-    this.props.store.dispatch({ 
-      type: 'PAGE_CONTENT_CHANGE', 
-      content: content,
-      folderIndex: state.state.folderIndex,
-      pageIndex: state.state.pageIndex
-    });
+    this.props.codeMirror.replaceSelection(content);
+
     this.props.close();
   }
 

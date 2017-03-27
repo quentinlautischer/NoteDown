@@ -123,13 +123,13 @@ function menuLogout(store) {
 function menuPushToCloud(store) {
   const data = {userid: store.getState().state.userid, notes: store.getState().notes};
   ipc.send('request-push-data', data);
-  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pushing data from cloud'});
+  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pushing data to cloud'});
 }
 
 function menuPullFromCloud(store) {
   const data = {userid: store.getState().state.userid};
   ipc.send('request-pull-data', data);
-  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pulling data to cloud'});
+  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pulling data from cloud'});
 }
 
 
@@ -285,8 +285,9 @@ const menubar_template_builder = function(store) {
         role: 'Push To Cloud',
         label: 'Push To Cloud',
         visible: is_logged_in(state),
-        enabled: true, // until I figure it out
-        click () { menuPushToCloud(store) }
+        enabled: is_logged_in(state), // until I figure it out
+        click () { menuPushToCloud(store) },
+        accelerator: 'CmdOrCtrl+S'
 
       },
       {

@@ -171,7 +171,7 @@
 	      // May be invisible but this keep the accelerator keybinds active.
 	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(store));
 	      Menu.setApplicationMenu(menubar);
-	      console.log(store.getState());
+	      // console.log(store.getState());
 
 	      switch (store.getState().state.mode) {
 	        case 'menu':
@@ -24466,13 +24466,13 @@
 	function menuPushToCloud(store) {
 	  var data = { userid: store.getState().state.userid, notes: store.getState().notes };
 	  ipc.send('request-push-data', data);
-	  store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Pushing data from cloud' });
+	  store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Pushing data to cloud' });
 	}
 
 	function menuPullFromCloud(store) {
 	  var data = { userid: store.getState().state.userid };
 	  ipc.send('request-pull-data', data);
-	  store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Pulling data to cloud' });
+	  store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Pulling data from cloud' });
 	}
 
 	////////////////////////////////////////////////////////
@@ -24609,10 +24609,13 @@
 	      role: 'Push To Cloud',
 	      label: 'Push To Cloud',
 	      visible: is_logged_in(state),
-	      enabled: true, // until I figure it out
+	      enabled: is_logged_in(state), // until I figure it out
 	      click: function click() {
 	        menuPushToCloud(store);
-	      }
+	      },
+
+	      accelerator: 'CmdOrCtrl+S'
+
 	    }, {
 	      role: 'Pull From Cloud',
 	      label: 'Pull From Cloud',
@@ -37820,12 +37823,13 @@
 	      fileDragEventFilepath: "",
 	      rendered_content: ""
 	    };
-	    _this.handleChange = _this.handleChange.bind(_this);
+
 	    _this.handleCodeMirrorChange = _this.handleCodeMirrorChange.bind(_this);
 	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
 	    _this.drop = _this.drop.bind(_this);
 	    _this.parse = _this.parse.bind(_this);
 
+	    _this.codeMirror = null;
 	    _this.unsubscribe = null;
 	    return _this;
 	  }
@@ -37833,11 +37837,8 @@
 	  _createClass(DualmodeEditor, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this2 = this;
-
-	      this.unsubscribe = this.props.store.subscribe(function () {
-	        return _this2.storeDidUpdate;
-	      });
+	      this.unsubscribe = this.props.store.subscribe(this.storeDidUpdate);
+	      this.codeMirror = this.refs.editor.getCodeMirror();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -37853,23 +37854,8 @@
 	  }, {
 	    key: 'handleCodeMirrorChange',
 	    value: function handleCodeMirrorChange(codeMirrorInstance, changeObj) {
-	      console.log('Cursor Change Obj: ' + JSON.stringify(changeObj));
 	      this.updateContent(codeMirrorInstance);
 	      this.parse(codeMirrorInstance);
-	    }
-	  }, {
-	    key: 'handleCursorChange',
-	    value: function handleCursorChange(codeMirrorInstance) {}
-	  }, {
-	    key: 'handleChange',
-	    value: function handleChange(e) {
-	      // If there is no selection, you can use the properties .selectionStart or .selectionEnd (with no selection they're equal).
-	      var cursorPosition = e.target.selectionStart;
-	      this.props.store.dispatch({ type: 'CURSOR_CHANGE', position: cursorPosition });
-	      console.log('cursor position: ' + this.props.store.getState().editor.cursor_position);
-
-	      this.updateContent(e.target.value);
-	      this.parse(e.target.value);
 	    }
 	  }, {
 	    key: 'updateContent',
@@ -37879,7 +37865,6 @@
 	        folderIndex: this.props.store.getState().state.folderIndex,
 	        pageIndex: this.props.store.getState().state.pageIndex
 	      });
-	      //this.request_push_data();
 	    }
 	  }, {
 	    key: 'openFileDragDialog',
@@ -37902,7 +37887,6 @@
 	  }, {
 	    key: 'scrollTo',
 	    value: function scrollTo(id) {
-	      console.log("scrolling to id: " + id);
 	      var element_to_scroll_to = document.getElementById(id);
 	      if (element_to_scroll_to) {
 	        element_to_scroll_to.scrollIntoView();
@@ -37983,9 +37967,8 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
+	      var _this2 = this;
 
-	      hljs.initHighlighting();
 	      var options = {
 	        lineNumbers: true,
 	        mode: 'markdown',
@@ -38001,7 +37984,7 @@
 	          onDrop: this.drop
 	        },
 	        _react2.default.createElement(CodeMirror, {
-	          id: 'userText',
+	          ref: 'editor',
 	          className: 'markdown-input-editor',
 	          value: this.getContent(),
 	          onChange: this.handleCodeMirrorChange,
@@ -38015,19 +37998,24 @@
 	            { className: 'toc-nav-show' },
 	            _react2.default.createElement('i', { className: 'icon-bars', 'aria-hidden': 'true' })
 	          ),
-	          _react2.default.createElement(_tocNav2.default, { store: this.props.store, info: this.getContent(), scrollTo: function scrollTo(id) {
-	              return _this3.scrollTo(id);
-	            } }),
+	          _react2.default.createElement(_tocNav2.default, {
+	            store: this.props.store,
+	            info: this.getContent(),
+	            scrollTo: function scrollTo(id) {
+	              return _this2.scrollTo(id);
+	            }
+	          }),
 	          _react2.default.createElement('div', { id: 'renderField', className: 'markdown-output-renderer',
 	            dangerouslySetInnerHTML: { __html: this.state.rendered_content } })
 	        ),
 	        _react2.default.createElement(_dialogFileDrag2.default, {
 	          open: this.state.fileDragDialogOpen,
 	          close: function close() {
-	            return _this3.closeFileDragDialog();
+	            return _this2.closeFileDragDialog();
 	          },
 	          filepath: this.state.fileDragEventFilepath,
-	          store: this.props.store
+	          store: this.props.store,
+	          codeMirror: this.codeMirror
 	        })
 	      );
 	    }
@@ -38165,6 +38153,36 @@
 	  }
 
 	  _createClass(TocNav, [{
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
+	      var array = [];
+	      for (var i = 0, max = all.length; i < max; i++) {
+	        array.push({
+	          ref: all[i],
+	          name: all[i].innerHTML,
+	          id: i,
+	          mag: all[i].localName
+	        });
+	      }
+	      this.array = array;
+	    }
+	  }, {
+	    key: 'componentWillUpdate',
+	    value: function componentWillUpdate() {
+	      var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
+	      var array = [];
+	      for (var i = 0, max = all.length; i < max; i++) {
+	        array.push({
+	          ref: all[i],
+	          name: all[i].innerHTML,
+	          id: i,
+	          mag: all[i].localName
+	        });
+	      }
+	      this.array = array;
+	    }
+	  }, {
 	    key: 'generatePagesArray',
 	    value: function generatePagesArray() {
 	      var array = [];
@@ -38178,38 +38196,22 @@
 	      return array;
 	    }
 	  }, {
-	    key: 'generateHeaderArray',
-	    value: function generateHeaderArray(str) {
-	      var match;
-	      var array = [];
-	      var r_atx = /^(#{1,6})\s*(.+?)\s*#*$/gm;
-	      var magnitude;
-	      var bound1, bound2;
-
-	      bound1 = 0;
-	      while ((match = r_atx.exec(str)) != null) {
-	        bound2 = match.index;
-	        magnitude = match[1].length;
-	        var item = { name: match[2], mag: magnitude };
-	        array.push(item);
-	        bound1 = r_atx.lastIndex;
-	      }
-	      return array;
-	    }
-	  }, {
 	    key: 'scrollTo',
-	    value: function scrollTo(id, e) {
-	      this.props.scrollTo(id);
+	    value: function scrollTo(ref, e) {
+	      // this.props.scrollTo(id);
+	      ref.scrollIntoView();
 	    }
 	  }, {
 	    key: 'renderTocItem',
 	    value: function renderTocItem(_ref) {
-	      var name = _ref.name,
+	      var ref = _ref.ref,
+	          name = _ref.name,
+	          id = _ref.id,
 	          mag = _ref.mag;
 
 	      return _react2.default.createElement(
 	        'li',
-	        { key: name, className: "toc-li-" + mag, onClick: this.scrollTo.bind(this, name) },
+	        { key: id, className: "toc-li-" + mag, onClick: this.scrollTo.bind(this, ref) },
 	        _react2.default.createElement(
 	          'span',
 	          { className: 'toc-li' },
@@ -38309,7 +38311,6 @@
 	    value: function render() {
 	      var state = this.props.store.getState();
 	      // console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
-	      this.array = this.generateHeaderArray(this.props.info);
 	      this.pagesArray = this.generatePagesArray();
 	      if (this.state.zoom == 'in') {
 	        return _react2.default.createElement(
@@ -38646,7 +38647,7 @@
 	      var guid = this.guid();
 	      var store = this.props.store;
 	      if (state.state.userid) {
-	        content = currentContent.slice(0, cursor_pos) + '![' + this.state.value + '](@:' + guid + ')' + currentContent.slice(cursor_pos);
+	        content = '![' + label + '](@:' + guid + ')';
 	        fs.readFile(this.props.filepath, 'binary', function (err, original_data) {
 	          var base64Image = new Buffer(original_data, 'binary').toString('base64');
 	          store.dispatch({
@@ -38659,15 +38660,11 @@
 	          });
 	        });
 	      } else {
-	        content = currentContent.slice(0, cursor_pos) + '![' + this.state.value + '](' + this.props.filepath + ')' + currentContent.slice(cursor_pos);
+	        content = '![' + label + '](' + this.props.filepath + ')';
 	      }
 
-	      this.props.store.dispatch({
-	        type: 'PAGE_CONTENT_CHANGE',
-	        content: content,
-	        folderIndex: state.state.folderIndex,
-	        pageIndex: state.state.pageIndex
-	      });
+	      this.props.codeMirror.replaceSelection(content);
+
 	      this.props.close();
 	    }
 	  }, {
@@ -39996,11 +39993,13 @@
 
 	var global_store, global_imageMapper; //global vars to be called by image links
 
+	var header_index;
+
 	function parse(str, store, imageMapper) {
 	  //The main parsing function.
 	  global_store = store;
 	  global_imageMapper = imageMapper;
-
+	  header_index = 0;
 	  return parse_blocks(str, false);
 	}
 
@@ -40080,6 +40079,12 @@
 	  return result;
 	}
 
+	////////////////////////////////////////////
+	/* Finds Header and returns <H1>Header</H1> 
+	/       ======
+	/ AND   Header and returns <H2>Header</H2>
+	/       ------
+	*/
 	function check_header_setext(blocks) {
 	  var patt = /^(=+|-+)\s*$/;
 	  var match;
@@ -40104,6 +40109,10 @@
 	  }
 	}
 
+	////////////////////////////////////////////
+	/* Finds #(repeated i times) Header and 
+	/ returns <H${i}>Header</H${i}> 
+	*/
 	function check_header_atx(blocks) {
 	  var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
 	  var match;
