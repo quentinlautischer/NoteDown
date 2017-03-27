@@ -22,9 +22,12 @@ export default class FoldersScene extends Component {
     }
 
     navigate(){
+        console.log('FOLDER' + arguments[0])
         this.props.navigator.push({
             title: 'View Notes',
-            content: arguments[0],
+            folder: arguments[0],
+            content: this.props.content,
+            socket: this.props.socket
         })
     }
 
