@@ -87,9 +87,9 @@ function render_span(span) {
 
 
 ////////////////////////////////////////////
-/* Finds Header and returns <H1>Header</H1> 
+/* Finds Header and returns <h1>Header</h1> 
 /       ======
-/ AND   Header and returns <H2>Header</H2>
+/ AND   Header and returns <h2>Header</h2>
 /       ------
 */
 function check_header_setext(blocks) {
@@ -118,7 +118,7 @@ function check_header_setext(blocks) {
 
 ////////////////////////////////////////////
 /* Finds #(repeated i times) Header and 
-/ returns <H${i}>Header</H${i}> 
+/ returns <h${i}>Header</h${i}> 
 */
 function check_header_atx(blocks) {
   var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
@@ -143,6 +143,14 @@ function check_header_atx(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds > quote1 and returns <blockquote><p>quote1 
+/        > quote2             quote2</p>
+/                             <p>quote3</p></blockquote>
+/        > quote3
+/  Parses blockquote content recursively
+/  Adjacent blockquotes separated by whitespace are joined
+*/
 function check_blockquote(blocks) {
   var patt = /^>\s(.*)$/;
   var match;
@@ -180,6 +188,10 @@ function check_blockquote(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds --- or ___ or ***, 3 or more characters, all separated by 0-2 spaces
+/  Returns <hr />
+*/
 function check_hrule(blocks) {
   var patt = /^[ ]{0,3}(-|_|\*)[ ]{0,2}(?:\1[ ]{0,2}){2,}\s*$/;
   var match;
@@ -203,6 +215,11 @@ function check_hrule(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds any lines indented by 4 spaces or a tab
+/  Returns <pre><code>content</code></pre>
+/  Adjacent code blocks separated by whitespace are joined
+*/
 function check_codeblock(blocks) {
   var patt = /^(?:[ ]{4}|\t)(.*)$/;
   var match;
@@ -235,7 +252,11 @@ function check_codeblock(blocks) {
     }
   }
 }
-
+////////////////////////////////////////////
+/* Finds code delimited by a line: ```code_language at the start
+/  and a line ``` at the end
+/  Returns <pre><code class="code_language">content</code></pre>
+*/
 function check_codeblock_lang(blocks) {
   var patt = /^```(.*)$/;
   var match;
@@ -250,7 +271,7 @@ function check_codeblock_lang(blocks) {
           var inner_content = '';
           var open = true;
           for (var end = l+1; end < content.length; end++) {
-            if ((match = patt.exec(content[end])) != null) {
+            if ((match = patt.exec(content[end])) != null && match[1].length == 0) {
               open = false;
               break;
             } else {
@@ -273,7 +294,14 @@ function check_codeblock_lang(blocks) {
     }
   }
 }
-
+////////////////////////////////////////////
+/* Finds {Question}
+/        {Hint1|Hint2|Hint3}
+/        {Step1|Step2|Step3}
+/  Returns a flashcard with question 'Question',
+/  3 hints 'Hint1', 'Hint2', 'Hint3',
+/  and a solution with 3 steps 'Step1', 'Step2', Step3'
+*/
 function check_flashcard(blocks) {
   var patt = /^\{(.+)\}$/
   var match;
