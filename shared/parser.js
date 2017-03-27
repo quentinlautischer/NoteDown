@@ -574,7 +574,10 @@ function check_backslash_escape(span_array) {
 }
 
 ////////////////////////////////////////////
-/* Finds [text](url)
+/* Finds [text](url), Returns <a href="url">text</a>
+/  Finds [text](url "title"), Returns <a href="url" title="title">text</a>
+/  Finds ![text](@:guid), Returns <img src="data:image/jpeg;base64, ${base64 data corresponding to guid}" alt="text" />
+/  Finds ![text](url "title"), Returns <img src="url" alt="text" title="title" />
 */
 function check_links(span_array) {
   var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)?s*\)/;
