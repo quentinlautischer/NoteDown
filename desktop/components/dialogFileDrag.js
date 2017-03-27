@@ -7,6 +7,8 @@ import MenuButton from './menuButton';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
+var fs = require("fs");
+
 class PreviewThumbnail extends React.Component {
   constructor() {
     super();
@@ -56,31 +58,38 @@ class DialogFileDrag extends React.Component {
     });
   }
 
+  guid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
+  }
+
   insertPhoto() {
     var state = this.props.store.getState();
     var cursor_pos = state.editor.cursor_position;
     var currentContent = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
     
-    // var content = "";
-    // var sample = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
-    // if (state.state.userid) {
-    //   content = `${currentContent.slice(0, cursor_pos)}<img width="350px" alt="${this.state.value}" src="data:image/jpeg;base64, ${sample}" />${currentContent.slice(cursor_pos)}`;
-    // } else {
-    //   content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](${this.props.filepath})${currentContent.slice(cursor_pos)}`;
-    // }
-    
     var content = "";
+    var label = this.state.value;
+    var guid = this.guid();
+    var store = this.props.store;
     if (state.state.userid) {
-      content = `${currentContent.slice(0, cursor_pos)}![label](@:24)${currentContent.slice(cursor_pos)}`;
+      content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](@:${guid})${currentContent.slice(cursor_pos)}`;
+      fs.readFile(this.props.filepath, 'binary', function(err, original_data){
+        var base64Image = new Buffer(original_data, 'binary').toString('base64');
+        store.dispatch({
+          type: 'ADD_PHOTO',
+          name: label,
+          guid: guid,
+          data: base64Image,
+          folderIndex: state.state.folderIndex,
+          pageIndex: state.state.pageIndex
+        });
+      });
     } else {
       content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](${this.props.filepath})${currentContent.slice(cursor_pos)}`;
     }
-
-
-    this.props.store.dispatch({
-      type: 'INSERT_IMAGE',
-      
-    });
 
     this.props.store.dispatch({ 
       type: 'PAGE_CONTENT_CHANGE', 

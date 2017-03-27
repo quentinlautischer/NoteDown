@@ -55,7 +55,7 @@ class App extends React.Component {
     // May be invisible but this keep the accelerator keybinds active.
     const menubar = Menu.buildFromTemplate(menubuilder(store));
     Menu.setApplicationMenu(menubar);
-    // console.log(store.getState());
+    console.log(store.getState());
 
     switch (store.getState().state.mode) {
       case 'menu':

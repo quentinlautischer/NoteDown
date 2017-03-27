@@ -261,7 +261,6 @@ function check_codeblock_lang(blocks) {
 }
 
 function check_flashcard(blocks) {
-  console.log("Checking Flashcard")
   var patt = /^\{(.+)\}$/
   var match;
 

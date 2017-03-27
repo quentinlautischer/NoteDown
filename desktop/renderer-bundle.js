@@ -171,7 +171,7 @@
 	      // May be invisible but this keep the accelerator keybinds active.
 	      var menubar = Menu.buildFromTemplate((0, _menubar2.default)(store));
 	      Menu.setApplicationMenu(menubar);
-	      // console.log(store.getState());
+	      console.log(store.getState());
 
 	      switch (store.getState().state.mode) {
 	        case 'menu':
@@ -24209,8 +24209,6 @@
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var fs = __webpack_require__(220);
-
 	function setNotes(state, action) {
 	  console.log('Setting Notes: ' + action.notes);
 	  return action.notes;
@@ -24254,13 +24252,14 @@
 	}
 
 	function addPhoto(state, action) {
-	  // filepath, label,
-	  var filepath = action.filepath;
-	  fs.readFile(filepath, 'binary', function (err, original_data) {
-	    var base64Image = new Buffer(original_data, 'binary').toString('base64');
+	  var image = { name: action.name, guid: action.guid, data: action.data };
+	  return (0, _immutabilityHelper2.default)(state, {
+	    folders: _defineProperty({}, action.folderIndex, {
+	      pages: _defineProperty({}, action.pageIndex, {
+	        images: { $push: [image] }
+	      })
+	    })
 	  });
-
-	  return;
 	}
 
 	var initial_state = {
@@ -37815,6 +37814,7 @@
 	    _this.handleCodeMirrorChange = _this.handleCodeMirrorChange.bind(_this);
 	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
 	    _this.drop = _this.drop.bind(_this);
+	    _this.parse = _this.parse.bind(_this);
 
 	    _this.unsubscribe = null;
 	    return _this;
@@ -37904,34 +37904,27 @@
 	      var state = this.props.store.getState();
 	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
 	    }
-
-	    // getContentImages() {
-	    //   var state = this.props.store.getContentImages();
-	    //   return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
-	    // }
-
+	  }, {
+	    key: 'getContentImages',
+	    value: function getContentImages() {
+	      var state = this.props.store.getState();
+	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].images;
+	    }
 	  }, {
 	    key: 'parse',
 	    value: function parse(content) {
-	      var store = {
-	        images: [{
-	          guid: 24,
-	          data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-	        }]
-	      };
 	      var imageMapper = function imageMapper(guid, store) {
-	        console.log('calling global image mapper guid: ');
-	        switch (guid) {
-	          case '24':
-	            return store.images[0].data;
-	          default:
-	            return "";
+	        var state = this.props.store.getState();
+	        var images = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].images;
+	        var i;
+	        for (i = 0; i < images.length; i++) {
+	          if (images[i].guid == guid) {
+	            return images[i].data;
+	          }
 	        }
 	      };
 
-	      var rendered = shared.parse(content, this.getContent(), function () {
-	        return "";
-	      });
+	      var rendered = shared.parse(content, this.props.store, imageMapper);
 	      this.setState({ rendered_content: rendered });
 	    }
 	  }, {
@@ -38555,6 +38548,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var fs = __webpack_require__(220);
+
 	var PreviewThumbnail = function (_React$Component) {
 	  _inherits(PreviewThumbnail, _React$Component);
 
@@ -38622,31 +38617,41 @@
 	      });
 	    }
 	  }, {
+	    key: 'guid',
+	    value: function guid() {
+	      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+	        var r = Math.random() * 16 | 0,
+	            v = c == 'x' ? r : r & 0x3 | 0x8;
+	        return v.toString(16);
+	      });
+	    }
+	  }, {
 	    key: 'insertPhoto',
 	    value: function insertPhoto() {
 	      var state = this.props.store.getState();
 	      var cursor_pos = state.editor.cursor_position;
 	      var currentContent = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
 
-	      // var content = "";
-	      // var sample = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
-	      // if (state.state.userid) {
-	      //   content = `${currentContent.slice(0, cursor_pos)}<img width="350px" alt="${this.state.value}" src="data:image/jpeg;base64, ${sample}" />${currentContent.slice(cursor_pos)}`;
-	      // } else {
-	      //   content = `${currentContent.slice(0, cursor_pos)}![${this.state.value}](${this.props.filepath})${currentContent.slice(cursor_pos)}`;
-	      // }
-
 	      var content = "";
+	      var label = this.state.value;
+	      var guid = this.guid();
+	      var store = this.props.store;
 	      if (state.state.userid) {
-	        content = currentContent.slice(0, cursor_pos) + '![label](@:24)' + currentContent.slice(cursor_pos);
+	        content = currentContent.slice(0, cursor_pos) + '![' + this.state.value + '](@:' + guid + ')' + currentContent.slice(cursor_pos);
+	        fs.readFile(this.props.filepath, 'binary', function (err, original_data) {
+	          var base64Image = new Buffer(original_data, 'binary').toString('base64');
+	          store.dispatch({
+	            type: 'ADD_PHOTO',
+	            name: label,
+	            guid: guid,
+	            data: base64Image,
+	            folderIndex: state.state.folderIndex,
+	            pageIndex: state.state.pageIndex
+	          });
+	        });
 	      } else {
 	        content = currentContent.slice(0, cursor_pos) + '![' + this.state.value + '](' + this.props.filepath + ')' + currentContent.slice(cursor_pos);
 	      }
-
-	      this.props.store.dispatch({
-	        type: 'INSERT_IMAGE'
-
-	      });
 
 	      this.props.store.dispatch({
 	        type: 'PAGE_CONTENT_CHANGE',
@@ -40256,7 +40261,6 @@
 	}
 
 	function check_flashcard(blocks) {
-	  console.log("Checking Flashcard");
 	  var patt = /^\{(.+)\}$/;
 	  var match;
 
