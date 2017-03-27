@@ -7,25 +7,31 @@ import {
 } from 'react-native';
 import MenuButton from '../components/MenuButton';
 
+// navigate
+import FoldersScene from './FoldersScene';
+import FlashcardsMenuScene from './FlashcardsMenuScene';
+import CameraScene from './CameraScene';
+
 export default class MenuScene extends Component {
-    navigate(){
+
+    _navigate(scene, name) {
         this.props.navigator.push({
-            title: arguments[0],
-            content: this.props.content,
-            socket: this.props.socket
-        })
+            title: name,
+            component: scene,
+            passProps: this.props
+        });
     }
 
     render() {
         return (
             <View style={styles.view}>
-                <TouchableHighlight onPress = {this.navigate.bind(this, 'Folders')}>
+                <TouchableHighlight onPress = { () => this._navigate(FoldersScene, 'FoldersScene') }>
                     <MenuButton text='Folders' />
                 </TouchableHighlight>
-                <TouchableHighlight onPress = {this.navigate.bind(this, 'Flashcards Menu')}>
+                <TouchableHighlight onPress = { () => this._navigate(FlashcardsMenuScene, 'FlashcardsMenuScene') }>
                     <MenuButton text='Flashcards' />
                 </TouchableHighlight>
-                <TouchableHighlight onPress = {this.navigate.bind(this, 'Camera')}>
+                <TouchableHighlight onPress = { () => this._navigate(CameraScene, 'CameraScene') }>
                     <MenuButton text='Camera Mode' />
                 </TouchableHighlight>
             </View>

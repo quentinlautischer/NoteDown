@@ -9,6 +9,7 @@ import {
 import SocketIOClient from 'socket.io-client';
 import MenuButton from '../components/MenuButton';
 import LoginInput from '../components/LoginInput';
+import MenuScene from './MenuScene'; // for navigation
 
 // const HOST = '127.0.0.1';
 var HOST = "localhost"; // allows me to test on android
@@ -42,11 +43,19 @@ export default class LoginScene extends Component {
             // recieve the user's data (to populate their folders)
             } else if (data.event === 'request-pull-data-response') {
                 console.log("Mobile client pulled data: ", data);
-                this.props.navigator.push({
-                    title: 'Main Menu',
-                    content: data,
-                    socket: this.socket
-                });
+                this._navigate(data);
+            }
+        });
+    }
+
+    _navigate(data) {
+        console.log('loggin in, data: ' + data);
+        this.props.navigator.push({
+            title: 'MenuScene',
+            component: MenuScene,
+            passProps: {
+                content: data,
+                socket: this.socket
             }
         });
     }

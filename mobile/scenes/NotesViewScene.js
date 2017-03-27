@@ -13,6 +13,8 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 import NotesView from '../components/NotesView.js';
 
+import NotesEditScene from './NotesEditScene'; // navigate
+
 var PAGE_NAV_REF = 'page_nav';
 
 export default class NotesViewScene extends Component {
@@ -24,15 +26,16 @@ export default class NotesViewScene extends Component {
         };
     }
 
-    // external navigation (to completely different scenes)
-    navigate() {
-        // console.log("INDEX " + this.state.index);
+    _navigate() {
         this.props.navigator.push({
-            title: arguments[0],
-            index: this.state.index,
-            folderId: this.props.folderId,
-            socket: this.props.socket,
-            content: this.props.content
+            title: 'NotesEditScene',
+            component: NotesEditScene,
+            passProps: {
+                index: this.state.index,
+                folderId: this.props.folderId,
+                socket: this.props.socket,
+                content: this.props.content
+            }
         })
     }
 
@@ -80,9 +83,7 @@ export default class NotesViewScene extends Component {
 
                 <ActionButton // floating action button (to edit notes)
                     buttonColor='#0aaf82'
-                    onPress = {
-                        this.navigate.bind(this, "Edit Notes")
-                    }
+                    onPress = { () => this._navigate() }
                     icon={<Icon name="md-create" style={styles.actionButtonIcon} />}
                 />
             </GestureRecognizer>

@@ -8,15 +8,24 @@ import {
 import Camera from 'react-native-camera';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import PhotoConfirmScene from './PhotoConfirmScene';
+
 export default class CameraScene extends Component {
     takePicture() {
         this.camera.capture()
-        .then((data) => this.props.navigator.push({
-            title: 'Confirm Photo',
-            content: data,
-            socket: this.props.socket
-        }))
+        .then((data) => this._navigate(data))
         .catch(err => console.error(err));
+    }
+
+    _navigate(data) {
+        this.props.navigator.push({
+            title: 'PhotoConfirmScene',
+            component: PhotoConfirmScene,
+            passProps: {
+                image: data,
+                socket: this.props.socket
+            }
+        })
     }
 
     render() {

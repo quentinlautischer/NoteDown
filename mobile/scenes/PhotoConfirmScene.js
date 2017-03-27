@@ -14,7 +14,7 @@ export default class PhotoConfirmScene extends Component {
     encodePhoto() {
         let data = ''
         RNFetchBlob.fs.readStream(
-            this.props.content.path, // path to photo
+            this.props.image.path, // path to photo
             'base64', // encoding type
             4095) // buffer size
             .then((ifstream) => {
@@ -36,7 +36,7 @@ export default class PhotoConfirmScene extends Component {
         return(
             <View style={styles.container}>
                 <Image
-                    source={{uri: this.props.content.path}}
+                    source={{uri: this.props.image.path}}
                     style={styles.img}
                 />
                 <TouchableHighlight

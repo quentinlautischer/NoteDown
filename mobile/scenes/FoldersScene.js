@@ -11,6 +11,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
 
+import NotesViewScene from './NotesViewScene'; // navigate
+
 export default class FoldersScene extends Component {
     constructor(props) {
         super(props);
@@ -21,14 +23,16 @@ export default class FoldersScene extends Component {
         };
     }
 
-    navigate(){
-        console.log('FOLDER' + arguments[0])
+    _navigate(rowID) {
         this.props.navigator.push({
-            title: 'View Notes',
-            folderId: parseInt(arguments[0].replace('FOLDER', '')),
-            content: this.props.content,
-            socket: this.props.socket
-        })
+            title: 'NotesViewScene',
+            component: NotesViewScene,
+            passProps: {
+                folderId: parseInt(rowID.replace('FOLDER', '')),
+                content: this.props.content,
+                socket: this.props.socket
+            }
+        });
     }
 
     render() {
@@ -39,7 +43,7 @@ export default class FoldersScene extends Component {
                     <ListView
                         dataSource={this.state.dataSource}
                         renderRow={(rowData, sectionID, rowID, highlightRow) =>
-                            <TouchableHighlight onPress = {this.navigate.bind(this, rowID)}>
+                            <TouchableHighlight onPress = { () => this._navigate(rowID) }>
                                 <ListItem iconName='folder' text={rowData.name} />
                             </TouchableHighlight>
                         }

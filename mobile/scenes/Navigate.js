@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScene from './LoginScene';
-import MenuScene from './MenuScene';
+import MenuScene from './MenuScene'
 import FoldersScene from './FoldersScene';
 import FlashcardsMenuScene from './FlashcardsMenuScene';
 import NotesViewScene from './NotesViewScene';
@@ -20,50 +20,17 @@ import CameraScene from './CameraScene';
 import PhotoConfirmScene from './PhotoConfirmScene';
 
 export default class Navigate extends Component {
+    renderScene(route, navigator) { // https://medium.com/react-native-training/react-native-navigator-navigating-like-a-pro-in-react-native-3cb1b6dc1e30#.x6jt1nunt; accessed 03/27/17
+        return React.createElement(route.component, { ...this.props, ...route.passProps, route, navigator } )
+    }
+
     render() {
-        // index is currently unused, but possibly we could use it instead of title
-        // to identify scenes in renderScene. The reason I am not is that I find
-        // it more intuitive to call scenes by what they do, rather than a meaningless
-        // number I need to look up each time.
-        const routes = [
-            {title: 'Login'},
-            {title: 'Main Menu'},
-            {title: 'Folders'},
-            {title: 'Flashcards Menu'},
-            {title: 'View Notes'},
-            {title: 'Edit Notes'},
-            {title: 'View Flashcard'},
-            {title: 'Camera'},
-            {title: 'Confirm Photo'}
-        ];
         return (
             <Navigator
-                initialRoute={routes[0]}
-                renderScene={(route, navigator) => {
-                    if (route.title == 'Login') {
-                        return <LoginScene navigator={navigator} />
-                    } else if (route.title == 'Main Menu') {
-                        return <MenuScene navigator={navigator} content={route.content} socket={route.socket} />
-                    } else if (route.title === 'Folders') {
-                        return <FoldersScene navigator={navigator} content={route.content} socket={route.socket} />
-                    } else if (route.title === 'Flashcards Menu') {
-                        return <FlashcardsMenuScene navigator={navigator} content={route.content} socket={route.socket} />
-                    } else if (route.title === 'View Notes') {
-                        return <NotesViewScene navigator={navigator} content={route.content} socket={route.socket} folderId={route.folderId} />
-                    } else if (route.title === 'Edit Notes') {
-                        return <NotesEditScene navigator={navigator} content={route.content} socket={route.socket} folderId={route.folderId} index={route.index} />
-                    } else if (route.title === 'View Flashcard') {
-                        return <FlashcardViewScene navigator={navigator}  content={route.content} socket={route.socket} />
-                    } else if (route.title === 'Camera') {
-                        return <CameraScene navigator={navigator} socket={route.socket} />
-                    } else if (route.title === 'Confirm Photo') {
-                        return <PhotoConfirmScene navigator={navigator} content={route.content} socket={route.socket} />
-                    } else {
-                        return null;
-                    }
-                }}
+                initialRoute={{ component: LoginScene, title: 'LoginScene' }}
+                renderScene={ this.renderScene }
                 configureScene={(route, routeStack) => {
-                    if (route.title == 'Main Menu') {
+                    if (route.title == 'MenuScene') {
                         return Navigator.SceneConfigs.VerticalUpSwipeJump
                     } else {
                         return Navigator.SceneConfigs.PushFromRight
@@ -73,9 +40,9 @@ export default class Navigate extends Component {
                     <Navigator.NavigationBar
                     routeMapper={{
                         LeftButton: (route, navigator, index, navState) => {
-                            if (route.title === 'Login') {
+                            if (route.title == 'LoginScene') {
                                 return null;
-                            } else if (route.title === 'Main Menu') {
+                            } else if (route.title == 'MenuScene') {
                                 return (
                                     <TouchableHighlight onPress={() => navigator.pop()}>
                                         <Text style={styles.navButton}>Logout</Text>
@@ -92,20 +59,22 @@ export default class Navigate extends Component {
                             }
                         },
                         RightButton: (route, navigator, index, navState) => {
-                            if (route.title === 'View Notes') {
+                            if (route.title == 'NotesViewScene') {
                                 return(
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={() =>
                                             navigator.push({
-                                                title: 'View Flashcard',
-                                                content: route.content
+                                                component: FlashcardViewScene,
+                                                passProps: {
+                                                    content: route.content
+                                                }
                                             })
                                         }>
                                         <Text>Go to Flashcards</Text>
                                     </TouchableHighlight>
                                 );
-                            } else if (route.title === 'Edit Notes') {
+                            } else if (route.title == 'NotesEditScene') {
                                 return(
                                     <TouchableHighlight
                                         style={styles.largeNavButton}
