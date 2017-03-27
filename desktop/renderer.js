@@ -173,8 +173,10 @@ class App extends React.Component {
       if (data.result == true){
         store.dispatch({type: 'SET_NOTES', notes: data.notes});
         store.dispatch({type: 'FOLDER_MODE'});
+        store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Notes updated from cloud'});
       } else {
         dialog.showErrorBox('error', data.msg);
+        store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Error pulling data from cloud'});
       }
     })
 

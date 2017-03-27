@@ -68,11 +68,11 @@
 
 	var _notesReducer2 = _interopRequireDefault(_notesReducer);
 
-	var _editorReducer = __webpack_require__(221);
+	var _editorReducer = __webpack_require__(220);
 
 	var _editorReducer2 = _interopRequireDefault(_editorReducer);
 
-	var _menubar = __webpack_require__(222);
+	var _menubar = __webpack_require__(221);
 
 	var _menubar2 = _interopRequireDefault(_menubar);
 
@@ -128,12 +128,12 @@
 
 	var hljs = __webpack_require__(437);
 
-	var ipc = __webpack_require__(223).ipcRenderer;
+	var ipc = __webpack_require__(222).ipcRenderer;
 
-	var _require = __webpack_require__(223),
+	var _require = __webpack_require__(222),
 	    remote = _require.remote;
 
-	var fs = __webpack_require__(220);
+	var fs = __webpack_require__(223);
 	var Menu = remote.Menu,
 	    MenuItem = remote.MenuItem;
 	var dialog = remote.dialog;
@@ -308,8 +308,10 @@
 	        if (data.result == true) {
 	          store.dispatch({ type: 'SET_NOTES', notes: data.notes });
 	          store.dispatch({ type: 'FOLDER_MODE' });
+	          store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Notes updated from cloud' });
 	        } else {
 	          dialog.showErrorBox('error', data.msg);
+	          store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Error pulling data from cloud' });
 	        }
 	      });
 
@@ -24288,12 +24290,6 @@
 
 /***/ },
 /* 220 */
-/***/ function(module, exports) {
-
-	module.exports = require("fs");
-
-/***/ },
-/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24338,7 +24334,7 @@
 	exports.default = editorReducer;
 
 /***/ },
-/* 222 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24347,18 +24343,18 @@
 	  value: true
 	});
 
-	var _require = __webpack_require__(223),
+	var _require = __webpack_require__(222),
 	    app = _require.app,
 	    Menu = _require.Menu;
 
-	var _require2 = __webpack_require__(223),
+	var _require2 = __webpack_require__(222),
 	    remote = _require2.remote;
 
-	var fs = __webpack_require__(220);
+	var fs = __webpack_require__(223);
 	var dialog = remote.dialog;
 
 
-	var ipc = __webpack_require__(223).ipcRenderer;
+	var ipc = __webpack_require__(222).ipcRenderer;
 
 	////////////////////////////////////////////////////////
 	/// Bool Queries
@@ -24467,9 +24463,17 @@
 	  store.dispatch({ type: 'SET_NOTES', notes: null });
 	}
 
-	function menuPushToCloud(store) {}
+	function menuPushToCloud(store) {
+	  var data = { userid: store.getState().state.userid, notes: store.getState().notes };
+	  ipc.send('request-push-data', data);
+	  store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Pushing data from cloud' });
+	}
 
-	function menuPullFromCloud(store) {}
+	function menuPullFromCloud(store) {
+	  var data = { userid: store.getState().state.userid };
+	  ipc.send('request-pull-data', data);
+	  store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Pulling data to cloud' });
+	}
 
 	////////////////////////////////////////////////////////
 	/// Menubar Template Builder
@@ -24605,7 +24609,7 @@
 	      role: 'Push To Cloud',
 	      label: 'Push To Cloud',
 	      visible: is_logged_in(state),
-	      enabled: false, // until I figure it out
+	      enabled: true, // until I figure it out
 	      click: function click() {
 	        menuPushToCloud(store);
 	      }
@@ -24613,7 +24617,7 @@
 	      role: 'Pull From Cloud',
 	      label: 'Pull From Cloud',
 	      visible: is_logged_in(state),
-	      enabled: false, // until I figure it out
+	      enabled: true, // until I figure it out
 	      click: function click() {
 	        menuPullFromCloud(store);
 	      }
@@ -24635,7 +24639,7 @@
 	    }, {
 	      label: 'Learn More',
 	      click: function click() {
-	        __webpack_require__(223).shell.openExternal('http://electron.atom.io');
+	        __webpack_require__(222).shell.openExternal('http://electron.atom.io');
 	      }
 	    }]
 	  }];
@@ -24701,10 +24705,16 @@
 	exports.default = menubar_template_builder;
 
 /***/ },
-/* 223 */
+/* 222 */
 /***/ function(module, exports) {
 
 	module.exports = require("electron");
+
+/***/ },
+/* 223 */
+/***/ function(module, exports) {
+
+	module.exports = require("fs");
 
 /***/ },
 /* 224 */
@@ -24764,7 +24774,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ipc = __webpack_require__(223).ipcRenderer;
+	var ipc = __webpack_require__(222).ipcRenderer;
 
 	var StartMenu = function (_React$Component) {
 	  _inherits(StartMenu, _React$Component);
@@ -37786,7 +37796,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ipc = __webpack_require__(223).ipcRenderer;
+	var ipc = __webpack_require__(222).ipcRenderer;
 
 	var shared = __webpack_require__(435);
 	var hljs = __webpack_require__(437);
@@ -37914,7 +37924,7 @@
 	    key: 'parse',
 	    value: function parse(content) {
 	      var imageMapper = function imageMapper(guid, store) {
-	        var state = this.props.store.getState();
+	        var state = store.getState();
 	        var images = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].images;
 	        var i;
 	        for (i = 0; i < images.length; i++) {
@@ -38548,7 +38558,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var fs = __webpack_require__(220);
+	var fs = __webpack_require__(223);
 
 	var PreviewThumbnail = function (_React$Component) {
 	  _inherits(PreviewThumbnail, _React$Component);
@@ -38570,7 +38580,6 @@
 	    key: 'render',
 	    value: function render() {
 	      var ext = this.extractFileExtension(this.props.filepath);
-	      console.log('ext: ' + ext);
 	      if (ext == 'jpg' | ext == 'png') {
 	        return _react2.default.createElement('img', { src: this.props.filepath, width: '300px', height: '250px' });
 	      } else if (ext == 'md') {
@@ -40359,9 +40368,7 @@
 	        } else {
 	          if (src.slice(0, 2) == '@:') {
 	            var guid = src.slice(2, src.length);
-	            console.log('guid ' + guid);
 	            var data = global_imageMapper(guid, global_store);
-	            console.log('data: ' + data);
 	            src = 'data:image/jpeg;base64, ' + data;
 	          }
 	          var image = { tag: 'img', content: '<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : '" title="' + title) + '" />' };
@@ -69397,7 +69404,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ipc = __webpack_require__(223).ipcRenderer;
+	var ipc = __webpack_require__(222).ipcRenderer;
 
 	var shared = __webpack_require__(435);
 
@@ -69612,7 +69619,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ipc = __webpack_require__(223).ipcRenderer;
+	var ipc = __webpack_require__(222).ipcRenderer;
 
 	var FolderContainerView = function (_React$Component) {
 	  _inherits(FolderContainerView, _React$Component);
@@ -69893,7 +69900,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _menubar = __webpack_require__(222);
+	var _menubar = __webpack_require__(221);
 
 	var _menubar2 = _interopRequireDefault(_menubar);
 
@@ -69905,14 +69912,14 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _require = __webpack_require__(223),
+	var _require = __webpack_require__(222),
 	    remote = _require.remote;
 
 	var Menu = remote.Menu,
 	    MenuItem = remote.MenuItem;
 
 
-	var ipc = __webpack_require__(223).ipcRenderer;
+	var ipc = __webpack_require__(222).ipcRenderer;
 
 	var MenubarTile = function (_React$Component) {
 	  _inherits(MenubarTile, _React$Component);

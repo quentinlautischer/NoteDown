@@ -116,7 +116,7 @@ class DualmodeEditor extends React.Component {
 
   parse(content) {
     var imageMapper = function(guid, store){
-      var state = this.props.store.getState();
+      var state = store.getState();
       var images = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].images;
       var i;
       for(i = 0; i < images.length; i++) {

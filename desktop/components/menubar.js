@@ -121,9 +121,15 @@ function menuLogout(store) {
 }
 
 function menuPushToCloud(store) {
+  const data = {userid: store.getState().state.userid, notes: store.getState().notes};
+  ipc.send('request-push-data', data);
+  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pushing data from cloud'});
 }
 
 function menuPullFromCloud(store) {
+  const data = {userid: store.getState().state.userid};
+  ipc.send('request-pull-data', data);
+  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pulling data to cloud'});
 }
 
 
@@ -279,7 +285,7 @@ const menubar_template_builder = function(store) {
         role: 'Push To Cloud',
         label: 'Push To Cloud',
         visible: is_logged_in(state),
-        enabled: false, // until I figure it out
+        enabled: true, // until I figure it out
         click () { menuPushToCloud(store) }
 
       },
@@ -287,7 +293,7 @@ const menubar_template_builder = function(store) {
         role: 'Pull From Cloud',
         label: 'Pull From Cloud',
         visible: is_logged_in(state),
-        enabled: false, // until I figure it out
+        enabled: true, // until I figure it out
         click () { menuPullFromCloud(store) }
 
       }

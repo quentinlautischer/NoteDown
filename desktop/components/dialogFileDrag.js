@@ -22,7 +22,6 @@ class PreviewThumbnail extends React.Component {
 
   render() {
     var ext = this.extractFileExtension(this.props.filepath);
-    console.log(`ext: ${ext}`);
     if (ext == 'jpg' | ext == 'png') {
       return (
         <img src={this.props.filepath} width="300px" height="250px"/>

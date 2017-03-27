@@ -359,9 +359,7 @@ function check_links(span_array) {
         } else {
           if (src.slice(0,2) == '@:') {
             var guid = src.slice(2,src.length);
-            console.log(`guid ${guid}`);
             var data = global_imageMapper(guid, global_store);
-            console.log(`data: ${data}`)
             src = 'data:image/jpeg;base64, ' + data;
           }
           var image = {tag:'img', content:'<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : ('" title="' + title)) + '" />'};
