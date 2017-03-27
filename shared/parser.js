@@ -294,6 +294,7 @@ function check_codeblock_lang(blocks) {
     }
   }
 }
+
 ////////////////////////////////////////////
 /* Finds {Question}
 /        {Hint1|Hint2|Hint3}
@@ -326,7 +327,7 @@ function check_flashcard(blocks) {
   }
 }
 
-function check_list_ordered(blocks) {
+function check_list_unordered(blocks) {
   var patt1 = /^(?:\*|\+|-)\s+(.+)$/;
   var patt2 = /^(?:[ ]{1,4}|\t)(.+)$/;
   var match;
@@ -375,7 +376,7 @@ function check_list_ordered(blocks) {
   }
 }
 
-function check_list_unordered(blocks) {
+function check_list_ordered(blocks) {
   var patt1 = /^[0-9]+\.\s+(.+)$/;
   var patt2 = /^(?:[ ]{1,4}|\t)(.+)$/;
   var match;
