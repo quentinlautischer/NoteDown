@@ -1,3 +1,4 @@
+var hljs = require('highlight.js');
 
 import flashcardTemplate from './models/flashcardTemplate.js';
 
@@ -23,6 +24,8 @@ function parse_blocks(str, allow_raw) {
   //Block-level elements
   var block_array = [{content:str.split('\n')}];
 
+  check_codeblock_lang(block_array);
+  check_codeblock(block_array);
   check_header_setext(block_array);
   check_header_atx(block_array);
   check_blockquote(block_array);
@@ -31,8 +34,6 @@ function parse_blocks(str, allow_raw) {
   check_list_ordered(block_array);
   check_list_unordered(block_array);
   check_table(block_array);
-  check_codeblock(block_array);
-  check_codeblock_lang(block_array);
   check_paragraph(block_array);
   
   if (!allow_raw) {
@@ -57,12 +58,14 @@ function parse_span(str) {
 function render_block(blocks) {
   var result = '';
   for (var i = 0; i < blocks.length; i++) {
-    if (i > 0) { result += '\n\n'; }
     var block = blocks[i];
     var attrs = '';
     if (block.attributes != null) {
-      for (var a = 0; a < block.attributes.length; a++) {
-        attrs += ' ' + block.attributes[a][0] + '="' + block.attributes[a][1] + '"';
+      if (block.attributes.class != null) {
+        attrs += ` class="${block.attributes.class}"`
+      }
+      if (block.attributes.style != null) {
+        attrs += ` style="${block.attributes.style}"`        
       }
     }
     if (block.tag == null) {
@@ -237,6 +240,7 @@ function check_codeblock(blocks) {
 }
 
 function check_codeblock_lang(blocks) {
+  ////console.log(hljs.highlight("python", '<pre><code class="python">def foo():</code></pre>', true));
   var patt = /^```(.*)$/;
   var match;
   var codeblocks;
@@ -260,8 +264,14 @@ function check_codeblock_lang(blocks) {
           }
           if (open) { break; }
           var raw1 = {content:content.slice(0,l)};
-          var code = {tag:'code', content:inner_content};
-          if (code_class != null) { code.attrs = ['class', code_class]; }
+          var code = null;
+          if (code_class != null) {
+            var highlit = hljs.highlight(code_class, inner_content, true);
+            code = {tag:'code', content:highlit.value};
+          } else {
+            code = {tag:'code', content:inner_content};
+          }
+          code.attributes = {class: (code_class != null) ? code_class : 'nohighlight'}
           var pre = {tag:'pre', content:render_block([code])};
           var raw2 = {content:content.slice(end+1,content.length)};
 
@@ -431,7 +441,7 @@ function check_table(blocks) {
           for (var h = 0; h < headers.length; h++) {
             if (headers[h].length == 0) { continue; }
             var th = {tag:'th', content:parse_span(headers[h].trim())}
-            if (h < format.length && format[h] != null) { th.attributes = [['style', format[h]]]; }
+            if (h < format.length && format[h] != null) { th.attributes = {style: format[h]}; }
             tr_content.push(th);
           }
           tr = [{tag:'tr', content:render_block(tr_content)}];
@@ -441,7 +451,7 @@ function check_table(blocks) {
             for (var j = 0; j < cells[i].length; j++) {
               if (cells[i][j].length == 0) { continue; }
               var td = {tag:'td', content:parse_span(cells[i][j].trim())};
-              if (j < format.length && format[j] != null) { td.attributes = [['style', format[j]]]; }
+              if (j < format.length && format[j] != null) { td.attributes = {style: format[j]}; }
               tr_content.push(td);
             }
             tbody_content.push({tag:'tr', content:render_block(tr_content)});

@@ -12,8 +12,8 @@ import { connect } from 'react-redux';
 var ipc = require('electron').ipcRenderer;
 
 var shared = require('../../shared/parser.js');
-var hljs = require('highlight.js');
 
+var hljs = require('highlight.js');
 var CodeMirror = require('react-codemirror');
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/xml/xml');
@@ -39,6 +39,7 @@ class DualmodeEditor extends React.Component {
   }
 
   componentDidMount(){
+    hljs.initHighlightingOnLoad();
     this.unsubscribe = this.props.store.subscribe( this.storeDidUpdate );
     this.codeMirror = this.refs.editor.getCodeMirror();
   }
@@ -140,7 +141,7 @@ class DualmodeEditor extends React.Component {
       mode: 'markdown',
       theme: 'duotone-light'
     };
-    //console.log(hljs.highlight("python", '<pre><code class="python">def foo():</code></pre>', true));
+    hljs.initHighlighting();
     return (
       <div className="dualMode-container"
         onDragOver={this.preventDefault}

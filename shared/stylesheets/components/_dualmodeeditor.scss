@@ -55,4 +55,12 @@
   {
     background-color: map-get($colors, dark);
   }
+
+  blockquote {
+    background-color: map-get($colors, dark2);
+  }
+
+  pre{
+    background-color: map-get($colors, dark2); 
+  }
 }

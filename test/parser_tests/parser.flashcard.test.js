@@ -19,3 +19,4 @@ test('flashcard test 3', () => {
   const rendered = '<div>Flashcard placeholder<br />Question<br /><a href="http://www.google.com">http://www.google.com</a><br />Hint 2<br />Answer</div>';
 
   expect(parser.parse(raw_str)).toBe(rendered);
+});
