@@ -90,9 +90,9 @@ function render_span(span) {
 
 
 ////////////////////////////////////////////
-/* Finds Header and returns <H1>Header</H1> 
+/* Finds Header and returns <h1>Header</h1> 
 /       ======
-/ AND   Header and returns <H2>Header</H2>
+/ AND   Header and returns <h2>Header</h2>
 /       ------
 */
 function check_header_setext(blocks) {
@@ -121,7 +121,7 @@ function check_header_setext(blocks) {
 
 ////////////////////////////////////////////
 /* Finds #(repeated i times) Header and 
-/ returns <H${i}>Header</H${i}> 
+/ returns <h${i}>Header</h${i}> 
 */
 function check_header_atx(blocks) {
   var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
@@ -146,6 +146,14 @@ function check_header_atx(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds > quote1 and returns <blockquote><p>quote1 
+/        > quote2             quote2</p>
+/                             <p>quote3</p></blockquote>
+/        > quote3
+/  Parses blockquote content recursively
+/  Adjacent blockquotes separated by whitespace are joined
+*/
 function check_blockquote(blocks) {
   var patt = /^>\s(.*)$/;
   var match;
@@ -183,6 +191,10 @@ function check_blockquote(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds --- or ___ or ***, 3 or more characters, all separated by 0-2 spaces
+/  Returns <hr />
+*/
 function check_hrule(blocks) {
   var patt = /^[ ]{0,3}(-|_|\*)[ ]{0,2}(?:\1[ ]{0,2}){2,}\s*$/;
   var match;
@@ -206,6 +218,11 @@ function check_hrule(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds any lines indented by 4 spaces or a tab
+/  Returns <pre><code>content</code></pre>
+/  Adjacent code blocks separated by whitespace are joined
+*/
 function check_codeblock(blocks) {
   var patt = /^(?:[ ]{4}|\t)(.*)$/;
   var match;
@@ -238,7 +255,11 @@ function check_codeblock(blocks) {
     }
   }
 }
-
+////////////////////////////////////////////
+/* Finds code delimited by a line: ```code_language at the start
+/  and a line ``` at the end
+/  Returns <pre><code class="code_language">content</code></pre>
+*/
 function check_codeblock_lang(blocks) {
   ////console.log(hljs.highlight("python", '<pre><code class="python">def foo():</code></pre>', true));
   var patt = /^```(.*)$/;
@@ -254,7 +275,7 @@ function check_codeblock_lang(blocks) {
           var inner_content = '';
           var open = true;
           for (var end = l+1; end < content.length; end++) {
-            if ((match = patt.exec(content[end])) != null) {
+            if ((match = patt.exec(content[end])) != null && match[1].length == 0) {
               open = false;
               break;
             } else {
@@ -284,6 +305,14 @@ function check_codeblock_lang(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds {Question}
+/        {Hint1|Hint2|Hint3}
+/        {Step1|Step2|Step3}
+/  Returns a flashcard with question 'Question',
+/  3 hints 'Hint1', 'Hint2', 'Hint3',
+/  and a solution with 3 steps 'Step1', 'Step2', Step3'
+*/
 function check_flashcard(blocks) {
   var patt = /^\{(.+)\}$/
   var match;
@@ -308,7 +337,15 @@ function check_flashcard(blocks) {
   }
 }
 
-function check_list_ordered(blocks) {
+////////////////////////////////////////////
+/* Finds + item1      Returns <ul><li><p>item1</p></li>
+/        * item2              <li><p>item2
+/          stillItem2         stillItem2</p></li>
+/        - item3              <l1><p>item3</p>
+/                             <p>stillItem3</p></li>
+/          stillitem3         </ul>
+*/
+function check_list_unordered(blocks) {
   var patt1 = /^(?:\*|\+|-)\s+(.+)$/;
   var patt2 = /^(?:[ ]{1,4}|\t)(.+)$/;
   var match;
@@ -357,7 +394,15 @@ function check_list_ordered(blocks) {
   }
 }
 
-function check_list_unordered(blocks) {
+////////////////////////////////////////////
+/* Finds 1. item1      Returns <ol><li><p>item1</p></li>
+/        2. item2              <li><p>item2
+/          stillItem2         stillItem2</p></li>
+/        9. item3              <l1><p>item3</p>
+/                             <p>stillItem3</p></li>
+/          stillitem3         </ol>
+*/
+function check_list_ordered(blocks) {
   var patt1 = /^[0-9]+\.\s+(.+)$/;
   var patt2 = /^(?:[ ]{1,4}|\t)(.+)$/;
   var match;
@@ -406,6 +451,23 @@ function check_list_unordered(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds |header1|header2|header3|header4|
+/        |-------|:------|:-----:|:------|
+/        | item1 | item2 | item3 | item4 |
+/  or
+/        header1|header2|header3|header4
+/        -------|:------|:-----:|:------
+/         item1 | item2 | item3 | item4 
+/ Returns <table><thead><tr><th>header1</th>
+/         <th style="text-align: left">header2</th>
+/         <th style="text-align: center">header3</th>
+/         <th style="text-align: right">header4</th></tr></thead>
+/         <tbody><tr><td>header1</td>
+/         <td style="text-align: left">header2</td>
+/         <td style="text-align: center">header3</td>
+/         <td style="text-align: right">header4</td></tr></tbody></table>
+*/
 function check_table(blocks) {
   var patt = /^(?:\|\s*)?([:]?-{3,}[:]?\s*\|\s*)*[:]?-{3,}[:]?(?:\s*\|)?$/;
   var match;
@@ -471,6 +533,11 @@ function check_table(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds any block of text not indented like code,
+/  not containing any lines of just whitespace
+/  Returns <p>content</p>
+*/
 function check_paragraph(blocks) {
   var patt = /^[ ]{0,3}(.+)$/;
   var match;
@@ -501,7 +568,10 @@ function check_paragraph(blocks) {
   }
 }
 
-
+////////////////////////////////////////////
+/* Finds .MD specific characters that are escaped,
+/  replaces them with their HTML entities to exempt them from parsing
+*/
 function check_backslash_escape(span_array) {
   for (var s = 0; s < span_array.length; s++) {
     var content = span_array[s].content;
@@ -513,6 +583,12 @@ function check_backslash_escape(span_array) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds [text](url), Returns <a href="url">text</a>
+/  Finds [text](url "title"), Returns <a href="url" title="title">text</a>
+/  Finds ![text](@:guid), Returns <img src="data:image/jpeg;base64, ${base64 data corresponding to guid}" alt="text" />
+/  Finds ![text](url "title"), Returns <img src="url" alt="text" title="title" />
+*/
 function check_links(span_array) {
   var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)?s*\)/;
   var match;
