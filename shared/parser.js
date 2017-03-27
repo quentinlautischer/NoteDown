@@ -21,8 +21,6 @@ function parse_blocks(str, allow_raw) {
   //Block-level elements
   var block_array = [{content:str.split('\n')}];
 
-  check_codeblock(block_array);
-  check_codeblock_lang(block_array);
   check_header_setext(block_array);
   check_header_atx(block_array);
   check_blockquote(block_array);
@@ -31,6 +29,8 @@ function parse_blocks(str, allow_raw) {
   check_list_ordered(block_array);
   check_list_unordered(block_array);
   check_table(block_array);
+  check_codeblock(block_array);
+  check_codeblock_lang(block_array);
   check_paragraph(block_array);
   
   if (!allow_raw) {
@@ -285,6 +285,52 @@ function check_flashcard(blocks) {
 }
 
 function check_list_ordered(blocks) {
+  var patt1 = /^(?:\*|\+|-)\s+(.+)$/;
+  var patt2 = /^(?:[ ]{1,4}|\t)(.+)$/;
+  var match;
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt1.exec(content[l])) != null) {
+          var listItems = [];
+          var inner_content = null;
+          var same_block = true; //Keeps track of inner blockquote blocks
+          for (var end = l; end < content.length; end++) {
+            if ((match = patt1.exec(content[end])) != null) {
+              if (inner_content != null) { listItems.push(inner_content); }
+              inner_content = match[1] + '\n';
+              same_block = true;
+            } else if (content[end].trim().length == 0) { //End of block may mean end of blockquote
+              inner_content += '\n';
+              same_block = false;
+            } else if ((match = patt2.exec(content[end])) != null) { //Second paragraph in one list item
+              inner_content += match[1] + '\n';
+              same_block = true;
+            } else if (same_block) { inner_content += content[end] + '\n'; }
+            else { break; }
+          }
+          listItems.push(inner_content);
+          inner_content = '';
+          for (var i = 0; i < listItems.length; i++) {
+            //inner_content repurposed as aggregate of list items
+            listItems[i] = parse_blocks(listItems[i], false);
+            var li = {tag:'li', content:listItems[i]};
+            inner_content += render_block([li]) + '\n';
+          }
+
+          var raw1 = {content:content.slice(0,l)};
+          var ul = {tag:'ul', content:inner_content};
+          var raw2 = {content:content.slice(end,content.length)};
+
+          blocks.splice(b, 1, raw1, ul, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
 }
 
 function check_list_unordered(blocks) {
