@@ -5,31 +5,8 @@ var global_store, global_imageMapper; //global vars to be called by image links
 
 function parse(str, store, imageMapper) {
   //The main parsing function.
-  // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
-  var store = {
-    images: [{
-      guid: 24,
-      data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-    }]
-  }
-  var imageMapper = function(guid, store){
-    switch (guid){
-      case 24:
-        return store.images[0].data;
-      default:
-        return "";
-    }
-  }
-
   global_store = store;
   global_imageMapper = imageMapper;
-
-  // ![label](@:24)
-  // pass the guid found in the .md
-  // into imageMapper(guid, store) as well as the store parameter
-  // this should output the base64 encoding...
-  // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
-  // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
   
   return parse_blocks(str, false);
 }
@@ -331,7 +308,9 @@ function check_links(span_array) {
         } else {
           if (src.slice(0,2) == '@:') {
             var guid = src.slice(2,src.length);
+            console.log(`guid ${guid}`);
             var data = global_imageMapper(guid, global_store);
+            console.log(`data: ${data}`)
             src = 'data:image/jpeg;base64, ' + data;
           }
           var image = {tag:'img', content:'<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : ('" title="' + title)) + '" />'};

@@ -26,7 +26,7 @@ const is_logged_in = function(state) {
 function readFile(filepath, store){
   fs.readFile(filepath, 'utf-8', function (err, data) {
     if(err){
-      alert("An error ocurred reading the file :" + err.message);
+      store.dispatch({type: 'SHOW_SNACKBAR', msg: `An error ocurred reading the file: ${err.message}`});
       return;
     }
     store.dispatch({type: 'SET_QUICK_FILEPATH', path: filepath})
@@ -46,16 +46,16 @@ function saveas(store) {
     ]
   }, function (fileName) {
     if (fileName === undefined){
-      console.log("You didn't save the file");
+      store.dispatch({type: 'SHOW_SNACKBAR', msg: "You did not save the file"});
       return;
     }
     // fileName is a string that contains the path and filename created in the save file dialog.
     store.dispatch({type: 'SET_QUICK_FILEPATH', path: fileName});  
     fs.writeFile(fileName, store.getState().notes.folders[0].pages[0].content, function (err) {
       if(err){
-        alert("An error ocurred creating the file "+ err.message)
+        store.dispatch({type: 'SHOW_SNACKBAR', msg: "An error occurred while saving file"});
       }        
-      alert("The file has been succesfully saved");
+      store.dispatch({type: 'SHOW_SNACKBAR', msg: "The file has been succesfully saved"});
     });
   }); 
 }
@@ -93,7 +93,7 @@ function menuSave(store) {
       console.log(err);
       return;
     }
-    store.dispatch({type: 'SHOW_SNACKBAR', msg: "The file has been succesfully saved", time:10000});
+    store.dispatch({type: 'SHOW_SNACKBAR', msg: "The file has been succesfully saved"});
     }); 
   }
 }

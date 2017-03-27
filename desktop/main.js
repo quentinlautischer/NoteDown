@@ -89,7 +89,8 @@ ipcMain.on('create-folder-request', (event, data) => {
     name: data.name,
     pages: [
       new Page({
-        content: ""
+        content: "",
+        images: []
       })
     ]
   });

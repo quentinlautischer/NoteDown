@@ -20,7 +20,7 @@ function deleteFolder(state, action){
 }
 
 function addPage(state, action){
-  const page = { content: "" };
+  const page = { content: "", images: [] };
   return update(state, { 
     folders: { 
       [action.folderIndex]: {
@@ -72,7 +72,8 @@ const initial_state = {
       name: "Folder",
       pages: [
         {
-          content: ""
+          content: "",
+          images: []
         }
       ]
     }

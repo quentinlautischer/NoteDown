@@ -24227,7 +24227,7 @@
 	}
 
 	function addPage(state, action) {
-	  var page = { content: "" };
+	  var page = { content: "", images: [] };
 	  return (0, _immutabilityHelper2.default)(state, {
 	    folders: _defineProperty({}, action.folderIndex, {
 	      pages: { $splice: [[action.index, 0, page]] }
@@ -24269,7 +24269,8 @@
 	  folders: [{
 	    name: "Folder",
 	    pages: [{
-	      content: ""
+	      content: "",
+	      images: []
 	    }]
 	  }]
 	};
@@ -24380,7 +24381,7 @@
 	function readFile(filepath, store) {
 	  fs.readFile(filepath, 'utf-8', function (err, data) {
 	    if (err) {
-	      alert("An error ocurred reading the file :" + err.message);
+	      store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'An error ocurred reading the file: ' + err.message });
 	      return;
 	    }
 	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: filepath });
@@ -24397,16 +24398,16 @@
 	    filters: [{ name: 'Markdown', extensions: ['md'] }, { name: 'All Files', extensions: ['*'] }]
 	  }, function (fileName) {
 	    if (fileName === undefined) {
-	      console.log("You didn't save the file");
+	      store.dispatch({ type: 'SHOW_SNACKBAR', msg: "You did not save the file" });
 	      return;
 	    }
 	    // fileName is a string that contains the path and filename created in the save file dialog.
 	    store.dispatch({ type: 'SET_QUICK_FILEPATH', path: fileName });
 	    fs.writeFile(fileName, store.getState().notes.folders[0].pages[0].content, function (err) {
 	      if (err) {
-	        alert("An error ocurred creating the file " + err.message);
+	        store.dispatch({ type: 'SHOW_SNACKBAR', msg: "An error occurred while saving file" });
 	      }
-	      alert("The file has been succesfully saved");
+	      store.dispatch({ type: 'SHOW_SNACKBAR', msg: "The file has been succesfully saved" });
 	    });
 	  });
 	}
@@ -24440,7 +24441,7 @@
 	        console.log(err);
 	        return;
 	      }
-	      store.dispatch({ type: 'SHOW_SNACKBAR', msg: "The file has been succesfully saved", time: 10000 });
+	      store.dispatch({ type: 'SHOW_SNACKBAR', msg: "The file has been succesfully saved" });
 	    });
 	  }
 	}
@@ -37904,9 +37905,31 @@
 	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
 	    }
 	  }, {
+	    key: 'getContentImages',
+	    value: function getContentImages() {
+	      var state = this.props.store.getContentImages();
+	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
+	    }
+	  }, {
 	    key: 'parse',
 	    value: function parse(content) {
-	      var rendered = shared.parse(content, this.props.store, function () {
+	      var store = {
+	        images: [{
+	          guid: 24,
+	          data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+	        }]
+	      };
+	      var imageMapper = function imageMapper(guid, store) {
+	        console.log('calling global image mapper guid: ');
+	        switch (guid) {
+	          case '24':
+	            return store.images[0].data;
+	          default:
+	            return "";
+	        }
+	      };
+
+	      var rendered = shared.parse(content, getContent(), function () {
 	        return "";
 	      });
 	      this.setState({ rendered_content: rendered });
@@ -39949,7 +39972,7 @@
 /* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var _flashcardTemplate = __webpack_require__(436);
 
@@ -39961,31 +39984,8 @@
 
 	function parse(str, store, imageMapper) {
 	  //The main parsing function.
-	  // Store and imageMapper will be passed in from the Desktop App for now I've made stubs
-	  var store = {
-	    images: [{
-	      guid: 24,
-	      data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-	    }]
-	  };
-	  var imageMapper = function imageMapper(guid, store) {
-	    switch (guid) {
-	      case 24:
-	        return store.images[0].data;
-	      default:
-	        return "";
-	    }
-	  };
-
 	  global_store = store;
 	  global_imageMapper = imageMapper;
-
-	  // ![label](@:24)
-	  // pass the guid found in the .md
-	  // into imageMapper(guid, store) as well as the store parameter
-	  // this should output the base64 encoding...
-	  // so create src to be src="data:image/jpeg;base64, iVBORw0KGgo..."
-	  // Lets generate <img width="350px" alt="label" src="data:image/jpeg;base64, iVBORw0KGgo..." />
 
 	  return parse_blocks(str, false);
 	}
@@ -40297,7 +40297,9 @@
 	        } else {
 	          if (src.slice(0, 2) == '@:') {
 	            var guid = src.slice(2, src.length);
+	            console.log('guid ' + guid);
 	            var data = global_imageMapper(guid, global_store);
+	            console.log('data: ' + data);
 	            src = 'data:image/jpeg;base64, ' + data;
 	          }
 	          var image = { tag: 'img', content: '<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : '" title="' + title) + '" />' };
