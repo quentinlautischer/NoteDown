@@ -108,29 +108,29 @@ class DualmodeEditor extends React.Component {
     return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
   }
 
-  getContentImages() {
-    var state = this.props.store.getContentImages();
-    return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
-  }
+  // getContentImages() {
+  //   var state = this.props.store.getContentImages();
+  //   return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
+  // }
 
   parse(content) {
-      var store = {
-    images: [{
-      guid: 24,
-      data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-    }]
-  }
-  var imageMapper = function(guid, store){
-    console.log(`calling global image mapper guid: `);
-    switch (guid){
-      case '24':
-        return store.images[0].data;
-      default:
-        return "";
+    var store = {
+      images: [{
+        guid: 24,
+        data: "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+      }]
     }
-  }
+    var imageMapper = function(guid, store){
+      console.log(`calling global image mapper guid: `);
+      switch (guid){
+        case '24':
+          return store.images[0].data;
+        default:
+          return "";
+      }
+    }
 
-    var rendered = shared.parse(content, getContent(), function() {return ""});
+    var rendered = shared.parse(content, this.getContent(), function() {return ""});
     this.setState({ rendered_content: rendered });
   }
 

@@ -37904,12 +37904,12 @@
 	      var state = this.props.store.getState();
 	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
 	    }
-	  }, {
-	    key: 'getContentImages',
-	    value: function getContentImages() {
-	      var state = this.props.store.getContentImages();
-	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
-	    }
+
+	    // getContentImages() {
+	    //   var state = this.props.store.getContentImages();
+	    //   return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
+	    // }
+
 	  }, {
 	    key: 'parse',
 	    value: function parse(content) {
@@ -37929,7 +37929,7 @@
 	        }
 	      };
 
-	      var rendered = shared.parse(content, getContent(), function () {
+	      var rendered = shared.parse(content, this.getContent(), function () {
 	        return "";
 	      });
 	      this.setState({ rendered_content: rendered });
@@ -40256,6 +40256,7 @@
 	}
 
 	function check_flashcard(blocks) {
+	  console.log("Checking Flashcard");
 	  var patt = /^\{(.+)\}$/;
 	  var match = [];
 
