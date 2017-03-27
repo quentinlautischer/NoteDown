@@ -49,9 +49,9 @@ export default class Navigate extends Component {
                     } else if (route.title === 'Flashcards Menu') {
                         return <FlashcardsMenuScene navigator={navigator} content={route.content} socket={route.socket} />
                     } else if (route.title === 'View Notes') {
-                        return <NotesViewScene navigator={navigator} content={route.content} socket={route.socket} folder={route.folder} />
+                        return <NotesViewScene navigator={navigator} content={route.content} socket={route.socket} folderId={route.folderId} />
                     } else if (route.title === 'Edit Notes') {
-                        return <NotesEditScene navigator={navigator} content={route.content} socket={route.socket} folder={route.folder} index={route.index} />
+                        return <NotesEditScene navigator={navigator} content={route.content} socket={route.socket} folderId={route.folderId} index={route.index} />
                     } else if (route.title === 'View Flashcard') {
                         return <FlashcardViewScene navigator={navigator}  content={route.content} socket={route.socket} />
                     } else if (route.title === 'Camera') {

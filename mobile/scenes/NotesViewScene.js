@@ -18,7 +18,6 @@ var PAGE_NAV_REF = 'page_nav';
 export default class NotesViewScene extends Component {
     constructor(props) {
         super(props);
-        console.log('PROPS ' + props.folder);
 
         this.state = {
             index: 0
@@ -31,7 +30,7 @@ export default class NotesViewScene extends Component {
         this.props.navigator.push({
             title: arguments[0],
             index: this.state.index,
-            folder: this.props.folder,
+            folderId: this.props.folderId,
             socket: this.props.socket,
             content: this.props.content
         })
@@ -39,9 +38,9 @@ export default class NotesViewScene extends Component {
 
     onSwipeLeft(gestureState) {
         // go to next page
-        if (this.state.index < this.props.folder.pages.length - 1) {
+        if (this.state.index < this.props.content.data.notes.folders[this.props.folderId].pages.length - 1) {
             this.refs[PAGE_NAV_REF].push({
-                content: this.props.folder.pages[this.state.index + 1].content
+                content: this.props.content.data.notes.folders[this.props.folderId].pages[this.state.index + 1].content
             });
             this.setState({index: this.state.index + 1});
         }
@@ -61,7 +60,8 @@ export default class NotesViewScene extends Component {
             directionalOffsetThreshold: 80
         };
 
-        const routes = this.props.folder;
+        console.log("FOLDER ID " + this.props.folderId);
+        const routes = this.props.content.data.notes.folders[this.props.folderId];
 
         return (
             <GestureRecognizer

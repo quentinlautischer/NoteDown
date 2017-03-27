@@ -25,7 +25,7 @@ export default class FoldersScene extends Component {
         console.log('FOLDER' + arguments[0])
         this.props.navigator.push({
             title: 'View Notes',
-            folder: arguments[0],
+            folderId: parseInt(arguments[0].replace('FOLDER', '')),
             content: this.props.content,
             socket: this.props.socket
         })
@@ -38,8 +38,8 @@ export default class FoldersScene extends Component {
                     <TitleText text='My Folders'/>
                     <ListView
                         dataSource={this.state.dataSource}
-                        renderRow={(rowData) =>
-                            <TouchableHighlight onPress = {this.navigate.bind(this, rowData)}>
+                        renderRow={(rowData, sectionID, rowID, highlightRow) =>
+                            <TouchableHighlight onPress = {this.navigate.bind(this, rowID)}>
                                 <ListItem iconName='folder' text={rowData.name} />
                             </TouchableHighlight>
                         }
