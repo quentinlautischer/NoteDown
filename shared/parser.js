@@ -31,8 +31,8 @@ function parse_blocks(str, allow_raw) {
   check_list_ordered(block_array);
   check_list_unordered(block_array);
   check_table(block_array);
-  check_codeblock(block_array);
   check_codeblock_lang(block_array);
+  check_codeblock(block_array);
   check_paragraph(block_array);
   
   if (!allow_raw) {
@@ -327,6 +327,14 @@ function check_flashcard(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds + item1      Returns <ul><li><p>item1</p></li>
+/        * item2              <li><p>item2
+/          stillItem2         stillItem2</p></li>
+/        - item3              <l1><p>item3</p>
+/                             <p>stillItem3</p></li>
+/          stillitem3         </ul>
+*/
 function check_list_unordered(blocks) {
   var patt1 = /^(?:\*|\+|-)\s+(.+)$/;
   var patt2 = /^(?:[ ]{1,4}|\t)(.+)$/;
@@ -376,6 +384,14 @@ function check_list_unordered(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds 1. item1      Returns <ol><li><p>item1</p></li>
+/        2. item2              <li><p>item2
+/          stillItem2         stillItem2</p></li>
+/        9. item3              <l1><p>item3</p>
+/                             <p>stillItem3</p></li>
+/          stillitem3         </ol>
+*/
 function check_list_ordered(blocks) {
   var patt1 = /^[0-9]+\.\s+(.+)$/;
   var patt2 = /^(?:[ ]{1,4}|\t)(.+)$/;
@@ -425,6 +441,23 @@ function check_list_ordered(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds |header1|header2|header3|header4|
+/        |-------|:------|:-----:|:------|
+/        | item1 | item2 | item3 | item4 |
+/  or
+/        header1|header2|header3|header4
+/        -------|:------|:-----:|:------
+/         item1 | item2 | item3 | item4 
+/ Returns <table><thead><tr><th>header1</th>
+/         <th style="text-align: left">header2</th>
+/         <th style="text-align: center">header3</th>
+/         <th style="text-align: right">header4</th></tr></thead>
+/         <tbody><tr><td>header1</td>
+/         <td style="text-align: left">header2</td>
+/         <td style="text-align: center">header3</td>
+/         <td style="text-align: right">header4</td></tr></tbody></table>
+*/
 function check_table(blocks) {
   var patt = /^(?:\|\s*)?([:]?-{3,}[:]?\s*\|\s*)*[:]?-{3,}[:]?(?:\s*\|)?$/;
   var match;
@@ -490,6 +523,11 @@ function check_table(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds any block of text not indented like code,
+/  not containing any lines of just whitespace
+/  Returns <p>content</p>
+*/
 function check_paragraph(blocks) {
   var patt = /^[ ]{0,3}(.+)$/;
   var match;
@@ -520,7 +558,10 @@ function check_paragraph(blocks) {
   }
 }
 
-
+////////////////////////////////////////////
+/* Finds .MD specific characters that are escaped,
+/  replaces them with their HTML entities to exempt them from parsing
+*/
 function check_backslash_escape(span_array) {
   for (var s = 0; s < span_array.length; s++) {
     var content = span_array[s].content;
@@ -532,6 +573,9 @@ function check_backslash_escape(span_array) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds [text](url)
+*/
 function check_links(span_array) {
   var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)?s*\)/;
   var match;
