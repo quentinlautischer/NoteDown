@@ -1,4 +1,4 @@
-import update from 'immutability-helper';
+import update from '../node_modules/immutability-helper';
 
 import createReducer from './reducerUtilities'
 
@@ -20,8 +20,8 @@ function deleteFolder(state, action){
 
 function addPage(state, action){
   const page = { content: "", images: [] };
-  return update(state, { 
-    folders: { 
+  return update(state, {
+    folders: {
       [action.folderIndex]: {
         pages: {$splice: [[action.index, 0, page]]}
       }
@@ -30,8 +30,8 @@ function addPage(state, action){
 }
 
 function deletePage(state, action){
-  return update(state, { 
-    folders: { 
+  return update(state, {
+    folders: {
       [action.folderIndex]: {
         pages: {$splice: [[action.index, 1]]}
       }
@@ -55,8 +55,8 @@ function pageContentChange(state, action){
 
 function addPhoto(state, action) {
   const image = { name: action.name, guid: action.guid, data: action.data };
-  return update(state, { 
-    folders: { 
+  return update(state, {
+    folders: {
       [action.folderIndex]:{
         pages: {
           [action.pageIndex]:{
@@ -69,8 +69,8 @@ function addPhoto(state, action) {
 }
 
 const initial_state = {
-  userid: null, 
-  images: [], 
+  userid: null,
+  images: [],
   folders: [ {
       name: "Folder",
       pages: [

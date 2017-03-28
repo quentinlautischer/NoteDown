@@ -1,4 +1,4 @@
-import update from 'immutability-helper';
+import update from '../node_modules/immutability-helper';
 
 import createReducer from './reducerUtilities'
 
@@ -39,13 +39,13 @@ function selectPage(state, action) {
 }
 
 function showSnackbar(state, action) {
-  return Object.assign({}, state, 
+  return Object.assign({}, state,
     {snackbar: {
       open: true,
       msg: action.msg,
       time: action.time || 4000,
       action: action.action || function(){ return null }
-      }  
+      }
     });
 }
 

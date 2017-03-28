@@ -11,13 +11,21 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScene from './LoginScene';
 import MenuScene from './MenuScene'
-import FoldersScene from './FoldersScene';
-import FlashcardsMenuScene from './FlashcardsMenuScene';
 import NotesViewScene from './NotesViewScene';
 import NotesEditScene from './NotesEditScene';
 import FlashcardViewScene from './FlashcardViewScene';
-import CameraScene from './CameraScene';
-import PhotoConfirmScene from './PhotoConfirmScene';
+
+import { createStore, combineReducers } from '../shared/node_modules/redux';
+import appReducer from '../shared/reducers/appReducer';
+import notesReducer from '../shared/reducers/notesReducer';
+import editorReducer from '../shared/reducers/editorReducer';
+
+const reducer = combineReducers({
+    state: appReducer,
+    notes: notesReducer,
+    editor: editorReducer
+});
+const store = createStore(reducer);
 
 export default class Navigate extends Component {
     renderScene(route, navigator) { // https://medium.com/react-native-training/react-native-navigator-navigating-like-a-pro-in-react-native-3cb1b6dc1e30#.x6jt1nunt; accessed 03/27/17

@@ -1,4 +1,4 @@
-// var hljs = require('highlight.js');
+import hljs from './node_modules/highlight.js/lib/highlight.js';
 
 import flashcardTemplate from './models/flashcardTemplate.js';
 

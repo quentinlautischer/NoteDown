@@ -28,7 +28,6 @@
   },
   "dependencies": {
     "cpx": "^1.5.0",
-    "immutability-helper": "^2.1.2",
     "mongoose": "^4.8.2"
   },
   "devDependencies": {

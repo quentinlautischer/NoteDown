@@ -1,4 +1,4 @@
-import update from 'immutability-helper';
+import update from '../node_modules/immutability-helper';
 
 import createReducer from './reducerUtilities'
 
