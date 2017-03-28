@@ -7,32 +7,52 @@ import {
     ListView,
     StyleSheet
 } from 'react-native';
+import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
 
 import NotesViewScene from './NotesViewScene'; // navigate
 
-export default class FoldersScene extends Component {
+class FoldersScene extends Component {
     constructor(props) {
         super(props);
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSource: ds.cloneWithRows(this.props.content.data.notes.folders),
-            noteData: this.props.content
+            dataSource: null,
+            open: false
         };
+
+        this.folderid = "0";
+        this.selectFolder = this.selectFolder.bind(this);
+        this.storeDidUpdate = this.storeDidUpdate.bind(this);
+
+        this.unsubscribe = null;
     }
 
-    _navigate(rowID) {
+    componentWillMount() {
+        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({ dataSource: ds.cloneWithRows(this.context.store.getState().notes.folders) });
+    }
+
+    _navigate(index) {
         this.props.navigator.push({
             title: 'NotesViewScene',
             component: NotesViewScene,
             passProps: {
-                folderIndex: parseInt(rowID.replace('FOLDER', '')),
-                content: this.props.content,
                 socket: this.props.socket
             }
         });
+    }
+
+    storeDidUpdate(){
+        this.setState({open: this.context.store.getState().sessionActive});
+    }
+
+    selectFolder(rowID) {
+        var index = parseInt(rowID.replace('FOLDER', ''))
+        this.context.store.dispatch({type: 'SELECT_FOLDER', index: index});
+        this.context.store.dispatch({type: 'RENDER_MODE'});
+        this._navigate(index);
     }
 
     render() {
@@ -43,7 +63,7 @@ export default class FoldersScene extends Component {
                     <ListView
                         dataSource={this.state.dataSource}
                         renderRow={(rowData, sectionID, rowID, highlightRow) =>
-                            <TouchableHighlight onPress = { () => this._navigate(rowID) }>
+                            <TouchableHighlight onPress = { () => this.selectFolder(rowID) }>
                                 <ListItem iconName='folder' text={rowData.name} />
                             </TouchableHighlight>
                         }
@@ -59,3 +79,9 @@ const styles = StyleSheet.create({
         flex: 1
     }
 });
+
+FoldersScene.contextTypes = {
+  store: React.PropTypes.object.isRequired
+};
+
+export default connect()(FoldersScene);

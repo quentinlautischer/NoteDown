@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Alert
 } from 'react-native';
+import { connect } from 'react-redux';
 import SocketIOClient from 'socket.io-client';
 import MenuButton from '../components/MenuButton';
 import LoginInput from '../components/LoginInput';
@@ -20,9 +21,15 @@ const PASSWORD_REF="pw";
 
 const LOGIN_ERR = "Could not login.  Please verify your username and password";
 
-export default class LoginScene extends Component {
+class LoginScene extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            username: '',
+            password: '',
+            name: ''
+        }
 
         // Creating the socket-client instance will automatically connect to the server.
         this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
@@ -35,7 +42,8 @@ export default class LoginScene extends Component {
                 console.log("mobile client logged in, recieved data: ", data);
 
                 if (data.data.result) {
-                    this.socket.emit('request-pull-data', { userid: data.data.userid });
+                    this.context.store.dispatch({type: 'SET_USER', userid: data.data.userid});
+                    this.requestPullData();
                 } else {
                     Alert.alert('Error', LOGIN_ERR)
                 }
@@ -43,18 +51,25 @@ export default class LoginScene extends Component {
             // recieve the user's data (to populate their folders)
             } else if (data.event === 'request-pull-data-response') {
                 console.log("Mobile client pulled data: ", data);
-                this._navigate(data);
+                this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
+                this.context.store.dispatch({type: 'FOLDER_MODE'});
+                this._navigate();
             }
         });
     }
 
-    _navigate(data) {
-        console.log('loggin in, data: ' + data);
+    requestPullData() {
+        var state = this.context.store.getState();
+        const data = {userid: state.state.userid};
+        this.socket.emit('request-pull-data', data);
+    }
+
+    _navigate() {
         this.props.navigator.push({
             title: 'MenuScene',
             component: MenuScene,
             passProps: {
-                content: data,
+                // content: data,
                 socket: this.socket
             }
         });
@@ -99,3 +114,9 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     }
 });
+
+LoginScene.contextTypes = {
+  store: React.PropTypes.object.isRequired
+};
+
+export default connect()(LoginScene);

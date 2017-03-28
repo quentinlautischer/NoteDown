@@ -1,13 +1,7 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import { AppRegistry } from 'react-native';
 
-import Navigate from './scenes/Navigate';
+import App from './scenes/App';
 
-class Main extends Component {
-    render() {
-        return <Navigate />
-    }
-}
-
-AppRegistry.registerComponent('mobile', () => Main);
+AppRegistry.registerComponent('mobile', () => App);

@@ -16,6 +16,10 @@
     "react-native-orientation": "yamill/react-native-orientation",
     "react-native-swipe-gestures": "^1.0.2",
     "react-native-vector-icons": "^4.0.0",
+    "react-redux": "^5.0.3",
+    "redux": "^3.6.0",
+    "redux-logger": "^3.0.0",
+    "redux-thunk": "^2.2.0",
     "socket.io-client": "^1.7.3"
   },
   "devDependencies": {

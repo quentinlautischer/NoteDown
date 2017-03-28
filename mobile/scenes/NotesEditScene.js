@@ -6,14 +6,61 @@ import {
     TouchableHighlight,
     StyleSheet
 } from 'react-native';
+import { connect } from 'react-redux';
 
-export default class NotesEditScene extends Component {
+class NotesEditScene extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            text: this.props.content.data.notes.folders[this.props.folderIndex].pages[this.props.pageIndex].content
+          open: false,
+          content: ''
         }
+
+        this.storeDidUpdate = this.storeDidUpdate.bind(this);
+
+        this.unsubscribe = null;
+    }
+
+    componentDidMount(){
+        this.unsubscribe = this.context.store.subscribe( this.storeDidUpdate );
+        var content = this.getContent();
+        this.setState({ renderedContent: content });
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
+    handleChange(content) {
+        this.updateContent(content);
+        this.setState({ content: content });
+        this.requestPushData();
+    }
+
+    updateContent(content) {
+        this.context.store.dispatch({type: 'PAGE_CONTENT_CHANGE',
+            content: content,
+            folderIndex: this.context.store.getState().state.folderIndex,
+            pageIndex: this.context.store.getState().state.pageIndex
+        });
+    }
+
+    storeDidUpdate(){
+        this.setState({open: this.context.store.getState().sessionActive});
+        this.setState({ content: this.getContent() });
+    }
+
+    requestPushData() {
+        console.log("requesting data push");
+        var state = this.context.store.getState();
+        const data = {userid: state.state.userid, notes: state.notes};
+        this.props.socket.emit('request-push-data', data); // ipc.send('request-push-data', data);
+    }
+
+    getContent() {
+        var state = this.context.store.getState();
+        return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
     }
 
     render() {
@@ -23,15 +70,10 @@ export default class NotesEditScene extends Component {
                     style={styles.editor}
                     multiline={true}
                     autoFocus={true}
-                    onChangeText={(text) => {
-                        this.setState({text});
-                        var myData = this.props.content.data;
-                        console.log('ID ' + myData.userid);
-                        myData.notes.folders[this.props.folderIndex].pages[this.props.pageIndex].content = this.state.text;
-                        myData.userid = myData.notes.userid;
-                        this.props.socket.emit('request-push-data', myData);
+                    onChangeText={ (text) => {
+                        this.handleChange(text);
                     }}
-                    value={this.state.text}
+                    value={ this.state.renderedContent }
                 />
             </View>
         )
@@ -50,3 +92,9 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top'
     }
 });
+
+NotesEditScene.contextTypes = {
+  store: React.PropTypes.object.isRequired
+};
+
+export default connect()(NotesEditScene);
