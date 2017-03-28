@@ -3,11 +3,12 @@
 .markdown-input-editor {
   position: absolute;
   box-sizing: border-box;
-  top: 3%;
+  top: map-get($windows-dimensions, menubar-custom-height)-1px;
   left: 1%;
   width: 48%;
   height: 96%;
-  padding: 20px;
+  -webkit-box-sizing: border-box;
+  padding: 0px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 0 30px rgba(0,0,0,0.1);
@@ -28,10 +29,11 @@
 .markdown-output-renderer {
   position: absolute;
   box-sizing: border-box;
-  top: 3%;
+  top: map-get($windows-dimensions, menubar-custom-height)-1px;
   left: 50%;
-  width: 48%;
+  width: 49%;
   height: 96%;
+  -webkit-box-sizing: border-box;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -52,5 +54,13 @@
   ::-webkit-scrollbar-corner
   {
     background-color: map-get($colors, dark);
+  }
+
+  blockquote {
+    background-color: map-get($colors, dark2);
+  }
+
+  pre{
+    background-color: map-get($colors, dark2); 
   }
 }

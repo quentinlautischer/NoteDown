@@ -1,10 +1,19 @@
 .notedown-title-logo {
-  font-family: Chalkduster;
   width: percentage(7/7);
   float: center;
   text-align: center;
   padding: 0.5rem;
-  font-size: 0.75rem;
+  font-size: 20px;
   font-weight: 400;
   border-radius: 0.25rem;
+  -webkit-user-select: none;
+
+
+  &:hover {
+    cursor: default;
+  }
+
+  .left-half {
+    color: white;
+  }
 }

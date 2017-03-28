@@ -1,4 +1,4 @@
-var hljs = require('highlight.js');
+// var hljs = require('highlight.js');
 
 import flashcardTemplate from './models/flashcardTemplate.js';
 
@@ -16,7 +16,7 @@ function parse(str, store, imageMapper) {
 
 function parse_blocks(str, allow_raw) {
   //allow_raw is for nested blocks, where raw text need not be wrapped
-  
+
   //Make all newlines consistent, then split string into lines
   str = str.replace (/\r\n/g, '\n');
   str = str.replace (/\r/g, '\n');
@@ -35,7 +35,7 @@ function parse_blocks(str, allow_raw) {
   check_list_unordered(block_array);
   check_table(block_array);
   check_paragraph(block_array);
-  
+
   if (!allow_raw) {
     for (var b = 0; b < block_array.length; ) {
       if (block_array[b].tag == null) { block_array.splice(b,1); }
@@ -51,7 +51,7 @@ function parse_span(str) {
 
   check_backslash_escape(span_array);
   check_links(span_array);
-  
+
   return render_span(span_array);
 }
 
@@ -65,7 +65,7 @@ function render_block(blocks) {
         attrs += ` class="${block.attributes.class}"`
       }
       if (block.attributes.style != null) {
-        attrs += ` style="${block.attributes.style}"`        
+        attrs += ` style="${block.attributes.style}"`
       }
     }
     if (block.tag == null) {
@@ -90,7 +90,7 @@ function render_span(span) {
 
 
 ////////////////////////////////////////////
-/* Finds Header and returns <h1>Header</h1> 
+/* Finds Header and returns <h1>Header</h1>
 /       ======
 / AND   Header and returns <h2>Header</h2>
 /       ------
@@ -98,7 +98,7 @@ function render_span(span) {
 function check_header_setext(blocks) {
   var patt = /^(=+|-+)\s*$/;
   var match;
-  
+
   for (var b = 0; b < blocks.length; b++) {
     if (blocks[b].tag == null) {
       var content = blocks[b].content;
@@ -120,8 +120,8 @@ function check_header_setext(blocks) {
 }
 
 ////////////////////////////////////////////
-/* Finds #(repeated i times) Header and 
-/ returns <h${i}>Header</h${i}> 
+/* Finds #(repeated i times) Header and
+/ returns <h${i}>Header</h${i}>
 */
 function check_header_atx(blocks) {
   var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
@@ -147,7 +147,7 @@ function check_header_atx(blocks) {
 }
 
 ////////////////////////////////////////////
-/* Finds > quote1 and returns <blockquote><p>quote1 
+/* Finds > quote1 and returns <blockquote><p>quote1
 /        > quote2             quote2</p>
 /                             <p>quote3</p></blockquote>
 /        > quote3
@@ -458,7 +458,7 @@ function check_list_ordered(blocks) {
 /  or
 /        header1|header2|header3|header4
 /        -------|:------|:-----:|:------
-/         item1 | item2 | item3 | item4 
+/         item1 | item2 | item3 | item4
 / Returns <table><thead><tr><th>header1</th>
 /         <th style="text-align: left">header2</th>
 /         <th style="text-align: center">header3</th>
@@ -471,7 +471,7 @@ function check_list_ordered(blocks) {
 function check_table(blocks) {
   var patt = /^(?:\|\s*)?([:]?-{3,}[:]?\s*\|\s*)*[:]?-{3,}[:]?(?:\s*\|)?$/;
   var match;
-  
+
   for (var b = 0; b < blocks.length; b++) {
     if (blocks[b].tag == null) {
       var content = blocks[b].content;
@@ -592,7 +592,7 @@ function check_backslash_escape(span_array) {
 function check_links(span_array) {
   var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)?s*\)/;
   var match;
-  
+
   for (var s = 0; s < span_array.length; s++) {
     if (span_array[s].tag == null) {
       var content = span_array[s].content;
@@ -600,7 +600,7 @@ function check_links(span_array) {
         var alt = match[2];
         var src = match[3];
         var title = match[5]; //may be null
-        
+
         var raw1 = {content:content.slice(0,match.index)};
         var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
 
@@ -631,7 +631,7 @@ function array_regex(regex_array, span_array) {
   //Searches raw text in a span array for an array of regex patterns, in the proper order.
   //Regex patterns must have global 'g' tag.
   //Returns array of three-integer arrays, one for each pattern: an array index, start character index, and end character index.
-  
+
   if (regex_array.length == 0 || span_array.length == 0) { return []; }
   var match;
   for (var s = 0; s < span_array.length; s++) {
