@@ -12,7 +12,7 @@ export default class NotesEditScene extends Component {
         super(props);
 
         this.state = {
-            text: this.props.content.data.notes.folders[this.props.folderId].pages[this.props.index].content
+            text: this.props.content.data.notes.folders[this.props.folderIndex].pages[this.props.pageIndex].content
         }
     }
 
@@ -27,7 +27,7 @@ export default class NotesEditScene extends Component {
                         this.setState({text});
                         var myData = this.props.content.data;
                         console.log('ID ' + myData.userid);
-                        myData.notes.folders[this.props.folderId].pages[this.props.index].content = this.state.text;
+                        myData.notes.folders[this.props.folderIndex].pages[this.props.pageIndex].content = this.state.text;
                         myData.userid = myData.notes.userid;
                         this.props.socket.emit('request-push-data', myData);
                     }}

@@ -28,7 +28,7 @@ export default class FoldersScene extends Component {
             title: 'NotesViewScene',
             component: NotesViewScene,
             passProps: {
-                folderId: parseInt(rowID.replace('FOLDER', '')),
+                folderIndex: parseInt(rowID.replace('FOLDER', '')),
                 content: this.props.content,
                 socket: this.props.socket
             }

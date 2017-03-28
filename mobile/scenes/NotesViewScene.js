@@ -22,7 +22,7 @@ export default class NotesViewScene extends Component {
         super(props);
 
         this.state = {
-            index: 0
+            pageIndex: 0
         };
     }
 
@@ -31,8 +31,8 @@ export default class NotesViewScene extends Component {
             title: 'NotesEditScene',
             component: NotesEditScene,
             passProps: {
-                index: this.state.index,
-                folderId: this.props.folderId,
+                pageIndex: this.state.pageIndex,
+                folderIndex: this.props.folderIndex,
                 socket: this.props.socket,
                 content: this.props.content
             }
@@ -41,19 +41,19 @@ export default class NotesViewScene extends Component {
 
     onSwipeLeft(gestureState) {
         // go to next page
-        if (this.state.index < this.props.content.data.notes.folders[this.props.folderId].pages.length - 1) {
+        if (this.state.pageIndex < this.props.content.data.notes.folders[this.props.folderIndex].pages.length - 1) {
             this.refs[PAGE_NAV_REF].push({
-                content: this.props.content.data.notes.folders[this.props.folderId].pages[this.state.index + 1].content
+                content: this.props.content.data.notes.folders[this.props.folderIndex].pages[this.state.pageIndex + 1].content
             });
-            this.setState({index: this.state.index + 1});
+            this.setState({pageIndex: this.state.pageIndex + 1});
         }
     }
 
     onSwipeRight(gestureState) {
         // go to previous page
-        if (this.state.index > 0) {
+        if (this.state.pageIndex > 0) {
             this.refs[PAGE_NAV_REF].pop();
-            this.setState({index: this.state.index - 1});
+            this.setState({pageIndex: this.state.pageIndex - 1});
         }
     }
 
@@ -63,8 +63,8 @@ export default class NotesViewScene extends Component {
             directionalOffsetThreshold: 80
         };
 
-        console.log("FOLDER ID " + this.props.folderId);
-        const routes = this.props.content.data.notes.folders[this.props.folderId];
+        console.log("FOLDER ID " + this.props.folderIndex);
+        const routes = this.props.content.data.notes.folders[this.props.folderIndex];
 
         return (
             <GestureRecognizer
@@ -77,7 +77,7 @@ export default class NotesViewScene extends Component {
                     ref={PAGE_NAV_REF}
                     initialRoute={routes[0]}
                     renderScene={(route, navigator) => {
-                        return <NotesView navigator={navigator} content={routes.pages[this.state.index].content} />
+                        return <NotesView navigator={navigator} content={routes.pages[this.state.pageIndex].content} />
                     }}
                 />
 
