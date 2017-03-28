@@ -1,13 +1,16 @@
+var hljs = require('highlight.js');
 
 import flashcardTemplate from './models/flashcardTemplate.js';
 
 var global_store, global_imageMapper; //global vars to be called by image links
 
+var header_index;
+
 function parse(str, store, imageMapper) {
   //The main parsing function.
   global_store = store;
   global_imageMapper = imageMapper;
-  
+  header_index = 0;
   return parse_blocks(str, false);
 }
 
@@ -21,8 +24,8 @@ function parse_blocks(str, allow_raw) {
   //Block-level elements
   var block_array = [{content:str.split('\n')}];
 
-  check_codeblock(block_array);
   check_codeblock_lang(block_array);
+  check_codeblock(block_array);
   check_header_setext(block_array);
   check_header_atx(block_array);
   check_blockquote(block_array);
@@ -55,12 +58,14 @@ function parse_span(str) {
 function render_block(blocks) {
   var result = '';
   for (var i = 0; i < blocks.length; i++) {
-    if (i > 0) { result += '\n\n'; }
     var block = blocks[i];
     var attrs = '';
     if (block.attributes != null) {
-      for (var a = 0; a < block.attributes.length; a++) {
-        attrs += ' ' + block.attributes[a][0] + '="' + block.attributes[a][1] + '"';
+      if (block.attributes.class != null) {
+        attrs += ` class="${block.attributes.class}"`
+      }
+      if (block.attributes.style != null) {
+        attrs += ` style="${block.attributes.style}"`        
       }
     }
     if (block.tag == null) {
@@ -82,6 +87,14 @@ function render_span(span) {
   return result;
 }
 
+
+
+////////////////////////////////////////////
+/* Finds Header and returns <h1>Header</h1> 
+/       ======
+/ AND   Header and returns <h2>Header</h2>
+/       ------
+*/
 function check_header_setext(blocks) {
   var patt = /^(=+|-+)\s*$/;
   var match;
@@ -106,6 +119,10 @@ function check_header_setext(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds #(repeated i times) Header and 
+/ returns <h${i}>Header</h${i}> 
+*/
 function check_header_atx(blocks) {
   var patt = /^(#{1,6})\s*(.+?)\s*#*$/;
   var match;
@@ -129,6 +146,14 @@ function check_header_atx(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds > quote1 and returns <blockquote><p>quote1 
+/        > quote2             quote2</p>
+/                             <p>quote3</p></blockquote>
+/        > quote3
+/  Parses blockquote content recursively
+/  Adjacent blockquotes separated by whitespace are joined
+*/
 function check_blockquote(blocks) {
   var patt = /^>\s(.*)$/;
   var match;
@@ -166,6 +191,10 @@ function check_blockquote(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds --- or ___ or ***, 3 or more characters, all separated by 0-2 spaces
+/  Returns <hr />
+*/
 function check_hrule(blocks) {
   var patt = /^[ ]{0,3}(-|_|\*)[ ]{0,2}(?:\1[ ]{0,2}){2,}\s*$/;
   var match;
@@ -189,6 +218,11 @@ function check_hrule(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds any lines indented by 4 spaces or a tab
+/  Returns <pre><code>content</code></pre>
+/  Adjacent code blocks separated by whitespace are joined
+*/
 function check_codeblock(blocks) {
   var patt = /^(?:[ ]{4}|\t)(.*)$/;
   var match;
@@ -221,8 +255,13 @@ function check_codeblock(blocks) {
     }
   }
 }
-
+////////////////////////////////////////////
+/* Finds code delimited by a line: ```code_language at the start
+/  and a line ``` at the end
+/  Returns <pre><code class="code_language">content</code></pre>
+*/
 function check_codeblock_lang(blocks) {
+  ////console.log(hljs.highlight("python", '<pre><code class="python">def foo():</code></pre>', true));
   var patt = /^```(.*)$/;
   var match;
   var codeblocks;
@@ -236,7 +275,7 @@ function check_codeblock_lang(blocks) {
           var inner_content = '';
           var open = true;
           for (var end = l+1; end < content.length; end++) {
-            if ((match = patt.exec(content[end])) != null) {
+            if ((match = patt.exec(content[end])) != null && match[1].length == 0) {
               open = false;
               break;
             } else {
@@ -246,8 +285,14 @@ function check_codeblock_lang(blocks) {
           }
           if (open) { break; }
           var raw1 = {content:content.slice(0,l)};
-          var code = {tag:'code', content:inner_content};
-          if (code_class != null) { code.attrs = ['class', code_class]; }
+          var code = null;
+          if (code_class != null) {
+            var highlit = hljs.highlight(code_class, inner_content, true);
+            code = {tag:'code', content:highlit.value};
+          } else {
+            code = {tag:'code', content:inner_content};
+          }
+          code.attributes = {class: (code_class != null) ? code_class : 'nohighlight'}
           var pre = {tag:'pre', content:render_block([code])};
           var raw2 = {content:content.slice(end+1,content.length)};
 
@@ -260,6 +305,14 @@ function check_codeblock_lang(blocks) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds {Question}
+/        {Hint1|Hint2|Hint3}
+/        {Step1|Step2|Step3}
+/  Returns a flashcard with question 'Question',
+/  3 hints 'Hint1', 'Hint2', 'Hint3',
+/  and a solution with 3 steps 'Step1', 'Step2', Step3'
+*/
 function check_flashcard(blocks) {
   var patt = /^\{(.+)\}$/
   var match;
@@ -284,15 +337,207 @@ function check_flashcard(blocks) {
   }
 }
 
-function check_list_ordered(blocks) {
-}
-
+////////////////////////////////////////////
+/* Finds + item1      Returns <ul><li><p>item1</p></li>
+/        * item2              <li><p>item2
+/          stillItem2         stillItem2</p></li>
+/        - item3              <l1><p>item3</p>
+/                             <p>stillItem3</p></li>
+/          stillitem3         </ul>
+*/
 function check_list_unordered(blocks) {
+  var patt1 = /^(?:\*|\+|-)\s+(.+)$/;
+  var patt2 = /^(?:[ ]{1,4}|\t)(.+)$/;
+  var match;
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt1.exec(content[l])) != null) {
+          var listItems = [];
+          var inner_content = null;
+          var same_block = true; //Keeps track of inner blockquote blocks
+          for (var end = l; end < content.length; end++) {
+            if ((match = patt1.exec(content[end])) != null) {
+              if (inner_content != null) { listItems.push(inner_content); }
+              inner_content = match[1] + '\n';
+              same_block = true;
+            } else if (content[end].trim().length == 0) { //End of block may mean end of blockquote
+              inner_content += '\n';
+              same_block = false;
+            } else if ((match = patt2.exec(content[end])) != null) { //Second paragraph in one list item
+              inner_content += match[1] + '\n';
+              same_block = true;
+            } else if (same_block) { inner_content += content[end] + '\n'; }
+            else { break; }
+          }
+          listItems.push(inner_content);
+          inner_content = '';
+          for (var i = 0; i < listItems.length; i++) {
+            //inner_content repurposed as aggregate of list items
+            listItems[i] = parse_blocks(listItems[i], false);
+            var li = {tag:'li', content:listItems[i]};
+            inner_content += render_block([li]) + '\n';
+          }
+
+          var raw1 = {content:content.slice(0,l)};
+          var ul = {tag:'ul', content:inner_content};
+          var raw2 = {content:content.slice(end,content.length)};
+
+          blocks.splice(b, 1, raw1, ul, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
 }
 
+////////////////////////////////////////////
+/* Finds 1. item1      Returns <ol><li><p>item1</p></li>
+/        2. item2              <li><p>item2
+/          stillItem2         stillItem2</p></li>
+/        9. item3              <l1><p>item3</p>
+/                             <p>stillItem3</p></li>
+/          stillitem3         </ol>
+*/
+function check_list_ordered(blocks) {
+  var patt1 = /^[0-9]+\.\s+(.+)$/;
+  var patt2 = /^(?:[ ]{1,4}|\t)(.+)$/;
+  var match;
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt1.exec(content[l])) != null) {
+          var listItems = [];
+          var inner_content = null;
+          var same_block = true; //Keeps track of inner blockquote blocks
+          for (var end = l; end < content.length; end++) {
+            if ((match = patt1.exec(content[end])) != null) {
+              if (inner_content != null) { listItems.push(inner_content); }
+              inner_content = match[1] + '\n';
+              same_block = true;
+            } else if (content[end].trim().length == 0) { //End of block may mean end of blockquote
+              inner_content += '\n';
+              same_block = false;
+            } else if ((match = patt2.exec(content[end])) != null) { //Second paragraph in one list item
+              inner_content += match[1] + '\n';
+              same_block = true;
+            } else if (same_block) { inner_content += content[end] + '\n'; }
+            else { break; }
+          }
+          listItems.push(inner_content);
+          inner_content = '';
+          for (var i = 0; i < listItems.length; i++) {
+            //inner_content repurposed as aggregate of list items
+            listItems[i] = parse_blocks(listItems[i], false);
+            var li = {tag:'li', content:listItems[i]};
+            inner_content += render_block([li]) + '\n';
+          }
+
+          var raw1 = {content:content.slice(0,l)};
+          var ul = {tag:'ol', content:inner_content};
+          var raw2 = {content:content.slice(end,content.length)};
+
+          blocks.splice(b, 1, raw1, ul, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////
+/* Finds |header1|header2|header3|header4|
+/        |-------|:------|:-----:|:------|
+/        | item1 | item2 | item3 | item4 |
+/  or
+/        header1|header2|header3|header4
+/        -------|:------|:-----:|:------
+/         item1 | item2 | item3 | item4 
+/ Returns <table><thead><tr><th>header1</th>
+/         <th style="text-align: left">header2</th>
+/         <th style="text-align: center">header3</th>
+/         <th style="text-align: right">header4</th></tr></thead>
+/         <tbody><tr><td>header1</td>
+/         <td style="text-align: left">header2</td>
+/         <td style="text-align: center">header3</td>
+/         <td style="text-align: right">header4</td></tr></tbody></table>
+*/
 function check_table(blocks) {
+  var patt = /^(?:\|\s*)?([:]?-{3,}[:]?\s*\|\s*)*[:]?-{3,}[:]?(?:\s*\|)?$/;
+  var match;
+  
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 1; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null && content[l-1].trim().length > 0) {
+          var headers = content[l-1].split('|');
+          var format_line = content[l].split('|');
+          var format = [];
+          for (var f = 0; f < format_line.length; f++) {
+            if (format_line[f].length == 0) {
+              format.push(null);
+              continue;
+            }
+            format_line[f] = format_line[f].trim();
+            var format_f = (format_line[f].charAt(0) == ':')
+                ? ((format_line[f].charAt(format_line[f].length-1) == ':') ? 'text-align: center;' : 'text-align: left;')
+                : ((format_line[f].charAt(format_line[f].length-1) == ':') ? 'text-align: right;' : null);
+            format.push(format_f);
+          }
+          var cells = [];
+          var end = l+1;
+          while (end < content.length && content[end].trim().length > 0) {
+            cells.push(content[end].split('|'));
+            end++;
+          }
+          var tr;
+          var tr_content = [];
+          var tbody_content = [];
+          for (var h = 0; h < headers.length; h++) {
+            if (headers[h].length == 0) { continue; }
+            var th = {tag:'th', content:parse_span(headers[h].trim())}
+            if (h < format.length && format[h] != null) { th.attributes = {style: format[h]}; }
+            tr_content.push(th);
+          }
+          tr = [{tag:'tr', content:render_block(tr_content)}];
+          var table_content = [{tag:'thead', content:render_block(tr)}];
+          for (var i = 0; i < cells.length; i++) {
+            tr_content = [];
+            for (var j = 0; j < cells[i].length; j++) {
+              if (cells[i][j].length == 0) { continue; }
+              var td = {tag:'td', content:parse_span(cells[i][j].trim())};
+              if (j < format.length && format[j] != null) { td.attributes = {style: format[j]}; }
+              tr_content.push(td);
+            }
+            tbody_content.push({tag:'tr', content:render_block(tr_content)});
+          }
+          table_content.push({tag:'tbody', content:render_block(tbody_content)});
+
+          var raw1 = {content:content.slice(0,l-1)};
+          var table = {tag:'table', content:render_block(table_content)};
+          var raw2 = {content:content.slice(end,content.length)};
+
+          blocks.splice(b, 1, raw1, table, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
 }
 
+////////////////////////////////////////////
+/* Finds any block of text not indented like code,
+/  not containing any lines of just whitespace
+/  Returns <p>content</p>
+*/
 function check_paragraph(blocks) {
   var patt = /^[ ]{0,3}(.+)$/;
   var match;
@@ -323,7 +568,10 @@ function check_paragraph(blocks) {
   }
 }
 
-
+////////////////////////////////////////////
+/* Finds .MD specific characters that are escaped,
+/  replaces them with their HTML entities to exempt them from parsing
+*/
 function check_backslash_escape(span_array) {
   for (var s = 0; s < span_array.length; s++) {
     var content = span_array[s].content;
@@ -335,6 +583,12 @@ function check_backslash_escape(span_array) {
   }
 }
 
+////////////////////////////////////////////
+/* Finds [text](url), Returns <a href="url">text</a>
+/  Finds [text](url "title"), Returns <a href="url" title="title">text</a>
+/  Finds ![text](@:guid), Returns <img src="data:image/jpeg;base64, ${base64 data corresponding to guid}" alt="text" />
+/  Finds ![text](url "title"), Returns <img src="url" alt="text" title="title" />
+*/
 function check_links(span_array) {
   var patt = /(!?)\[(.+?)\]\(\s*(.+?)(?:\s+(['"])(.+?)\4)?s*\)/;
   var match;

@@ -4,9 +4,9 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 
-import appReducer from './reducers/appReducer';
-import notesReducer from './reducers/notesReducer';
-import editorReducer from './reducers/editorReducer';
+import appReducer from '../shared/reducers/appReducer';
+import notesReducer from '../shared/reducers/notesReducer';
+import editorReducer from '../shared/reducers/editorReducer';
 
 import menubuilder from './components/menubar';
 import StartMenu from './components/startMenu';
@@ -55,7 +55,7 @@ class App extends React.Component {
     // May be invisible but this keep the accelerator keybinds active.
     const menubar = Menu.buildFromTemplate(menubuilder(store));
     Menu.setApplicationMenu(menubar);
-    console.log(store.getState());
+    // console.log(store.getState());
 
     switch (store.getState().state.mode) {
       case 'menu':

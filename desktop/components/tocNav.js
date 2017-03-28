@@ -36,6 +36,34 @@ class TocNav extends React.Component {
 
   }
 
+  componentDidUpdate() {
+    var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
+    var array = [];
+    for (var i=0, max=all.length; i < max; i++) {
+      array.push({
+        ref: all[i],
+        name: all[i].innerHTML,
+        id: i,
+        mag: all[i].localName
+      })
+    }
+    this.array = array;
+  }
+
+  componentWillUpdate() {
+        var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
+    var array = [];
+    for (var i=0, max=all.length; i < max; i++) {
+      array.push({
+        ref: all[i],
+        name: all[i].innerHTML,
+        id: i,
+        mag: all[i].localName
+      })
+    }
+    this.array = array;
+  }
+
   generatePagesArray() {
     var array = [];
     var state = this.props.store.getState();
@@ -47,32 +75,15 @@ class TocNav extends React.Component {
     // console.log(`Array: ${array}`);
     return array;
   }
-
-  generateHeaderArray(str) {
-    var match;
-    var array = [];
-    var r_atx = /^(#{1,6})\s*(.+?)\s*#*$/gm;
-    var magnitude;
-    var bound1, bound2;
-      
-    bound1 = 0;
-    while ((match = r_atx.exec(str)) != null) {
-      bound2 = match.index;
-      magnitude = match[1].length;
-      var item = {name: match[2], mag: magnitude };
-      array.push(item);
-      bound1 = r_atx.lastIndex;
-    }
-    return array;
-  }
   
-  scrollTo(id, e) {
-    this.props.scrollTo(id);
+  scrollTo(ref, e) {
+    // this.props.scrollTo(id);
+    ref.scrollIntoView();
   }
 
-  renderTocItem({name, mag}) {
+  renderTocItem({ref, name, id, mag}) {
     return (
-      <li key={name} className={"toc-li-" + mag } onClick={this.scrollTo.bind(this, name)}>
+      <li key={id} className={"toc-li-" + mag } onClick={this.scrollTo.bind(this, ref)}>
           <span className="toc-li">{name}</span>
       </li>
     );
@@ -151,7 +162,6 @@ class TocNav extends React.Component {
   render() {
     var state = this.props.store.getState();
     // console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
-    this.array = this.generateHeaderArray(this.props.info);
     this.pagesArray = this.generatePagesArray();
     if (this.state.zoom == 'in') {
       return (      

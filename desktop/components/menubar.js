@@ -123,13 +123,13 @@ function menuLogout(store) {
 function menuPushToCloud(store) {
   const data = {userid: store.getState().state.userid, notes: store.getState().notes};
   ipc.send('request-push-data', data);
-  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pushing data from cloud'});
+  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pushing data to cloud'});
 }
 
 function menuPullFromCloud(store) {
   const data = {userid: store.getState().state.userid};
   ipc.send('request-pull-data', data);
-  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pulling data to cloud'});
+  store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pulling data from cloud'});
 }
 
 
@@ -138,8 +138,9 @@ function menuPullFromCloud(store) {
 
 const menubar_template_builder = function(store) {
   var state = store.getState();
-  const menubar_template = [
-  {
+  var menubar_template = null;
+
+  const fileMenu = {
     label: 'File',
     submenu: [
       {
@@ -207,8 +208,8 @@ const menubar_template_builder = function(store) {
       }
 
     ]
-  },
-  {
+  }
+  const editMenu = {
     label: 'Edit',
     submenu: [
       {
@@ -245,8 +246,8 @@ const menubar_template_builder = function(store) {
         role: 'selectall'
       }
     ]
-  },
-  {
+  }
+  const viewMenu = {
     label: 'View',
     submenu: [
       {
@@ -277,16 +278,18 @@ const menubar_template_builder = function(store) {
         role: 'togglefullscreen'
       }
     ]
-  },
-  {
+  }
+  const syncMenu = {
     label: 'Sync',
+    visible: false,
     submenu: [
       {
         role: 'Push To Cloud',
         label: 'Push To Cloud',
         visible: is_logged_in(state),
-        enabled: true, // until I figure it out
-        click () { menuPushToCloud(store) }
+        enabled: is_logged_in(state), // until I figure it out
+        click () { menuPushToCloud(store) },
+        accelerator: 'CmdOrCtrl+S'
 
       },
       {
@@ -298,8 +301,8 @@ const menubar_template_builder = function(store) {
 
       }
     ]
-  },
-  {
+  }
+  const windowMenu = {
     role: 'window',
     submenu: [
       {
@@ -309,8 +312,8 @@ const menubar_template_builder = function(store) {
         role: 'close'
       }
     ]
-  },
-  {
+  }
+  const helpMenu = {
     role: 'help',
     submenu: [
       {
@@ -323,84 +326,95 @@ const menubar_template_builder = function(store) {
       }
     ]
   }
-]
 
-if (process.platform === 'darwin') {
-  menubar_template.unshift({
-    label: "NoteDown",
-    submenu: [
-      {
-        role: 'about'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'services',
-        submenu: []
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'hide'
-      },
-      {
-        role: 'hideothers'
-      },
-      {
-        role: 'unhide'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'quit'
-      }
-    ]
-  })
-  // Edit menu.
-  menubar_template[1].submenu.push(
-    {
-      type: 'separator'
-    },
-    {
-      label: 'Speech',
+  if (is_logged_in(state)){
+    menubar_template = [fileMenu, editMenu, viewMenu, syncMenu, windowMenu, helpMenu]
+  } else {
+    menubar_template = [fileMenu, editMenu, viewMenu, windowMenu, helpMenu]
+  }
+
+  if (process.platform === 'darwin') {
+    menubar_template.unshift({
+      label: "NoteDown",
       submenu: [
         {
-          role: 'startspeaking'
+          role: 'about'
         },
         {
-          role: 'stopspeaking'
+          type: 'separator'
+        },
+        {
+          role: 'services',
+          submenu: []
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'hide'
+        },
+        {
+          role: 'hideothers'
+        },
+        {
+          role: 'unhide'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'quit'
         }
       ]
-    }
-  )
-  // Window menu.
-  menubar_template[3].submenu = [
-    {
-      label: 'Close',
-      accelerator: 'CmdOrCtrl+W',
-      role: 'close'
-    },
-    {
-      label: 'Minimize',
-      accelerator: 'CmdOrCtrl+M',
-      role: 'minimize'
-    },
-    {
-      label: 'Zoom',
-      role: 'zoom'
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: 'Bring All to Front',
-      role: 'front'
-    }
-  ]
-}
+    })
+    // Edit menu.
+    menubar_template[1].submenu.push(
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Speech',
+        submenu: [
+          {
+            role: 'startspeaking'
+          },
+          {
+            role: 'stopspeaking'
+          }
+        ]
+      }
+    )
+    // View menu.
+    menubar_template[3].submenu = [
+      {
+        label: 'Close',
+        accelerator: 'CmdOrCtrl+W',
+        role: 'close'
+      },
+      {
+        label: 'Minimize',
+        accelerator: 'CmdOrCtrl+M',
+        role: 'minimize'
+      },
+      {
+        label: 'Zoom',
+        role: 'zoom'
+      },
+      {
+        role: 'zoomin'
+      },
+      {
+        role: 'zoomout'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Bring All to Front',
+        role: 'front'
+      }
+    ]
+  }
 
   return menubar_template;
 }

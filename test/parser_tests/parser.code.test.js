@@ -22,7 +22,7 @@ test('code test 3', () => {
 });
 
 test('code test 4', () => {
-  const raw_str = '    this\n    is\n\n    code';
+  const raw_str = '`this\n    is\n\n    code`';
   const rendered = '<pre><code>this\nis\n\ncode</code></pre>';
   
   expect(parser.parse(raw_str)).toBe(rendered);
