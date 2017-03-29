@@ -76,9 +76,9 @@ class Navigate extends Component {
                             } else if (route.title == 'NotesEditScene') {
                                 return(
                                     <TouchableHighlight
-                                        style={styles.largeNavButton}
+                                        style={styles.navButton}
                                         onPress={route.onPress}>
-                                        <Icon name='content-save' size={35} color='#000000' />
+                                        <Icon name='content-save' size={28} color='#000000' />
                                     </TouchableHighlight>
                                 );
                             } else {
@@ -103,10 +103,6 @@ var styles = StyleSheet.create({
     },
     navButton: {
         margin: 7 // keeps the button off the edge of the page
-    },
-    largeNavButton: {
-        marginTop: 4,
-        marginRight: 7
     }
 });
 

@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
+import ButtonPanel from '../components/ButtonPanel'
+
 class NotesEditScene extends Component {
     constructor(props) {
         super(props);
@@ -66,6 +68,7 @@ class NotesEditScene extends Component {
     render() {
         return (
             <View style={styles.view}>
+                <ButtonPanel />
                 <TextInput
                     style={styles.editor}
                     multiline={true}
@@ -84,12 +87,12 @@ const styles = StyleSheet.create({
     view: {
         flex: 1,
         marginTop:45,
-        backgroundColor: 'white',
-        padding: 15
+        backgroundColor: 'white'
     },
     editor: {
         flex: 1,
-        textAlignVertical: 'top'
+        textAlignVertical: 'top',
+        padding: 15
     }
 });
 
