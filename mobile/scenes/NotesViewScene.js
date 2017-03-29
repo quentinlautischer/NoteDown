@@ -72,6 +72,7 @@ class NotesViewScene extends Component {
             },
             onPress: this.onPress.bind(this),
             onBack: this.onBack.bind(this),
+            rightIconName: 'cloud-upload',
             backIconName: 'arrow-left'
         })
     }

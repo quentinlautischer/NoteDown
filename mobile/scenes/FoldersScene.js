@@ -13,6 +13,7 @@ import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
 
 import NotesViewScene from './NotesViewScene'; // navigate
+import FlashcardViewScene from './FlashcardViewScene';
 
 class FoldersScene extends Component {
     constructor(props) {
@@ -41,8 +42,17 @@ class FoldersScene extends Component {
             passProps: {
                 socket: this.props.socket,
                 initialContent: this.context.store.getState().notes.folders
-            }
+            },
+            onPress: this.onPress.bind(this),
+            rightIconName: 'cards'
         });
+    }
+
+    onPress() {
+        this.props.navigator.push({
+            component: FlashcardViewScene,
+            passProps: this.props
+        })
     }
 
     storeDidUpdate(){

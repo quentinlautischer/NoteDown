@@ -10,10 +10,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScene from './LoginScene';
-import MenuScene from './MenuScene'
-import NotesViewScene from './NotesViewScene';
-import NotesEditScene from './NotesEditScene';
-import FlashcardViewScene from './FlashcardViewScene';
 
 import { connect } from 'react-redux';
 
@@ -60,30 +56,15 @@ class Navigate extends Component {
                             }
                         },
                         RightButton: (route, navigator, index, navState) => {
-                            if (route.title == 'NotesViewScene') {
-                                return(
-                                    <TouchableHighlight
-                                        style={styles.navButton}
-                                        onPress={() =>
-                                            navigator.push({
-                                                component: FlashcardViewScene,
-                                                passProps: {
-                                                    content: route.content
-                                                }
-                                            })
-                                        }>
-                                        <Text>Go to Flashcards</Text>
-                                    </TouchableHighlight>
-                                );
-                            } else if (route.title == 'NotesEditScene') {
+                            if (route.onPress) { // function & icon provided
                                 return(
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onPress}>
-                                        <Icon name='cloud-upload' size={28} color='#000000' />
+                                        <Icon name={route.rightIconName} size={28} color='#000000' />
                                     </TouchableHighlight>
                                 );
-                            } else {
+                            } else { // default is no button
                                 return null;
                             }
                         },
