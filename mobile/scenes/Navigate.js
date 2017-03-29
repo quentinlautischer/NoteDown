@@ -78,7 +78,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onPress}>
-                                        <Icon name='content-save' size={28} color='#000000' />
+                                        <Icon name='cloud-upload' size={28} color='#000000' />
                                     </TouchableHighlight>
                                 );
                             } else {

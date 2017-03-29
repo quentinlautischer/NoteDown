@@ -24,6 +24,11 @@ class NotesEditScene extends Component {
         this.unsubscribe = null;
     }
 
+    insertShortcutText(text, isBlock) {
+        if (isBlock) text = '\n' + text; // put block elements on new line
+        this.updateContent(this.getContent() + text);
+    }
+
     componentDidMount(){
         this.unsubscribe = this.context.store.subscribe( this.storeDidUpdate );
         var text = this.getContent();
@@ -68,7 +73,7 @@ class NotesEditScene extends Component {
     render() {
         return (
             <View style={styles.view}>
-                <ButtonPanel />
+                <ButtonPanel func={this.insertShortcutText.bind(this)} />
                 <TextInput
                     style={styles.editor}
                     multiline={true}

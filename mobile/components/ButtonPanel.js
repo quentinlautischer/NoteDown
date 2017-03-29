@@ -4,36 +4,24 @@ import {
     StyleSheet,
     TouchableHighlight,
     Text
-} from 'react-native'
+} from 'react-native';
+import FormatButton from './FormatButton';
 
 export default class ButtonPanel extends Component {
     render() {
         return(
             <View style={styles.panel}>
-                <TouchableHighlight style={styles.button}>
-                    <Text>B</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.button}>
-                    <Text>I</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.button}>
-                    <Text>H1</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.button}>
-                    <Text>H2</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.button}>
-                    <Text>H3</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.button}>
-                    <Text>*</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.button}>
-                    <Text>1.</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.button}>
-                    <Text>lnk</Text>
-                </TouchableHighlight>
+                <FormatButton name='format-bold' appendText='**text**' isBlock={false} appendFunction={this.props.func} />
+                <FormatButton name='format-italic' appendText='*text*' isBlock={false} appendFunction={this.props.func} />
+                <FormatButton name='format-header-1' appendText='# ' isBlock={true} appendFunction={this.props.func} />
+                <FormatButton name='format-header-2' appendText='## ' isBlock={true} appendFunction={this.props.func} />
+                <FormatButton name='format-header-3' appendText='### ' isBlock={true} appendFunction={this.props.func} />
+                <FormatButton name='format-header-4' appendText='#### ' isBlock={true} appendFunction={this.props.func} />
+                <FormatButton name='format-header-5' appendText='##### ' isBlock={true} appendFunction={this.props.func} />
+                <FormatButton name='format-header-6' appendText='###### ' isBlock={true} appendFunction={this.props.func} />
+                <FormatButton name='format-list-bulleted' appendText='* ' isBlock={true} appendFunction={this.props.func} />
+                <FormatButton name='format-list-numbers' appendText='1. ' isBlock={true} appendFunction={this.props.func} />
+                <FormatButton name='link-variant' appendText='[title](http://)' isBlock={false} appendFunction={this.props.func} />
             </View>
         );
     }
@@ -42,18 +30,11 @@ export default class ButtonPanel extends Component {
 const styles = StyleSheet.create({
     panel: {
         height: 40,
+        paddingLeft: 4,
+        paddingRight: 4,
         backgroundColor: 'black',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         flexDirection: 'row'
-    },
-    button: {
-        height: 30,
-        width: 30,
-        margin: 2,
-        borderRadius: 2,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
     }
 })
