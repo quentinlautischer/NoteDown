@@ -39,7 +39,8 @@ class FoldersScene extends Component {
             title: 'NotesViewScene',
             component: NotesViewScene,
             passProps: {
-                socket: this.props.socket
+                socket: this.props.socket,
+                initialContent: this.context.store.getState().notes.folders
             }
         });
     }

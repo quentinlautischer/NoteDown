@@ -47,6 +47,14 @@ class Navigate extends Component {
                                         <Text style={styles.navButton}>Logout</Text>
                                     </TouchableHighlight>
                                 );
+                            } else if (route.title == 'NotesEditScene') {
+                                return(
+                                    <TouchableHighlight
+                                        style={styles.navButton}
+                                        onPress={route.onBack}>
+                                        <Icon name='arrow-left' size={28} color='#000000' />
+                                    </TouchableHighlight>
+                                );
                             } else {
                                 return (
                                     <TouchableHighlight

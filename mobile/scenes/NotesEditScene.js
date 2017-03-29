@@ -43,7 +43,6 @@ class NotesEditScene extends Component {
 
     handleChange(text) {
         this.updateContent(text);
-        // this.requestPushData(); // for continous autosave
     }
 
     handleCursorChange(selection) {
@@ -65,13 +64,6 @@ class NotesEditScene extends Component {
         this.setState({ content: this.getContent() });
     }
 
-    requestPushData() {
-        console.log("requesting data push");
-        var state = this.context.store.getState();
-        const data = {userid: state.state.userid, notes: state.notes};
-        // this.props.socket.emit('request-push-data', data);
-    }
-
     getContent() {
         var state = this.context.store.getState();
         return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
@@ -84,7 +76,6 @@ class NotesEditScene extends Component {
                 <TextInput
                     style={styles.editor}
                     multiline={true}
-                    autoFocus={true}
                     onChangeText={ (text) => {
                         this.handleChange(text);
                     }}
