@@ -26,7 +26,9 @@ class NotesEditScene extends Component {
 
     insertShortcutText(text, isBlock) {
         if (isBlock) text = '\n' + text; // put block elements on new line
-        this.updateContent(this.getContent() + text);
+        var content = this.getContent();
+        var cursorPosition = this.context.store.getState().editor.cursor_position;
+        this.updateContent(content.substring(0, cursorPosition) + text + content.substring(cursorPosition, content.length));
     }
 
     componentDidMount(){
@@ -41,7 +43,12 @@ class NotesEditScene extends Component {
 
     handleChange(text) {
         this.updateContent(text);
-        // this.requestPushData(); // for autosave
+        // this.requestPushData(); // for continous autosave
+    }
+
+    handleCursorChange(selection) {
+        this.context.store.dispatch({type: 'CURSOR_CHANGE', position: selection.start});
+        console.log(`cursor position: ${this.context.store.getState().editor.cursor_position}`);
     }
 
     updateContent(text) {
@@ -82,6 +89,9 @@ class NotesEditScene extends Component {
                         this.handleChange(text);
                     }}
                     value={ this.state.content }
+                    onSelectionChange={(event) => {
+                        this.handleCursorChange(event.nativeEvent.selection);
+                    }}
                 />
             </View>
         )

@@ -13,8 +13,6 @@ export default class FormatButton extends Component {
                 style={styles.button}
                 underlayColor='rgba(67, 65, 70, 1)'
                 onPress={ () => {
-                    console.log("Pressed!  Appending " + this.props.appendText);
-
                     this.props.appendFunction(this.props.appendText, this.props.isBlock);
                 }}>
                 <Icon name={this.props.name} size={24} color='black' />
