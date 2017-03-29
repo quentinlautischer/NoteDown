@@ -77,7 +77,7 @@ class Navigate extends Component {
                                 return(
                                     <TouchableHighlight
                                         style={styles.largeNavButton}
-                                        onPress={navigator.__onRightNavButtonPressed}>
+                                        onPress={route.onPress}>
                                         <Icon name='content-save' size={35} color='#000000' />
                                     </TouchableHighlight>
                                 );
@@ -109,5 +109,9 @@ var styles = StyleSheet.create({
         marginRight: 7
     }
 });
+
+Navigate.contextTypes = {
+  store: React.PropTypes.object.isRequired
+};
 
 export default connect()(Navigate);

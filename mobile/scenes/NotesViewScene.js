@@ -66,9 +66,17 @@ class NotesViewScene extends Component {
             title: 'NotesEditScene',
             component: NotesEditScene,
             passProps: {
-                socket: this.props.socket,
-            }
+                socket: this.props.socket
+            },
+            onPress: this.onPress.bind(this)
         })
+    }
+
+    onPress() {
+        console.log('push data request');
+        var state = this.context.store.getState();
+        const data = {userid: state.state.userid, notes: state.notes};
+        this.props.socket.emit('request-push-data', data);
     }
 
     onSwipeLeft(gestureState) {

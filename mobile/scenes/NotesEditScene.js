@@ -24,26 +24,26 @@ class NotesEditScene extends Component {
 
     componentDidMount(){
         this.unsubscribe = this.context.store.subscribe( this.storeDidUpdate );
-        var content = this.getContent();
-        this.setState({ renderedContent: content });
+        var text = this.getContent();
+        this.setState({ content: text });
     }
 
     componentWillUnmount() {
         this.unsubscribe();
     }
 
-    handleChange(content) {
-        this.updateContent(content);
-        this.setState({ content: content });
-        this.requestPushData();
+    handleChange(text) {
+        this.updateContent(text);
+        // this.requestPushData(); // for autosave
     }
 
-    updateContent(content) {
+    updateContent(text) {
         this.context.store.dispatch({type: 'PAGE_CONTENT_CHANGE',
-            content: content,
+            content: text,
             folderIndex: this.context.store.getState().state.folderIndex,
             pageIndex: this.context.store.getState().state.pageIndex
         });
+        this.setState({ content: this.getContent() });
     }
 
     storeDidUpdate(){
@@ -55,7 +55,7 @@ class NotesEditScene extends Component {
         console.log("requesting data push");
         var state = this.context.store.getState();
         const data = {userid: state.state.userid, notes: state.notes};
-        this.props.socket.emit('request-push-data', data); // ipc.send('request-push-data', data);
+        // this.props.socket.emit('request-push-data', data);
     }
 
     getContent() {
@@ -73,7 +73,7 @@ class NotesEditScene extends Component {
                     onChangeText={ (text) => {
                         this.handleChange(text);
                     }}
-                    value={ this.state.renderedContent }
+                    value={ this.state.content }
                 />
             </View>
         )
