@@ -41,21 +41,15 @@ class Navigate extends Component {
                         LeftButton: (route, navigator, index, navState) => {
                             if (route.title == 'LoginScene') {
                                 return null;
-                            } else if (route.title == 'MenuScene') {
-                                return (
-                                    <TouchableHighlight onPress={() => navigator.pop()}>
-                                        <Text style={styles.navButton}>Logout</Text>
-                                    </TouchableHighlight>
-                                );
-                            } else if (route.title == 'NotesEditScene') {
+                            } else if (route.onBack) { // function & icon provided
                                 return(
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onBack}>
-                                        <Icon name='arrow-left' size={28} color='#000000' />
+                                        <Icon name={route.backIconName} size={28} color='#000000' />
                                     </TouchableHighlight>
                                 );
-                            } else {
+                            } else { // default back icon & nav pop
                                 return (
                                     <TouchableHighlight
                                         style={styles.navButton}

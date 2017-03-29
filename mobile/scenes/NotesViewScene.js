@@ -71,7 +71,8 @@ class NotesViewScene extends Component {
                 socket: this.props.socket
             },
             onPress: this.onPress.bind(this),
-            onBack: this.onBack.bind(this)
+            onBack: this.onBack.bind(this),
+            backIconName: 'arrow-left'
         })
     }
 
