@@ -23805,6 +23805,10 @@
 	  return Object.assign({}, state, { mode: 'editor' });
 	}
 
+	function renderMode(state, action) {
+	  return Object.assign({}, state, { mode: 'render' });
+	}
+
 	function fusionMode(state, action) {
 	  return Object.assign({}, state, { mode: 'fusion' });
 	}
@@ -23879,6 +23883,7 @@
 
 	var appReducer = (0, _reducerUtilities2.default)(initial_state, {
 	  'EDITOR_MODE': editorMode,
+	  'RENDER_MODE': renderMode,
 	  'FUSION_MODE': fusionMode,
 	  'FOLDER_MODE': folderMode,
 	  'FLASHCARD_MODE': flashcardMode,

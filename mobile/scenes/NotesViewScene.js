@@ -118,7 +118,7 @@ class NotesViewScene extends Component {
                     ref={PAGE_NAV_REF}
                     initialRoute={this.state.routes[0]}
                     renderScene={(route, navigator) => {
-                        return <NotesView navigator={navigator} content={this.state.routes.pages[this.state.pageIndex].content} />
+                        return <NotesView store={this.context.store} navigator={navigator} content={this.state.routes.pages[this.state.pageIndex].content} />
                     }}
                 />
 
