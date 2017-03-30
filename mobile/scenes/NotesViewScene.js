@@ -27,7 +27,8 @@ class NotesViewScene extends Component {
         this.state = {
             pageIndex: 0,
             open: false,
-            routes: []
+            routes: [],
+            tocHeight: 0 // percentage of total height
         };
 
         this.storeDidUpdate = this.storeDidUpdate.bind(this);
@@ -159,7 +160,6 @@ class NotesViewScene extends Component {
         for(var i=0;i<100;i++){
             data.push(i);
         }
-        pickerConfirmBtnText: 'Go',
 
         Picker.init({
             pickerData: data,
@@ -197,7 +197,7 @@ class NotesViewScene extends Component {
                     ref={PAGE_NAV_REF}
                     initialRoute={this.state.routes[0]}
                     renderScene={(route, navigator) => {
-                        return <NotesView store={this.context.store} navigator={navigator} content={this.state.routes.pages[this.state.pageIndex].content} />
+                        return <NotesView store={this.context.store} navigator={navigator} content={this.state.routes.pages[this.state.pageIndex].content} height={this.state.tocHeight} />
                     }}
                 />
 
@@ -205,7 +205,13 @@ class NotesViewScene extends Component {
                     <ActionButton.Item buttonColor='#fed75e' title="edit" onPress = { () => this.goToEdit() }>
                         <Icon name="md-create" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
-                    <ActionButton.Item buttonColor='#feb255' title="toc" onPress={() => this.showTOC()}>
+                    <ActionButton.Item buttonColor='#feb255' title="toc" onPress={() => {
+                        if (this.state.tocHeight > 0) {
+                            this.setState({tocHeight: 0})
+                        } else {
+                            this.setState({tocHeight: 40})
+                        }
+                    }}>
                         <Icon name="md-list" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                 </ActionButton>
@@ -218,8 +224,7 @@ var styles = StyleSheet.create({
     view: {
         flex: 1,
         marginTop:45,
-        backgroundColor: 'white',
-        padding: 15
+        backgroundColor: 'white'
     },
     actionButtonIcon: {
         fontSize: 20,
