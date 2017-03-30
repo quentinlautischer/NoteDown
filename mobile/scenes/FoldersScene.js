@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
+import Picker from 'react-native-picker';
 
 import NotesViewScene from './NotesViewScene'; // navigate
 import FlashcardViewScene from './FlashcardViewScene';
@@ -44,15 +45,23 @@ class FoldersScene extends Component {
                 initialContent: this.context.store.getState().notes.folders
             },
             onPress: this.onPress.bind(this),
-            rightIconName: 'cards'
+            onBack: this.onBack.bind(this),
+            rightIconName: 'cards',
+            backIconName: 'arrow-left'
         });
     }
 
     onPress() {
+        Picker.hide();
         this.props.navigator.push({
             component: FlashcardViewScene,
             passProps: this.props
         })
+    }
+
+    onBack() {
+        Picker.hide();
+        this.props.navigator.pop();
     }
 
     storeDidUpdate(){

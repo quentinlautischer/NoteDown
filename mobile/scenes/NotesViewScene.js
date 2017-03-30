@@ -14,6 +14,7 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
+import Picker from 'react-native-picker';
 import NotesView from '../components/NotesView';
 import NotesEditScene from './NotesEditScene'; // navigate
 
@@ -63,6 +64,7 @@ class NotesViewScene extends Component {
     }
 
     _navigate() {
+        Picker.hide();
         console.log('passing init content: ' + this.state.routes.pages[this.state.pageIndex].content);
         this.props.navigator.push({
             title: 'NotesEditScene',
@@ -91,7 +93,13 @@ class NotesViewScene extends Component {
                 console.log('notes already saved');
                 this.props.navigator.pop();
                 return;
-            }
+        }
+        this.showSaveAlert();
+    }
+
+    showSaveAlert() {
+        var folderIdx = this.context.store.getState().state.folderIndex;
+        var pageIdx = this.context.store.getState().state.pageIndex;
 
         Alert.alert(
             'Are you sure you want to go back?',
@@ -145,6 +153,33 @@ class NotesViewScene extends Component {
         }
     }
 
+    showTOC() {
+
+        let data = [];
+        for(var i=0;i<100;i++){
+            data.push(i);
+        }
+        pickerConfirmBtnText: 'Go',
+
+        Picker.init({
+            pickerData: data,
+            selectedValue: [59],
+            pickerTitleText: 'Contents',
+            pickerCancelBtnText: 'Cancel',
+            pickerConfirmBtnText: 'Go!',
+            onPickerConfirm: data => {
+                console.log(data);
+            },
+            onPickerCancel: data => {
+                console.log(data);
+            },
+            onPickerSelect: data => {
+                console.log(data);
+            }
+        });
+        Picker.show()
+    }
+
     render() {
         const config = {
             velocityThreshold: 0.3,
@@ -166,11 +201,14 @@ class NotesViewScene extends Component {
                     }}
                 />
 
-                <ActionButton // floating action button (to edit notes)
-                    buttonColor='#0aaf82'
-                    onPress = { () => this.goToEdit() }
-                    icon={<Icon name="md-create" style={styles.actionButtonIcon} />}
-                />
+                <ActionButton buttonColor="rgba(231,76,60,1)">
+                    <ActionButton.Item buttonColor='#9b59b6' title="edit" onPress = { () => this.goToEdit() }>
+                        <Icon name="md-create" style={styles.actionButtonIcon} />
+                    </ActionButton.Item>
+                    <ActionButton.Item buttonColor='#3498db' title="toc" onPress={() => this.showTOC()}>
+                        <Icon name="md-list" style={styles.actionButtonIcon} />
+                    </ActionButton.Item>
+                </ActionButton>
             </GestureRecognizer>
         )
     }
