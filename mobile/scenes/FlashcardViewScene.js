@@ -44,11 +44,11 @@ export default class FlashcardViewScene extends Component {
 var styles = StyleSheet.create({
     container: {
         flex:1,
-        backgroundColor: '#0aaf82',
+        backgroundColor: 'rgba(139, 191, 159, 1)',
         marginTop:40
     },
     view: {
         flex:1,
-        backgroundColor: '#0aaf82'
+        backgroundColor: 'rgba(139, 191, 159, 1)'
     }
 });

@@ -16,10 +16,9 @@ const styles = StyleSheet.create({
     text: {
         textAlign:'center',
         fontSize: 20,
-        // textShadowColor:'white',
-        // textShadowOffset: {width: 1, height: 1},
-        // textShadowRadius: 1,
         padding:10,
-        color:'black'
+        color:'black',
+        color: '#434146',
+        fontWeight: 'bold'
     }
 });

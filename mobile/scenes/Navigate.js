@@ -10,10 +10,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScene from './LoginScene';
-import MenuScene from './MenuScene'
-import NotesViewScene from './NotesViewScene';
-import NotesEditScene from './NotesEditScene';
-import FlashcardViewScene from './FlashcardViewScene';
 
 import { connect } from 'react-redux';
 
@@ -39,49 +35,36 @@ class Navigate extends Component {
                     <Navigator.NavigationBar
                     routeMapper={{
                         LeftButton: (route, navigator, index, navState) => {
-                            if (route.title == 'LoginScene') {
+                            if (route.title == 'LoginScene' || route.title == 'MenuScene') {
                                 return null;
-                            } else if (route.title == 'MenuScene') {
-                                return (
-                                    <TouchableHighlight onPress={() => navigator.pop()}>
-                                        <Text style={styles.navButton}>Logout</Text>
+                            } else if (route.onBack) { // function & icon provided
+                                return(
+                                    <TouchableHighlight
+                                        style={styles.navButton}
+                                        onPress={route.onBack}>
+                                        <Icon name={route.backIconName} size={28} color='#434146' />
                                     </TouchableHighlight>
                                 );
-                            } else {
+                            } else { // default back icon & nav pop
                                 return (
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={() => navigator.pop()}>
-                                        <Icon name='arrow-left' size={28} color='#000000' />
+                                        <Icon name='arrow-left' size={28} color='#434146' />
                                     </TouchableHighlight>
                                 );
                             }
                         },
                         RightButton: (route, navigator, index, navState) => {
-                            if (route.title == 'NotesViewScene') {
-                                return(
-                                    <TouchableHighlight
-                                        style={styles.navButton}
-                                        onPress={() =>
-                                            navigator.push({
-                                                component: FlashcardViewScene,
-                                                passProps: {
-                                                    content: route.content
-                                                }
-                                            })
-                                        }>
-                                        <Text>Go to Flashcards</Text>
-                                    </TouchableHighlight>
-                                );
-                            } else if (route.title == 'NotesEditScene') {
+                            if (route.onPress) { // function & icon provided
                                 return(
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onPress}>
-                                        <Icon name='cloud-upload' size={28} color='#000000' />
+                                        <Icon name={route.rightIconName} size={28} color='#434146' />
                                     </TouchableHighlight>
                                 );
-                            } else {
+                            } else { // default is no button
                                 return null;
                             }
                         },
@@ -99,7 +82,7 @@ class Navigate extends Component {
 var styles = StyleSheet.create({
     view: {
         paddingTop: (Platform.OS === 'ios') ? 20 : 0, // pushes the content down the page
-        backgroundColor: '#0aaf82'
+        backgroundColor: 'rgba(139, 191, 159, 1)'
     },
     navButton: {
         margin: 7 // keeps the button off the edge of the page

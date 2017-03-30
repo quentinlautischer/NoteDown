@@ -71,8 +71,15 @@ class LoginScene extends Component {
             passProps: {
                 // content: data,
                 socket: this.socket
-            }
+            },
+            onPress: this.onPress.bind(this),
+            rightIconName: 'logout'
         });
+    }
+
+    onPress() {
+        // TODO: clear login info
+        this.props.navigator.pop();
     }
 
     attemptLogin() {

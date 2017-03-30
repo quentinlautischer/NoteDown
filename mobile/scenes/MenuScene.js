@@ -41,7 +41,7 @@ export default class MenuScene extends Component {
 
 var styles = StyleSheet.create({
     view: {
-        backgroundColor: '#0aaf82',
+        backgroundColor: 'rgba(139, 191, 159, 1)',
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',

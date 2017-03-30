@@ -5,7 +5,8 @@ import {
     Navigator,
     TouchableHighlight,
     WebView,
-    StyleSheet
+    StyleSheet,
+    Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -13,7 +14,8 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
-import NotesView from '../components/NotesView.js';
+import Picker from 'react-native-picker';
+import NotesView from '../components/NotesView';
 import NotesEditScene from './NotesEditScene'; // navigate
 
 var PAGE_NAV_REF = 'page_nav';
@@ -62,17 +64,67 @@ class NotesViewScene extends Component {
     }
 
     _navigate() {
+        Picker.hide();
+        console.log('passing init content: ' + this.state.routes.pages[this.state.pageIndex].content);
         this.props.navigator.push({
             title: 'NotesEditScene',
             component: NotesEditScene,
             passProps: {
                 socket: this.props.socket
             },
-            onPress: this.onPress.bind(this)
+            onPress: this.onPress.bind(this),
+            onBack: this.onBack.bind(this),
+            rightIconName: 'cloud-upload',
+            backIconName: 'arrow-left'
         })
     }
 
     onPress() {
+        this.requestPushData();
+    }
+
+    onBack() {
+        var folderIdx = this.context.store.getState().state.folderIndex;
+        var pageIdx = this.context.store.getState().state.pageIndex;
+
+        // TODO: should actually compare to last saved version (bc user might save while in edit mode)
+        if (this.props.initialContent[folderIdx].pages[pageIdx].content ===
+            this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].content) {
+                console.log('notes already saved');
+                this.props.navigator.pop();
+                return;
+        }
+        this.showSaveAlert();
+    }
+
+    showSaveAlert() {
+        var folderIdx = this.context.store.getState().state.folderIndex;
+        var pageIdx = this.context.store.getState().state.pageIndex;
+
+        Alert.alert(
+            'Are you sure you want to go back?',
+            'Any unsaved changes will be lost.',
+            [
+                {text: 'Yes', onPress: () => {
+                    console.log("reverting to content: " + this.props.initialContent);
+                    this.context.store.dispatch({type: 'PAGE_CONTENT_CHANGE',
+                        content: this.props.initialContent[folderIdx].pages[pageIdx].content,
+                        folderIndex: folderIdx,
+                        pageIndex: pageIdx
+                    });
+                    this.props.navigator.pop();
+                }},
+                {text: 'Cancel'},
+                {text: 'Save', onPress: () => {
+                    this.requestPushData();
+                    this.props.navigator.pop();
+                }},
+            ],
+            { cancelable: false }
+        )
+    }
+
+    requestPushData() {
         console.log('push data request');
         var state = this.context.store.getState();
         const data = {userid: state.state.userid, notes: state.notes};
@@ -101,6 +153,33 @@ class NotesViewScene extends Component {
         }
     }
 
+    showTOC() {
+
+        let data = [];
+        for(var i=0;i<100;i++){
+            data.push(i);
+        }
+        pickerConfirmBtnText: 'Go',
+
+        Picker.init({
+            pickerData: data,
+            selectedValue: [59],
+            pickerTitleText: 'Contents',
+            pickerCancelBtnText: 'Cancel',
+            pickerConfirmBtnText: 'Go!',
+            onPickerConfirm: data => {
+                console.log(data);
+            },
+            onPickerCancel: data => {
+                console.log(data);
+            },
+            onPickerSelect: data => {
+                console.log(data);
+            }
+        });
+        Picker.show()
+    }
+
     render() {
         const config = {
             velocityThreshold: 0.3,
@@ -122,11 +201,14 @@ class NotesViewScene extends Component {
                     }}
                 />
 
-                <ActionButton // floating action button (to edit notes)
-                    buttonColor='#0aaf82'
-                    onPress = { () => this.goToEdit() }
-                    icon={<Icon name="md-create" style={styles.actionButtonIcon} />}
-                />
+                <ActionButton buttonColor="#303e4d">
+                    <ActionButton.Item buttonColor='#fed75e' title="edit" onPress = { () => this.goToEdit() }>
+                        <Icon name="md-create" style={styles.actionButtonIcon} />
+                    </ActionButton.Item>
+                    <ActionButton.Item buttonColor='#feb255' title="toc" onPress={() => this.showTOC()}>
+                        <Icon name="md-list" style={styles.actionButtonIcon} />
+                    </ActionButton.Item>
+                </ActionButton>
             </GestureRecognizer>
         )
     }
