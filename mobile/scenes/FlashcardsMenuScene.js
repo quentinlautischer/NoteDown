@@ -34,9 +34,9 @@ export default class FlashcardsMenuScene extends Component {
 
     render() {
         return (
-            <LinearGradient colors={['#0aaf82', '#0dd9a2', '#26f2bc']} style={styles.linearGradient}>
+            <LinearGradient colors={['#8bbf9f', '#add2bb', '#cee4d6']} style={styles.linearGradient}>
                 <View>
-                    <TitleText text='My Decks'/>
+                    <TitleText text='My Decks' style={styles.title}/>
                     <ListView
                         dataSource={this.state.dataSource}
                         renderRow={(rowData, sectionID, rowID, highlightRow) =>

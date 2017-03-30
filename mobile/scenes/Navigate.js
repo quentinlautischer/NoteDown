@@ -42,7 +42,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onBack}>
-                                        <Icon name={route.backIconName} size={28} color='#000000' />
+                                        <Icon name={route.backIconName} size={28} color='#434146' />
                                     </TouchableHighlight>
                                 );
                             } else { // default back icon & nav pop
@@ -50,7 +50,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={() => navigator.pop()}>
-                                        <Icon name='arrow-left' size={28} color='#000000' />
+                                        <Icon name='arrow-left' size={28} color='#434146' />
                                     </TouchableHighlight>
                                 );
                             }
@@ -61,7 +61,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onPress}>
-                                        <Icon name={route.rightIconName} size={28} color='#000000' />
+                                        <Icon name={route.rightIconName} size={28} color='#434146' />
                                     </TouchableHighlight>
                                 );
                             } else { // default is no button
@@ -82,7 +82,7 @@ class Navigate extends Component {
 var styles = StyleSheet.create({
     view: {
         paddingTop: (Platform.OS === 'ios') ? 20 : 0, // pushes the content down the page
-        backgroundColor: '#0aaf82'
+        backgroundColor: 'rgba(139, 191, 159, 1)'
     },
     navButton: {
         margin: 7 // keeps the button off the edge of the page

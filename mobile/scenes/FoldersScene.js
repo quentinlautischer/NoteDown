@@ -77,9 +77,9 @@ class FoldersScene extends Component {
 
     render() {
         return (
-            <LinearGradient colors={['#0aaf82', '#0dd9a2', '#26f2bc']} style={styles.linearGradient}>
+            <LinearGradient colors={['#8bbf9f', '#add2bb', '#cee4d6']} style={styles.linearGradient}>
                 <View>
-                    <TitleText text='My Folders'/>
+                    <TitleText text='My Folders' />
                     <ListView
                         dataSource={this.state.dataSource}
                         renderRow={(rowData, sectionID, rowID, highlightRow) =>

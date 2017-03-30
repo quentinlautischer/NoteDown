@@ -201,11 +201,11 @@ class NotesViewScene extends Component {
                     }}
                 />
 
-                <ActionButton buttonColor="rgba(231,76,60,1)">
-                    <ActionButton.Item buttonColor='#9b59b6' title="edit" onPress = { () => this.goToEdit() }>
+                <ActionButton buttonColor="#303e4d">
+                    <ActionButton.Item buttonColor='#fed75e' title="edit" onPress = { () => this.goToEdit() }>
                         <Icon name="md-create" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
-                    <ActionButton.Item buttonColor='#3498db' title="toc" onPress={() => this.showTOC()}>
+                    <ActionButton.Item buttonColor='#feb255' title="toc" onPress={() => this.showTOC()}>
                         <Icon name="md-list" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                 </ActionButton>
