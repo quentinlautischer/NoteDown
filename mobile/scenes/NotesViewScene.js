@@ -14,7 +14,7 @@ import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
-import Picker from 'react-native-picker';
+// import Picker from 'react-native-picker';
 import NotesView from '../components/NotesView';
 import NotesEditScene from './NotesEditScene'; // navigate
 
@@ -65,7 +65,7 @@ class NotesViewScene extends Component {
     }
 
     _navigate() {
-        Picker.hide();
+        // Picker.hide();
         console.log('passing init content: ' + this.state.routes.pages[this.state.pageIndex].content);
         this.props.navigator.push({
             title: 'NotesEditScene',
@@ -154,31 +154,31 @@ class NotesViewScene extends Component {
         }
     }
 
-    showTOC() {
-
-        let data = [];
-        for(var i=0;i<100;i++){
-            data.push(i);
-        }
-
-        Picker.init({
-            pickerData: data,
-            selectedValue: [59],
-            pickerTitleText: 'Contents',
-            pickerCancelBtnText: 'Cancel',
-            pickerConfirmBtnText: 'Go!',
-            onPickerConfirm: data => {
-                console.log(data);
-            },
-            onPickerCancel: data => {
-                console.log(data);
-            },
-            onPickerSelect: data => {
-                console.log(data);
-            }
-        });
-        Picker.show()
-    }
+    // showTOC() {
+    //
+    //     let data = [];
+    //     for(var i=0;i<100;i++){
+    //         data.push(i);
+    //     }
+    //
+    //     Picker.init({
+    //         pickerData: data,
+    //         selectedValue: [59],
+    //         pickerTitleText: 'Contents',
+    //         pickerCancelBtnText: 'Cancel',
+    //         pickerConfirmBtnText: 'Go!',
+    //         onPickerConfirm: data => {
+    //             console.log(data);
+    //         },
+    //         onPickerCancel: data => {
+    //             console.log(data);
+    //         },
+    //         onPickerSelect: data => {
+    //             console.log(data);
+    //         }
+    //     });
+    //     Picker.show()
+    // }
 
     render() {
         const config = {

@@ -16,7 +16,7 @@ export default class NotesView extends Component {
 
     generateTOC(renderedContent) {
         console.log('height: ' + this.props.height);
-        return `<div style="padding:10px">${renderedContent}</div><div style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:white"><p>text below</p><p>text below</p><p>text below</p><p>text below</p><p>text below</p></div>`;
+        return `<div style="padding:10px">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:white"><ul id='toc-list'></ul></div>`;
     }
 
 
@@ -34,8 +34,21 @@ export default class NotesView extends Component {
 
         var renderedContent = this.generateTOC(parse.parse(this.props.content, this.props.store, imageMapper));
         let jsCode = `
-            document.querySelector("h1").style.backgroundColor = "red";
-        `;
+            var tags = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            for (var i = 0; i < tags.length; i++) {
+                var h = tags[i];
+                var headerId = 'header' + i;
+                h.id = headerId;
+                var li = document.createElement("li");
+
+                var a = document.createElement('a');
+                a.setAttribute('href', '#' + headerId);
+                a.innerHTML = h.innerHTML;
+
+                li.appendChild(a);
+                document.getElementById('toc-list').appendChild(li);
+            }
+            `;
 
         return (
             <WebView
