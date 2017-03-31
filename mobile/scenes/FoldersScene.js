@@ -37,7 +37,7 @@ class FoldersScene extends Component {
         this.setState({ dataSource: ds.cloneWithRows(this.context.store.getState().notes.folders) });
     }
 
-    _navigate(index) {
+    _navigate() {
         this.props.navigator.push({
             title: 'NotesViewScene',
             component: NotesViewScene,
@@ -73,7 +73,7 @@ class FoldersScene extends Component {
         var index = parseInt(rowID.replace('FOLDER', ''))
         this.context.store.dispatch({type: 'SELECT_FOLDER', index: index});
         this.context.store.dispatch({type: 'RENDER_MODE'});
-        this._navigate(index);
+        this._navigate();
     }
 
     render() {
