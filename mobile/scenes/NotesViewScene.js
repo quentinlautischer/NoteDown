@@ -37,6 +37,7 @@ class NotesViewScene extends Component {
 
     componentWillMount() {
         this.setRoutes();
+        this.updateSavedContent();
     }
 
     componentDidMount(){
@@ -66,8 +67,6 @@ class NotesViewScene extends Component {
     }
 
     _navigate() {
-        // Picker.hide();
-        console.log('passing init content: ' + this.state.routes.pages[this.state.pageIndex].content);
         this.props.navigator.push({
             title: 'NotesEditScene',
             component: NotesEditScene,
@@ -81,22 +80,39 @@ class NotesViewScene extends Component {
         })
     }
 
+    updateSavedContent() {
+        var folderIdx = this.context.store.getState().state.folderIndex;
+        var pageIdx = this.context.store.getState().state.pageIndex;
+
+        this.context.store.dispatch({type: 'UPDATE_PAGE_SAVED_CONTENT',
+            content: this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].content,
+            folderIndex: this.context.store.getState().state.folderIndex,
+            pageIndex: this.context.store.getState().state.pageIndex
+        });
+    }
+
     onPress() {
         this.requestPushData();
     }
 
     onBack() {
-        var folderIdx = this.context.store.getState().state.folderIndex;
-        var pageIdx = this.context.store.getState().state.pageIndex;
-
-        // TODO: should actually compare to last saved version (bc user might save while in edit mode)
-        if (this.props.initialContent[folderIdx].pages[pageIdx].content ===
-            this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].content) {
-                console.log('notes already saved');
-                this.props.navigator.pop();
-                return;
+        if (!this.needToSave()) {
+            this.props.navigator.pop();
+            return;
         }
         this.showSaveAlert();
+    }
+
+    needToSave() {
+        var folderIndex = this.context.store.getState().state.folderIndex;
+        var pageIndex = this.context.store.getState().state.pageIndex;
+        var currentPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].content;
+        var savedPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].savedContent;
+
+        console.log('curr ' + currentPageContent);
+        console.log('sav ' + savedPageContent);
+
+        return currentPageContent !== savedPageContent;
     }
 
     showSaveAlert() {
@@ -110,7 +126,7 @@ class NotesViewScene extends Component {
                 {text: 'Yes', onPress: () => {
                     console.log("reverting to content: " + this.props.initialContent);
                     this.context.store.dispatch({type: 'PAGE_CONTENT_CHANGE',
-                        content: this.props.initialContent[folderIdx].pages[pageIdx].content,
+                        content: this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].savedContent,
                         folderIndex: folderIdx,
                         pageIndex: pageIdx
                     });
@@ -131,6 +147,7 @@ class NotesViewScene extends Component {
         var state = this.context.store.getState();
         const data = {userid: state.state.userid, notes: state.notes};
         this.props.socket.emit('request-push-data', data);
+        this.updateSavedContent();
     }
 
     onSwipeLeft(gestureState) {

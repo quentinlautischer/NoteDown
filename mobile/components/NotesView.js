@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 
 styles = require('../highlight.js.styles.js');
-
+import colors from '../app/constants';
 import parse from '../shared/parser.js';
 
 export default class NotesView extends Component {
 
     generateTOC(renderedContent) {
-        return `<style>${linkStyling}</style><div style="padding:10px;">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
+        return `<style>${linkStyling}</style><div style="padding:10px;margin-top:-8px;margin-right:-8px;margin-bottom:-8px;background-color:${colors.LIGHT}">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
     }
 
 
