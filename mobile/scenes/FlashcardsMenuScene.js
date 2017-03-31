@@ -6,6 +6,7 @@ import {
     ListView,
     StyleSheet
 } from 'react-native';
+import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
@@ -42,7 +43,7 @@ var myDummyFlashcards = {folders: [
     }
 ]};
 
-export default class FlashcardsMenuScene extends Component {
+class FlashcardsMenuScene extends Component {
     constructor(props) {
         super(props);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -56,10 +57,17 @@ export default class FlashcardsMenuScene extends Component {
             title: 'FlashcardsMenuScene',
             component: FlashcardViewScene,
             passProps: {
-                content: this.props.content,
-                socket: this.props.socket
+                content: myDummyFlashcards,
+                socket: this.props.socket,
             }
         });
+    }
+
+    selectFolder(rowID) {
+        var index = parseInt(rowID.replace('FOLDER', ''))
+        this.context.store.dispatch({type: 'SELECT_FOLDER', index: index});
+        // this.context.store.dispatch({type: 'RENDER_MODE'}); // TODO: FOLDER_MODE
+        this._navigate();
     }
 
     render() {
@@ -70,7 +78,7 @@ export default class FlashcardsMenuScene extends Component {
                     <ListView
                         dataSource={this.state.dataSource}
                         renderRow={(rowData, sectionID, rowID, highlightRow) =>
-                            <TouchableHighlight onPress = { () => this._navigate(rowID) }>
+                            <TouchableHighlight onPress = { () => this.selectFolder(rowID) }>
                                 <ListItem iconName='cards' text={rowData.name} />
                             </TouchableHighlight>
                         }
@@ -86,3 +94,9 @@ const styles = StyleSheet.create({
         flex: 1
     }
 });
+
+FlashcardsMenuScene.contextTypes = {
+  store: React.PropTypes.object.isRequired
+};
+
+export default connect()(FlashcardsMenuScene);

@@ -124,7 +124,6 @@ class NotesViewScene extends Component {
             'Any unsaved changes will be lost.',
             [
                 {text: 'Yes', onPress: () => {
-                    console.log("reverting to content: " + this.props.initialContent);
                     this.context.store.dispatch({type: 'PAGE_CONTENT_CHANGE',
                         content: this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].savedContent,
                         folderIndex: folderIdx,
