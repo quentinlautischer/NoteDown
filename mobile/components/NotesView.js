@@ -15,6 +15,7 @@ import parse from '../shared/parser.js';
 export default class NotesView extends Component {
 
     generateTOC(renderedContent) {
+        // the negative margins correct a weird error where the webview doesn't touch the edges
         return `<style>${linkStyling}</style><div style="padding:10px;margin-top:-8px;margin-right:-8px;margin-bottom:-8px;background-color:${colors.LIGHT}">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
     }
 

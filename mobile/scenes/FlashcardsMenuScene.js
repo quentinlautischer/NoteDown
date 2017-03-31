@@ -13,12 +13,41 @@ import colors from '../app/constants';
 
 import FlashcardViewScene from './FlashcardViewScene';
 
+
+var myDummyFlashcards = {folders: [
+    {_id: '1', name: 'ECE 493',
+        flashcards: [
+            {front: 'question 1', back: ['step1', 'step2', 'step3'], hints: ['hint1', 'hint2', 'hint3'], rank: '1'},
+            {front: 'question 2', back: ['step1', 'step2', 'step3'], hints: ['hint1', 'hint2', 'hint3'], rank: '1'},
+            {front: 'question 3', back: ['step1', 'step2', 'step3'], hints: ['hint1', 'hint2', 'hint3'], rank: '1'}
+        ]
+    },
+    {_id: '2', name: 'ECE 455',
+        flashcards: [
+            {front: 'question a', back: ['stepa', 'stepb', 'stepc'], hints: ['hinta', 'hintb', 'hintc'], rank: '2'},
+            {front: 'question b', back: ['stepa', 'stepb', 'stepc'], hints: ['hinta', 'hintb', 'hintc'], rank: '2'},
+            {front: 'question c', back: ['stepa', 'stepb', 'stepc'], hints: ['hinta', 'hintb', 'hintc'], rank: '2'}
+        ]
+    },
+    {_id: '3', name: 'ECE 422',
+        flashcards: [
+            {front: 'question 1', back: ['step!', 'step!'], hints: ['hint!', 'hint!'], rank: '1'},
+            {front: 'question 2', back: ['step!!', 'step!!', 'step!!'], hints: ['hint!!'], rank: '3'}
+        ]
+    },
+    {_id: '4', name: 'test',
+        flashcards: [
+            {front: 'question 1', back: ['step!', 'step!'], hints: ['hint!', 'hint!'], rank: '1'}
+        ]
+    }
+]};
+
 export default class FlashcardsMenuScene extends Component {
     constructor(props) {
         super(props);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSource: ds.cloneWithRows(this.props.content.data.notes.folders) // TODO: display proper folders
+            dataSource: ds.cloneWithRows(myDummyFlashcards.folders) // TODO: display proper folders
         };
     }
 
