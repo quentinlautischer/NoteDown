@@ -10,9 +10,9 @@ export default class FlashcardView extends Component {
     render() {
         return(
             <View style={styles.view}>
-                <Text>{this.props.content[0].front}</Text>
-                <Text>{this.props.content[0].back.toString()}</Text>
-                <Text>{this.props.content[0].hints.toString()}</Text>
+                <Text>{this.props.content.front}</Text>
+                <Text>{this.props.content.back.toString()}</Text>
+                <Text>{this.props.content.hints.toString()}</Text>
             </View>
         )
     }

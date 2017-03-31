@@ -25,7 +25,6 @@ class FoldersScene extends Component {
             open: false
         };
 
-        this.folderid = "0";
         this.selectFolder = this.selectFolder.bind(this);
         this.storeDidUpdate = this.storeDidUpdate.bind(this);
 
