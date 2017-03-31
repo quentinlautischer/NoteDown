@@ -6,6 +6,8 @@ const {dialog} = remote;
 
 const ipc = require('electron').ipcRenderer;
 
+var shared = require('../../shared/parser.js');
+
 ////////////////////////////////////////////////////////
 /// Bool Queries
 const is_quickmode = function(state) {
@@ -107,6 +109,9 @@ function menuFolderview(store) {
 }
 
 function menuFlashcards(store) {
+  var state = store.getState();
+  var flashcards = shared.extractFlashcards(state.notes.folders[state.state.folderIndex].pages);
+  store.dispatch({type: 'SET_FLASHCARDS', flashcards: flashcards})
   store.dispatch({type: 'FLASHCARD_MODE'});
 }
 
