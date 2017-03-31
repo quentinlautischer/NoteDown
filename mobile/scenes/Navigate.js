@@ -43,7 +43,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onBack}>
-                                        <Icon name={route.backIconName} size={28} color={colors.DARK} />
+                                        <Icon name={route.backIconName} size={30} color={colors.DARK} />
                                     </TouchableHighlight>
                                 );
                             } else { // default back icon & nav pop
@@ -51,7 +51,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={() => navigator.pop()}>
-                                        <Icon name='arrow-left' size={28} color={colors.DARK} />
+                                        <Icon name='arrow-left' size={30} color={colors.DARK} />
                                     </TouchableHighlight>
                                 );
                             }
@@ -62,7 +62,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onPress}>
-                                        <Icon name={route.rightIconName} size={28} color={colors.DARK} />
+                                        <Icon name={route.rightIconName} size={30} color={colors.DARK} />
                                     </TouchableHighlight>
                                 );
                             } else { // default is no button
