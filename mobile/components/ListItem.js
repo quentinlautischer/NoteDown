@@ -4,6 +4,7 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
+import colors from '../app/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class ListItem extends Component {
@@ -13,7 +14,7 @@ export default class ListItem extends Component {
     render() {
         return(
             <View ref='container' style={styles.listItem}>
-                <Icon name={this.props.iconName} size={35} color='#000000' />
+                <Icon name={this.props.iconName} size={35} color={colors.LIGHT} />
                 <Text style={styles.listItemText}>{this.props.text}</Text>
             </View>
         );
@@ -27,7 +28,7 @@ export default class ListItem extends Component {
 
 const styles = StyleSheet.create({
     listItem: {
-        backgroundColor: 'white',
+        backgroundColor: colors.DARK2,
         marginTop: 4,
         marginBottom: 4,
         marginRight: 8,
@@ -40,6 +41,7 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     listItemText: {
+        color: colors.LIGHT,
         fontSize: 20,
         marginLeft: 20
     }

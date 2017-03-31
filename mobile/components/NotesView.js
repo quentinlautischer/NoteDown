@@ -15,8 +15,7 @@ import parse from '../shared/parser.js';
 export default class NotesView extends Component {
 
     generateTOC(renderedContent) {
-        console.log('height: ' + this.props.height);
-        return `<div style="padding:10px">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:white"><ul id='toc-list'></ul></div>`;
+        return `<style>${linkStyling}</style><div style="padding:10px;">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
     }
 
 
@@ -39,19 +38,30 @@ export default class NotesView extends Component {
                 var h = tags[i];
                 var headerId = 'header' + i;
                 h.id = headerId;
-                var li = document.createElement("li");
+                var p = document.createElement("p");
 
                 var a = document.createElement('a');
                 a.setAttribute('href', '#' + headerId);
                 a.innerHTML = h.innerHTML;
+                a.style.textDecoration = 'none';
+                a.style.link
 
-                li.appendChild(a);
-                document.getElementById('toc-list').appendChild(li);
+                p.style.textIndent = getSpaces(h) + 'em';
+                p.appendChild(a);
+
+                var toc = document.getElementById('toc');
+                toc.appendChild(p);
+            }
+
+            // returns 0-5 depending on header type
+            function getSpaces(h) {
+                return parseInt(h.tagName[1]) - 1;
             }
             `;
 
         return (
             <WebView
+                style={styles.view}
                 source={{html: renderedContent}}
                 injectedJavaScript={jsCode}
                 javaScriptEnabledAndroid={true}
@@ -59,3 +69,29 @@ export default class NotesView extends Component {
         )
     }
 }
+
+
+
+var linkStyling = `
+    #toc a:link {
+        color: #fed75e;
+    }
+
+    #toc a:visited {
+        color: #fed75e;
+    }
+
+    #toc a:hover {
+        color: #feb255;
+    }
+
+    #toc a:active {
+        color: #feb255;
+    }
+`;
+
+const styles = StyleSheet.create({
+    view: {
+        marginLeft: -8 // super hacky fix
+    }
+})

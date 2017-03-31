@@ -3,6 +3,7 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
+import colors from '../app/constants';
 
 export default class TitleText extends Component {
     render() {
@@ -17,8 +18,7 @@ const styles = StyleSheet.create({
         textAlign:'center',
         fontSize: 20,
         padding:10,
-        color:'black',
-        color: '#434146',
+        color: colors.DARK,
         fontWeight: 'bold'
     }
 });

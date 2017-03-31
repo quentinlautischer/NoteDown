@@ -9,16 +9,16 @@ import {
     Alert
 } from 'react-native';
 import { connect } from 'react-redux';
-
+import colors from '../app/constants';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
-// import Picker from 'react-native-picker';
 import NotesView from '../components/NotesView';
 import NotesEditScene from './NotesEditScene'; // navigate
 
 var PAGE_NAV_REF = 'page_nav';
+const TOC_HEIGHT = 30; // percent
 
 class NotesViewScene extends Component {
     constructor(props) {
@@ -28,7 +28,8 @@ class NotesViewScene extends Component {
             pageIndex: 0,
             open: false,
             routes: [],
-            tocHeight: 0 // percentage of total height
+            tocHeight: 0, // percentage of total height,
+            tocVisibility: 'hidden'
         };
 
         this.storeDidUpdate = this.storeDidUpdate.bind(this);
@@ -154,32 +155,6 @@ class NotesViewScene extends Component {
         }
     }
 
-    // showTOC() {
-    //
-    //     let data = [];
-    //     for(var i=0;i<100;i++){
-    //         data.push(i);
-    //     }
-    //
-    //     Picker.init({
-    //         pickerData: data,
-    //         selectedValue: [59],
-    //         pickerTitleText: 'Contents',
-    //         pickerCancelBtnText: 'Cancel',
-    //         pickerConfirmBtnText: 'Go!',
-    //         onPickerConfirm: data => {
-    //             console.log(data);
-    //         },
-    //         onPickerCancel: data => {
-    //             console.log(data);
-    //         },
-    //         onPickerSelect: data => {
-    //             console.log(data);
-    //         }
-    //     });
-    //     Picker.show()
-    // }
-
     render() {
         const config = {
             velocityThreshold: 0.3,
@@ -197,19 +172,19 @@ class NotesViewScene extends Component {
                     ref={PAGE_NAV_REF}
                     initialRoute={this.state.routes[0]}
                     renderScene={(route, navigator) => {
-                        return <NotesView store={this.context.store} navigator={navigator} content={this.state.routes.pages[this.state.pageIndex].content} height={this.state.tocHeight} />
+                        return <NotesView store={this.context.store} navigator={navigator} content={this.state.routes.pages[this.state.pageIndex].content} height={this.state.tocHeight} visibility={this.state.tocVisibility} />
                     }}
                 />
 
-                <ActionButton buttonColor="#303e4d">
-                    <ActionButton.Item buttonColor='#fed75e' title="edit" onPress = { () => this.goToEdit() }>
+                <ActionButton buttonColor={colors.PRIMARY2}>
+                    <ActionButton.Item buttonColor={colors.SECONDARY1} title="edit" onPress = { () => this.goToEdit() }>
                         <Icon name="md-create" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
-                    <ActionButton.Item buttonColor='#feb255' title="toc" onPress={() => {
+                    <ActionButton.Item buttonColor={colors.SECONDARY2} title="toggle toc" onPress={() => {
                         if (this.state.tocHeight > 0) {
-                            this.setState({tocHeight: 0})
+                            this.setState({tocHeight: 0, tocVisibility: 'hidden'});
                         } else {
-                            this.setState({tocHeight: 40})
+                            this.setState({tocHeight: TOC_HEIGHT, tocVisibility: 'visible'});
                         }
                     }}>
                         <Icon name="md-list" style={styles.actionButtonIcon} />
@@ -224,12 +199,12 @@ var styles = StyleSheet.create({
     view: {
         flex: 1,
         marginTop:45,
-        backgroundColor: 'white'
+        backgroundColor: colors.LIGHT
     },
     actionButtonIcon: {
         fontSize: 20,
         height: 22,
-        color: 'white',
+        color: colors.LIGHT,
     }
 });
 

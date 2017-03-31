@@ -6,6 +6,7 @@ import {
     Text
 } from 'react-native';
 import FormatButton from './FormatButton';
+import colors from '../app/constants';
 
 export default class ButtonPanel extends Component {
     render() {
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
         height: 40,
         paddingLeft: 4,
         paddingRight: 4,
-        backgroundColor: 'black',
+        backgroundColor: colors.DARK2,
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row'

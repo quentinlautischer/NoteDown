@@ -1,15 +1,16 @@
 
 import React, { Component } from 'react';
 import {
-  Text,
-  View,
-  Navigator,
-  TouchableHighlight,
-  StyleSheet,
-  Platform
+    Text,
+    View,
+    Navigator,
+    TouchableHighlight,
+    StyleSheet,
+    Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScene from './LoginScene';
+import colors from '../app/constants';
 
 import { connect } from 'react-redux';
 
@@ -42,7 +43,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onBack}>
-                                        <Icon name={route.backIconName} size={28} color='#434146' />
+                                        <Icon name={route.backIconName} size={28} color={colors.DARK} />
                                     </TouchableHighlight>
                                 );
                             } else { // default back icon & nav pop
@@ -50,7 +51,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={() => navigator.pop()}>
-                                        <Icon name='arrow-left' size={28} color='#434146' />
+                                        <Icon name='arrow-left' size={28} color={colors.DARK} />
                                     </TouchableHighlight>
                                 );
                             }
@@ -61,7 +62,7 @@ class Navigate extends Component {
                                     <TouchableHighlight
                                         style={styles.navButton}
                                         onPress={route.onPress}>
-                                        <Icon name={route.rightIconName} size={28} color='#434146' />
+                                        <Icon name={route.rightIconName} size={28} color={colors.DARK} />
                                     </TouchableHighlight>
                                 );
                             } else { // default is no button
@@ -82,7 +83,7 @@ class Navigate extends Component {
 var styles = StyleSheet.create({
     view: {
         paddingTop: (Platform.OS === 'ios') ? 20 : 0, // pushes the content down the page
-        backgroundColor: 'rgba(139, 191, 159, 1)'
+        backgroundColor: colors.PRIMARY1
     },
     navButton: {
         margin: 7 // keeps the button off the edge of the page

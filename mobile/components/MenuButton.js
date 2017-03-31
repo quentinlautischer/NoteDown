@@ -4,6 +4,7 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
+import colors from '../app/constants';
 
 export default class MenuButton extends Component {
     render() {
@@ -22,7 +23,7 @@ export default class MenuButton extends Component {
 
 var styles = StyleSheet.create({
     button: {
-        backgroundColor: 'white',
+        backgroundColor: colors.LIGHT,
         borderRadius: 4,
         width: 220,
         height: 50,

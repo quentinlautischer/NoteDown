@@ -7,6 +7,7 @@ import {
     Image,
     TouchableHighlight
 } from 'react-native';
+import colors from '../app/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNFetchBlob from 'react-native-fetch-blob';
 
@@ -30,6 +31,7 @@ export default class PhotoConfirmScene extends Component {
                     this.props.socket.emit('request-photo-put', { 'photo': data });
                 })
             })
+            this.props.navigator.pop();
     }
 
     render() {
@@ -42,7 +44,7 @@ export default class PhotoConfirmScene extends Component {
                 <TouchableHighlight
                     style={styles.check}
                     onPress={this.encodePhoto.bind(this)}>
-                    <Icon name='check' size={35} color='#ffffff' />
+                    <Icon name='check' size={35} color={colors.DARK} />
                 </TouchableHighlight>
             </View>
         );
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
     },
     check: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: colors.PRIMARY1,
         alignItems: 'center',
         justifyContent: 'center'
     }

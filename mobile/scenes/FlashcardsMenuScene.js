@@ -9,6 +9,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
+import colors from '../app/constants';
 
 import FlashcardViewScene from './FlashcardViewScene';
 
@@ -34,7 +35,7 @@ export default class FlashcardsMenuScene extends Component {
 
     render() {
         return (
-            <LinearGradient colors={['#8bbf9f', '#add2bb', '#cee4d6']} style={styles.linearGradient}>
+            <LinearGradient colors={[colors.PRIMARY1, colors.PRIMARY1_GRADM, colors.PRIMARY1_GRADL]} style={styles.linearGradient}>
                 <View>
                     <TitleText text='My Decks' style={styles.title}/>
                     <ListView

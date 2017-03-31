@@ -7,6 +7,7 @@ import {
     ListView,
     StyleSheet
 } from 'react-native';
+import colors from '../app/constants';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
@@ -77,7 +78,7 @@ class FoldersScene extends Component {
 
     render() {
         return (
-            <LinearGradient colors={['#8bbf9f', '#add2bb', '#cee4d6']} style={styles.linearGradient}>
+            <LinearGradient colors={[colors.PRIMARY1, colors.PRIMARY1_GRADM, colors.PRIMARY1_GRADL]} style={styles.linearGradient}>
                 <View>
                     <TitleText text='My Folders' />
                     <ListView
