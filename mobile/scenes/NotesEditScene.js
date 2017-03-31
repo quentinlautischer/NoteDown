@@ -7,7 +7,7 @@ import {
     StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
-
+import colors from '../app/constants';
 import ButtonPanel from '../components/ButtonPanel'
 
 class NotesEditScene extends Component {
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     view: {
         flex: 1,
         marginTop:45,
-        backgroundColor: 'white'
+        backgroundColor: colors.LIGHT
     },
     editor: {
         flex: 1,

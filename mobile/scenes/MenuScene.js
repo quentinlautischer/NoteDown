@@ -6,6 +6,7 @@ import {
     StyleSheet
 } from 'react-native';
 import MenuButton from '../components/MenuButton';
+import colors from '../app/constants';
 
 // navigate
 import FoldersScene from './FoldersScene';
@@ -41,7 +42,7 @@ export default class MenuScene extends Component {
 
 var styles = StyleSheet.create({
     view: {
-        backgroundColor: 'rgba(139, 191, 159, 1)',
+        backgroundColor: colors.PRIMARY1,
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',

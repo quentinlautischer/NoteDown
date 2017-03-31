@@ -4,6 +4,7 @@ import {
     TextInput,
     StyleSheet
 } from 'react-native';
+import colors from '../app/constants';
 
 export default class LoginInput extends Component {
     constructor(props) {
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     textInputContainer: {
         flexDirection:'row',
         borderBottomWidth:1,
-        borderColor:'white',
+        borderColor: colors.LIGHT,
         marginBottom:10
     }
 });

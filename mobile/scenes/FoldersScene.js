@@ -7,6 +7,7 @@ import {
     ListView,
     StyleSheet
 } from 'react-native';
+import colors from '../app/constants';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
@@ -36,7 +37,7 @@ class FoldersScene extends Component {
         this.setState({ dataSource: ds.cloneWithRows(this.context.store.getState().notes.folders) });
     }
 
-    _navigate(index) {
+    _navigate() {
         this.props.navigator.push({
             title: 'NotesViewScene',
             component: NotesViewScene,
@@ -72,12 +73,12 @@ class FoldersScene extends Component {
         var index = parseInt(rowID.replace('FOLDER', ''))
         this.context.store.dispatch({type: 'SELECT_FOLDER', index: index});
         this.context.store.dispatch({type: 'RENDER_MODE'});
-        this._navigate(index);
+        this._navigate();
     }
 
     render() {
         return (
-            <LinearGradient colors={['#8bbf9f', '#add2bb', '#cee4d6']} style={styles.linearGradient}>
+            <LinearGradient colors={[colors.PRIMARY1, colors.PRIMARY1_GRADM, colors.PRIMARY1_GRADL]} style={styles.linearGradient}>
                 <View>
                     <TitleText text='My Folders' />
                     <ListView

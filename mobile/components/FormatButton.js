@@ -3,6 +3,7 @@ import {
     TouchableHighlight,
     StyleSheet
 } from 'react-native';
+import colors from '../app/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class FormatButton extends Component {
@@ -11,11 +12,11 @@ export default class FormatButton extends Component {
         return (
             <TouchableHighlight
                 style={styles.button}
-                underlayColor='rgba(67, 65, 70, 1)'
+                underlayColor={colors.MED}
                 onPress={ () => {
                     this.props.appendFunction(this.props.appendText, this.props.isBlock);
                 }}>
-                <Icon name={this.props.name} size={24} color='black' />
+                <Icon name={this.props.name} size={24} color={colors.DARK} />
             </TouchableHighlight>
         );
     }
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
         height: 28,
         width: 28,
         borderRadius: 2,
-        backgroundColor: 'white',
+        backgroundColor: colors.LIGHT,
         alignItems: 'center',
         justifyContent: 'center'
     }

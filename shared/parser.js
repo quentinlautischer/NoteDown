@@ -710,9 +710,50 @@ function makeFlashcard(front, back, hints) {
         + flashcardTemplate.html4 + flashcardTemplate.css + flashcardTemplate.js;
 }
 
+
+
+function get_flashcard(blocks) {
+  var patt = /^\{(.+)\}$/
+  var match;
+  var flashcards = [];
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length - 2; l++) {
+        match = [];
+        for (var m = 0; m < 3; m++) { match.push(patt.exec(content[l+m])); }
+        if (match[0] != null && match[1] != null && match[2] != null) {
+          var raw1 = {content:content.slice(0,l)};
+          flashcards.push(makeFlashcard(match[0][1], match[2][1].split('|'), match[1][1].split('|')) );
+          var raw2 = {content:content.slice(l+3,content.length)};
+
+          blocks.splice(b, 1, raw1, flashcard, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
+
+  return flashcards;
+}
+
+function extractFlashcards(pages) {
+  var flashcards = [];
+  for (var i = 0; i < pages.length; i++) {
+    var content = pages[i].content;
+    var block_array = [{content:content.split('\n')}];
+    flashcards.push(get_flashcard(block_array));
+    console.log(`flashcards: ${flashcards}`);
+  }
+  return flashcards;
+}
+
 module.exports = {
     parse: parse,
-    makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
+    makeFlashcard: makeFlashcard, // this is temporary, only until the flashcards are integrated
+    extractFlashcards: extractFlashcards
 }
 
 console.log("Shared module loaded");

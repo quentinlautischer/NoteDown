@@ -53,6 +53,20 @@ function pageContentChange(state, action){
   });
 }
 
+function updatePageSavedContent(state, action) {
+  return update(state, {
+    folders: {
+      [action.folderIndex]:{
+        pages: {
+          [action.pageIndex]:{
+            savedContent: {$set : action.content}
+          }
+        }
+      }
+    }
+  });
+}
+
 function addPhoto(state, action) {
   const image = { name: action.name, guid: action.guid, data: action.data };
   return update(state, {
@@ -90,6 +104,7 @@ const notesReducer = createReducer(initial_state, {
   'ADD_PAGE': addPage,
   'DELETE_PAGE': deletePage,
   'PAGE_CONTENT_CHANGE': pageContentChange,
+  'UPDATE_PAGE_SAVED_CONTENT': updatePageSavedContent,
   'ADD_PHOTO': addPhoto
 });
 

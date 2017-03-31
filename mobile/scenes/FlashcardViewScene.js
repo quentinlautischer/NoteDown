@@ -7,11 +7,14 @@ import {
     StyleSheet,
     WebView
 } from 'react-native';
+import { connect } from 'react-redux';
 
 var Orientation = require('react-native-orientation');
 import makeFlashcard from '../shared/parser.js';
+import colors from '../app/constants';
+import FlashcardView from '../components/FlashcardView';
 
-export default class FlashcardViewScene extends Component {
+class FlashcardViewScene extends Component {
     componentDidMount() {
 
         Orientation.getOrientation((err,orientation)=> {
@@ -26,16 +29,10 @@ export default class FlashcardViewScene extends Component {
     }
 
     render() {
+        var folderIdx = this.context.store.getState().state.folderIndex;
         return (
             <View style={styles.container}>
-                <WebView
-                    style={{
-                        backgroundColor: '#0aaf82',
-                        height: 200,
-                    }}
-                    source={{html: makeFlashcard.makeFlashcard("What are some of the features of NoteDown", ["Editing", "Camera Mode", "Flashcards", "Cloud Sync"], ["One is for making/changing notes", "One uses mobile and desktop apps together", "One helps you study", "One is for device sharing"])}}
-                    scalesPageToFit={true}
-                />
+                <FlashcardView content={this.props.content.folders[folderIdx].flashcards} />
             </View>
         )
     }
@@ -44,11 +41,17 @@ export default class FlashcardViewScene extends Component {
 var styles = StyleSheet.create({
     container: {
         flex:1,
-        backgroundColor: 'rgba(139, 191, 159, 1)',
+        backgroundColor: colors.PRIMARY1,
         marginTop:40
     },
     view: {
         flex:1,
-        backgroundColor: 'rgba(139, 191, 159, 1)'
+        backgroundColor: colors.PRIMARY1
     }
 });
+
+FlashcardViewScene.contextTypes = {
+  store: React.PropTypes.object.isRequired
+};
+
+export default connect()(FlashcardViewScene);

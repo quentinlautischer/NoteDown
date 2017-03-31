@@ -4,12 +4,13 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
+import colors from '../app/constants';
 
 export default class MenuButton extends Component {
     render() {
         return(
             <View ref='container' style={styles.button}>
-                <Text>{this.props.text}</Text>
+                <Text style={styles.text}>{this.props.text}</Text>
             </View>
         );
     }
@@ -22,12 +23,16 @@ export default class MenuButton extends Component {
 
 var styles = StyleSheet.create({
     button: {
-        backgroundColor: 'white',
+        backgroundColor: colors.DARK,
         borderRadius: 4,
         width: 220,
-        height: 50,
-        margin: 10,
+        height: 60,
+        margin: 6,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    text: {
+        color: colors.LIGHT,
+        fontSize: 18
     }
 });

@@ -7,11 +7,12 @@ import { createStore, combineReducers } from 'redux';
 import appReducer from '../shared/reducers/appReducer';
 import notesReducer from '../shared/reducers/notesReducer';
 import editorReducer from '../shared/reducers/editorReducer';
+import flashcardReducer from '../shared/reducers/flashcardReducer';
 
 import menubuilder from './components/menubar';
 import StartMenu from './components/startMenu';
 import DualmodeEditor from './components/dualmodeEditor';
-import FusionmodeEditor from './components/fusionmodeEditor';
+import FlashcardViewer from './components/flashcardViewer'
 import FolderContainerView from './components/folderContainerView';
 import MenubarTile from './components/menubarTile';
 
@@ -104,11 +105,11 @@ class App extends React.Component {
             />
           </div>
         );
-      case 'fusion':
+      case 'flashcard':
         return (
           <div>
             <MenubarTile store={store}/>
-            <FusionmodeEditor store={store}/>
+            <FlashcardViewer store={store}/>
             <Snackbar
               open={store.getState().state.snackbar.open}
               message={store.getState().state.snackbar.msg}
@@ -201,7 +202,8 @@ class App extends React.Component {
 const reducer = combineReducers({
   state: appReducer,
   notes: notesReducer,
-  editor: editorReducer
+  editor: editorReducer,
+  flashcards: flashcardReducer
 });
 
 const store = createStore(reducer);

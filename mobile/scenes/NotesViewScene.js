@@ -9,16 +9,16 @@ import {
     Alert
 } from 'react-native';
 import { connect } from 'react-redux';
-
+import colors from '../app/constants';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
-import Picker from 'react-native-picker';
 import NotesView from '../components/NotesView';
 import NotesEditScene from './NotesEditScene'; // navigate
 
 var PAGE_NAV_REF = 'page_nav';
+const TOC_HEIGHT = 30; // percent
 
 class NotesViewScene extends Component {
     constructor(props) {
@@ -27,7 +27,9 @@ class NotesViewScene extends Component {
         this.state = {
             pageIndex: 0,
             open: false,
-            routes: []
+            routes: [],
+            tocHeight: 0, // percentage of total height,
+            tocVisibility: 'hidden'
         };
 
         this.storeDidUpdate = this.storeDidUpdate.bind(this);
@@ -35,6 +37,7 @@ class NotesViewScene extends Component {
 
     componentWillMount() {
         this.setRoutes();
+        this.updateSavedContent();
     }
 
     componentDidMount(){
@@ -64,8 +67,6 @@ class NotesViewScene extends Component {
     }
 
     _navigate() {
-        Picker.hide();
-        console.log('passing init content: ' + this.state.routes.pages[this.state.pageIndex].content);
         this.props.navigator.push({
             title: 'NotesEditScene',
             component: NotesEditScene,
@@ -79,22 +80,39 @@ class NotesViewScene extends Component {
         })
     }
 
+    updateSavedContent() {
+        var folderIdx = this.context.store.getState().state.folderIndex;
+        var pageIdx = this.context.store.getState().state.pageIndex;
+
+        this.context.store.dispatch({type: 'UPDATE_PAGE_SAVED_CONTENT',
+            content: this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].content,
+            folderIndex: this.context.store.getState().state.folderIndex,
+            pageIndex: this.context.store.getState().state.pageIndex
+        });
+    }
+
     onPress() {
         this.requestPushData();
     }
 
     onBack() {
-        var folderIdx = this.context.store.getState().state.folderIndex;
-        var pageIdx = this.context.store.getState().state.pageIndex;
-
-        // TODO: should actually compare to last saved version (bc user might save while in edit mode)
-        if (this.props.initialContent[folderIdx].pages[pageIdx].content ===
-            this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].content) {
-                console.log('notes already saved');
-                this.props.navigator.pop();
-                return;
+        if (!this.needToSave()) {
+            this.props.navigator.pop();
+            return;
         }
         this.showSaveAlert();
+    }
+
+    needToSave() {
+        var folderIndex = this.context.store.getState().state.folderIndex;
+        var pageIndex = this.context.store.getState().state.pageIndex;
+        var currentPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].content;
+        var savedPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].savedContent;
+
+        console.log('curr ' + currentPageContent);
+        console.log('sav ' + savedPageContent);
+
+        return currentPageContent !== savedPageContent;
     }
 
     showSaveAlert() {
@@ -106,9 +124,8 @@ class NotesViewScene extends Component {
             'Any unsaved changes will be lost.',
             [
                 {text: 'Yes', onPress: () => {
-                    console.log("reverting to content: " + this.props.initialContent);
                     this.context.store.dispatch({type: 'PAGE_CONTENT_CHANGE',
-                        content: this.props.initialContent[folderIdx].pages[pageIdx].content,
+                        content: this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].savedContent,
                         folderIndex: folderIdx,
                         pageIndex: pageIdx
                     });
@@ -129,6 +146,7 @@ class NotesViewScene extends Component {
         var state = this.context.store.getState();
         const data = {userid: state.state.userid, notes: state.notes};
         this.props.socket.emit('request-push-data', data);
+        this.updateSavedContent();
     }
 
     onSwipeLeft(gestureState) {
@@ -153,33 +171,6 @@ class NotesViewScene extends Component {
         }
     }
 
-    showTOC() {
-
-        let data = [];
-        for(var i=0;i<100;i++){
-            data.push(i);
-        }
-        pickerConfirmBtnText: 'Go',
-
-        Picker.init({
-            pickerData: data,
-            selectedValue: [59],
-            pickerTitleText: 'Contents',
-            pickerCancelBtnText: 'Cancel',
-            pickerConfirmBtnText: 'Go!',
-            onPickerConfirm: data => {
-                console.log(data);
-            },
-            onPickerCancel: data => {
-                console.log(data);
-            },
-            onPickerSelect: data => {
-                console.log(data);
-            }
-        });
-        Picker.show()
-    }
-
     render() {
         const config = {
             velocityThreshold: 0.3,
@@ -197,15 +188,21 @@ class NotesViewScene extends Component {
                     ref={PAGE_NAV_REF}
                     initialRoute={this.state.routes[0]}
                     renderScene={(route, navigator) => {
-                        return <NotesView store={this.context.store} navigator={navigator} content={this.state.routes.pages[this.state.pageIndex].content} />
+                        return <NotesView store={this.context.store} navigator={navigator} content={this.state.routes.pages[this.state.pageIndex].content} height={this.state.tocHeight} visibility={this.state.tocVisibility} />
                     }}
                 />
 
-                <ActionButton buttonColor="#303e4d">
-                    <ActionButton.Item buttonColor='#fed75e' title="edit" onPress = { () => this.goToEdit() }>
+                <ActionButton buttonColor={colors.PRIMARY2}>
+                    <ActionButton.Item buttonColor={colors.SECONDARY1} title="edit" onPress = { () => this.goToEdit() }>
                         <Icon name="md-create" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
-                    <ActionButton.Item buttonColor='#feb255' title="toc" onPress={() => this.showTOC()}>
+                    <ActionButton.Item buttonColor={colors.SECONDARY2} title="toggle toc" onPress={() => {
+                        if (this.state.tocHeight > 0) {
+                            this.setState({tocHeight: 0, tocVisibility: 'hidden'});
+                        } else {
+                            this.setState({tocHeight: TOC_HEIGHT, tocVisibility: 'visible'});
+                        }
+                    }}>
                         <Icon name="md-list" style={styles.actionButtonIcon} />
                     </ActionButton.Item>
                 </ActionButton>
@@ -218,13 +215,12 @@ var styles = StyleSheet.create({
     view: {
         flex: 1,
         marginTop:45,
-        backgroundColor: 'white',
-        padding: 15
+        backgroundColor: colors.LIGHT
     },
     actionButtonIcon: {
         fontSize: 20,
         height: 22,
-        color: 'white',
+        color: colors.LIGHT,
     }
 });
 

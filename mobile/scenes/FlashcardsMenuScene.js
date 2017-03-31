@@ -6,18 +6,49 @@ import {
     ListView,
     StyleSheet
 } from 'react-native';
+import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
+import colors from '../app/constants';
 
 import FlashcardViewScene from './FlashcardViewScene';
 
-export default class FlashcardsMenuScene extends Component {
+
+var myDummyFlashcards = {folders: [
+    {_id: '1', name: 'ECE 493',
+        flashcards: [
+            {front: 'question 1', back: ['step1', 'step2', 'step3'], hints: ['hint1', 'hint2', 'hint3'], rank: '1'},
+            {front: 'question 2', back: ['step1', 'step2', 'step3'], hints: ['hint1', 'hint2', 'hint3'], rank: '1'},
+            {front: 'question 3', back: ['step1', 'step2', 'step3'], hints: ['hint1', 'hint2', 'hint3'], rank: '1'}
+        ]
+    },
+    {_id: '2', name: 'ECE 455',
+        flashcards: [
+            {front: 'question a', back: ['stepa', 'stepb', 'stepc'], hints: ['hinta', 'hintb', 'hintc'], rank: '2'},
+            {front: 'question b', back: ['stepa', 'stepb', 'stepc'], hints: ['hinta', 'hintb', 'hintc'], rank: '2'},
+            {front: 'question c', back: ['stepa', 'stepb', 'stepc'], hints: ['hinta', 'hintb', 'hintc'], rank: '2'}
+        ]
+    },
+    {_id: '3', name: 'ECE 422',
+        flashcards: [
+            {front: 'question 1', back: ['step!', 'step!'], hints: ['hint!', 'hint!'], rank: '1'},
+            {front: 'question 2', back: ['step!!', 'step!!', 'step!!'], hints: ['hint!!'], rank: '3'}
+        ]
+    },
+    {_id: '4', name: 'test',
+        flashcards: [
+            {front: 'question 1', back: ['step!', 'step!'], hints: ['hint!', 'hint!'], rank: '1'}
+        ]
+    }
+]};
+
+class FlashcardsMenuScene extends Component {
     constructor(props) {
         super(props);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSource: ds.cloneWithRows(this.props.content.data.notes.folders) // TODO: display proper folders
+            dataSource: ds.cloneWithRows(myDummyFlashcards.folders) // TODO: display proper folders
         };
     }
 
@@ -26,21 +57,28 @@ export default class FlashcardsMenuScene extends Component {
             title: 'FlashcardsMenuScene',
             component: FlashcardViewScene,
             passProps: {
-                content: this.props.content,
-                socket: this.props.socket
+                content: myDummyFlashcards,
+                socket: this.props.socket,
             }
         });
     }
 
+    selectFolder(rowID) {
+        var index = parseInt(rowID.replace('FOLDER', ''))
+        this.context.store.dispatch({type: 'SELECT_FOLDER', index: index});
+        // this.context.store.dispatch({type: 'RENDER_MODE'}); // TODO: FOLDER_MODE
+        this._navigate();
+    }
+
     render() {
         return (
-            <LinearGradient colors={['#8bbf9f', '#add2bb', '#cee4d6']} style={styles.linearGradient}>
+            <LinearGradient colors={[colors.PRIMARY1, colors.PRIMARY1_GRADM, colors.PRIMARY1_GRADL]} style={styles.linearGradient}>
                 <View>
                     <TitleText text='My Decks' style={styles.title}/>
                     <ListView
                         dataSource={this.state.dataSource}
                         renderRow={(rowData, sectionID, rowID, highlightRow) =>
-                            <TouchableHighlight onPress = { () => this._navigate(rowID) }>
+                            <TouchableHighlight onPress = { () => this.selectFolder(rowID) }>
                                 <ListItem iconName='cards' text={rowData.name} />
                             </TouchableHighlight>
                         }
@@ -56,3 +94,9 @@ const styles = StyleSheet.create({
         flex: 1
     }
 });
+
+FlashcardsMenuScene.contextTypes = {
+  store: React.PropTypes.object.isRequired
+};
+
+export default connect()(FlashcardsMenuScene);

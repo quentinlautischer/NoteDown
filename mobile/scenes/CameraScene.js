@@ -5,6 +5,7 @@ import {
     Text,
     TouchableHighlight
 } from 'react-native';
+import colors from '../app/constants';
 import Camera from 'react-native-camera';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -41,7 +42,7 @@ export default class CameraScene extends Component {
                     <TouchableHighlight
                         style={styles.capture}
                         onPress={this.takePicture.bind(this)}>
-                        <Icon name='camera' size={35} color='#ffffff' />
+                        <Icon name='camera' size={35} color={colors.LIGHT} />
                     </TouchableHighlight>
                 </Camera>
             </View>
@@ -62,9 +63,9 @@ const styles = StyleSheet.create({
     },
     capture: {
         flex: 0,
-        padding: 15,
+        padding: 12,
         borderRadius: 10,
-        backgroundColor: 'black',
+        backgroundColor: colors.DARK2,
         marginBottom: 40
     }
 });
