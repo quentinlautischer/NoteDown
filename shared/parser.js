@@ -6,12 +6,14 @@ import flashcardTemplate from './models/flashcardTemplate.js';
 var global_store, global_imageMapper; //global vars to be called by image links
 
 var header_index;
+ver link_refs;
 
 function parse(str, store, imageMapper) {
   //The main parsing function.
   global_store = store;
   global_imageMapper = imageMapper;
   header_index = 0;
+  link_refs = [];
   return parse_blocks(str, false);
 }
 
@@ -35,6 +37,7 @@ function parse_blocks(str, allow_raw) {
   check_list_ordered(block_array);
   check_list_unordered(block_array);
   check_table(block_array);
+  check_refs(block_array);
   check_paragraph(block_array);
 
   if (!allow_raw) {
@@ -52,6 +55,12 @@ function parse_span(str) {
 
   check_backslash_escape(span_array);
   check_links(span_array);
+  check_autolink(span_array);
+  check_links_ref(span_array);
+  check_emphasis(span_array, /[_*]{2}/g); //bold
+  check_emphasis(span_array, /[_*]/g); //italic
+  check_codespan(span_array);
+  check_break(span_array);
 
   return render_span(span_array);
 }
@@ -569,6 +578,9 @@ function check_paragraph(blocks) {
   }
 }
 
+function check_refs(span_array) {
+}
+
 ////////////////////////////////////////////
 /* Finds .MD specific characters that are escaped,
 /  replaces them with their HTML entities to exempt them from parsing
@@ -625,6 +637,21 @@ function check_links(span_array) {
       }
     }
   }
+}
+
+function check_autolink(span_array) {
+}
+
+function check_links_ref(span_array) {
+}
+
+function check_emphasis(span_array, token) {
+}
+
+function check_codespan(span_array) {
+}
+
+function check_break(span_array) {
 }
 
 // Functions to help with span-level parsing.
