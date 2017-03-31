@@ -7,15 +7,8 @@ import {
 } from 'react-native';
 import colors from '../app/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 export default class FlashcardFront extends Component {
-
-    onSwipeUp(gestureState) {
-        this.props.navigator.push({
-            index: 2
-        });
-    }
 
     render() {
         const config = {
@@ -24,11 +17,7 @@ export default class FlashcardFront extends Component {
         };
 
         return(
-            <GestureRecognizer
-                style={styles.view}
-                onSwipeUp={(state) => this.onSwipeUp(state)}
-                config={config}>
-
+            <View style={styles.view}>
                 <TouchableHighlight
                     style={styles.icon}
                     onPress={() => this.props.navigator.push({
@@ -39,7 +28,7 @@ export default class FlashcardFront extends Component {
                 <View style={styles.card}>
                     <Text style={styles.text}>{this.props.content}</Text>
                 </View>
-            </GestureRecognizer>
+            </View>
 
         );
     }

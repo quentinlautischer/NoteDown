@@ -13,7 +13,9 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 var Orientation = require('react-native-orientation');
 import makeFlashcard from '../shared/parser.js';
 import colors from '../app/constants';
-import FlashcardView from '../components/FlashcardView';
+import FlashcardFront from '../components/FlashcardFront';
+import FlashcardHints from '../components/FlashcardHints';
+import FlashcardBack from '../components/FlashcardBack';
 
 var FC_NAV_REF = 'fc_nav';
 
@@ -22,8 +24,7 @@ class FlashcardViewScene extends Component {
         super(props);
 
         this.state = {
-            flashcardIndex: 0,
-            routes: []
+            flashcardIndex: 0
         };
     }
 
@@ -56,6 +57,7 @@ class FlashcardViewScene extends Component {
         // go to next page
         if (this.state.flashcardIndex < flashcards.length - 1) {
             this.refs[FC_NAV_REF].push({
+                index: 0,
                 content: flashcards[this.state.flashcardIndex + 1]
             });
             // this.context.store.dispatch({type: 'SELECT_PAGE', index: this.state.pageIndex + 1});
@@ -74,7 +76,25 @@ class FlashcardViewScene extends Component {
         }
     }
 
+    onSwipeUp(gestureState) {
+        // TODO: conditional w/ redux
+        this.refs[FC_NAV_REF].push({
+            index: 2
+        });
+    }
+
+    onSwipeDown(gestureState) {
+        // TODO: conditional w/ redux
+        this.refs[FC_NAV_REF].pop();
+    }
+
     render() {
+        const routes = [
+            {index: 0},
+            {index: 1},
+            {index: 2}
+        ];
+
         const config = {
             velocityThreshold: 0.3,
             directionalOffsetThreshold: 80
@@ -85,14 +105,31 @@ class FlashcardViewScene extends Component {
             <GestureRecognizer
                 onSwipeLeft={(state) => this.onSwipeLeft(state)}
                 onSwipeRight={(state) => this.onSwipeRight(state)}
+                onSwipeUp={(state) => this.onSwipeUp(state)}
+                onSwipeDown={(state) => this.onSwipeDown(state)}
                 config={config}
                 style={styles.container}>
 
                 <Navigator // this is where the WebView that shows the rendered notes lives
                     ref={FC_NAV_REF}
-                    initialRoute={this.state.routes[0]}
+                    initialRoute={routes[0]}
                     renderScene={(route, navigator) => {
-                        return <FlashcardView content={this.props.content.folders[folderIdx].flashcards[this.state.flashcardIndex]} />
+                        if (route.index === 0) { // front
+                            return <FlashcardFront navigator={navigator} content={this.props.content.folders[folderIdx].flashcards[this.state.flashcardIndex].front} />
+                        } else if (route.index == 1) { // hints
+                            return <FlashcardHints navigator={navigator} content={this.props.content.folders[folderIdx].flashcards[this.state.flashcardIndex].hints} iconName='undo' />
+                        } else if (route.index == 2) { // back
+                            return <FlashcardBack navigator={navigator} content={this.props.content.folders[folderIdx].flashcards[this.state.flashcardIndex].back} />
+                        }
+                    }}
+                    configureScene={(route, routeStack) => {
+                        if (route.index === 0) { // front
+                            return Navigator.SceneConfigs.PushFromRight
+                        } else if (route.index == 1) { // hints
+                            return Navigator.SceneConfigs.VerticalDownSwipeJump
+                        } else { // back // return <FlashcardList content={this.props.content.back} />
+                            return Navigator.SceneConfigs.VerticalUpSwipeJump
+                        }
                     }}
                 />
             </GestureRecognizer>
