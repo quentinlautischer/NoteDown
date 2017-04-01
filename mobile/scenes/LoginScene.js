@@ -65,6 +65,7 @@ class LoginScene extends Component {
     }
 
     _navigate() {
+        this.context.store.dispatch({type: 'MENU_MODE'});
         this.props.navigator.push({
             title: 'MenuScene',
             component: MenuScene,
