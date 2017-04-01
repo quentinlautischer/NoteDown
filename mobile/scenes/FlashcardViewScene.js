@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 var Orientation = require('react-native-orientation');
-import makeFlashcard from '../shared/parser.js';
 import colors from '../app/constants';
 import FlashcardFront from '../components/FlashcardFront';
 import FlashcardBack from '../components/FlashcardBack';

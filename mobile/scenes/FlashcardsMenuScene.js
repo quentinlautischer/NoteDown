@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
 import colors from '../app/constants';
+import extractFlashcardsInFolders from '../shared/parser.js';
 
 import FlashcardViewScene from './FlashcardViewScene';
 
@@ -67,7 +68,6 @@ class FlashcardsMenuScene extends Component {
     selectFolder(rowID) {
         var index = parseInt(rowID.replace('FOLDER', ''))
         this.context.store.dispatch({type: 'SELECT_FOLDER', index: index});
-        // this.context.store.dispatch({type: 'RENDER_MODE'}); // TODO: FOLDER_MODE
         this._navigate();
     }
 
