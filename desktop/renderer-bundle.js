@@ -25522,13 +25522,30 @@
 	          span_array.splice(s, 1, raw1, image, raw2);
 	          s++;
 	        }
-	        break;
 	      }
 	    }
 	  }
 	}
 
-	function check_autolink(span_array) {}
+	function check_autolink(span_array) {
+	  var patt = /<(https?:[/]{2}.+?)>/; //Matches either http:// or https:// followed by anything, within <>
+	  var match;
+
+	  for (var s = 0; s < span_array.length; s++) {
+	    if (span_array[s].tag == null) {
+	      var content = span_array[s].content;
+	      if ((match = patt.exec(content)) != null) {
+
+	        var raw1 = { content: content.slice(0, match.index) };
+	        var raw2 = { content: content.slice(match.index + match[0].length, content.length) };
+
+	        var a = { tag: 'a', content: '<a href="' + match[1] + '">' + match[1] + '</a>' };
+	        span_array.splice(s, 1, raw1, a, raw2);
+	        s++;
+	      }
+	    }
+	  }
+	}
 
 	function check_links_ref(span_array) {}
 
