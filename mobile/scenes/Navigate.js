@@ -91,7 +91,7 @@ var styles = StyleSheet.create({
 });
 
 Navigate.contextTypes = {
-  store: React.PropTypes.object.isRequired
+    store: React.PropTypes.object.isRequired
 };
 
 export default connect()(Navigate);

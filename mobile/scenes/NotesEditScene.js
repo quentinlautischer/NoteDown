@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
 });
 
 NotesEditScene.contextTypes = {
-  store: React.PropTypes.object.isRequired
+    store: React.PropTypes.object.isRequired
 };
 
 export default connect()(NotesEditScene);

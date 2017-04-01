@@ -25,7 +25,6 @@ class FoldersScene extends Component {
             open: false
         };
 
-        this.folderid = "0";
         this.selectFolder = this.selectFolder.bind(this);
         this.storeDidUpdate = this.storeDidUpdate.bind(this);
 
@@ -38,6 +37,7 @@ class FoldersScene extends Component {
     }
 
     _navigate() {
+        this.context.store.dispatch({type: 'RENDER_MODE'});
         this.props.navigator.push({
             title: 'NotesViewScene',
             component: NotesViewScene,
@@ -63,6 +63,7 @@ class FoldersScene extends Component {
     onBack() {
         Picker.hide();
         this.props.navigator.pop();
+        this.context.store.dispatch({type: 'SELECT_PAGE', index: 0});
     }
 
     storeDidUpdate(){

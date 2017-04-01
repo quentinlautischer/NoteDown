@@ -5,11 +5,39 @@
 
 $fa-font-path:"../../node_modules/font-awesome/fonts";
 @import '../../node_modules/font-awesome/scss/font-awesome';
+
+$mdi-font-path:"../../node_modules/mdi/fonts";
+@import '../../node_modules/mdi/scss/materialdesignicons';
+
 //@import "../../node_modules/codemirror/lib/codemirror.css";
 @import "../../node_modules/codemirror/theme/duotone-light.css";
 
 @import "../../node_modules/highlight.js/styles/atom-one-dark.css";
 
+.icon-cards {
+  @extend .mdi;
+  @extend .mdi-cards;
+}
+
+.icon-close {
+  @extend .mdi;
+  @extend .mdi-window-close;
+}
+
+.icon-minimize {
+  @extend .mdi;
+  @extend .mdi-window-minimize;
+}
+
+.icon-maximize {
+  @extend .mdi;
+  @extend .mdi-window-maximize;
+}
+
+.icon-restore {
+  @extend .mdi;
+  @extend .mdi-window-restore;
+}
 
 .icon-user {
   @extend .fa;
@@ -17,9 +45,8 @@ $fa-font-path:"../../node_modules/font-awesome/fonts";
 }
 
 .icon-bars {
-  @extend .fa;
-  @extend .fa-bars;
-  font-weight: 100;
+  @extend .mdi;
+  @extend .mdi-menu;
 }
 
 .icon-tree {
@@ -33,28 +60,28 @@ $fa-font-path:"../../node_modules/font-awesome/fonts";
 }
 
 .icon-arrow-left {
-  @extend .fa;
-  @extend .fa-arrow-left;
+  @extend .mdi;
+  @extend .mdi-page-first;
 }
 
 .icon-arrow-right {
-  @extend .fa;
-  @extend .fa-arrow-right;
+  @extend .mdi;
+  @extend .mdi-page-last;
 }
 
 .icon-search-plus {
-  @extend .fa;
-  @extend .fa-search-plus;
+  @extend .mdi;
+  @extend .mdi-magnify-plus;
 }
 
 .icon-search-minus {
-  @extend .fa;
-  @extend .fa-search-minus;
+  @extend .mdi;
+  @extend .mdi-magnify-minus;
 }
 
 .icon-folderview {
-  @extend .fa;
-  @extend .fa-th;
+  @extend .mdi;
+  @extend .mdi-folder-multiple;
 }
 
 .icon-minus {
@@ -81,8 +108,8 @@ $fa-font-path:"../../node_modules/font-awesome/fonts";
 }
 
 .icon-file-text {
-  @extend .fa;
-  @extend .fa-file-text;
+  @extend .mdi;
+  @extend .mdi-book-open-page-variant;
 }
 
 .icon-trash {

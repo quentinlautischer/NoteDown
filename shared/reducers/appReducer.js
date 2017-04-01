@@ -22,6 +22,21 @@ function flashcardMode(state, action) {
   return Object.assign({}, state, {mode: 'flashcard'});
 }
 
+// required for mobile viewer transitions
+function flashcardFrontMode(state, action) {
+  return Object.assign({}, state, {mode: 'flashcardFront'});
+}
+function flashcardBackMode(state, action) {
+  return Object.assign({}, state, {mode: 'flashcardBack'});
+}
+function flashcardHintsMode(state, action) {
+  return Object.assign({}, state, {mode: 'flashcardHints'});
+}
+
+function cameraMode(state, action) {
+  return Object.assign({}, state, {mode: 'camera'});
+}
+
 function menuMode(state, action) {
   return Object.assign({}, state, {mode: 'menu'});
 }
@@ -87,6 +102,10 @@ const appReducer = createReducer(initial_state, {
   'FUSION_MODE': fusionMode,
   'FOLDER_MODE': folderMode,
   'FLASHCARD_MODE': flashcardMode,
+  'FLASHCARD_FRONT_MODE': flashcardFrontMode,
+  'FLASHCARD_BACK_MODE': flashcardBackMode,
+  'FLASHCARD_HINTS_MODE': flashcardHintsMode,
+  'CAMERA_MODE': cameraMode,
   'MENU_MODE': menuMode,
   'SET_QUICK_FILEPATH': setQuickFilepath,
   'SET_USER': setUser,

@@ -730,7 +730,7 @@ function check_links_ref(span_array) {
 function check_emphasis(span_array, token) {
   //Token must be global regex
   var matches = [];
-  
+
   for (var s = 0; s < span_array.length; s++) {
     if (span_array[s].tag == null) {
       var content = span_array[s].content;
@@ -771,7 +771,7 @@ function check_emphasis(span_array, token) {
 function check_codespan(span_array) {
   var patt = /`+/g;
   var matches = [];
-  
+
   for (var s = 0; s < span_array.length; s++) {
     if (span_array[s].tag == null) {
       var content = span_array[s].content;
@@ -889,7 +889,25 @@ function get_flashcard(blocks) {
     }
   }
 
-  return flashcards;
+  return
+  s;
+}
+
+function extractFlashcardsInFolders(folders) {
+    var flashcardFolders = [];
+    for(var i = 0; i < folders.length; i++) {
+        var folder = folders[i];
+        console.log("PAGES " + JSON.stringify(folder.pages, null, 2));
+        var currFolderFlashcards = extractFlashcards(folder.pages);
+        if (currFolderFlashcards.length > 0) {
+            flashcardFolders.push({
+                index: i,
+                name: folder.name,
+                flashcards: currFolderFlashcards
+            });
+        }
+    }
+    return { folders: flashcardFolders };
 }
 
 function extractFlashcards(pages) {
@@ -908,7 +926,7 @@ function extractFlashcards(pages) {
 
 module.exports = {
     parse: parse,
-    makeFlashcard: makeFlashcard, // this is temporary, only until the flashcards are integrated
+    extractFlashcardsInFolders: extractFlashcardsInFolders,
     extractFlashcards: extractFlashcards
 }
 
