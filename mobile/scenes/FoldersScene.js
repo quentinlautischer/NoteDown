@@ -62,6 +62,7 @@ class FoldersScene extends Component {
     onBack() {
         Picker.hide();
         this.props.navigator.pop();
+        this.context.store.dispatch({type: 'SELECT_PAGE', index: 0});
     }
 
     storeDidUpdate(){

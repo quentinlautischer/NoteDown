@@ -25,19 +25,12 @@ class NotesViewScene extends Component {
         super(props);
 
         this.state = {
-            pageIndex: 0,
             open: false,
-            routes: [],
             tocHeight: 0, // percentage of total height,
             tocVisibility: 'hidden'
         };
 
         this.storeDidUpdate = this.storeDidUpdate.bind(this);
-    }
-
-    componentWillMount() {
-        this.setRoutes();
-        this.updateSavedContent();
     }
 
     componentDidMount(){
@@ -50,20 +43,12 @@ class NotesViewScene extends Component {
 
     storeDidUpdate() {
         this.setState({open: this.context.store.getState().sessionActive});
-        this.setRoutes();
-    }
-
-    setRoutes() {
-        var state = this.context.store.getState();
-        var folderIndex = state.state.folderIndex;
-        var pageIndex = this.state.pageIndex;
-
-        this.setState({ routes: state.notes.folders[folderIndex] });
     }
 
     goToEdit() {
         this.context.store.dispatch({type: 'EDITOR_MODE'});
         this._navigate();
+        this.updateSavedContent();
     }
 
     _navigate() {
@@ -153,21 +138,20 @@ class NotesViewScene extends Component {
         var state = this.context.store.getState();
         var pages = state.notes.folders[state.state.folderIndex].pages;
         // go to next page
-        if (this.state.pageIndex < pages.length - 1) {
+        if (state.state.pageIndex < pages.length - 1) {
             this.refs[PAGE_NAV_REF].push({
-                content: pages[this.state.pageIndex + 1].content
+                content: pages[state.state.pageIndex + 1].content
             });
-            this.context.store.dispatch({type: 'SELECT_PAGE', index: this.state.pageIndex + 1});
-            this.setState({ pageIndex: this.context.store.getState().state.pageIndex });
+            this.context.store.dispatch({type: 'SELECT_PAGE', index: state.state.pageIndex + 1});
         }
     }
 
     onSwipeRight(gestureState) {
+        var state = this.context.store.getState();
         // go to previous page
-        if (this.state.pageIndex > 0) {
+        if (state.state.pageIndex > 0) {
             this.refs[PAGE_NAV_REF].pop();
-            this.context.store.dispatch({type: 'SELECT_PAGE', index: this.state.pageIndex - 1});
-            this.setState({ pageIndex: this.context.store.getState().state.pageIndex });
+            this.context.store.dispatch({type: 'SELECT_PAGE', index: state.state.pageIndex - 1});
         }
     }
 
@@ -186,9 +170,16 @@ class NotesViewScene extends Component {
 
                 <Navigator // this is where the WebView that shows the rendered notes lives
                     ref={PAGE_NAV_REF}
-                    initialRoute={this.state.routes[0]}
                     renderScene={(route, navigator) => {
-                        return <NotesView store={this.context.store} navigator={navigator} content={this.state.routes.pages[this.state.pageIndex].content} height={this.state.tocHeight} visibility={this.state.tocVisibility} />
+                        return <NotesView
+                            store={this.context.store}
+                            navigator={navigator}
+                            content={this.context.store.getState().notes
+                                .folders[this.context.store.getState().state.folderIndex]
+                                .pages[this.context.store.getState().state.pageIndex]
+                                .content}
+                            height={this.state.tocHeight}
+                            visibility={this.state.tocVisibility} />
                     }}
                 />
 
