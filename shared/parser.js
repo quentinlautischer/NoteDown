@@ -580,7 +580,6 @@ function check_paragraph(blocks) {
 
 function check_refs(blocks) {
   var patt = /^\[(.+?)\]:\s*(.+?)(?:\s+(['"])(.+?)\3)?\s*$/;
-
   var match;
 
   for (var b = 0; b < blocks.length; b++) {
@@ -595,7 +594,6 @@ function check_refs(blocks) {
           var raw2 = {content:content.slice(l+1,content.length)};
 
           blocks.splice(b, 1, raw1, raw2);
-          b++;
           break;
         }
       }
@@ -682,6 +680,51 @@ function check_autolink(span_array) {
 }
 
 function check_links_ref(span_array) {
+  var patt = /(!?)\[(.+?)\](?:\[(.+?)?\])?/g;
+  var match;
+
+  for (var s = 0; s < span_array.length; s++) {
+    if (span_array[s].tag == null) {
+      var content = span_array[s].content;
+      while ((match = patt.exec(content)) != null) {
+        var alt = match[2];
+        var ref = match[3];
+        if (ref == null) { ref = alt; };
+
+        var src = null;
+        var title = null;
+        for (var i = 0; i < link_refs.length; i++) {
+          if (link_refs[i][0] == ref) {
+            src = link_refs[i][1];
+            title = link_refs[i][2];
+            break;
+          }
+        }
+        if (src == null) { continue; }
+
+        var raw1 = {content:content.slice(0,match.index)};
+        var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
+
+        if (match[1].length == 0) {
+          var a1 = {tag:'a', content:'<a href="' + src + (title == null ? '' : ('" title="' + title)) + '">'};
+          var content = {content:alt};
+          var a2 = {tag:'a', content:'</a>'};
+          span_array.splice(s, 1, raw1, a1, content, a2, raw2);
+          s+=3;
+        } else {
+          if (src.slice(0,2) == '@:') {
+            var guid = src.slice(2,src.length);
+            var data = global_imageMapper(guid, global_store);
+            src = 'data:image/jpeg;base64, ' + data;
+          }
+          var image = {tag:'img', content:'<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : ('" title="' + title)) + '" />'};
+          span_array.splice(s, 1, raw1, image, raw2);
+          s++;
+          break;
+        }
+      }
+    }
+  }
 }
 
 function check_emphasis(span_array, token) {
