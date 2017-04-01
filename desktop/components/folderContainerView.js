@@ -82,6 +82,9 @@ class FolderContainerView extends React.Component {
     console.log("Selecting flashcards:");
     e.stopPropagation();
 
+    var index = this.findIndexOfFolder(id);
+    this.props.store.dispatch({type: 'SELECT_FOLDER', index: index});
+    
     var state = this.props.store.getState();
     var flashcards = shared.extractFlashcards(state.notes.folders[state.state.folderIndex].pages);
     this.props.store.dispatch({type: 'SET_FLASHCARDS', flashcards: flashcards})

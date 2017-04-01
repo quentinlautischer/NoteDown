@@ -858,6 +858,7 @@ function makeFlashcard(front, back, hints) {
 
 
 function get_flashcard(blocks) {
+  console.log("getting flashcards");
   var patt = /^\{(.+)\}$/
   var match;
   var flashcards = [];
@@ -870,10 +871,17 @@ function get_flashcard(blocks) {
         for (var m = 0; m < 3; m++) { match.push(patt.exec(content[l+m])); }
         if (match[0] != null && match[1] != null && match[2] != null) {
           var raw1 = {content:content.slice(0,l)};
-          flashcards.push(makeFlashcard(match[0][1], match[2][1].split('|'), match[1][1].split('|')) );
+          console.log(`Flashcard front: ${match[0][1]}`);
+          console.log(`Flashcard hint: ${ match[2][1].split('|')}`);
+          console.log(`Flashcard back: ${match[1][1].split('|')}`);
+          flashcards.push({
+            front: match[0][1], 
+            hints: match[2][1].split('|'),
+            back: match[1][1].split('|')
+          });
           var raw2 = {content:content.slice(l+3,content.length)};
 
-          blocks.splice(b, 1, raw1, flashcard, raw2);
+          blocks.splice(b, 1, raw1, "", raw2);
           b++;
           break;
         }
@@ -885,12 +893,15 @@ function get_flashcard(blocks) {
 }
 
 function extractFlashcards(pages) {
+  console.log(`Extracting Flashcards from ${JSON.stringify(pages)}`);
   var flashcards = [];
   for (var i = 0; i < pages.length; i++) {
     var content = pages[i].content;
     var block_array = [{content:content.split('\n')}];
-    flashcards.push(get_flashcard(block_array));
-    console.log(`flashcards: ${flashcards}`);
+    var cards = get_flashcard(block_array);
+    console.log(`cards: ${JSON.stringify(cards)}`);
+    flashcards = flashcards.concat(cards);
+    console.log(`flashcards: ${JSON.stringify(flashcards)}`);
   }
   return flashcards;
 }

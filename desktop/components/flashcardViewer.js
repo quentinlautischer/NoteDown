@@ -14,6 +14,10 @@ class FlashcardViewer extends React.Component {
     this.state = {
       open: false,
     }
+
+    this.getContent = this.getContent.bind(this);
+    this.prevCard = this.prevCard.bind(this);
+    this.nextCard = this.nextCard.bind(this);
   }
 
   componentDidMount(){
@@ -42,6 +46,8 @@ class FlashcardViewer extends React.Component {
   }
 
   render() {
+    console.log(JSON.stringify(this.props.store.getState().flashcards.flashcards));
+    console.log(JSON.stringify(this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex]));
     return (
       <div className="flashcard-viewer">
       <MenuButton label="Prev" onClick={() => this.prevCard()} />
