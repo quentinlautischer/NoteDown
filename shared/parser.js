@@ -6,7 +6,7 @@ import flashcardTemplate from './models/flashcardTemplate.js';
 var global_store, global_imageMapper; //global vars to be called by image links
 
 var header_index;
-ver link_refs;
+var link_refs;
 
 function parse(str, store, imageMapper) {
   //The main parsing function.
