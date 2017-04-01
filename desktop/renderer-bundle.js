@@ -25630,7 +25630,6 @@
 	      matches.splice(m1, 1); //Remove match m1 if it doesn't close
 	    }
 	  }
-	  console.log('matches is ' + matches.length + ' items long');
 	  for (var i = matches.length - 1; i >= 0; i--) {
 	    var content = span_array[matches[i].span].content;
 	    var span1 = { content: content.slice(0, matches[i].index) };
@@ -25640,8 +25639,54 @@
 	  }
 	}
 
-	function check_codespan(span_array) {}
+	function check_codespan(span_array) {
+	  var patt = /`+/g;
+	  var matches = [];
 
+	  for (var s = 0; s < span_array.length; s++) {
+	    if (span_array[s].tag == null) {
+	      var content = span_array[s].content;
+	      var match;
+	      while ((match = patt.exec(content)) != null) {
+	        matches.push({ span: s, index: match.index, content: match[0] });
+	      }
+	    }
+	  }
+	  var m1, m2;
+	  for (m1 = 0; m1 < matches.length;) {
+	    var closed = false;
+	    for (m2 = m1 + 1; m2 < matches.length; m2++) {
+	      if (matches[m2].content == matches[m1].content) {
+	        closed = true;
+	        break;
+	      }
+	    }
+	    if (closed) {
+	      matches.splice(m1 + 1, m2 - m1 - 1); //Different-length backticks allowed in code
+	      m1 += 2;
+	    } else {
+	      matches.splice(m1, 1); //Remove match m1 if it doesn't close
+	    }
+	  }
+	  for (var i = matches.length - 2; i >= 0; i -= 2) {
+	    //Invariant: All code bookends are evenly paired and adjacent
+	    var content = span_array[matches[i].span].content;
+	    var span1 = { content: span_array[matches[i].span].content.slice(0, matches[i].index) };
+	    var html = { tag: 'emphasis', content: '<code>' };
+	    if (matches[i].span == matches[i + 1].span) {
+	      html.content += span_array[matches[i].span].content.slice(matches[i].index + matches[i].content.length, matches[i + 1].index);
+	    } else {
+	      html.content += span_array[matches[i].span].content.slice(matches[i].index + matches[i].content.length, span_array[matches[i].span].content.length);
+	      for (var j = matches[i].span + 1; j < matches[i + 1].span; j++) {
+	        html.content += span_array[j].content;
+	      }
+	      html.content += span_array[matches[i + 1].span].content.slice(0, matches[i + 1].index);
+	    }
+	    html.content += '</code>';
+	    var span2 = { content: span_array[matches[i + 1].span].content.slice(matches[i + 1].index + matches[i + 1].content.length, span_array[matches[i + 1].span].content.length) };
+	    span_array.splice(matches[i].span, matches[i + 1].span - matches[i].span + 1, span1, html, span2);
+	  }
+	}
 	function check_break(span_array) {
 	  var patt = /(?:[ ]{2,}|\t+)\n/;
 	  var match;
