@@ -25773,8 +25773,7 @@
 	    }
 	  }
 
-	  return;
-	  s;
+	  return flashcards;
 	}
 
 	function extractFlashcardsInFolders(folders) {

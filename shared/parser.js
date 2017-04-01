@@ -889,8 +889,7 @@ function get_flashcard(blocks) {
     }
   }
 
-  return
-  s;
+  return flashcards;
 }
 
 function extractFlashcardsInFolders(folders) {
