@@ -86858,6 +86858,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var shared = __webpack_require__(225);
 	var ipc = __webpack_require__(223).ipcRenderer;
 
 	var FolderContainerView = function (_React$Component) {
@@ -86940,12 +86941,21 @@
 	    key: 'deleteFolder',
 	    value: function deleteFolder(id, e) {
 	      console.log("Deleting Folder: " + id);
+	      e.stopPropagation();
 	      var index = this.findIndexOfFolder(id);
-	      store.dispatch({ type: 'DELETE_FOLDER', index: index });
+	      this.props.store.dispatch({ type: 'DELETE_FOLDER', index: index });
 	    }
+	  }, {
+	    key: 'viewFlashcards',
+	    value: function viewFlashcards(id, e) {
+	      console.log("Selecting flashcards:");
+	      e.stopPropagation();
 
-	    // <div className="folder-delete-btn" onClick={this.deleteFolder.bind(this, _id)}>X</div>
-
+	      var state = this.props.store.getState();
+	      var flashcards = shared.extractFlashcards(state.notes.folders[state.state.folderIndex].pages);
+	      this.props.store.dispatch({ type: 'SET_FLASHCARDS', flashcards: flashcards });
+	      this.props.store.dispatch({ type: 'FLASHCARD_MODE' });
+	    }
 	  }, {
 	    key: 'renderFolder',
 	    value: function renderFolder(_ref) {
@@ -86955,7 +86965,17 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { key: _id, className: 'folder-view', onClick: this.selectFolder.bind(this, _id) },
-	        name
+	        name,
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'folder-delete-btn', onClick: this.deleteFolder.bind(this, _id) },
+	          _react2.default.createElement('i', { className: 'icon-close' })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'folder-flashcards-btn', onClick: this.viewFlashcards.bind(this, _id) },
+	          _react2.default.createElement('i', { className: 'icon-cards' })
+	        )
 	      );
 	    }
 	  }, {
@@ -87212,7 +87232,7 @@
 	          _react2.default.createElement(
 	            'span',
 	            null,
-	            _react2.default.createElement('i', { className: 'icon-square', 'aria-hidden': 'true' })
+	            _react2.default.createElement('i', { className: 'icon-maximize', 'aria-hidden': 'true' })
 	          )
 	        );
 	      } else {
@@ -87222,7 +87242,7 @@
 	          _react2.default.createElement(
 	            'span',
 	            null,
-	            _react2.default.createElement('i', { className: 'icon-clone', 'aria-hidden': 'true' })
+	            _react2.default.createElement('i', { className: 'icon-restore', 'aria-hidden': 'true' })
 	          )
 	        );
 	      }
@@ -87249,7 +87269,7 @@
 	            _react2.default.createElement(
 	              'span',
 	              null,
-	              'X'
+	              _react2.default.createElement('i', { className: 'icon-close', 'aria-hidden': 'true' })
 	            )
 	          ),
 	          this.minormax(),
@@ -87259,7 +87279,7 @@
 	            _react2.default.createElement(
 	              'span',
 	              null,
-	              '\u2014'
+	              _react2.default.createElement('i', { className: 'icon-minimize', 'aria-hidden': 'true' })
 	            )
 	          )
 	        );

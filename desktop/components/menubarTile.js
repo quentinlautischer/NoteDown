@@ -41,11 +41,11 @@ class MenubarTile extends React.Component {
   minormax() {
     if (!remote.getCurrentWindow().isMaximized()) {
       return (<div className="menubar-tile window-tile" onClick={this.handleMaximizeClick}>
-                <span><i className="icon-square" aria-hidden="true"></i></span>
+                <span><i className="icon-maximize" aria-hidden="true"></i></span>
               </div>);
     } else {
       return (<div className="menubar-tile window-tile" onClick={this.handleUnmaximizeClick}>
-                <span><i className="icon-clone" aria-hidden="true"></i></span>
+                <span><i className="icon-restore" aria-hidden="true"></i></span>
               </div>); 
     }
   }
@@ -58,11 +58,11 @@ class MenubarTile extends React.Component {
           <span><i className="icon-bars" aria-hidden="true"></i></span>
         </div>
         <div className="menubar-tile window-tile" onClick={this.handleCloseClick}>
-          <span>X</span>
+          <span><i className="icon-close" aria-hidden="true"></i></span>
         </div>
         {this.minormax()}
         <div className="menubar-tile window-tile" onClick={this.handleMinimizeClick}>
-         <span>&mdash;</span>
+         <span><i className="icon-minimize" aria-hidden="true"></i></span>
         </div>
       </div>
     );

@@ -2,6 +2,8 @@ import React from 'react';
 import TextField from 'react';
 import DialogFolderCreate from './dialogFolderCreate'
 import { connect } from 'react-redux';
+
+var shared = require('../../shared/parser.js');
 var ipc = require('electron').ipcRenderer;
 
 class FolderContainerView extends React.Component {
@@ -71,16 +73,26 @@ class FolderContainerView extends React.Component {
 
   deleteFolder(id, e) {
     console.log("Deleting Folder: " + id);
+    e.stopPropagation();
     var index = this.findIndexOfFolder(id);
-    store.dispatch({type: 'DELETE_FOLDER', index: index});
+    this.props.store.dispatch({type: 'DELETE_FOLDER', index: index});
   }
 
-  // <div className="folder-delete-btn" onClick={this.deleteFolder.bind(this, _id)}>X</div>
+  viewFlashcards(id, e) {
+    console.log("Selecting flashcards:");
+    e.stopPropagation();
+
+    var state = this.props.store.getState();
+    var flashcards = shared.extractFlashcards(state.notes.folders[state.state.folderIndex].pages);
+    this.props.store.dispatch({type: 'SET_FLASHCARDS', flashcards: flashcards})
+    this.props.store.dispatch({type: 'FLASHCARD_MODE'});
+  }
+
   renderFolder({name, _id}) {
     return (
-      <div key={_id} className="folder-view" onClick={this.selectFolder.bind(this, _id)}>
-        {name}
-       
+      <div key={_id} className="folder-view" onClick={this.selectFolder.bind(this, _id)}>{name}
+        <div className="folder-delete-btn" onClick={this.deleteFolder.bind(this, _id)}><i className="icon-close"></i></div>
+        <div className="folder-flashcards-btn" onClick={this.viewFlashcards.bind(this, _id)}><i className="icon-cards"></i></div>
       </div>
     );
   }
