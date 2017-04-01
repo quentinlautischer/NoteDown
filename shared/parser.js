@@ -734,6 +734,23 @@ function check_codespan(span_array) {
 }
 
 function check_break(span_array) {
+  var patt = /(?:[ ]{2,}|\t+)\n/;
+  var match;
+
+  for (var s = 0; s < span_array.length; s++) {
+    if (span_array[s].tag == null) {
+      var content = span_array[s].content;
+      if ((match = patt.exec(content)) != null) {
+
+        var raw1 = {content:content.slice(0,match.index)};
+        var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
+
+        var br = {tag:'br', content:'<br />'};
+        span_array.splice(s, 1, raw1, br, raw2);
+        s++;
+      }
+    }
+  }
 }
 
 // Functions to help with span-level parsing.
