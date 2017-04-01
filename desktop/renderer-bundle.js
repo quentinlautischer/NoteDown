@@ -72,6 +72,10 @@
 
 	var _editorReducer2 = _interopRequireDefault(_editorReducer);
 
+	var _flashcardReducer = __webpack_require__(221);
+
+	var _flashcardReducer2 = _interopRequireDefault(_flashcardReducer);
+
 	var _menubar = __webpack_require__(222);
 
 	var _menubar2 = _interopRequireDefault(_menubar);
@@ -84,9 +88,9 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _fusionmodeEditor = __webpack_require__(809);
+	var _flashcardViewer = __webpack_require__(619);
 
-	var _fusionmodeEditor2 = _interopRequireDefault(_fusionmodeEditor);
+	var _flashcardViewer2 = _interopRequireDefault(_flashcardViewer);
 
 	var _folderContainerView = __webpack_require__(620);
 
@@ -228,12 +232,12 @@
 	              }
 	            })
 	          );
-	        case 'fusion':
+	        case 'flashcard':
 	          return _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_fusionmodeEditor2.default, { store: store }),
+	            _react2.default.createElement(_flashcardViewer2.default, { store: store }),
 	            _react2.default.createElement(_Snackbar2.default, {
 	              open: store.getState().state.snackbar.open,
 	              message: store.getState().state.snackbar.msg,
@@ -339,7 +343,8 @@
 	var reducer = (0, _redux.combineReducers)({
 	  state: _appReducer2.default,
 	  notes: _notesReducer2.default,
-	  editor: _editorReducer2.default
+	  editor: _editorReducer2.default,
+	  flashcards: _flashcardReducer2.default
 	});
 
 	var store = (0, _redux.createStore)(reducer);
@@ -23818,7 +23823,7 @@
 	}
 
 	function flashcardMode(state, action) {
-	  return Object.assign({}, state, { mode: 'flashcardview' });
+	  return Object.assign({}, state, { mode: 'flashcard' });
 	}
 
 	function menuMode(state, action) {
@@ -24350,7 +24355,58 @@
 	exports.default = editorReducer;
 
 /***/ },
-/* 221 */,
+/* 221 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _immutabilityHelper = __webpack_require__(216);
+
+	var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+
+	var _reducerUtilities = __webpack_require__(218);
+
+	var _reducerUtilities2 = _interopRequireDefault(_reducerUtilities);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function nextFlashcard(state, action) {
+	  if (state.currentIndex < state.flashcards.length) {
+	    return Object.assign({}, state, { currentIndex: state.currentIndex + 1 });
+	  }
+	  return state;
+	}
+
+	function prevFlashcard(state, action) {
+	  if (state.currentIndex > 0) {
+	    return Object.assign({}, state, { currentIndex: state.currentIndex - 1 });
+	  }
+	  return state;
+	}
+
+	function setFlashcards(state, action) {
+	  console.log('flashcards set: ' + action.flashcards);
+	  return Object.assign({}, state, { flashcards: action.flashcards });
+	}
+
+	var initial_state = {
+	  flashcards: [],
+	  currentIndex: 0
+	};
+
+	var flashcardReducer = (0, _reducerUtilities2.default)(initial_state, {
+	  'NEXT_FLASHCARD': nextFlashcard,
+	  'PREV_FLASHCARD': prevFlashcard,
+	  'SET_FLASHCARDS': setFlashcards
+	});
+
+	exports.default = flashcardReducer;
+
+/***/ },
 /* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -24372,6 +24428,8 @@
 
 
 	var ipc = __webpack_require__(223).ipcRenderer;
+
+	var shared = __webpack_require__(225);
 
 	////////////////////////////////////////////////////////
 	/// Bool Queries
@@ -24467,6 +24525,9 @@
 	}
 
 	function menuFlashcards(store) {
+	  var state = store.getState();
+	  var flashcards = shared.extractFlashcards(state.notes.folders[state.state.folderIndex].pages);
+	  store.dispatch({ type: 'SET_FLASHCARDS', flashcards: flashcards });
 	  store.dispatch({ type: 'FLASHCARD_MODE' });
 	}
 
@@ -24772,12 +24833,14 @@
 	var global_store, global_imageMapper; //global vars to be called by image links
 
 	var header_index;
+	var link_refs;
 
 	function parse(str, store, imageMapper) {
 	  //The main parsing function.
 	  global_store = store;
 	  global_imageMapper = imageMapper;
 	  header_index = 0;
+	  link_refs = [];
 	  return parse_blocks(str, false);
 	}
 
@@ -24801,6 +24864,7 @@
 	  check_list_ordered(block_array);
 	  check_list_unordered(block_array);
 	  check_table(block_array);
+	  check_refs(block_array);
 	  check_paragraph(block_array);
 
 	  if (!allow_raw) {
@@ -24821,6 +24885,12 @@
 
 	  check_backslash_escape(span_array);
 	  check_links(span_array);
+	  check_autolink(span_array);
+	  check_links_ref(span_array);
+	  check_emphasis(span_array, /[_*]{2}/g); //bold
+	  check_emphasis(span_array, /[_*]/g); //italic
+	  check_codespan(span_array);
+	  check_break(span_array);
 
 	  return render_span(span_array);
 	}
@@ -25369,6 +25439,8 @@
 	  }
 	}
 
+	function check_refs(span_array) {}
+
 	////////////////////////////////////////////
 	/* Finds .MD specific characters that are escaped,
 	/  replaces them with their HTML entities to exempt them from parsing
@@ -25427,6 +25499,16 @@
 	  }
 	}
 
+	function check_autolink(span_array) {}
+
+	function check_links_ref(span_array) {}
+
+	function check_emphasis(span_array, token) {}
+
+	function check_codespan(span_array) {}
+
+	function check_break(span_array) {}
+
 	// Functions to help with span-level parsing.
 	function array_regex(regex_array, span_array) {
 	  //Searches raw text in a span array for an array of regex patterns, in the proper order.
@@ -25483,9 +25565,50 @@
 	  return _flashcardTemplate2.default.html1 + getFrontContent(front) + _flashcardTemplate2.default.html2 + getContentLines(hints, 'hint') + _flashcardTemplate2.default.html3 + getContentLines(back, 'solution') + _flashcardTemplate2.default.html4 + _flashcardTemplate2.default.css + _flashcardTemplate2.default.js;
 	}
 
+	function get_flashcard(blocks) {
+	  var patt = /^\{(.+)\}$/;
+	  var match;
+	  var flashcards = [];
+
+	  for (var b = 0; b < blocks.length; b++) {
+	    if (blocks[b].tag == null) {
+	      var content = blocks[b].content;
+	      for (var l = 0; l < content.length - 2; l++) {
+	        match = [];
+	        for (var m = 0; m < 3; m++) {
+	          match.push(patt.exec(content[l + m]));
+	        }
+	        if (match[0] != null && match[1] != null && match[2] != null) {
+	          var raw1 = { content: content.slice(0, l) };
+	          flashcards.push(makeFlashcard(match[0][1], match[2][1].split('|'), match[1][1].split('|')));
+	          var raw2 = { content: content.slice(l + 3, content.length) };
+
+	          blocks.splice(b, 1, raw1, flashcard, raw2);
+	          b++;
+	          break;
+	        }
+	      }
+	    }
+	  }
+
+	  return flashcards;
+	}
+
+	function extractFlashcards(pages) {
+	  var flashcards = [];
+	  for (var i = 0; i < pages.length; i++) {
+	    var content = pages[i].content;
+	    var block_array = [{ content: content.split('\n') }];
+	    flashcards.push(get_flashcard(block_array));
+	    console.log('flashcards: ' + flashcards);
+	  }
+	  return flashcards;
+	}
+
 	module.exports = {
 	  parse: parse,
-	  makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
+	  makeFlashcard: makeFlashcard, // this is temporary, only until the flashcards are integrated
+	  extractFlashcards: extractFlashcards
 	};
 
 	console.log("Shared module loaded");
@@ -25725,10 +25848,7 @@
 	              _react2.default.createElement(_menuButton2.default, { label: 'Quickmode', onClick: function onClick() {
 	                  return _this2.quickmode();
 	                } })
-	            ),
-	            _react2.default.createElement(_menuButton2.default, { label: 'Fusionmode', onClick: function onClick() {
-	                return _this2.fusionmode();
-	              } })
+	            )
 	          )
 	        );
 	      }
@@ -69643,7 +69763,110 @@
 
 
 /***/ },
-/* 619 */,
+/* 619 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _menuButton = __webpack_require__(376);
+
+	var _menuButton2 = _interopRequireDefault(_menuButton);
+
+	var _reactRedux = __webpack_require__(177);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ipc = __webpack_require__(223).ipcRenderer;
+
+	var shared = __webpack_require__(225);
+
+	var FlashcardViewer = function (_React$Component) {
+	  _inherits(FlashcardViewer, _React$Component);
+
+	  function FlashcardViewer() {
+	    _classCallCheck(this, FlashcardViewer);
+
+	    var _this = _possibleConstructorReturn(this, (FlashcardViewer.__proto__ || Object.getPrototypeOf(FlashcardViewer)).call(this));
+
+	    _this.state = {
+	      open: false
+	    };
+	    return _this;
+	  }
+
+	  _createClass(FlashcardViewer, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.unsubscribe = this.props.store.subscribe(this.storeDidUpdate);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.unsubscribe();
+	    }
+	  }, {
+	    key: 'storeDidUpdate',
+	    value: function storeDidUpdate() {
+	      this.setState({ open: this.props.store.getState().sessionActive });
+	    }
+	  }, {
+	    key: 'getContent',
+	    value: function getContent() {
+	      var state = this.props.store.getState();
+	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
+	    }
+	  }, {
+	    key: 'prevCard',
+	    value: function prevCard() {
+	      this.props.store.dispatch({ type: 'PREV_FLASHCARD' });
+	    }
+	  }, {
+	    key: 'nextCard',
+	    value: function nextCard() {
+	      this.props.store.dispatch({ type: 'NEXT_FLASHCARD' });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'flashcard-viewer' },
+	        _react2.default.createElement(_menuButton2.default, { label: 'Prev', onClick: function onClick() {
+	            return _this2.prevCard();
+	          } }),
+	        _react2.default.createElement('div', { className: 'cards',
+	          dangerouslySetInnerHTML: { __html: this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex] } }),
+	        _react2.default.createElement(_menuButton2.default, { label: 'Next', onClick: function onClick() {
+	            return _this2.nextCard();
+	          } })
+	      );
+	    }
+	  }]);
+
+	  return FlashcardViewer;
+	}(_react2.default.Component);
+
+	exports.default = FlashcardViewer;
+
+/***/ },
 /* 620 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -88085,233 +88308,6 @@
 	    ]
 	  };
 	};
-
-/***/ },
-/* 809 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _renderer = __webpack_require__(427);
-
-	var _renderer2 = _interopRequireDefault(_renderer);
-
-	var _tocNav = __webpack_require__(428);
-
-	var _tocNav2 = _interopRequireDefault(_tocNav);
-
-	var _dialogFileDrag = __webpack_require__(430);
-
-	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
-
-	var _formatToolbar = __webpack_require__(436);
-
-	var _formatToolbar2 = _interopRequireDefault(_formatToolbar);
-
-	var _reactRedux = __webpack_require__(177);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ipc = __webpack_require__(223).ipcRenderer;
-
-	var shared = __webpack_require__(225);
-
-	var FusionmodeEditor = function (_React$Component) {
-	  _inherits(FusionmodeEditor, _React$Component);
-
-	  function FusionmodeEditor() {
-	    _classCallCheck(this, FusionmodeEditor);
-
-	    var _this = _possibleConstructorReturn(this, (FusionmodeEditor.__proto__ || Object.getPrototypeOf(FusionmodeEditor)).call(this));
-
-	    _this.state = {
-	      open: false,
-	      fileDragDialogOpen: false,
-	      fileDragEventFilepath: "",
-	      rendered_content: ""
-	    };
-	    _this.handleChange = _this.handleChange.bind(_this);
-	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
-	    _this.drop = _this.drop.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(FusionmodeEditor, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.props.store.subscribe(this.storeDidUpdate);
-	    }
-	  }, {
-	    key: 'storeDidUpdate',
-	    value: function storeDidUpdate() {
-	      this.setState({ open: this.props.store.getState().sessionActive });
-	      this.parse(this.getContent());
-	    }
-	  }, {
-	    key: 'handleChange',
-	    value: function handleChange(e) {
-	      // If there is no selection, you can use the properties .selectionStart or .selectionEnd (with no selection they're equal).
-	      var cursorPosition = 0; //e.target.selectionStart;
-	      this.props.store.dispatch({ type: 'CURSOR_CHANGE', position: cursorPosition });
-	      console.log('cursor position: ' + this.props.store.getState().editor.cursor_position);
-
-	      this.updateContent(e.target.value);
-	      this.parse(e.target.value);
-	    }
-	  }, {
-	    key: 'updateContent',
-	    value: function updateContent(content) {
-	      this.props.store.dispatch({ type: 'PAGE_CONTENT_CHANGE',
-	        content: content,
-	        folderIndex: this.props.store.getState().state.folderIndex,
-	        pageIndex: this.props.store.getState().state.pageIndex
-	      });
-	      this.request_push_data();
-	    }
-	  }, {
-	    key: 'openFileDragDialog',
-	    value: function openFileDragDialog() {
-	      this.setState({ fileDragDialogOpen: true });
-	    }
-	  }, {
-	    key: 'closeFileDragDialog',
-	    value: function closeFileDragDialog() {
-	      this.setState({ fileDragDialogOpen: false });
-	    }
-	  }, {
-	    key: 'request_push_data',
-	    value: function request_push_data() {
-	      console.log("requesting data push");
-	      var state = this.props.store.getState();
-	      var data = { userid: state.state.userid, notes: state.notes };
-	      ipc.send('request-push-data', data);
-	    }
-	  }, {
-	    key: 'scrollTo',
-	    value: function scrollTo(id) {
-	      console.log("scrolling to id: " + id);
-	      var element_to_scroll_to = document.getElementById(id);
-	      if (element_to_scroll_to) {
-	        element_to_scroll_to.scrollIntoView();
-	      }
-	    }
-	  }, {
-	    key: 'getContent',
-	    value: function getContent() {
-	      var state = this.props.store.getState();
-	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
-	    }
-	  }, {
-	    key: 'parse',
-	    value: function parse(content) {
-	      var rendered = shared.parse(content, this.props.store, function () {
-	        return "";
-	      });
-	      this.setState({ rendered_content: rendered });
-	    }
-	  }, {
-	    key: 'drop',
-	    value: function drop(e) {
-	      e.preventDefault();
-
-	      var path = "";
-	      try {
-	        var _iteratorNormalCompletion = true;
-	        var _didIteratorError = false;
-	        var _iteratorError = undefined;
-
-	        try {
-	          for (var _iterator = e.dataTransfer.files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	            var f = _step.value;
-
-	            console.log('File(s) you dragged here: ', f.path);
-	            path = f.path;
-	          }
-	        } catch (err) {
-	          _didIteratorError = true;
-	          _iteratorError = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion && _iterator.return) {
-	              _iterator.return();
-	            }
-	          } finally {
-	            if (_didIteratorError) {
-	              throw _iteratorError;
-	            }
-	          }
-	        }
-	      } catch (e) {
-	        console.log('error with dropped file');
-	      }
-
-	      this.setState({
-	        fileDragDialogOpen: true,
-	        fileDragEventFilepath: path
-	      });
-
-	      return false;
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'fusionmode-container',
-	          onDragOver: this.preventDefault,
-	          onDragLeave: this.preventDefault,
-	          onDragEnd: this.preventDefault,
-	          onDrop: this.drop
-	        },
-	        _react2.default.createElement(_formatToolbar2.default, null),
-	        _react2.default.createElement(
-	          'div',
-	          { id: 'editor', className: 'fusion-editor', contentEditable: 'true' },
-	          _react2.default.createElement(
-	            'h1',
-	            null,
-	            'A WYSIWYG Editor.'
-	          ),
-	          _react2.default.createElement(
-	            'p',
-	            null,
-	            'Try making some changes here. Add your own text or maybe an image.'
-	          )
-	        ),
-	        _react2.default.createElement(_dialogFileDrag2.default, {
-	          open: this.state.fileDragDialogOpen,
-	          close: function close() {
-	            return _this2.closeFileDragDialog();
-	          },
-	          filepath: this.state.fileDragEventFilepath,
-	          store: this.props.store
-	        })
-	      );
-	    }
-	  }]);
-
-	  return FusionmodeEditor;
-	}(_react2.default.Component);
-
-	exports.default = (0, _reactRedux.connect)()(FusionmodeEditor);
 
 /***/ }
 /******/ ]);

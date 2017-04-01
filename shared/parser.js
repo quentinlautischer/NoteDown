@@ -6,12 +6,14 @@ import flashcardTemplate from './models/flashcardTemplate.js';
 var global_store, global_imageMapper; //global vars to be called by image links
 
 var header_index;
+var link_refs;
 
 function parse(str, store, imageMapper) {
   //The main parsing function.
   global_store = store;
   global_imageMapper = imageMapper;
   header_index = 0;
+  link_refs = [];
   return parse_blocks(str, false);
 }
 
@@ -35,6 +37,7 @@ function parse_blocks(str, allow_raw) {
   check_list_ordered(block_array);
   check_list_unordered(block_array);
   check_table(block_array);
+  check_refs(block_array);
   check_paragraph(block_array);
 
   if (!allow_raw) {
@@ -52,6 +55,12 @@ function parse_span(str) {
 
   check_backslash_escape(span_array);
   check_links(span_array);
+  check_autolink(span_array);
+  check_links_ref(span_array);
+  check_emphasis(span_array, /[_*]{2}/g); //bold
+  check_emphasis(span_array, /[_*]/g); //italic
+  check_codespan(span_array);
+  check_break(span_array);
 
   return render_span(span_array);
 }
@@ -569,6 +578,9 @@ function check_paragraph(blocks) {
   }
 }
 
+function check_refs(span_array) {
+}
+
 ////////////////////////////////////////////
 /* Finds .MD specific characters that are escaped,
 /  replaces them with their HTML entities to exempt them from parsing
@@ -627,6 +639,21 @@ function check_links(span_array) {
   }
 }
 
+function check_autolink(span_array) {
+}
+
+function check_links_ref(span_array) {
+}
+
+function check_emphasis(span_array, token) {
+}
+
+function check_codespan(span_array) {
+}
+
+function check_break(span_array) {
+}
+
 // Functions to help with span-level parsing.
 function array_regex(regex_array, span_array) {
   //Searches raw text in a span array for an array of regex patterns, in the proper order.
@@ -683,9 +710,50 @@ function makeFlashcard(front, back, hints) {
         + flashcardTemplate.html4 + flashcardTemplate.css + flashcardTemplate.js;
 }
 
+
+
+function get_flashcard(blocks) {
+  var patt = /^\{(.+)\}$/
+  var match;
+  var flashcards = [];
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length - 2; l++) {
+        match = [];
+        for (var m = 0; m < 3; m++) { match.push(patt.exec(content[l+m])); }
+        if (match[0] != null && match[1] != null && match[2] != null) {
+          var raw1 = {content:content.slice(0,l)};
+          flashcards.push(makeFlashcard(match[0][1], match[2][1].split('|'), match[1][1].split('|')) );
+          var raw2 = {content:content.slice(l+3,content.length)};
+
+          blocks.splice(b, 1, raw1, flashcard, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
+
+  return flashcards;
+}
+
+function extractFlashcards(pages) {
+  var flashcards = [];
+  for (var i = 0; i < pages.length; i++) {
+    var content = pages[i].content;
+    var block_array = [{content:content.split('\n')}];
+    flashcards.push(get_flashcard(block_array));
+    console.log(`flashcards: ${flashcards}`);
+  }
+  return flashcards;
+}
+
 module.exports = {
     parse: parse,
-    makeFlashcard: makeFlashcard // this is temporary, only until the flashcards are integrated
+    makeFlashcard: makeFlashcard, // this is temporary, only until the flashcards are integrated
+    extractFlashcards: extractFlashcards
 }
 
 console.log("Shared module loaded");

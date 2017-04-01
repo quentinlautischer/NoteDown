@@ -19,7 +19,7 @@ function folderMode(state, action) {
 }
 
 function flashcardMode(state, action) {
-  return Object.assign({}, state, {mode: 'flashcardview'});
+  return Object.assign({}, state, {mode: 'flashcard'});
 }
 
 function menuMode(state, action) {

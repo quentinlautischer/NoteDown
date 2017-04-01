@@ -129,7 +129,6 @@ class StartMenu extends React.Component {
           <div className="quickmode-btn">
             <MenuButton label="Quickmode" onClick={() => this.quickmode()} />
           </div>
-           <MenuButton label="Fusionmode" onClick={() => this.fusionmode()} />
         </div>
         </MuiThemeProvider>
       );
