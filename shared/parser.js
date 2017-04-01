@@ -728,6 +728,45 @@ function check_links_ref(span_array) {
 }
 
 function check_emphasis(span_array, token) {
+  //Token must be global regex
+  var matches = [];
+  
+  for (var s = 0; s < span_array.length; s++) {
+    if (span_array[s].tag == null) {
+      var content = span_array[s].content;
+      var match;
+      while ((match = token.exec(content)) != null) {
+        matches.push({span:s, index:match.index, content:match[0]});
+      }
+    }
+  }
+  var m1, m2;
+  for (m1 = 0; m1 < matches.length; ) {
+    var closed = false;
+    for (m2 = m1+1; m2 < matches.length; m2++) {
+      if (matches[m2].content == matches[m1].content) {
+        closed = true;
+        break;
+      }
+    }
+    if (closed) {
+      var tag = (matches[m1].content.length > 1) ? 'strong' : 'em';
+      matches[m1].html_tag = '<' + tag + '>';
+      matches[m2].html_tag = '</' + tag + '>';
+      matches.splice(m1+1, m2-m1-1); //Same emphasis types cannot be nested; remove inner matches
+      m1 += 2;
+    } else {
+      matches.splice(m1, 1); //Remove match m1 if it doesn't close
+    }
+  }
+  console.log('matches is ' + matches.length + ' items long');
+  for (var i = matches.length-1; i >= 0; i--) {
+    var content = span_array[matches[i].span].content;
+    var span1 = {content:content.slice(0, matches[i].index)};
+    var html = {tag:'emphasis', content:matches[i].html_tag};
+    var span2 = {content:content.slice(matches[i].index + matches[i].content.length, content.length)};
+    span_array.splice(matches[i].span, 1, span1, html, span2);
+  }
 }
 
 function check_codespan(span_array) {
@@ -751,45 +790,6 @@ function check_break(span_array) {
       }
     }
   }
-}
-
-// Functions to help with span-level parsing.
-function array_regex(regex_array, span_array) {
-  //Searches raw text in a span array for an array of regex patterns, in the proper order.
-  //Regex patterns must have global 'g' tag.
-  //Returns array of three-integer arrays, one for each pattern: an array index, start character index, and end character index.
-
-  if (regex_array.length == 0 || span_array.length == 0) { return []; }
-  var match;
-  for (var s = 0; s < span_array.length; s++) {
-    if (span_array[s].tag == null && (match = regex_array[0].exec(span_array[s].content)) != null) {
-      var result = [[s, match.index, match.index + match[0].length]];
-      var next = array_regex(regex_array.slice(1, regex_array.length),
-          span_array_slice(span_array, [s, match.index + match[0].length], [span_array.length, span_array[span_array.length-1].length])); //Find the remaining patterns in the remaining array.
-      if (next == null) { return null; }
-      for (var r = 0; r < next.length; r++) {
-        next[r][0] += s;
-        next[r][1] += match.index + match[0].length;
-        next[r][2] += match.index + match[0].length;
-        result.push(next[r]);
-      }
-      return result;
-    }
-  }
-  return null;
-}
-
-function span_array_slice(span_array, coord1, coord2) {
-  //Slices a span array like the slice() function, but in 2 dimensions.
-  //Takes in two-integer arrays as coordinates (one for the object index, one for the character index)
-  span_array[coord1[0]] = span_array[coord1[0]].slice(coord1[1], span_array[coord1[0]].length);
-  span_array[coord2[0]] = span_array[coord2[0]].slice(0, coord2[1]);
-  return span_array.slice(coord1[0], coord2[0]+1);
-}
-
-/* Functions to convert content extracted from MarkDown to HTML (for flashcards) */
-function getFrontContent(front) {
-    return '<p>' + front + '</p>';
 }
 
 function getContentLines(arr, name) {
