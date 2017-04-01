@@ -86,6 +86,7 @@ class NotesViewScene extends Component {
             return;
         }
         this.showSaveAlert();
+        this.context.store.dispatch({type: 'RENDER_MODE'});
     }
 
     needToSave() {
@@ -216,7 +217,7 @@ var styles = StyleSheet.create({
 });
 
 NotesViewScene.contextTypes = {
-  store: React.PropTypes.object.isRequired
+    store: React.PropTypes.object.isRequired
 };
 
 export default connect()(NotesViewScene);

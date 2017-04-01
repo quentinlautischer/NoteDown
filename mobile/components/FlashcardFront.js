@@ -5,10 +5,10 @@ import {
     Text,
     TouchableHighlight
 } from 'react-native';
+import {connect} from 'react-redux';
 import colors from '../app/constants';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default class FlashcardFront extends Component {
+class FlashcardFront extends Component {
 
     render() {
         const config = {
@@ -18,13 +18,6 @@ export default class FlashcardFront extends Component {
 
         return(
             <View style={styles.view}>
-                <TouchableHighlight
-                    style={styles.icon}
-                    onPress={() => this.props.navigator.push({
-                        index: 1
-                    })}>
-                    <Icon name='lightbulb-outline' size={30} color={colors.SECONDARY2} />
-                </TouchableHighlight>
                 <View style={styles.card}>
                     <Text style={styles.text}>{this.props.content}</Text>
                 </View>
@@ -59,3 +52,9 @@ const styles = StyleSheet.create({
         color: colors.DARK
     }
 });
+
+FlashcardFront.contextTypes = {
+    store: React.PropTypes.object.isRequired
+};
+
+export default connect()(FlashcardFront);

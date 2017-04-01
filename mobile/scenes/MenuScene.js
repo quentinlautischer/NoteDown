@@ -5,6 +5,7 @@ import {
     TouchableHighlight,
     StyleSheet
 } from 'react-native';
+import { connect } from 'react-redux';
 import MenuButton from '../components/MenuButton';
 import colors from '../app/constants';
 
@@ -13,7 +14,7 @@ import FoldersScene from './FoldersScene';
 import FlashcardsMenuScene from './FlashcardsMenuScene';
 import CameraScene from './CameraScene';
 
-export default class MenuScene extends Component {
+class MenuScene extends Component {
 
     _navigate(scene, name) {
         this.props.navigator.push({
@@ -26,13 +27,22 @@ export default class MenuScene extends Component {
     render() {
         return (
             <View style={styles.view}>
-                <TouchableHighlight onPress = { () => this._navigate(FoldersScene, 'FoldersScene') }>
+                <TouchableHighlight onPress = { () => {
+                    this.context.store.dispatch({type: 'FOLDER_MODE'});
+                    this._navigate(FoldersScene, 'FoldersScene')
+                }}>
                     <MenuButton text='Folders' />
                 </TouchableHighlight>
-                <TouchableHighlight onPress = { () => this._navigate(FlashcardsMenuScene, 'FlashcardsMenuScene') }>
+                <TouchableHighlight onPress = { () => {
+                    this.context.store.dispatch({type: 'FLASHCARD_MODE'});
+                    this._navigate(FlashcardsMenuScene, 'FlashcardsMenuScene')
+                }}>
                     <MenuButton text='Flashcards' />
                 </TouchableHighlight>
-                <TouchableHighlight onPress = { () => this._navigate(CameraScene, 'CameraScene') }>
+                <TouchableHighlight onPress = { () => {
+                    this.context.store.dispatch({type: 'CAMERA_MODE'});
+                    this._navigate(CameraScene, 'CameraScene')
+                }}>
                     <MenuButton text='Camera Mode' />
                 </TouchableHighlight>
             </View>
@@ -49,3 +59,9 @@ var styles = StyleSheet.create({
         alignItems: 'center'
     }
 });
+
+MenuScene.contextTypes = {
+    store: React.PropTypes.object.isRequired
+};
+
+export default connect()(MenuScene);

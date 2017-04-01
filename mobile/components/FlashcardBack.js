@@ -6,7 +6,6 @@ import {
     TouchableHighlight
 } from 'react-native';
 import colors from '../app/constants';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class FlashcardBack extends Component {
 

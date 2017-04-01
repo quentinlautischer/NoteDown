@@ -53,8 +53,9 @@ class FlashcardsMenuScene extends Component {
     }
 
     _navigate(rowID) {
+        this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
         this.props.navigator.push({
-            title: 'FlashcardsMenuScene',
+            title: 'FlashcardsViewScene',
             component: FlashcardViewScene,
             passProps: {
                 content: myDummyFlashcards,
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
 });
 
 FlashcardsMenuScene.contextTypes = {
-  store: React.PropTypes.object.isRequired
+    store: React.PropTypes.object.isRequired
 };
 
 export default connect()(FlashcardsMenuScene);

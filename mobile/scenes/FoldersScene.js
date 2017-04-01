@@ -37,6 +37,7 @@ class FoldersScene extends Component {
     }
 
     _navigate() {
+        this.context.store.dispatch({type: 'RENDER_MODE'});
         this.props.navigator.push({
             title: 'NotesViewScene',
             component: NotesViewScene,
