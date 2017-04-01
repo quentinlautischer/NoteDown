@@ -25701,6 +25701,11 @@
 	  }
 	}
 
+	/* Functions to convert content extracted from MarkDown to HTML (for flashcards) */
+	function getFrontContent(front) {
+	  return '<p>' + front + '</p>';
+	}
+
 	function getContentLines(arr, name) {
 	  var lines = '';
 	  var i = 0;
