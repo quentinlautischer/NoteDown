@@ -25481,6 +25481,7 @@
 	    content = content.replace(/\\\{/g, '&lbrace;').replace(/\\\}/g, '&rbrace;').replace(/\\\[/g, '&lbrack;').replace(/\\\]/g, '&rbrack;');
 	    content = content.replace(/\\\(/g, '&lpar;').replace(/\\\)/g, '&rpar;').replace(/\\#/g, '&num;').replace(/\\\+/g, '&plus;');
 	    content = content.replace(/\\-/g, '&minus;').replace(/\\\./g, '&period;').replace(/\\!/g, '&excl;').replace(/\\\|/g, '&vert;');
+	    content = content.replace(/\\&/g, '&amp;').replace(/\\</g, '&lt;').replace(/\\>/g, '&gt;');
 	    span_array[s].content = content;
 	  }
 	}
