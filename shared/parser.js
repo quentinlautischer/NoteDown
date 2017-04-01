@@ -578,7 +578,7 @@ function check_paragraph(blocks) {
   }
 }
 
-function check_refs(span_array) {
+function check_refs(blocks) {
   var patt = /^\[(.+?)\]:\s*(.+?)(?:\s+(['"])(.+?)\3)?\s*$/;
 
   var match;
