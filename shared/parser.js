@@ -579,6 +579,28 @@ function check_paragraph(blocks) {
 }
 
 function check_refs(span_array) {
+  var patt = /^\[(.+?)\]:\s*(.+?)(?:\s+(['"])(.+?)\3)?\s*$/;
+
+  var match;
+
+  for (var b = 0; b < blocks.length; b++) {
+    if (blocks[b].tag == null) {
+      var content = blocks[b].content;
+      for (var l = 0; l < content.length; l++) {
+        if ((match = patt.exec(content[l])) != null) {
+          var title = match[4]; //may be null, image parse will handle
+          link_refs.push([match[1], match[2], match[4]]);
+
+          var raw1 = {content:content.slice(0,l)};
+          var raw2 = {content:content.slice(l+1,content.length)};
+
+          blocks.splice(b, 1, raw1, raw2);
+          b++;
+          break;
+        }
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////
