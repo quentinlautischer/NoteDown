@@ -23826,6 +23826,21 @@
 	  return Object.assign({}, state, { mode: 'flashcard' });
 	}
 
+	// required for mobile viewer transitions
+	function flashcardFrontMode(state, action) {
+	  return Object.assign({}, state, { mode: 'flashcardFront' });
+	}
+	function flashcardBackMode(state, action) {
+	  return Object.assign({}, state, { mode: 'flashcardBack' });
+	}
+	function flashcardHintsMode(state, action) {
+	  return Object.assign({}, state, { mode: 'flashcardHints' });
+	}
+
+	function cameraMode(state, action) {
+	  return Object.assign({}, state, { mode: 'camera' });
+	}
+
 	function menuMode(state, action) {
 	  return Object.assign({}, state, { mode: 'menu' });
 	}
@@ -23892,6 +23907,10 @@
 	  'FUSION_MODE': fusionMode,
 	  'FOLDER_MODE': folderMode,
 	  'FLASHCARD_MODE': flashcardMode,
+	  'FLASHCARD_FRONT_MODE': flashcardFrontMode,
+	  'FLASHCARD_BACK_MODE': flashcardBackMode,
+	  'FLASHCARD_HINTS_MODE': flashcardHintsMode,
+	  'CAMERA_MODE': cameraMode,
 	  'MENU_MODE': menuMode,
 	  'SET_QUICK_FILEPATH': setQuickFilepath,
 	  'SET_USER': setUser,
@@ -25746,7 +25765,25 @@
 	    }
 	  }
 
-	  return flashcards;
+	  return;
+	  s;
+	}
+
+	function extractFlashcardsInFolders(folders) {
+	  var flashcardFolders = [];
+	  for (var i = 0; i < folders.length; i++) {
+	    var folder = folders[i];
+	    console.log("PAGES " + JSON.stringify(folder.pages, null, 2));
+	    var currFolderFlashcards = extractFlashcards(folder.pages);
+	    if (currFolderFlashcards.length > 0) {
+	      flashcardFolders.push({
+	        index: i,
+	        name: folder.name,
+	        flashcards: currFolderFlashcards
+	      });
+	    }
+	  }
+	  return { folders: flashcardFolders };
 	}
 
 	function extractFlashcards(pages) {
@@ -25762,7 +25799,7 @@
 
 	module.exports = {
 	  parse: parse,
-	  makeFlashcard: makeFlashcard, // this is temporary, only until the flashcards are integrated
+	  extractFlashcardsInFolders: extractFlashcardsInFolders,
 	  extractFlashcards: extractFlashcards
 	};
 
