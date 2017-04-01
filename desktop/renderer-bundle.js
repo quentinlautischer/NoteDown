@@ -18346,10 +18346,10 @@
 	 */
 
 	function getUnboundedScrollPosition(scrollable) {
-	  if (scrollable === window) {
+	  if (scrollable.Window && scrollable instanceof scrollable.Window) {
 	    return {
-	      x: window.pageXOffset || document.documentElement.scrollLeft,
-	      y: window.pageYOffset || document.documentElement.scrollTop
+	      x: scrollable.pageXOffset || scrollable.document.documentElement.scrollLeft,
+	      y: scrollable.pageYOffset || scrollable.document.documentElement.scrollTop
 	    };
 	  }
 	  return {
@@ -19097,7 +19097,9 @@
 	 * @return {boolean} Whether or not the object is a DOM node.
 	 */
 	function isNode(object) {
-	  return !!(object && (typeof Node === 'function' ? object instanceof Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
+	  var doc = object ? object.ownerDocument || object : document;
+	  var defaultView = doc.defaultView || window;
+	  return !!(object && (typeof defaultView.Node === 'function' ? object instanceof defaultView.Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
 	}
 
 	module.exports = isNode;
@@ -19127,15 +19129,19 @@
 	 *
 	 * The activeElement will be null only if the document or document body is not
 	 * yet defined.
+	 *
+	 * @param {?DOMDocument} doc Defaults to current document.
+	 * @return {?DOMElement}
 	 */
-	function getActiveElement() /*?DOMElement*/{
-	  if (typeof document === 'undefined') {
+	function getActiveElement(doc) /*?DOMElement*/{
+	  doc = doc || global.document;
+	  if (typeof doc === 'undefined') {
 	    return null;
 	  }
 	  try {
-	    return document.activeElement || document.body;
+	    return doc.activeElement || doc.body;
 	  } catch (e) {
-	    return document.body;
+	    return doc.body;
 	  }
 	}
 
@@ -25439,7 +25445,28 @@
 	  }
 	}
 
-	function check_refs(span_array) {}
+	function check_refs(blocks) {
+	  var patt = /^\[(.+?)\]:\s*(.+?)(?:\s+(['"])(.+?)\3)?\s*$/;
+	  var match;
+
+	  for (var b = 0; b < blocks.length; b++) {
+	    if (blocks[b].tag == null) {
+	      var content = blocks[b].content;
+	      for (var l = 0; l < content.length; l++) {
+	        if ((match = patt.exec(content[l])) != null) {
+	          var title = match[4]; //may be null, image parse will handle
+	          link_refs.push([match[1], match[2], match[4]]);
+
+	          var raw1 = { content: content.slice(0, l) };
+	          var raw2 = { content: content.slice(l + 1, content.length) };
+
+	          blocks.splice(b, 1, raw1, raw2);
+	          break;
+	        }
+	      }
+	    }
+	  }
+	}
 
 	////////////////////////////////////////////
 	/* Finds .MD specific characters that are escaped,
@@ -25452,6 +25479,7 @@
 	    content = content.replace(/\\\{/g, '&lbrace;').replace(/\\\}/g, '&rbrace;').replace(/\\\[/g, '&lbrack;').replace(/\\\]/g, '&rbrack;');
 	    content = content.replace(/\\\(/g, '&lpar;').replace(/\\\)/g, '&rpar;').replace(/\\#/g, '&num;').replace(/\\\+/g, '&plus;');
 	    content = content.replace(/\\-/g, '&minus;').replace(/\\\./g, '&period;').replace(/\\!/g, '&excl;').replace(/\\\|/g, '&vert;');
+	    content = content.replace(/\\&/g, '&amp;').replace(/\\</g, '&lt;').replace(/\\>/g, '&gt;');
 	    span_array[s].content = content;
 	  }
 	}
@@ -25493,62 +25521,190 @@
 	          span_array.splice(s, 1, raw1, image, raw2);
 	          s++;
 	        }
+	      }
+	    }
+	  }
+	}
+
+	function check_autolink(span_array) {
+	  var patt = /<(https?:[/]{2}.+?)>/; //Matches either http:// or https:// followed by anything, within <>
+	  var match;
+
+	  for (var s = 0; s < span_array.length; s++) {
+	    if (span_array[s].tag == null) {
+	      var content = span_array[s].content;
+	      if ((match = patt.exec(content)) != null) {
+
+	        var raw1 = { content: content.slice(0, match.index) };
+	        var raw2 = { content: content.slice(match.index + match[0].length, content.length) };
+
+	        var a = { tag: 'a', content: '<a href="' + match[1] + '">' + match[1] + '</a>' };
+	        span_array.splice(s, 1, raw1, a, raw2);
+	        s++;
+	      }
+	    }
+	  }
+	}
+
+	function check_links_ref(span_array) {
+	  var patt = /(!?)\[(.+?)\](?:\[(.+?)?\])?/g;
+	  var match;
+
+	  for (var s = 0; s < span_array.length; s++) {
+	    if (span_array[s].tag == null) {
+	      var content = span_array[s].content;
+	      while ((match = patt.exec(content)) != null) {
+	        var alt = match[2];
+	        var ref = match[3];
+	        if (ref == null) {
+	          ref = alt;
+	        };
+
+	        var src = null;
+	        var title = null;
+	        for (var i = 0; i < link_refs.length; i++) {
+	          if (link_refs[i][0] == ref) {
+	            src = link_refs[i][1];
+	            title = link_refs[i][2];
+	            break;
+	          }
+	        }
+	        if (src == null) {
+	          continue;
+	        }
+
+	        var raw1 = { content: content.slice(0, match.index) };
+	        var raw2 = { content: content.slice(match.index + match[0].length, content.length) };
+
+	        if (match[1].length == 0) {
+	          var a1 = { tag: 'a', content: '<a href="' + src + (title == null ? '' : '" title="' + title) + '">' };
+	          var content = { content: alt };
+	          var a2 = { tag: 'a', content: '</a>' };
+	          span_array.splice(s, 1, raw1, a1, content, a2, raw2);
+	          s += 3;
+	        } else {
+	          if (src.slice(0, 2) == '@:') {
+	            var guid = src.slice(2, src.length);
+	            var data = global_imageMapper(guid, global_store);
+	            src = 'data:image/jpeg;base64, ' + data;
+	          }
+	          var image = { tag: 'img', content: '<img width="350px" src="' + src + '" alt="' + alt + (title == null ? '' : '" title="' + title) + '" />' };
+	          span_array.splice(s, 1, raw1, image, raw2);
+	          s++;
+	          break;
+	        }
+	      }
+	    }
+	  }
+	}
+
+	function check_emphasis(span_array, token) {
+	  //Token must be global regex
+	  var matches = [];
+
+	  for (var s = 0; s < span_array.length; s++) {
+	    if (span_array[s].tag == null) {
+	      var content = span_array[s].content;
+	      var match;
+	      while ((match = token.exec(content)) != null) {
+	        matches.push({ span: s, index: match.index, content: match[0] });
+	      }
+	    }
+	  }
+	  var m1, m2;
+	  for (m1 = 0; m1 < matches.length;) {
+	    var closed = false;
+	    for (m2 = m1 + 1; m2 < matches.length; m2++) {
+	      if (matches[m2].content == matches[m1].content) {
+	        closed = true;
 	        break;
 	      }
 	    }
-	  }
-	}
-
-	function check_autolink(span_array) {}
-
-	function check_links_ref(span_array) {}
-
-	function check_emphasis(span_array, token) {}
-
-	function check_codespan(span_array) {}
-
-	function check_break(span_array) {}
-
-	// Functions to help with span-level parsing.
-	function array_regex(regex_array, span_array) {
-	  //Searches raw text in a span array for an array of regex patterns, in the proper order.
-	  //Regex patterns must have global 'g' tag.
-	  //Returns array of three-integer arrays, one for each pattern: an array index, start character index, and end character index.
-
-	  if (regex_array.length == 0 || span_array.length == 0) {
-	    return [];
-	  }
-	  var match;
-	  for (var s = 0; s < span_array.length; s++) {
-	    if (span_array[s].tag == null && (match = regex_array[0].exec(span_array[s].content)) != null) {
-	      var result = [[s, match.index, match.index + match[0].length]];
-	      var next = array_regex(regex_array.slice(1, regex_array.length), span_array_slice(span_array, [s, match.index + match[0].length], [span_array.length, span_array[span_array.length - 1].length])); //Find the remaining patterns in the remaining array.
-	      if (next == null) {
-	        return null;
-	      }
-	      for (var r = 0; r < next.length; r++) {
-	        next[r][0] += s;
-	        next[r][1] += match.index + match[0].length;
-	        next[r][2] += match.index + match[0].length;
-	        result.push(next[r]);
-	      }
-	      return result;
+	    if (closed) {
+	      var tag = matches[m1].content.length > 1 ? 'strong' : 'em';
+	      matches[m1].html_tag = '<' + tag + '>';
+	      matches[m2].html_tag = '</' + tag + '>';
+	      matches.splice(m1 + 1, m2 - m1 - 1); //Same emphasis types cannot be nested; remove inner matches
+	      m1 += 2;
+	    } else {
+	      matches.splice(m1, 1); //Remove match m1 if it doesn't close
 	    }
 	  }
-	  return null;
+	  for (var i = matches.length - 1; i >= 0; i--) {
+	    var content = span_array[matches[i].span].content;
+	    var span1 = { content: content.slice(0, matches[i].index) };
+	    var html = { tag: 'emphasis', content: matches[i].html_tag };
+	    var span2 = { content: content.slice(matches[i].index + matches[i].content.length, content.length) };
+	    span_array.splice(matches[i].span, 1, span1, html, span2);
+	  }
 	}
 
-	function span_array_slice(span_array, coord1, coord2) {
-	  //Slices a span array like the slice() function, but in 2 dimensions.
-	  //Takes in two-integer arrays as coordinates (one for the object index, one for the character index)
-	  span_array[coord1[0]] = span_array[coord1[0]].slice(coord1[1], span_array[coord1[0]].length);
-	  span_array[coord2[0]] = span_array[coord2[0]].slice(0, coord2[1]);
-	  return span_array.slice(coord1[0], coord2[0] + 1);
-	}
+	function check_codespan(span_array) {
+	  var patt = /`+/g;
+	  var matches = [];
 
-	/* Functions to convert content extracted from MarkDown to HTML (for flashcards) */
-	function getFrontContent(front) {
-	  return '<p>' + front + '</p>';
+	  for (var s = 0; s < span_array.length; s++) {
+	    if (span_array[s].tag == null) {
+	      var content = span_array[s].content;
+	      var match;
+	      while ((match = patt.exec(content)) != null) {
+	        matches.push({ span: s, index: match.index, content: match[0] });
+	      }
+	    }
+	  }
+	  var m1, m2;
+	  for (m1 = 0; m1 < matches.length;) {
+	    var closed = false;
+	    for (m2 = m1 + 1; m2 < matches.length; m2++) {
+	      if (matches[m2].content == matches[m1].content) {
+	        closed = true;
+	        break;
+	      }
+	    }
+	    if (closed) {
+	      matches.splice(m1 + 1, m2 - m1 - 1); //Different-length backticks allowed in code
+	      m1 += 2;
+	    } else {
+	      matches.splice(m1, 1); //Remove match m1 if it doesn't close
+	    }
+	  }
+	  for (var i = matches.length - 2; i >= 0; i -= 2) {
+	    //Invariant: All code bookends are evenly paired and adjacent
+	    var content = span_array[matches[i].span].content;
+	    var span1 = { content: span_array[matches[i].span].content.slice(0, matches[i].index) };
+	    var html = { tag: 'emphasis', content: '<code>' };
+	    if (matches[i].span == matches[i + 1].span) {
+	      html.content += span_array[matches[i].span].content.slice(matches[i].index + matches[i].content.length, matches[i + 1].index);
+	    } else {
+	      html.content += span_array[matches[i].span].content.slice(matches[i].index + matches[i].content.length, span_array[matches[i].span].content.length);
+	      for (var j = matches[i].span + 1; j < matches[i + 1].span; j++) {
+	        html.content += span_array[j].content;
+	      }
+	      html.content += span_array[matches[i + 1].span].content.slice(0, matches[i + 1].index);
+	    }
+	    html.content += '</code>';
+	    var span2 = { content: span_array[matches[i + 1].span].content.slice(matches[i + 1].index + matches[i + 1].content.length, span_array[matches[i + 1].span].content.length) };
+	    span_array.splice(matches[i].span, matches[i + 1].span - matches[i].span + 1, span1, html, span2);
+	  }
+	}
+	function check_break(span_array) {
+	  var patt = /(?:[ ]{2,}|\t+)\n/;
+	  var match;
+
+	  for (var s = 0; s < span_array.length; s++) {
+	    if (span_array[s].tag == null) {
+	      var content = span_array[s].content;
+	      if ((match = patt.exec(content)) != null) {
+
+	        var raw1 = { content: content.slice(0, match.index) };
+	        var raw2 = { content: content.slice(match.index + match[0].length, content.length) };
+
+	        var br = { tag: 'br', content: '<br />' };
+	        span_array.splice(s, 1, raw1, br, raw2);
+	        s++;
+	      }
+	    }
+	  }
 	}
 
 	function getContentLines(arr, name) {
@@ -37923,6 +38079,10 @@
 
 	var _keys2 = _interopRequireDefault(_keys);
 
+	var _objectWithoutProperties2 = __webpack_require__(384);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
 	var _assign = __webpack_require__(380);
 
 	var _assign2 = _interopRequireDefault(_assign);
@@ -37989,12 +38149,17 @@
 	var state = {};
 
 	function forEachListener(props, iteratee) {
-	  (0, _keys2.default)(props).forEach(function (name) {
+	  var children = props.children,
+	      target = props.target,
+	      eventProps = (0, _objectWithoutProperties3.default)(props, ['children', 'target']);
+
+
+	  (0, _keys2.default)(eventProps).forEach(function (name) {
 	    if (name.substring(0, 2) !== 'on') {
 	      return;
 	    }
 
-	    var prop = props[name];
+	    var prop = eventProps[name];
 	    var type = typeof prop === 'undefined' ? 'undefined' : (0, _typeof3.default)(prop);
 	    var isObject = type === 'object';
 	    var isFunction = type === 'function';
