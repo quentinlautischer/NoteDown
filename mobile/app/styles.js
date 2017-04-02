@@ -135,3 +135,30 @@ module.exports.LINK_STYLES =
         color: #feb255;
     }
 `;
+
+module.exports.TOC_GEN = `
+    var tags = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    for (var i = 0; i < tags.length; i++) {
+        var h = tags[i];
+        var headerId = 'header' + i;
+        h.id = headerId;
+        var p = document.createElement("p");
+
+        var a = document.createElement('a');
+        a.setAttribute('href', '#' + headerId);
+        a.innerHTML = h.innerHTML;
+        a.style.textDecoration = 'none';
+        a.style.link
+
+        p.style.textIndent = getSpaces(h) + 'em';
+        p.appendChild(a);
+
+        var toc = document.getElementById('toc');
+        toc.appendChild(p);
+    }
+
+    // returns 0-5 depending on header type
+    function getSpaces(h) {
+        return parseInt(h.tagName[1]) - 1;
+    }
+    `;
