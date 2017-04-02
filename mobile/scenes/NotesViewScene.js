@@ -95,9 +95,6 @@ class NotesViewScene extends Component {
         var currentPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].content;
         var savedPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].savedContent;
 
-        console.log('curr ' + currentPageContent);
-        console.log('sav ' + savedPageContent);
-
         return currentPageContent !== savedPageContent;
     }
 

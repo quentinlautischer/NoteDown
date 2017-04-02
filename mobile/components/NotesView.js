@@ -7,15 +7,15 @@ import {
     StyleSheet
 } from 'react-native';
 
-styles = require('../highlight.js.styles.js');
 import colors from '../app/constants';
+import css from '../app/styles';
 import parse from '../shared/parser.js';
 
 export default class NotesView extends Component {
 
     generateTOC(renderedContent) {
         // the negative margins correct a weird error where the webview doesn't touch the edges
-        return `<style>${linkStyling}</style><div style="padding:10px;margin-top:-8px;margin-right:-8px;margin-bottom:-8px;">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
+        return `<style>${css.HIGHLIGHT_STYLES + css.LINK_STYLES}</style><div style="padding:10px;margin-top:-8px;margin-right:-8px;margin-bottom:-8px;">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
     }
 
 
@@ -69,26 +69,6 @@ export default class NotesView extends Component {
         )
     }
 }
-
-
-
-var linkStyling = `
-    #toc a:link {
-        color: #fed75e;
-    }
-
-    #toc a:visited {
-        color: #fed75e;
-    }
-
-    #toc a:hover {
-        color: #feb255;
-    }
-
-    #toc a:active {
-        color: #feb255;
-    }
-`;
 
 const styles = StyleSheet.create({
     view: {
