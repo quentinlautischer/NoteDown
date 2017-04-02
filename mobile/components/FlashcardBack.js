@@ -6,6 +6,7 @@ import {
     TouchableHighlight
 } from 'react-native';
 import colors from '../app/constants';
+import StepsView from './StepsView';
 
 export default class FlashcardBack extends Component {
 
@@ -13,7 +14,7 @@ export default class FlashcardBack extends Component {
         return(
             <View style={styles.view}>
                 <View style={styles.card}>
-                    <Text style={styles.text}>{this.props.content.toString()}</Text>
+                    <StepsView steps={this.props.content} />
                 </View>
             </View>
 
@@ -32,10 +33,7 @@ const styles = StyleSheet.create({
     card: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
-    },
-    text: {
-        fontSize: 18,
-        color: colors.DARK
+        justifyContent: 'center',
+        alignItems: 'stretch',
     }
 });

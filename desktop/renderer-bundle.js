@@ -24421,6 +24421,10 @@
 	  return Object.assign({}, state, { flashcardFolders: action.flashcardFolders });
 	}
 
+	function setFlashcardStep(state, action) {
+	  return Object.assign({}, state, { step: action.step });
+	}
+
 	var initial_state = {
 	  flashcards: [],
 	  flashcardFolders: [],
@@ -24431,7 +24435,8 @@
 	  'NEXT_FLASHCARD': nextFlashcard,
 	  'PREV_FLASHCARD': prevFlashcard,
 	  'SET_FLASHCARDS': setFlashcards,
-	  'SET_FLASHCARD_FOLDERS': setFlashcardFolders
+	  'SET_FLASHCARD_FOLDERS': setFlashcardFolders,
+	  'SET_FLASHCARD_STEP': setFlashcardStep
 	});
 
 	exports.default = flashcardReducer;
