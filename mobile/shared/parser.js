@@ -926,7 +926,8 @@ function extractFlashcards(pages) {
 module.exports = {
     parse: parse,
     extractFlashcardsInFolders: extractFlashcardsInFolders,
-    extractFlashcards: extractFlashcards
+    extractFlashcards: extractFlashcards,
+    makeFlashcard: makeFlashcard
 }
 
 console.log("Shared module loaded");

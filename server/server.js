@@ -1,3 +1,6 @@
+var redux = require('redux');
+var reducer = require('../shared/reducers/serverReducer');
+
 var mongoose = require('mongoose');
 var Account = require('../shared/models/account')
 var Notes = require('../shared/models/notes')
@@ -15,6 +18,8 @@ var HOST = "localhost"; // allows me to test on android
 var PORT = 3000;
 
 var DEBUG = false;
+
+const store = redux.createStore(reducer.serverReducer);
 
 /******************************************************************************/
 var express = require('express');
@@ -63,6 +68,7 @@ websocket.on('connection', (socket) => {
 
 websocket.on('close', (socket) => {
   console.log('A client just closed on', socket.id);
+  onlineUsers.removeUser({type: 'socket', socket: socket.id});
 });
 
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -74,6 +80,10 @@ serverPrint = function(title, callback) {
     console.log(`### ${title}\n`)
     callback();
     console.log(`#############################################`);
+}
+
+serverPrintState = function() {
+  console.log(`State: ${JSON.stringify(store.getState())}`)
 }
 
 /////////////////////////////////////////////
@@ -131,6 +141,9 @@ loginRequest = function(socket, data) {
     if (results.length && results[0].password == data.password) {
       const event = {event: "request-login-response", data: {result: true, userid: results[0].email}};
       socket.emit('data', event);
+      serverPrintState();
+      store.dispatch({type: 'ADD_ONLINE_USER', userid: results[0].email, socketid: socket.id});
+      serverPrintState();
     } else {
       const event = {event: "request-login-response", data: {result: false, msg: "An account with that username and password does not exist"}};
       socket.emit('data', event);
