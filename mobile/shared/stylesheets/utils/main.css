@@ -101,7 +101,6 @@
   font-size: 1.3em;
   color: #EDEDEE;
   background-color: #434146;
-  font-family: 'Source Code Pro';
   font-weight: 300;
   text-align: center;
   z-index: 2; }
@@ -117,6 +116,8 @@
   height: auto;
   color: #EDEDEE;
   z-index: 3; }
+  .folder-delete-btn:hover {
+    color: #fed75e; }
 
 .folder-flashcards-btn {
   position: absolute;
@@ -126,6 +127,8 @@
   height: auto;
   color: #EDEDEE;
   z-index: 3; }
+  .folder-flashcards-btn:hover {
+    color: #fed75e; }
 
 .folder-container-view {
   position: relative;
@@ -694,6 +697,78 @@ div.CodeMirror-dragcursors {
 /* Help users use markselection to safely style text background */
 span.CodeMirror-selectedtext {
   background: none; }
+
+.flashcard-viewer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-app-region: no-drag; }
+
+.card-container {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  display: inline-block;
+  left: 10%;
+  perspective: 1000px;
+  /* adds realistic-looking perspective to flip action */
+  background-color: transparent;
+  width: 80%;
+  font-size: 1em;
+  color: #434146;
+  z-index: 1; }
+
+.card-flipper {
+  transition: width 1s, height 1s, transform 1s;
+  transform-style: preserve-3d;
+  position: relative;
+  width: 100%;
+  padding: 25%;
+  box-sizing: border-box; }
+
+.hint-btn {
+  position: absolute;
+  left: 2%;
+  top: 2%;
+  width: 5%;
+  height: auto;
+  color: #EDEDEE;
+  z-index: 3; }
+  .hint-btn:hover {
+    color: #fed75e; }
+
+.hint {
+  position: absolute;
+  display: none;
+  width: 200px;
+  height: 100px;
+  background-color: red;
+  z-index: 4; }
+
+.hint-btn:hover + .hint {
+  display: block; }
+
+.front, .back {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #EDEDEE;
+  background-color: #303e4d;
+  border: thick solid black;
+  border-radius: 5px;
+  text-align: center; }
+
+.front {
+  z-index: 2;
+  transform: rotateY(0deg); }
+
+.back {
+  transform: rotateY(180deg); }
 
 /*!
  *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
@@ -3027,7 +3102,7 @@ span.CodeMirror-selectedtext {
   src: url("../../node_modules/mdi/fonts/materialdesignicons-webfont.eot?#iefix&v=1.8.36") format("embedded-opentype"), url("../../node_modules/mdi/fonts/materialdesignicons-webfont.woff2?v=1.8.36") format("woff2"), url("../../node_modules/mdi/fonts/materialdesignicons-webfont.woff?v=1.8.36") format("woff"), url("../../node_modules/mdi/fonts/materialdesignicons-webfont.ttf?v=1.8.36") format("truetype"), url("../../node_modules/mdi/fonts/materialdesignicons-webfont.svg?v=1.8.36#materialdesigniconsregular") format("svg");
   font-weight: normal;
   font-style: normal; }
-.mdi:before, .icon-cards:before, .icon-close:before, .icon-minimize:before, .icon-maximize:before, .icon-restore:before, .icon-bars:before, .icon-arrow-left:before, .icon-arrow-right:before, .icon-search-plus:before, .icon-search-minus:before, .icon-folderview:before, .icon-file-text:before,
+.mdi:before, .icon-lightbulb:before, .icon-cards:before, .icon-close:before, .icon-minimize:before, .icon-maximize:before, .icon-restore:before, .icon-bars:before, .icon-arrow-left:before, .icon-arrow-right:before, .icon-search-plus:before, .icon-search-minus:before, .icon-folderview:before, .icon-file-text:before,
 .mdi-set {
   display: inline-block;
   font: normal normal normal 24px/1 "Material Design Icons";
@@ -6059,7 +6134,7 @@ span.CodeMirror-selectedtext {
 .mdi-library-plus:before {
   content: "\F334"; }
 
-.mdi-lightbulb:before {
+.mdi-lightbulb:before, .icon-lightbulb:before {
   content: "\F335"; }
 
 .mdi-lightbulb-on:before {
@@ -8546,16 +8621,16 @@ span.CodeMirror-selectedtext {
 .mdi-zip-box:before {
   content: "\F5C4"; }
 
-.mdi-18px.mdi-set, .mdi-18px.mdi:before, .mdi-18px.icon-cards:before, .mdi-18px.icon-close:before, .mdi-18px.icon-minimize:before, .mdi-18px.icon-maximize:before, .mdi-18px.icon-restore:before, .mdi-18px.icon-bars:before, .mdi-18px.icon-arrow-left:before, .mdi-18px.icon-arrow-right:before, .mdi-18px.icon-search-plus:before, .mdi-18px.icon-search-minus:before, .mdi-18px.icon-folderview:before, .mdi-18px.icon-file-text:before {
+.mdi-18px.mdi-set, .mdi-18px.mdi:before, .mdi-18px.icon-lightbulb:before, .mdi-18px.icon-cards:before, .mdi-18px.icon-close:before, .mdi-18px.icon-minimize:before, .mdi-18px.icon-maximize:before, .mdi-18px.icon-restore:before, .mdi-18px.icon-bars:before, .mdi-18px.icon-arrow-left:before, .mdi-18px.icon-arrow-right:before, .mdi-18px.icon-search-plus:before, .mdi-18px.icon-search-minus:before, .mdi-18px.icon-folderview:before, .mdi-18px.icon-file-text:before {
   font-size: 18px; }
 
-.mdi-24px.mdi-set, .mdi-24px.mdi:before, .mdi-24px.icon-cards:before, .mdi-24px.icon-close:before, .mdi-24px.icon-minimize:before, .mdi-24px.icon-maximize:before, .mdi-24px.icon-restore:before, .mdi-24px.icon-bars:before, .mdi-24px.icon-arrow-left:before, .mdi-24px.icon-arrow-right:before, .mdi-24px.icon-search-plus:before, .mdi-24px.icon-search-minus:before, .mdi-24px.icon-folderview:before, .mdi-24px.icon-file-text:before {
+.mdi-24px.mdi-set, .mdi-24px.mdi:before, .mdi-24px.icon-lightbulb:before, .mdi-24px.icon-cards:before, .mdi-24px.icon-close:before, .mdi-24px.icon-minimize:before, .mdi-24px.icon-maximize:before, .mdi-24px.icon-restore:before, .mdi-24px.icon-bars:before, .mdi-24px.icon-arrow-left:before, .mdi-24px.icon-arrow-right:before, .mdi-24px.icon-search-plus:before, .mdi-24px.icon-search-minus:before, .mdi-24px.icon-folderview:before, .mdi-24px.icon-file-text:before {
   font-size: 24px; }
 
-.mdi-36px.mdi-set, .mdi-36px.mdi:before, .mdi-36px.icon-cards:before, .mdi-36px.icon-close:before, .mdi-36px.icon-minimize:before, .mdi-36px.icon-maximize:before, .mdi-36px.icon-restore:before, .mdi-36px.icon-bars:before, .mdi-36px.icon-arrow-left:before, .mdi-36px.icon-arrow-right:before, .mdi-36px.icon-search-plus:before, .mdi-36px.icon-search-minus:before, .mdi-36px.icon-folderview:before, .mdi-36px.icon-file-text:before {
+.mdi-36px.mdi-set, .mdi-36px.mdi:before, .mdi-36px.icon-lightbulb:before, .mdi-36px.icon-cards:before, .mdi-36px.icon-close:before, .mdi-36px.icon-minimize:before, .mdi-36px.icon-maximize:before, .mdi-36px.icon-restore:before, .mdi-36px.icon-bars:before, .mdi-36px.icon-arrow-left:before, .mdi-36px.icon-arrow-right:before, .mdi-36px.icon-search-plus:before, .mdi-36px.icon-search-minus:before, .mdi-36px.icon-folderview:before, .mdi-36px.icon-file-text:before {
   font-size: 36px; }
 
-.mdi-48px.mdi-set, .mdi-48px.mdi:before, .mdi-48px.icon-cards:before, .mdi-48px.icon-close:before, .mdi-48px.icon-minimize:before, .mdi-48px.icon-maximize:before, .mdi-48px.icon-restore:before, .mdi-48px.icon-bars:before, .mdi-48px.icon-arrow-left:before, .mdi-48px.icon-arrow-right:before, .mdi-48px.icon-search-plus:before, .mdi-48px.icon-search-minus:before, .mdi-48px.icon-folderview:before, .mdi-48px.icon-file-text:before {
+.mdi-48px.mdi-set, .mdi-48px.mdi:before, .mdi-48px.icon-lightbulb:before, .mdi-48px.icon-cards:before, .mdi-48px.icon-close:before, .mdi-48px.icon-minimize:before, .mdi-48px.icon-maximize:before, .mdi-48px.icon-restore:before, .mdi-48px.icon-bars:before, .mdi-48px.icon-arrow-left:before, .mdi-48px.icon-arrow-right:before, .mdi-48px.icon-search-plus:before, .mdi-48px.icon-search-minus:before, .mdi-48px.icon-folderview:before, .mdi-48px.icon-file-text:before {
   font-size: 48px; }
 
 .mdi-dark {
