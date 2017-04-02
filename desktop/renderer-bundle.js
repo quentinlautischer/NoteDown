@@ -25810,7 +25810,8 @@
 	module.exports = {
 	  parse: parse,
 	  extractFlashcardsInFolders: extractFlashcardsInFolders,
-	  extractFlashcards: extractFlashcards
+	  extractFlashcards: extractFlashcards,
+	  makeFlashcard: makeFlashcard
 	};
 
 	console.log("Shared module loaded");
@@ -86832,6 +86833,7 @@
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      this.unsubscribe = this.props.store.subscribe(this.storeDidUpdate);
+	      this.applyFlashcardsHanlders();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -86860,21 +86862,62 @@
 	      this.props.store.dispatch({ type: 'NEXT_FLASHCARD' });
 	    }
 	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      this.applyFlashcardsHanlders();
+	    }
+	  }, {
+	    key: 'applyFlashcardsHanlders',
+	    value: function applyFlashcardsHanlders() {
+	      var cards = document.getElementsByClassName('card');
+	      var i;
+	      for (i = 0; i < cards.length; i++) {
+	        cards[i].style.backgroundColor = "red";
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
 
 	      console.log(JSON.stringify(this.props.store.getState().flashcards.flashcards));
 	      console.log(JSON.stringify(this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex]));
+	      var flashcard = this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex];
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'flashcard-viewer' },
-	        _react2.default.createElement(_menuButton2.default, { label: 'Prev', onClick: function onClick() {
+	        _react2.default.createElement(_menuButton2.default, { className: 'prev-card-btn', label: 'Prev', onClick: function onClick() {
 	            return _this2.prevCard();
 	          } }),
-	        _react2.default.createElement('div', { className: 'cards',
-	          dangerouslySetInnerHTML: { __html: this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex] } }),
-	        _react2.default.createElement(_menuButton2.default, { label: 'Next', onClick: function onClick() {
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'card-container' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'card-flipper' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'front' },
+	              flashcard.front
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'back' },
+	              flashcard.back
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'hint-btn' },
+	            _react2.default.createElement('i', { className: 'icon-lightbulb' })
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'hint' },
+	            flashcard.hint
+	          )
+	        ),
+	        _react2.default.createElement(_menuButton2.default, { className: 'next-card-btn', label: 'Next', onClick: function onClick() {
 	            return _this2.nextCard();
 	          } })
 	      );

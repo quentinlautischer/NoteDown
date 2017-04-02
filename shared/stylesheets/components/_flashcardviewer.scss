@@ -1,0 +1,81 @@
+.flashcard-viewer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-app-region: no-drag; 
+}
+
+.card-container {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  display: inline-block;
+  left: 10%;
+  perspective: 1000px; /* adds realistic-looking perspective to flip action */
+  background-color: transparent;
+  width: 80%;
+  font-size: 1em;
+  color:  map-get($colors, dark);
+  z-index:  1;
+}
+
+.card-flipper {
+  transition: width 1s, height 1s, transform 1s;
+  transform-style: preserve-3d;
+  position: relative;
+  width: 100%;
+  padding: 25%;
+  box-sizing: border-box;
+}
+
+.hint-btn {
+  position: absolute;
+  left: 2%;
+  top: 2%;
+  width: 5%;
+  height: auto;
+  color: map-get($colors, light);
+  z-index: 3;
+
+  &:hover {
+    color: map-get($colors, primary2);
+  }
+}
+
+.hint {
+  position: absolute;
+  display: none;
+  width: 200px;
+  height: 100px;
+  background-color: red;
+  z-index: 4;
+}
+
+.hint-btn:hover + .hint{
+  display: block;
+}
+
+.front, .back {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: map-get($colors, light);
+  background-color: map-get($colors, secondary1);
+  border: thick solid black;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.front {
+  z-index: 2;
+  transform: rotateY(0deg);
+}
+
+.back {
+  transform: rotateY(180deg);
+}
