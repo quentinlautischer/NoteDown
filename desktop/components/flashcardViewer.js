@@ -22,6 +22,7 @@ class FlashcardViewer extends React.Component {
 
   componentDidMount(){
     this.unsubscribe = this.props.store.subscribe( this.storeDidUpdate );
+    this.applyFlashcardsHanlders();
   }
 
   componentWillUnmount() {
@@ -45,16 +46,34 @@ class FlashcardViewer extends React.Component {
     this.props.store.dispatch({type: 'NEXT_FLASHCARD'});
   }
 
+  componentDidUpdate() {
+    this.applyFlashcardsHanlders();
+  }
+
+  applyFlashcardsHanlders() {
+    var cards = document.getElementsByClassName('card');
+    var i;
+    for (i = 0; i < cards.length; i++) {
+        cards[i].style.backgroundColor = "red";
+    }
+  }
+
   render() {
     console.log(JSON.stringify(this.props.store.getState().flashcards.flashcards));
     console.log(JSON.stringify(this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex]));
+    var flashcard = this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex];
     return (
       <div className="flashcard-viewer">
-      <MenuButton label="Prev" onClick={() => this.prevCard()} />
-      <div className="cards" 
-        dangerouslySetInnerHTML= {{__html: this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex]}}>
-      </div>
-      <MenuButton label="Next" onClick={() => this.nextCard()} />      
+        <MenuButton className="prev-card-btn" label="Prev" onClick={() => this.prevCard()} />
+        <div className="card-container">
+          <div className="card-flipper">
+            <div className="front">{flashcard.front}</div>
+            <div className="back">{flashcard.back}</div>
+          </div>
+          <div className="hint-btn"><i className="icon-lightbulb"/></div>
+          <div className="hint">{flashcard.hint}</div>
+        </div>
+        <MenuButton className="next-card-btn" label="Next" onClick={() => this.nextCard()} />      
       </div>
     );
   }
