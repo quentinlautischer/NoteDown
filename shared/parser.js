@@ -285,7 +285,7 @@ function check_codeblock_lang(blocks) {
           var inner_content = '';
           var open = true;
           for (var end = l+1; end < content.length; end++) {
-            if ((match = patt.exec(content[end])) != null && match[1].length == 0) {
+            if ((match = patt.exec(content[end])) != null && match[1].trim().length == 0) {
               open = false;
               break;
             } else {
