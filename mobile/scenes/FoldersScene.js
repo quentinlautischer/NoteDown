@@ -5,14 +5,14 @@ import {
     View,
     Text,
     ListView,
-    StyleSheet
+    StyleSheet,
+    Alert
 } from 'react-native';
 import colors from '../app/constants';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
-import Picker from 'react-native-picker';
 
 import NotesViewScene from './NotesViewScene'; // navigate
 import FlashcardViewScene from './FlashcardViewScene';
@@ -53,16 +53,20 @@ class FoldersScene extends Component {
     }
 
     onPress() {
-        Picker.hide();
-        this.props.navigator.push({
-            component: FlashcardViewScene,
-            passProps: this.props
-        })
+        var state = this.context.store.getState();
+        if (state.flashcards.flashcardFolders.folders[state.state.folderIndex] // if this doesn't exist the next part of the condition causes an error
+                && state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards.length > 0) {
+            this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
+            this.props.navigator.push({
+                component: FlashcardViewScene,
+                passProps: this.props
+            })
+        }
     }
 
     onBack() {
-        Picker.hide();
         this.props.navigator.pop();
+        this.context.store.dispatch({type: 'FOLDER_MODE'});
         this.context.store.dispatch({type: 'SELECT_PAGE', index: 0});
     }
 

@@ -12,11 +12,13 @@ import { Provider } from 'react-redux';
 import appReducer from '../shared/reducers/appReducer';
 import notesReducer from '../shared/reducers/notesReducer';
 import editorReducer from '../shared/reducers/editorReducer';
+import flashcardReducer from '../shared/reducers/flashcardReducer';
 
 const reducer = combineReducers({
         state: appReducer,
         notes: notesReducer,
-        editor: editorReducer
+        editor: editorReducer,
+        flashcards: flashcardReducer
     });
 const store = createStore(reducer);
 
