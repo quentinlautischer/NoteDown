@@ -15,6 +15,9 @@ import colors from '../app/constants';
 import { connect } from 'react-redux';
 
 class Navigate extends Component {
+    componentDidMount() {
+        this.context.store.dispatch({type: 'LOGIN_MODE'});
+    }
 
     renderScene(route, navigator) { // https://medium.com/react-native-training/react-native-navigator-navigating-like-a-pro-in-react-native-3cb1b6dc1e30#.x6jt1nunt; accessed 03/27/17
         return React.createElement(route.component, { ...this.props, ...route.passProps, route, navigator } )

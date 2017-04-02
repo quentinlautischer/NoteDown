@@ -126,7 +126,6 @@ class NotesViewScene extends Component {
     }
 
     requestPushData() {
-        console.log('push data request');
         var state = this.context.store.getState();
         const data = {userid: state.state.userid, notes: state.notes};
         this.props.socket.emit('request-push-data', data);
@@ -134,7 +133,8 @@ class NotesViewScene extends Component {
     }
 
     requestPullData() {
-        // TODO
+        var state = this.context.store.getState();
+        this.props.socket.emit('request-pull-data', {userid: state.state.userid});
     }
 
     onSwipeLeft(gestureState) {

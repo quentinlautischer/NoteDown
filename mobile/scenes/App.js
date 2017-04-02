@@ -24,12 +24,6 @@ const store = createStore(reducer);
 
 export default class App extends Component {
     render() {
-        console.log("START " + JSON.stringify(store.getState()));
-
-        store.dispatch({type: 'SET_USER', userid: 'someid'});
-
-        console.log("END " + JSON.stringify(store.getState()));
-
         return(
             <Provider store={store}>
                 <Navigate />

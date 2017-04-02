@@ -25,22 +25,16 @@ class LoginScene extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            username: '',
-            password: '',
-            name: ''
-        }
-
         // Creating the socket-client instance will automatically connect to the server.
         this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
+
+        this.clearText = this.clearText.bind(this);
     }
 
     componentDidMount() {
         this.socket.on('data', (data) => {
             // check the user exists in the database
             if (data.event === 'request-login-response') {
-                console.log("mobile client logged in, recieved data: ", data);
-
                 if (data.data.result) {
                     this.context.store.dispatch({type: 'SET_USER', userid: data.data.userid});
                     this.requestPullData();
@@ -50,12 +44,18 @@ class LoginScene extends Component {
 
             // recieve the user's data (to populate their folders)
             } else if (data.event === 'request-pull-data-response') {
-                console.log("Mobile client pulled data: ", data);
+                // console.log("Mobile client pulled data: ", data);
                 this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
-                this.context.store.dispatch({type: 'FOLDER_MODE'});
-                this._navigate();
+                if (this.context.store.getState().state.mode === 'login') {
+                    this.context.store.dispatch({type: 'MENU_MODE'});
+                    this._navigate();
+                }
             }
         });
+    }
+
+    clearText() {
+        this.refs['un'].clear(0);
     }
 
     requestPullData() {
@@ -70,7 +70,6 @@ class LoginScene extends Component {
             title: 'MenuScene',
             component: MenuScene,
             passProps: {
-                // content: data,
                 socket: this.socket
             },
             onPress: this.onPress.bind(this),
@@ -79,7 +78,15 @@ class LoginScene extends Component {
     }
 
     onPress() {
-        // TODO: clear login info
+        this.context.store.dispatch({type: 'LOGIN_MODE'});
+
+        this.context.store.dispatch({type: 'SET_USER', userid: null});
+        this.context.store.dispatch({type: 'SET_NOTES', notes: null});
+        this.context.store.dispatch({type: 'SET_FLASHCARD_FOLDERS', notes: null});
+
+        this.refs[USERNAME_REF].clearText();
+        this.refs[PASSWORD_REF].clearText();
+
         this.props.navigator.pop();
     }
 
