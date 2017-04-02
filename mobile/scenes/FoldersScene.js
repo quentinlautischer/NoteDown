@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import ListItem from '../components/ListItem';
 import TitleText from '../components/TitleText';
+import Toast from 'react-native-root-toast';
 
 import NotesViewScene from './NotesViewScene'; // navigate
 import FlashcardViewScene from './FlashcardViewScene';
@@ -61,6 +62,12 @@ class FoldersScene extends Component {
                 component: FlashcardViewScene,
                 passProps: this.props
             })
+        } else {
+            let toast = Toast.show('No flashcards for this folder', {
+                duration: 1400, // ms
+                position: 0, // middle of screen
+                shadow: true
+            });
         }
     }
 
