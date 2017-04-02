@@ -39,7 +39,7 @@ class FlashcardViewScene extends Component {
         console.log('LEFT');
         var state = this.context.store.getState();
         var folderIndex = state.state.folderIndex;
-        var flashcards = this.props.content.folders[folderIndex].flashcards;
+        var flashcards = state.flashcards.flashcardFolders.folders[folderIndex].flashcards;
 
         // go to next page
         if (this.state.flashcardIndex < flashcards.length - 1) {
@@ -64,7 +64,7 @@ class FlashcardViewScene extends Component {
     next() {
         var state = this.context.store.getState();
         var folderIndex = state.state.folderIndex;
-        var flashcards = this.props.content.folders[folderIndex].flashcards;
+        var flashcards = state.flashcards.flashcardFolders.folders[folderIndex].flashcards;
         this.refs[FC_NAV_REF].push({
             index: 0,
             content: flashcards[this.state.flashcardIndex + 1].front
@@ -76,7 +76,7 @@ class FlashcardViewScene extends Component {
         console.log('RIGHT');
         var state = this.context.store.getState();
         var folderIndex = state.state.folderIndex;
-        var flashcards = this.props.content.folders[folderIndex].flashcards;
+        var flashcards = state.flashcards.flashcardFolders.folders[folderIndex].flashcards;
 
         // go to previous page
         if (this.state.flashcardIndex > 0) {
@@ -99,7 +99,7 @@ class FlashcardViewScene extends Component {
     previous() {
         var state = this.context.store.getState();
         var folderIndex = state.state.folderIndex;
-        var flashcards = this.props.content.folders[folderIndex].flashcards;
+        var flashcards = state.flashcards.flashcardFolders.folders[folderIndex].flashcards;
         this.refs[FC_NAV_REF].pop();
         this.setState({ flashcardIndex: this.state.flashcardIndex - 1 });
     }
@@ -139,7 +139,6 @@ class FlashcardViewScene extends Component {
             directionalOffsetThreshold: 80
         };
 
-        var folderIdx = this.context.store.getState().state.folderIndex;
         return (
             <GestureRecognizer
                 onSwipeLeft={(state) => this.onSwipeLeft(state)}
@@ -154,11 +153,23 @@ class FlashcardViewScene extends Component {
                     initialRoute={{index: 0}}
                     renderScene={(route, navigator) => {
                         if (route.index === 0) { // front
-                            return <FlashcardFront navigator={navigator} content={this.props.content.folders[folderIdx].flashcards[this.state.flashcardIndex].front} />
+                            return <FlashcardFront
+                                navigator={navigator}
+                                content={this.context.store.getState().flashcards.flashcardFolders
+                                    .folders[this.context.store.getState().state.folderIndex]
+                                    .flashcards[this.state.flashcardIndex].front} />
                         } else if (route.index === 1) { // hints
-                            return <FlashcardBack navigator={navigator} content={this.props.content.folders[folderIdx].flashcards[this.state.flashcardIndex].hints} />
+                            return <FlashcardBack
+                                navigator={navigator}
+                                content={this.context.store.getState().flashcards.flashcardFolders
+                                    .folders[this.context.store.getState().state.folderIndex]
+                                    .flashcards[this.state.flashcardIndex].hints} />
                         } else if (route.index === 2) { // back
-                            return <FlashcardBack navigator={navigator} content={this.props.content.folders[folderIdx].flashcards[this.state.flashcardIndex].back} />
+                            return <FlashcardBack
+                                navigator={navigator}
+                                content={this.context.store.getState().flashcards.flashcardFolders
+                                    .folders[this.context.store.getState().state.folderIndex]
+                                    .flashcards[this.state.flashcardIndex].back} />
                         }
                     }}
                     configureScene={(route, routeStack) => {
