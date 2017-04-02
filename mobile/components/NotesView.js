@@ -34,11 +34,10 @@ export default class NotesView extends Component {
         var renderedContent = this.generateTOC(parse.parse(this.props.content, this.props.store, imageMapper));
 
         return (
-            <WebView
+            <WebView  // got help from nopopon & jcsmesquita on https://github.com/facebook/react-native/issues/5143, accessed 04/02/17
                 style={styles.view}
-                source={{html: renderedContent}}
-                injectedJavaScript={renderStyles.TOC_GEN}
-                javaScriptEnabledAndroid={true}
+                javaScriptEnabled={true}
+                source={{html: renderedContent + renderStyles.TOC_GEN, baseUrl: "/"}}
             />
         )
     }

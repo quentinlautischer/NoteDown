@@ -4,7 +4,8 @@ import {
     Navigator,
     TouchableHighlight,
     StyleSheet,
-    Alert
+    Alert,
+    Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import SocketIOClient from 'socket.io-client';
@@ -75,6 +76,7 @@ class LoginScene extends Component {
             onPress: this.onPress.bind(this),
             rightIconName: 'logout'
         });
+        Keyboard.dismiss();
     }
 
     onPress() {

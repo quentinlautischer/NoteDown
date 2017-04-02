@@ -119,6 +119,10 @@ module.exports.HIGHLIGHT_STYLES =
 
 module.exports.LINK_STYLES =
 `
+    #toc a {
+        text-decoration: none;
+    }
+
     #toc a:link {
         color: #fed75e;
     }
@@ -137,18 +141,17 @@ module.exports.LINK_STYLES =
 `;
 
 module.exports.TOC_GEN = `
+<script>
     var tags = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
     for (var i = 0; i < tags.length; i++) {
         var h = tags[i];
         var headerId = 'header' + i;
         h.id = headerId;
-        var p = document.createElement("p");
+        var p = document.createElement('p');
 
         var a = document.createElement('a');
         a.setAttribute('href', '#' + headerId);
         a.innerHTML = h.innerHTML;
-        a.style.textDecoration = 'none';
-        a.style.link
 
         p.style.textIndent = getSpaces(h) + 'em';
         p.appendChild(a);
@@ -161,4 +164,5 @@ module.exports.TOC_GEN = `
     function getSpaces(h) {
         return parseInt(h.tagName[1]) - 1;
     }
-    `;
+</script>
+`;
