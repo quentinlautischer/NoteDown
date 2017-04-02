@@ -2,6 +2,10 @@ import update from '../node_modules/immutability-helper';
 
 import createReducer from './reducerUtilities'
 
+function loginMode(state, action) {
+  return Object.assign({}, state, {mode: 'login'});
+}
+
 function editorMode(state, action) {
   return Object.assign({}, state, {mode: 'editor'});
 }
@@ -97,6 +101,7 @@ const initial_state = {
 }
 
 const appReducer = createReducer(initial_state, {
+  'LOGIN_MODE': loginMode,
   'EDITOR_MODE': editorMode,
   'RENDER_MODE': renderMode,
   'FUSION_MODE': fusionMode,

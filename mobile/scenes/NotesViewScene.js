@@ -11,7 +11,8 @@ import {
 import { connect } from 'react-redux';
 import colors from '../app/constants';
 import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/Ionicons';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 import NotesView from '../components/NotesView';
@@ -95,9 +96,6 @@ class NotesViewScene extends Component {
         var currentPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].content;
         var savedPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].savedContent;
 
-        console.log('curr ' + currentPageContent);
-        console.log('sav ' + savedPageContent);
-
         return currentPageContent !== savedPageContent;
     }
 
@@ -128,11 +126,15 @@ class NotesViewScene extends Component {
     }
 
     requestPushData() {
-        console.log('push data request');
         var state = this.context.store.getState();
         const data = {userid: state.state.userid, notes: state.notes};
         this.props.socket.emit('request-push-data', data);
         this.updateSavedContent();
+    }
+
+    requestPullData() {
+        var state = this.context.store.getState();
+        this.props.socket.emit('request-pull-data', {userid: state.state.userid});
     }
 
     onSwipeLeft(gestureState) {
@@ -153,6 +155,14 @@ class NotesViewScene extends Component {
         if (state.state.pageIndex > 0) {
             this.refs[PAGE_NAV_REF].pop();
             this.context.store.dispatch({type: 'SELECT_PAGE', index: state.state.pageIndex - 1});
+        }
+    }
+
+    toggleTOC() {
+        if (this.state.tocHeight > 0) {
+            this.setState({tocHeight: 0, tocVisibility: 'hidden'});
+        } else {
+            this.setState({tocHeight: TOC_HEIGHT, tocVisibility: 'visible'});
         }
     }
 
@@ -185,17 +195,14 @@ class NotesViewScene extends Component {
                 />
 
                 <ActionButton buttonColor={colors.PRIMARY2}>
-                    <ActionButton.Item buttonColor={colors.SECONDARY1} title="edit" onPress = { () => this.goToEdit() }>
-                        <Icon name="md-create" style={styles.actionButtonIcon} />
+                    <ActionButton.Item buttonColor={colors.SECONDARY1} title='cloud pull' onPress={ () => this.requestPullData() }>
+                        <Icon name='cloud-download' size={22} color={colors.LIGHT} />
                     </ActionButton.Item>
-                    <ActionButton.Item buttonColor={colors.SECONDARY2} title="toggle toc" onPress={() => {
-                        if (this.state.tocHeight > 0) {
-                            this.setState({tocHeight: 0, tocVisibility: 'hidden'});
-                        } else {
-                            this.setState({tocHeight: TOC_HEIGHT, tocVisibility: 'visible'});
-                        }
-                    }}>
-                        <Icon name="md-list" style={styles.actionButtonIcon} />
+                    <ActionButton.Item buttonColor={colors.SECONDARY2} title='edit' onPress={ () => this.goToEdit() }>
+                        <Icon name='pencil' size={22} color={colors.LIGHT} />
+                    </ActionButton.Item>
+                    <ActionButton.Item buttonColor={colors.MED} title='toggle toc' onPress={ () => this.toggleTOC() }>
+                        <Icon2 name='md-list' size={22} color={colors.LIGHT} />
                     </ActionButton.Item>
                 </ActionButton>
             </GestureRecognizer>

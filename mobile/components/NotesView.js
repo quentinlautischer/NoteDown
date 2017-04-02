@@ -7,15 +7,15 @@ import {
     StyleSheet
 } from 'react-native';
 
-styles = require('../highlight.js.styles.js');
 import colors from '../app/constants';
+import renderStyles from '../app/styles';
 import parse from '../shared/parser.js';
 
 export default class NotesView extends Component {
 
     generateTOC(renderedContent) {
         // the negative margins correct a weird error where the webview doesn't touch the edges
-        return `<style>${linkStyling}</style><div style="padding:10px;margin-top:-8px;margin-right:-8px;margin-bottom:-8px;">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
+        return `<style>${renderStyles.HIGHLIGHT_STYLES + renderStyles.LINK_STYLES}</style><div style="padding:10px;margin-top:-8px;margin-right:-8px;margin-bottom:-8px;">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
     }
 
 
@@ -32,63 +32,16 @@ export default class NotesView extends Component {
         }
 
         var renderedContent = this.generateTOC(parse.parse(this.props.content, this.props.store, imageMapper));
-        let jsCode = `
-            var tags = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-            for (var i = 0; i < tags.length; i++) {
-                var h = tags[i];
-                var headerId = 'header' + i;
-                h.id = headerId;
-                var p = document.createElement("p");
-
-                var a = document.createElement('a');
-                a.setAttribute('href', '#' + headerId);
-                a.innerHTML = h.innerHTML;
-                a.style.textDecoration = 'none';
-                a.style.link
-
-                p.style.textIndent = getSpaces(h) + 'em';
-                p.appendChild(a);
-
-                var toc = document.getElementById('toc');
-                toc.appendChild(p);
-            }
-
-            // returns 0-5 depending on header type
-            function getSpaces(h) {
-                return parseInt(h.tagName[1]) - 1;
-            }
-            `;
 
         return (
-            <WebView
+            <WebView  // got help from nopopon & jcsmesquita on https://github.com/facebook/react-native/issues/5143, accessed 04/02/17
                 style={styles.view}
-                source={{html: renderedContent}}
-                injectedJavaScript={jsCode}
-                javaScriptEnabledAndroid={true}
+                javaScriptEnabled={true}
+                source={{html: renderedContent + renderStyles.TOC_GEN, baseUrl: "/"}}
             />
         )
     }
 }
-
-
-
-var linkStyling = `
-    #toc a:link {
-        color: #fed75e;
-    }
-
-    #toc a:visited {
-        color: #fed75e;
-    }
-
-    #toc a:hover {
-        color: #feb255;
-    }
-
-    #toc a:active {
-        color: #feb255;
-    }
-`;
 
 const styles = StyleSheet.create({
     view: {

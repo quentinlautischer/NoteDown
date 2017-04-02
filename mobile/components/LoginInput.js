@@ -13,12 +13,20 @@ export default class LoginInput extends Component {
         this.state = {
             inputText: ''
         }
+
+        this.clearText = this.clearText.bind(this);
+    }
+
+    clearText() {
+        this.setState({inputText: ''}); // resets the state
+        this._textInput.setNativeProps({text: ''}); // clears the actual content
     }
 
     render() {
         return(
             <View style={styles.textInputContainer}>
                 <TextInput
+                    ref={component => this._textInput = component}
                     style={styles.textInput}
                     underlineColorAndroid='transparent'
                     placeholder={this.props.placeholder}

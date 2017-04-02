@@ -1,3 +1,5 @@
+// Global constants
+
 module.exports = {
     PRIMARY1: 'rgba(139, 191, 159, 1)',
     SECONDARY1: 'rgba(48, 62, 77, 1)',

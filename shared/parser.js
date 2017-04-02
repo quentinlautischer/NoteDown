@@ -285,7 +285,7 @@ function check_codeblock_lang(blocks) {
           var inner_content = '';
           var open = true;
           for (var end = l+1; end < content.length; end++) {
-            if ((match = patt.exec(content[end])) != null && match[1].length == 0) {
+            if ((match = patt.exec(content[end])) != null && match[1].trim().length == 0) {
               open = false;
               break;
             } else {
@@ -871,11 +871,11 @@ function get_flashcard(blocks) {
         for (var m = 0; m < 3; m++) { match.push(patt.exec(content[l+m])); }
         if (match[0] != null && match[1] != null && match[2] != null) {
           var raw1 = {content:content.slice(0,l)};
-          console.log(`Flashcard front: ${match[0][1]}`);
-          console.log(`Flashcard hint: ${ match[2][1].split('|')}`);
-          console.log(`Flashcard back: ${match[1][1].split('|')}`);
+        //   console.log(`Flashcard front: ${match[0][1]}`);
+        //   console.log(`Flashcard hint: ${ match[2][1].split('|')}`);
+        //   console.log(`Flashcard back: ${match[1][1].split('|')}`);
           flashcards.push({
-            front: match[0][1], 
+            front: match[0][1],
             hints: match[2][1].split('|'),
             back: match[1][1].split('|')
           });
@@ -896,7 +896,6 @@ function extractFlashcardsInFolders(folders) {
     var flashcardFolders = [];
     for(var i = 0; i < folders.length; i++) {
         var folder = folders[i];
-        console.log("PAGES " + JSON.stringify(folder.pages, null, 2));
         var currFolderFlashcards = extractFlashcards(folder.pages);
         if (currFolderFlashcards.length > 0) {
             flashcardFolders.push({
@@ -910,15 +909,15 @@ function extractFlashcardsInFolders(folders) {
 }
 
 function extractFlashcards(pages) {
-  console.log(`Extracting Flashcards from ${JSON.stringify(pages)}`);
+  // console.log(`Extracting Flashcards from ${JSON.stringify(pages)}`);
   var flashcards = [];
   for (var i = 0; i < pages.length; i++) {
     var content = pages[i].content;
     var block_array = [{content:content.split('\n')}];
     var cards = get_flashcard(block_array);
-    console.log(`cards: ${JSON.stringify(cards)}`);
+    // console.log(`cards: ${JSON.stringify(cards)}`);
     flashcards = flashcards.concat(cards);
-    console.log(`flashcards: ${JSON.stringify(flashcards)}`);
+    // console.log(`flashcards: ${JSON.stringify(flashcards)}`);
   }
   return flashcards;
 }
