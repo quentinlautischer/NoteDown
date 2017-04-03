@@ -5,7 +5,8 @@ import {
     Navigator,
     TouchableHighlight,
     StyleSheet,
-    WebView
+    WebView,
+    Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
@@ -36,7 +37,6 @@ class FlashcardViewScene extends Component {
     }
 
     onSwipeLeft(gestureState) {
-        console.log('LEFT');
         var state = this.context.store.getState();
         var folderIndex = state.state.folderIndex;
         var flashcards = state.flashcards.flashcardFolders.folders[folderIndex].flashcards;
@@ -44,7 +44,6 @@ class FlashcardViewScene extends Component {
         // go to next page
         if (this.state.flashcardIndex < flashcards.length - 1) {
             if (state.state.mode !== 'flashcardFront') { // viewing solution or hints
-                console.log('not front 1');
                 this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
                 this.refs[FC_NAV_REF].replaceAtIndex(
                     { index: 0, content: flashcards[this.state.flashcardIndex].front},
@@ -73,7 +72,6 @@ class FlashcardViewScene extends Component {
     }
 
     onSwipeRight(gestureState) {
-        console.log('RIGHT');
         var state = this.context.store.getState();
         var folderIndex = state.state.folderIndex;
         var flashcards = state.flashcards.flashcardFolders.folders[folderIndex].flashcards;
@@ -81,7 +79,6 @@ class FlashcardViewScene extends Component {
         // go to previous page
         if (this.state.flashcardIndex > 0) {
             if (state.state.mode !== 'flashcardFront') { // viewing solution or hints
-                console.log('not front 2');
                 this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
                 this.refs[FC_NAV_REF].replaceAtIndex(
                     { index: 0, content: flashcards[this.state.flashcardIndex].front},
@@ -89,7 +86,6 @@ class FlashcardViewScene extends Component {
                     this.previous.bind(this)
                 );
             } else {
-                console.log('here');
                 this.refs[FC_NAV_REF].pop();
                 this.setState({ flashcardIndex: this.state.flashcardIndex - 1 });
             }
@@ -104,8 +100,7 @@ class FlashcardViewScene extends Component {
         this.setState({ flashcardIndex: this.state.flashcardIndex - 1 });
     }
 
-    onSwipeUp(gestureState) {
-        console.log('UP');
+    onSwipeDown(gestureState) {
         if (this.context.store.getState().state.mode === 'flashcardFront') {
             this.context.store.dispatch({type: 'FLASHCARD_BACK_MODE'});
             this.refs[FC_NAV_REF].push({
@@ -116,11 +111,9 @@ class FlashcardViewScene extends Component {
             this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
             this.refs[FC_NAV_REF].pop();
         }
-        console.log('current state is ' + JSON.stringify(this.context.store.getState().state.mode, null, 2));
     }
 
-    onSwipeDown(gestureState) {
-        console.log('DOWN');
+    onSwipeUp(gestureState) {
         if (this.context.store.getState().state.mode === 'flashcardBack') {
             this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
             this.refs[FC_NAV_REF].pop();
@@ -131,6 +124,19 @@ class FlashcardViewScene extends Component {
                 index: 1
             });
         }
+    }
+
+    onRank() {
+        Alert.alert(
+            'Rank',
+            'Select difficulty level',
+            [
+                {text: 'Easy', onPress: () => console.log('1')},
+                {text: 'Medium', onPress: () => console.log('2')},
+                {text: 'Hard', onPress: () => console.log('3')},
+            ],
+            { cancelable: false }
+        )
     }
 
     render() {
@@ -163,7 +169,8 @@ class FlashcardViewScene extends Component {
                                 navigator={navigator}
                                 content={this.context.store.getState().flashcards.flashcardFolders
                                     .folders[this.context.store.getState().state.folderIndex]
-                                    .flashcards[this.state.flashcardIndex].hints} />
+                                    .flashcards[this.state.flashcardIndex].hints}
+                                onRank={this.onRank.bind(this)} />
                         } else if (route.index === 2) { // back
                             return <FlashcardBack
                                 navigator={navigator}
@@ -176,9 +183,9 @@ class FlashcardViewScene extends Component {
                         if (route.index === 0) { // front
                             return Navigator.SceneConfigs.PushFromRight
                         } else if (route.index == 1) { // hints
-                            return Navigator.SceneConfigs.VerticalDownSwipeJump
-                        } else { // back
                             return Navigator.SceneConfigs.VerticalUpSwipeJump
+                        } else { // back
+                            return Navigator.SceneConfigs.VerticalDownSwipeJump
                         }
                     }}
                 />
