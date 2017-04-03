@@ -96,6 +96,7 @@ class LoginScene extends Component {
         this.socket.emit('request-login', {
             username: this.refs[USERNAME_REF].state.inputText,
             password: this.refs[PASSWORD_REF].state.inputText,
+            platform: 'mobile'
         });
     }
 

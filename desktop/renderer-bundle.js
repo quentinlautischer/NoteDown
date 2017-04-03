@@ -122,6 +122,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -187,9 +189,13 @@
 	            _react2.default.createElement(_Snackbar2.default, {
 	              open: store.getState().state.snackbar.open,
 	              message: store.getState().state.snackbar.msg,
+	              action: store.getState().state.snackbar.action,
 	              autoHideDuration: store.getState().state.snackbar.time,
 	              onRequestClose: function onRequestClose() {
 	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              },
+	              onActionTouchTap: function onActionTouchTap() {
+	                return store.dispatch({ type: 'PHOTO_ALERT' });
 	              }
 	            })
 	          );
@@ -202,18 +208,14 @@
 	            _react2.default.createElement(_Snackbar2.default, {
 	              open: store.getState().state.snackbar.open,
 	              message: store.getState().state.snackbar.msg,
+	              action: store.getState().state.snackbar.action,
 	              autoHideDuration: store.getState().state.snackbar.time,
 	              onRequestClose: function onRequestClose() {
 	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
-	              }
-	            }),
-	            _react2.default.createElement(_dialogFileDrag2.default, {
-	              open: store.getState().state.photoAlert.open,
-	              close: function close() {
-	                return store.dispatch({ type: 'CLOSE_PHOTO_ALERT' });
 	              },
-	              filepath: "none",
-	              store: store
+	              onActionTouchTap: function onActionTouchTap() {
+	                return store.dispatch({ type: 'PHOTO_ALERT' });
+	              }
 	            })
 	          );
 	        case 'folderview':
@@ -222,15 +224,18 @@
 	            null,
 	            _react2.default.createElement(_menubarTile2.default, { store: store }),
 	            _react2.default.createElement(_folderContainerView2.default, { store: store }),
-	            _react2.default.createElement(_Snackbar2.default, {
+	            _react2.default.createElement(_Snackbar2.default, _defineProperty({
 	              open: store.getState().state.snackbar.open,
 	              message: store.getState().state.snackbar.msg,
+	              action: store.getState().state.snackbar.action,
 	              autoHideDuration: store.getState().state.snackbar.time,
 	              onActionTouchTap: store.getState().state.snackbar.action,
 	              onRequestClose: function onRequestClose() {
 	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
 	              }
-	            })
+	            }, 'onActionTouchTap', function onActionTouchTap() {
+	              return store.dispatch({ type: 'PHOTO_ALERT' });
+	            }))
 	          );
 	        case 'flashcard':
 	          return _react2.default.createElement(
@@ -241,9 +246,13 @@
 	            _react2.default.createElement(_Snackbar2.default, {
 	              open: store.getState().state.snackbar.open,
 	              message: store.getState().state.snackbar.msg,
+	              action: store.getState().state.snackbar.action,
 	              autoHideDuration: store.getState().state.snackbar.time,
 	              onRequestClose: function onRequestClose() {
 	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
+	              },
+	              onActionTouchTap: function onActionTouchTap() {
+	                return store.dispatch({ type: 'PHOTO_ALERT' });
 	              }
 	            })
 	          );
@@ -319,8 +328,15 @@
 	        }
 	      });
 
-	      ipc.on('request-photo-response', function (event, data) {
-	        console.log('request-photo-response: ' + data);
+	      ipc.on('photo-supply-request', function (event, data) {
+	        console.log('photo-supply-request:');
+	        store.dispatch({ type: 'PHOTO_ALERT_SET_PHOTO', photo: data.photo });
+	        store.dispatch({
+	          type: 'SHOW_SNACKBAR',
+	          msg: 'Mobile has passed you a Photo',
+	          action: 'Insert Photo',
+	          time: 60000
+	        });
 	      });
 
 	      ipc.on('re-render', function (event, data) {
@@ -18346,10 +18362,10 @@
 	 */
 
 	function getUnboundedScrollPosition(scrollable) {
-	  if (scrollable.Window && scrollable instanceof scrollable.Window) {
+	  if (scrollable === window) {
 	    return {
-	      x: scrollable.pageXOffset || scrollable.document.documentElement.scrollLeft,
-	      y: scrollable.pageYOffset || scrollable.document.documentElement.scrollTop
+	      x: window.pageXOffset || document.documentElement.scrollLeft,
+	      y: window.pageYOffset || document.documentElement.scrollTop
 	    };
 	  }
 	  return {
@@ -19097,9 +19113,7 @@
 	 * @return {boolean} Whether or not the object is a DOM node.
 	 */
 	function isNode(object) {
-	  var doc = object ? object.ownerDocument || object : document;
-	  var defaultView = doc.defaultView || window;
-	  return !!(object && (typeof defaultView.Node === 'function' ? object instanceof defaultView.Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
+	  return !!(object && (typeof Node === 'function' ? object instanceof Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
 	}
 
 	module.exports = isNode;
@@ -19129,19 +19143,15 @@
 	 *
 	 * The activeElement will be null only if the document or document body is not
 	 * yet defined.
-	 *
-	 * @param {?DOMDocument} doc Defaults to current document.
-	 * @return {?DOMElement}
 	 */
-	function getActiveElement(doc) /*?DOMElement*/{
-	  doc = doc || global.document;
-	  if (typeof doc === 'undefined') {
+	function getActiveElement() /*?DOMElement*/{
+	  if (typeof document === 'undefined') {
 	    return null;
 	  }
 	  try {
-	    return doc.activeElement || doc.body;
+	    return document.activeElement || document.body;
 	  } catch (e) {
-	    return doc.body;
+	    return document.body;
 	  }
 	}
 
@@ -23872,27 +23882,53 @@
 	}
 
 	function showSnackbar(state, action) {
-	  return Object.assign({}, state, { snackbar: {
-	      open: true,
-	      msg: action.msg,
-	      time: action.time || 4000,
-	      action: action.action || function () {
-	        return null;
-	      }
+	  state = (0, _immutabilityHelper2.default)(state, { snackbar: {
+	      open: { $set: true }
+	    } });
+	  state = (0, _immutabilityHelper2.default)(state, { snackbar: {
+	      msg: { $set: action.msg }
+	    } });
+	  state = (0, _immutabilityHelper2.default)(state, { snackbar: {
+	      time: { $set: action.time || 4000 }
+	    } });
+	  state = (0, _immutabilityHelper2.default)(state, { snackbar: {
+	      action: { $set: action.action || "" }
+	    } });
+	  return state;
+	}
+
+	function closeSnackbar(state, action) {
+	  state = (0, _immutabilityHelper2.default)(state, { snackbar: {
+	      open: { $set: false }
+	    } });
+	  state = (0, _immutabilityHelper2.default)(state, { snackbar: {
+	      msg: { $set: "" }
+	    } });
+	  return state;
+	}
+
+	function showPhotoAlert(state, action) {
+	  return (0, _immutabilityHelper2.default)(state, {
+	    photoAlert: {
+	      open: { $set: true }
 	    }
 	  });
 	}
 
-	function closeSnackbar(state, action) {
-	  return Object.assign({}, state, { snackbar: { open: false, msg: "" } });
-	}
-
-	function showPhotoAlert(state, action) {
-	  return Object.assign({}, state, { photoAlert: { open: true } });
+	function setPhotoAlertPhoto(state, action) {
+	  return (0, _immutabilityHelper2.default)(state, {
+	    photoAlert: {
+	      photo: { $set: action.photo }
+	    }
+	  });
 	}
 
 	function closePhotoAlert(state, action) {
-	  return Object.assign({}, state, { photoAlert: { open: false } });
+	  return (0, _immutabilityHelper2.default)(state, {
+	    photoAlert: {
+	      open: { $set: false }
+	    }
+	  });
 	}
 
 	var initial_state = {
@@ -23904,10 +23940,12 @@
 	  snackbar: {
 	    open: false,
 	    time: 4000,
-	    msg: ""
+	    msg: "",
+	    action: ""
 	  },
 	  photoAlert: {
-	    open: false
+	    open: false,
+	    photo: null
 	  }
 	};
 
@@ -23930,6 +23968,7 @@
 	  'SHOW_SNACKBAR': showSnackbar,
 	  'CLOSE_SNACKBAR': closeSnackbar,
 	  'PHOTO_ALERT': showPhotoAlert,
+	  'PHOTO_ALERT_SET_PHOTO': setPhotoAlertPhoto,
 	  'CLOSE_PHOTO_ALERT': closePhotoAlert
 	});
 
@@ -42731,7 +42770,7 @@
 	    key: 'request_login',
 	    value: function request_login(username, password) {
 	      console.log("received login request; Username: " + username + " Password: " + password);
-	      var data = { username: username, password: password };
+	      var data = { username: username, password: password, platform: 'desktop' };
 	      ipc.send('request-login', data);
 	    }
 	  }, {
@@ -54954,10 +54993,6 @@
 
 	var _keys2 = _interopRequireDefault(_keys);
 
-	var _objectWithoutProperties2 = __webpack_require__(559);
-
-	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
 	var _assign = __webpack_require__(555);
 
 	var _assign2 = _interopRequireDefault(_assign);
@@ -55024,17 +55059,12 @@
 	var state = {};
 
 	function forEachListener(props, iteratee) {
-	  var children = props.children,
-	      target = props.target,
-	      eventProps = (0, _objectWithoutProperties3.default)(props, ['children', 'target']);
-
-
-	  (0, _keys2.default)(eventProps).forEach(function (name) {
+	  (0, _keys2.default)(props).forEach(function (name) {
 	    if (name.substring(0, 2) !== 'on') {
 	      return;
 	    }
 
-	    var prop = eventProps[name];
+	    var prop = props[name];
 	    var type = typeof prop === 'undefined' ? 'undefined' : (0, _typeof3.default)(prop);
 	    var isObject = type === 'object';
 	    var isFunction = type === 'function';
@@ -55716,6 +55746,10 @@
 
 	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
 
+	var _dialogMobilePhotoSupply = __webpack_require__(809);
+
+	var _dialogMobilePhotoSupply2 = _interopRequireDefault(_dialogMobilePhotoSupply);
+
 	var _formatToolbar = __webpack_require__(611);
 
 	var _formatToolbar2 = _interopRequireDefault(_formatToolbar);
@@ -55946,6 +55980,14 @@
 	            return _this2.closeFileDragDialog();
 	          },
 	          filepath: this.state.fileDragEventFilepath,
+	          store: this.props.store,
+	          codeMirror: this.codeMirror
+	        }),
+	        _react2.default.createElement(_dialogMobilePhotoSupply2.default, {
+	          open: this.props.store.getState().state.photoAlert.open || false,
+	          close: function close() {
+	            return _this2.props.store.dispatch({ type: 'CLOSE_PHOTO_ALERT' });
+	          },
 	          store: this.props.store,
 	          codeMirror: this.codeMirror
 	        })
@@ -88607,6 +88649,200 @@
 	};
 
 	module.exports = keyOf;
+
+/***/ },
+/* 809 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Dialog = __webpack_require__(606);
+
+	var _Dialog2 = _interopRequireDefault(_Dialog);
+
+	var _FlatButton = __webpack_require__(584);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	var _RaisedButton = __webpack_require__(552);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _menuTextField = __webpack_require__(587);
+
+	var _menuTextField2 = _interopRequireDefault(_menuTextField);
+
+	var _menuButton = __webpack_require__(551);
+
+	var _menuButton2 = _interopRequireDefault(_menuButton);
+
+	var _MuiThemeProvider = __webpack_require__(402);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(489);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var fs = __webpack_require__(224);
+
+	var PreviewThumbnail = function (_React$Component) {
+	  _inherits(PreviewThumbnail, _React$Component);
+
+	  function PreviewThumbnail() {
+	    _classCallCheck(this, PreviewThumbnail);
+
+	    return _possibleConstructorReturn(this, (PreviewThumbnail.__proto__ || Object.getPrototypeOf(PreviewThumbnail)).call(this));
+	  }
+
+	  _createClass(PreviewThumbnail, [{
+	    key: 'render',
+	    value: function render() {
+	      console.log('Thumnail printing state: ' + this.props.store.getState().state);
+	      console.log(this.props.store.getState().state);
+	      return _react2.default.createElement('img', { src: 'data:image/jpeg;base64, ' + this.props.store.getState().state.photoAlert.photo, width: '300px', height: '250px' });
+	    }
+	  }]);
+
+	  return PreviewThumbnail;
+	}(_react2.default.Component);
+
+	var DialogMobilePhotoSupply = function (_React$Component2) {
+	  _inherits(DialogMobilePhotoSupply, _React$Component2);
+
+	  function DialogMobilePhotoSupply(props) {
+	    _classCallCheck(this, DialogMobilePhotoSupply);
+
+	    var _this2 = _possibleConstructorReturn(this, (DialogMobilePhotoSupply.__proto__ || Object.getPrototypeOf(DialogMobilePhotoSupply)).call(this, props));
+
+	    _this2.state = {
+	      value: ""
+	    };
+
+	    _this2.handleChange = _this2.handleChange.bind(_this2);
+	    _this2.insertPhoto = _this2.insertPhoto.bind(_this2);
+	    return _this2;
+	  }
+
+	  _createClass(DialogMobilePhotoSupply, [{
+	    key: 'handleChange',
+	    value: function handleChange(event) {
+	      this.setState({
+	        value: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'guid',
+	    value: function guid() {
+	      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+	        var r = Math.random() * 16 | 0,
+	            v = c == 'x' ? r : r & 0x3 | 0x8;
+	        return v.toString(16);
+	      });
+	    }
+	  }, {
+	    key: 'insertPhoto',
+	    value: function insertPhoto() {
+	      var state = this.props.store.getState();
+	      console.log(state);
+
+	      var content = "";
+	      var label = this.state.value;
+	      var guid = this.guid();
+	      var store = this.props.store;
+	      if (state.state.userid) {
+	        content = '![' + label + '](@:' + guid + ')';
+	        store.dispatch({
+	          type: 'ADD_PHOTO',
+	          name: label,
+	          guid: guid,
+	          data: state.state.photoAlert.photo,
+	          folderIndex: state.state.folderIndex,
+	          pageIndex: state.state.pageIndex
+	        });
+	      }
+
+	      this.props.codeMirror.replaceSelection(content);
+
+	      this.props.close();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this3 = this;
+
+	      var actions = [_react2.default.createElement(_FlatButton2.default, {
+	        label: 'Cancel',
+	        primary: false,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this3.props.close();
+	        }
+	      }), _react2.default.createElement(_FlatButton2.default, {
+	        label: 'Insert',
+	        primary: true,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this3.insertPhoto();
+	        }
+	      })];
+
+	      return _react2.default.createElement(
+	        _MuiThemeProvider2.default,
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            _Dialog2.default,
+	            {
+	              title: 'Mobile Photo Insert',
+	              actions: actions,
+	              modal: false,
+	              open: this.props.open,
+	              onRequestClose: function onRequestClose() {
+	                return _this3.props.close();
+	              }
+	            },
+	            _react2.default.createElement(PreviewThumbnail, {
+	              store: this.props.store
+	            }),
+	            _react2.default.createElement(_menuTextField2.default, {
+	              hintStyle: { textAlign: 'left' },
+	              hintText: "Photo Label",
+	              value: this.state.value,
+	              onChange: this.handleChange,
+	              primary: true,
+	              keyboardFocused: true
+	            })
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return DialogMobilePhotoSupply;
+	}(_react2.default.Component);
+
+	exports.default = DialogMobilePhotoSupply;
 
 /***/ }
 /******/ ]);

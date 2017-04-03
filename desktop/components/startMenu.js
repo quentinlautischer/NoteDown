@@ -32,7 +32,7 @@ class StartMenu extends React.Component {
 
   request_login(username, password) {
     console.log("received login request; Username: " + username + " Password: " + password);
-    const data = {username: username, password: password};
+    const data = {username: username, password: password, platform: 'desktop'};
     ipc.send('request-login', data);
   }
 

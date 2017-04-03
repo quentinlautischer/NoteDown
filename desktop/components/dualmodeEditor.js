@@ -4,6 +4,7 @@ import TextField from 'react';
 import Renderer from './renderer';
 import TocNav from './tocNav';
 import DialogFileDrag from './dialogFileDrag';
+import DialogMobilePhotoSupply from './dialogMobilePhotoSupply';
 import FormatToolbar from './formatToolbar';
 
 
@@ -172,7 +173,13 @@ class DualmodeEditor extends React.Component {
           open={this.state.fileDragDialogOpen} 
           close={() => this.closeFileDragDialog()}
           filepath={this.state.fileDragEventFilepath}
-          store={this.props.store} 
+          store={this.props.store}
+          codeMirror={this.codeMirror}
+        />
+        <DialogMobilePhotoSupply
+          open={this.props.store.getState().state.photoAlert.open || false} 
+          close={() => this.props.store.dispatch({type: 'CLOSE_PHOTO_ALERT'})}
+          store={this.props.store}
           codeMirror={this.codeMirror}
         />
       </div>

@@ -79,7 +79,7 @@ function initServerComm() {
   // socket = io(HOST);
 
   socket.on('data', (data) => {
-    console.log('received data from server');
+    console.log(`received data event (${data.event}) from server`);
     mainWindow.webContents.send(data.event, data.data);
   });
 }

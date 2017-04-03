@@ -67,8 +67,10 @@ class App extends React.Component {
             <Snackbar
               open={store.getState().state.snackbar.open}
               message={store.getState().state.snackbar.msg}
+              action={store.getState().state.snackbar.action}
               autoHideDuration={store.getState().state.snackbar.time}
               onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
+              onActionTouchTap={() => store.dispatch({type: 'PHOTO_ALERT'})}
             />
           </div>
         );
@@ -80,14 +82,10 @@ class App extends React.Component {
             <Snackbar
               open={store.getState().state.snackbar.open}
               message={store.getState().state.snackbar.msg}
+              action={store.getState().state.snackbar.action}
               autoHideDuration={store.getState().state.snackbar.time}
               onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
-            />
-            <DialogFileDrag
-              open={store.getState().state.photoAlert.open} 
-              close={() => store.dispatch({type: 'CLOSE_PHOTO_ALERT'})}
-              filepath={"none"}
-              store={store} 
+              onActionTouchTap={() => store.dispatch({type: 'PHOTO_ALERT'})}
             />
           </div>
         );
@@ -99,9 +97,11 @@ class App extends React.Component {
             <Snackbar
               open={store.getState().state.snackbar.open}
               message={store.getState().state.snackbar.msg}
+              action={store.getState().state.snackbar.action}
               autoHideDuration={store.getState().state.snackbar.time}
               onActionTouchTap={store.getState().state.snackbar.action}
               onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
+              onActionTouchTap={() => store.dispatch({type: 'PHOTO_ALERT'})}
             />
           </div>
         );
@@ -113,8 +113,10 @@ class App extends React.Component {
             <Snackbar
               open={store.getState().state.snackbar.open}
               message={store.getState().state.snackbar.msg}
+              action={store.getState().state.snackbar.action}
               autoHideDuration={store.getState().state.snackbar.time}
               onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
+              onActionTouchTap={() => store.dispatch({type: 'PHOTO_ALERT'})}
             />
           </div>
         )
@@ -181,8 +183,15 @@ class App extends React.Component {
       }
     })
 
-    ipc.on('request-photo-response', (event, data) => {
-      console.log('request-photo-response: ' + data);
+    ipc.on('photo-supply-request', (event, data) => {
+      console.log('photo-supply-request:');
+      store.dispatch({type: 'PHOTO_ALERT_SET_PHOTO', photo: data.photo});
+      store.dispatch({
+        type: 'SHOW_SNACKBAR',
+        msg: 'Mobile has passed you a Photo',
+        action: 'Insert Photo',
+        time: 60000
+      });
     })
 
     ipc.on('re-render', (event, data) => {

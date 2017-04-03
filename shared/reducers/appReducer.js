@@ -62,26 +62,53 @@ function selectPage(state, action) {
 }
 
 function showSnackbar(state, action) {
-  return Object.assign({}, state,
-    {snackbar: {
-      open: true,
-      msg: action.msg,
-      time: action.time || 4000,
-      action: action.action || function(){ return null }
-      }
-    });
+  state = update(state, { snackbar: {
+      open: {$set : true}
+  }});
+  state = update(state, { snackbar: {
+      msg: {$set : action.msg}
+  }});
+  state = update(state, { snackbar: {
+      time: {$set : action.time || 4000}
+  }});
+  state = update(state, { snackbar: {
+      action: {$set : action.action || ""}
+  }});
+  return state;
 }
 
 function closeSnackbar(state, action) {
-  return Object.assign({}, state, {snackbar: {open: false, msg: ""}});
+  state = update(state, { snackbar: {
+      open: {$set : false}
+  }});
+  state = update(state, { snackbar: {
+      msg: {$set : ""}
+  }});
+  return state;
 }
 
 function showPhotoAlert(state, action) {
-  return Object.assign({}, state, {photoAlert: {open: true}});
+  return update(state, {
+    photoAlert: {
+      open: {$set : true}
+    }
+  });
+}
+
+function setPhotoAlertPhoto(state, action) {
+  return update(state, {
+    photoAlert: {
+      photo: {$set : action.photo}
+    }
+  });
 }
 
 function closePhotoAlert(state, action) {
-  return Object.assign({}, state, {photoAlert: {open: false}});
+  return update(state, {
+    photoAlert: {
+      open: {$set : false}
+    }
+  });
 }
 
 const initial_state = {
@@ -93,10 +120,12 @@ const initial_state = {
   snackbar: {
     open: false,
     time: 4000,
-    msg: ""
+    msg: "",
+    action: ""
   },
   photoAlert: {
-    open: false
+    open: false,
+    photo: null
   }
 }
 
@@ -119,6 +148,7 @@ const appReducer = createReducer(initial_state, {
   'SHOW_SNACKBAR': showSnackbar,
   'CLOSE_SNACKBAR': closeSnackbar,
   'PHOTO_ALERT': showPhotoAlert,
+  'PHOTO_ALERT_SET_PHOTO': setPhotoAlertPhoto,
   'CLOSE_PHOTO_ALERT': closePhotoAlert
 });
 

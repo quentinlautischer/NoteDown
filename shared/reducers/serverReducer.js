@@ -3,7 +3,8 @@ var update = require('react-addons-update');
 addOnlineUser = function(state, action) {
   const user = {
     userid: action.userid,
-    socketid: action.socketid
+    socketid: action.socketid,
+    platform: action.platform
   }
 
   return update(state, {
@@ -20,10 +21,12 @@ removeOnlineUser = function(state, action) {
       index = i;
     }
   }
-
-  return update(state, {
-    onlineUsers: {$splice: [[index, 1]]}
-  });
+  if (index) {
+    return update(state, {
+      onlineUsers: {$splice: [[index, 1]]}
+    });
+  }
+  return state;
 }
 
 const initial_state = {
