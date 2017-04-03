@@ -29,7 +29,7 @@ class FlashcardViewScene extends Component {
 
     componentDidMount() {
         Orientation.lockToLandscape(); //this will lock the view to Landscape
-        console.log('MODE: ' + this.context.store.getState().state.mode);
+        console.log('FCs: ' + JSON.stringify(this.context.store.getState().flashcards));
     }
 
     componentWillUnmount() {
@@ -100,7 +100,7 @@ class FlashcardViewScene extends Component {
         this.setState({ flashcardIndex: this.state.flashcardIndex - 1 });
     }
 
-    onSwipeDown(gestureState) {
+    onSwipeUp(gestureState) {
         if (this.context.store.getState().state.mode === 'flashcardFront') {
             this.context.store.dispatch({type: 'FLASHCARD_BACK_MODE'});
             this.refs[FC_NAV_REF].push({
@@ -113,7 +113,7 @@ class FlashcardViewScene extends Component {
         }
     }
 
-    onSwipeUp(gestureState) {
+    onSwipeDown(gestureState) {
         if (this.context.store.getState().state.mode === 'flashcardBack') {
             this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
             this.refs[FC_NAV_REF].pop();
@@ -169,23 +169,23 @@ class FlashcardViewScene extends Component {
                                 navigator={navigator}
                                 content={this.context.store.getState().flashcards.flashcardFolders
                                     .folders[this.context.store.getState().state.folderIndex]
-                                    .flashcards[this.state.flashcardIndex].hints}
-                                onRank={this.onRank.bind(this)} />
+                                    .flashcards[this.state.flashcardIndex].hints} />
                         } else if (route.index === 2) { // back
                             return <FlashcardBack
                                 navigator={navigator}
                                 content={this.context.store.getState().flashcards.flashcardFolders
                                     .folders[this.context.store.getState().state.folderIndex]
-                                    .flashcards[this.state.flashcardIndex].back} />
+                                    .flashcards[this.state.flashcardIndex].back}
+                                onRank={this.onRank.bind(this)} />
                         }
                     }}
                     configureScene={(route, routeStack) => {
                         if (route.index === 0) { // front
                             return Navigator.SceneConfigs.PushFromRight
                         } else if (route.index == 1) { // hints
-                            return Navigator.SceneConfigs.VerticalUpSwipeJump
-                        } else { // back
                             return Navigator.SceneConfigs.VerticalDownSwipeJump
+                        } else { // back
+                            return Navigator.SceneConfigs.VerticalUpSwipeJump
                         }
                     }}
                 />

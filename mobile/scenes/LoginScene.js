@@ -45,7 +45,7 @@ class LoginScene extends Component {
 
             // recieve the user's data (to populate their folders)
             } else if (data.event === 'request-pull-data-response') {
-                // console.log("Mobile client pulled data: ", data);
+                console.log("Mobile client pulled data: ", data);
                 this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
                 if (this.context.store.getState().state.mode === 'login') {
                     this.context.store.dispatch({type: 'MENU_MODE'});

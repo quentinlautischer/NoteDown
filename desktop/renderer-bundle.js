@@ -25821,8 +25821,8 @@
 	          //   console.log(`Flashcard back: ${match[1][1].split('|')}`);
 	          flashcards.push({
 	            front: match[0][1],
-	            hints: match[2][1].split('|'),
-	            back: match[1][1].split('|')
+	            back: match[2][1].split('|'),
+	            hints: match[1][1].split('|')
 	          });
 	          var raw2 = { content: content.slice(l + 3, content.length) };
 
@@ -25862,7 +25862,6 @@
 	    var cards = get_flashcard(block_array);
 	    // console.log(`cards: ${JSON.stringify(cards)}`);
 	    flashcards = flashcards.concat(cards);
-	    // console.log(`flashcards: ${JSON.stringify(flashcards)}`);
 	  }
 	  return flashcards;
 	}
