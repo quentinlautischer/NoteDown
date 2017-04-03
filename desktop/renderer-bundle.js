@@ -88,15 +88,15 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _flashcardViewer = __webpack_require__(794);
+	var _flashcardViewer = __webpack_require__(795);
 
 	var _flashcardViewer2 = _interopRequireDefault(_flashcardViewer);
 
-	var _folderContainerView = __webpack_require__(795);
+	var _folderContainerView = __webpack_require__(796);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _menubarTile = __webpack_require__(797);
+	var _menubarTile = __webpack_require__(798);
 
 	var _menubarTile2 = _interopRequireDefault(_menubarTile);
 
@@ -112,11 +112,11 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	var _Snackbar = __webpack_require__(798);
+	var _Snackbar = __webpack_require__(799);
 
 	var _Snackbar2 = _interopRequireDefault(_Snackbar);
 
-	var _reactTapEventPlugin = __webpack_require__(803);
+	var _reactTapEventPlugin = __webpack_require__(804);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -132,7 +132,7 @@
 
 	(0, _reactTapEventPlugin2.default)();
 
-	var hljs = __webpack_require__(612);
+	var hljs = __webpack_require__(613);
 
 	var ipc = __webpack_require__(223).ipcRenderer;
 
@@ -55751,11 +55751,11 @@
 
 	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
 
-	var _dialogMobilePhotoSupply = __webpack_require__(809);
+	var _dialogMobilePhotoSupply = __webpack_require__(611);
 
 	var _dialogMobilePhotoSupply2 = _interopRequireDefault(_dialogMobilePhotoSupply);
 
-	var _formatToolbar = __webpack_require__(611);
+	var _formatToolbar = __webpack_require__(612);
 
 	var _formatToolbar2 = _interopRequireDefault(_formatToolbar);
 
@@ -55773,11 +55773,11 @@
 
 	var shared = __webpack_require__(225);
 
-	var hljs = __webpack_require__(612);
-	var CodeMirror = __webpack_require__(786);
-	__webpack_require__(790);
+	var hljs = __webpack_require__(613);
+	var CodeMirror = __webpack_require__(787);
 	__webpack_require__(791);
 	__webpack_require__(792);
+	__webpack_require__(793);
 
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
@@ -57787,6 +57787,200 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _Dialog = __webpack_require__(606);
+
+	var _Dialog2 = _interopRequireDefault(_Dialog);
+
+	var _FlatButton = __webpack_require__(584);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	var _RaisedButton = __webpack_require__(552);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _menuTextField = __webpack_require__(587);
+
+	var _menuTextField2 = _interopRequireDefault(_menuTextField);
+
+	var _menuButton = __webpack_require__(551);
+
+	var _menuButton2 = _interopRequireDefault(_menuButton);
+
+	var _MuiThemeProvider = __webpack_require__(402);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(489);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var fs = __webpack_require__(224);
+
+	var PreviewThumbnail = function (_React$Component) {
+	  _inherits(PreviewThumbnail, _React$Component);
+
+	  function PreviewThumbnail() {
+	    _classCallCheck(this, PreviewThumbnail);
+
+	    return _possibleConstructorReturn(this, (PreviewThumbnail.__proto__ || Object.getPrototypeOf(PreviewThumbnail)).call(this));
+	  }
+
+	  _createClass(PreviewThumbnail, [{
+	    key: 'render',
+	    value: function render() {
+	      console.log('Thumnail printing state: ' + this.props.store.getState().state);
+	      console.log(this.props.store.getState().state);
+	      return _react2.default.createElement('img', { src: 'data:image/jpeg;base64, ' + this.props.store.getState().state.photoAlert.photo, width: '300px', height: '250px' });
+	    }
+	  }]);
+
+	  return PreviewThumbnail;
+	}(_react2.default.Component);
+
+	var DialogMobilePhotoSupply = function (_React$Component2) {
+	  _inherits(DialogMobilePhotoSupply, _React$Component2);
+
+	  function DialogMobilePhotoSupply(props) {
+	    _classCallCheck(this, DialogMobilePhotoSupply);
+
+	    var _this2 = _possibleConstructorReturn(this, (DialogMobilePhotoSupply.__proto__ || Object.getPrototypeOf(DialogMobilePhotoSupply)).call(this, props));
+
+	    _this2.state = {
+	      value: ""
+	    };
+
+	    _this2.handleChange = _this2.handleChange.bind(_this2);
+	    _this2.insertPhoto = _this2.insertPhoto.bind(_this2);
+	    return _this2;
+	  }
+
+	  _createClass(DialogMobilePhotoSupply, [{
+	    key: 'handleChange',
+	    value: function handleChange(event) {
+	      this.setState({
+	        value: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'guid',
+	    value: function guid() {
+	      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+	        var r = Math.random() * 16 | 0,
+	            v = c == 'x' ? r : r & 0x3 | 0x8;
+	        return v.toString(16);
+	      });
+	    }
+	  }, {
+	    key: 'insertPhoto',
+	    value: function insertPhoto() {
+	      var state = this.props.store.getState();
+	      console.log(state);
+
+	      var content = "";
+	      var label = this.state.value;
+	      var guid = this.guid();
+	      var store = this.props.store;
+	      if (state.state.userid) {
+	        content = '![' + label + '](@:' + guid + ')';
+	        store.dispatch({
+	          type: 'ADD_PHOTO',
+	          name: label,
+	          guid: guid,
+	          data: state.state.photoAlert.photo,
+	          folderIndex: state.state.folderIndex,
+	          pageIndex: state.state.pageIndex
+	        });
+	      }
+
+	      this.props.codeMirror.replaceSelection(content);
+
+	      this.props.close();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this3 = this;
+
+	      var actions = [_react2.default.createElement(_FlatButton2.default, {
+	        label: 'Cancel',
+	        primary: false,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this3.props.close();
+	        }
+	      }), _react2.default.createElement(_FlatButton2.default, {
+	        label: 'Insert',
+	        primary: true,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this3.insertPhoto();
+	        }
+	      })];
+
+	      return _react2.default.createElement(
+	        _MuiThemeProvider2.default,
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            _Dialog2.default,
+	            {
+	              title: 'Mobile Photo Insert',
+	              actions: actions,
+	              modal: false,
+	              open: this.props.open,
+	              onRequestClose: function onRequestClose() {
+	                return _this3.props.close();
+	              }
+	            },
+	            _react2.default.createElement(PreviewThumbnail, {
+	              store: this.props.store
+	            }),
+	            _react2.default.createElement(_menuTextField2.default, {
+	              hintStyle: { textAlign: 'left' },
+	              hintText: "Photo Label",
+	              value: this.state.value,
+	              onChange: this.handleChange,
+	              primary: true,
+	              keyboardFocused: true
+	            })
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return DialogMobilePhotoSupply;
+	}(_react2.default.Component);
+
+	exports.default = DialogMobilePhotoSupply;
+
+/***/ },
+/* 612 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
 	var _MuiThemeProvider = __webpack_require__(402);
 
 	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
@@ -57959,188 +58153,188 @@
 	exports.default = FormatToolbar;
 
 /***/ },
-/* 612 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hljs = __webpack_require__(613);
+	var hljs = __webpack_require__(614);
 
-	hljs.registerLanguage('1c', __webpack_require__(614));
-	hljs.registerLanguage('abnf', __webpack_require__(615));
-	hljs.registerLanguage('accesslog', __webpack_require__(616));
-	hljs.registerLanguage('actionscript', __webpack_require__(617));
-	hljs.registerLanguage('ada', __webpack_require__(618));
-	hljs.registerLanguage('apache', __webpack_require__(619));
-	hljs.registerLanguage('applescript', __webpack_require__(620));
-	hljs.registerLanguage('cpp', __webpack_require__(621));
-	hljs.registerLanguage('arduino', __webpack_require__(622));
-	hljs.registerLanguage('armasm', __webpack_require__(623));
-	hljs.registerLanguage('xml', __webpack_require__(624));
-	hljs.registerLanguage('asciidoc', __webpack_require__(625));
-	hljs.registerLanguage('aspectj', __webpack_require__(626));
-	hljs.registerLanguage('autohotkey', __webpack_require__(627));
-	hljs.registerLanguage('autoit', __webpack_require__(628));
-	hljs.registerLanguage('avrasm', __webpack_require__(629));
-	hljs.registerLanguage('awk', __webpack_require__(630));
-	hljs.registerLanguage('axapta', __webpack_require__(631));
-	hljs.registerLanguage('bash', __webpack_require__(632));
-	hljs.registerLanguage('basic', __webpack_require__(633));
-	hljs.registerLanguage('bnf', __webpack_require__(634));
-	hljs.registerLanguage('brainfuck', __webpack_require__(635));
-	hljs.registerLanguage('cal', __webpack_require__(636));
-	hljs.registerLanguage('capnproto', __webpack_require__(637));
-	hljs.registerLanguage('ceylon', __webpack_require__(638));
-	hljs.registerLanguage('clean', __webpack_require__(639));
-	hljs.registerLanguage('clojure', __webpack_require__(640));
-	hljs.registerLanguage('clojure-repl', __webpack_require__(641));
-	hljs.registerLanguage('cmake', __webpack_require__(642));
-	hljs.registerLanguage('coffeescript', __webpack_require__(643));
-	hljs.registerLanguage('coq', __webpack_require__(644));
-	hljs.registerLanguage('cos', __webpack_require__(645));
-	hljs.registerLanguage('crmsh', __webpack_require__(646));
-	hljs.registerLanguage('crystal', __webpack_require__(647));
-	hljs.registerLanguage('cs', __webpack_require__(648));
-	hljs.registerLanguage('csp', __webpack_require__(649));
-	hljs.registerLanguage('css', __webpack_require__(650));
-	hljs.registerLanguage('d', __webpack_require__(651));
-	hljs.registerLanguage('markdown', __webpack_require__(652));
-	hljs.registerLanguage('dart', __webpack_require__(653));
-	hljs.registerLanguage('delphi', __webpack_require__(654));
-	hljs.registerLanguage('diff', __webpack_require__(655));
-	hljs.registerLanguage('django', __webpack_require__(656));
-	hljs.registerLanguage('dns', __webpack_require__(657));
-	hljs.registerLanguage('dockerfile', __webpack_require__(658));
-	hljs.registerLanguage('dos', __webpack_require__(659));
-	hljs.registerLanguage('dsconfig', __webpack_require__(660));
-	hljs.registerLanguage('dts', __webpack_require__(661));
-	hljs.registerLanguage('dust', __webpack_require__(662));
-	hljs.registerLanguage('ebnf', __webpack_require__(663));
-	hljs.registerLanguage('elixir', __webpack_require__(664));
-	hljs.registerLanguage('elm', __webpack_require__(665));
-	hljs.registerLanguage('ruby', __webpack_require__(666));
-	hljs.registerLanguage('erb', __webpack_require__(667));
-	hljs.registerLanguage('erlang-repl', __webpack_require__(668));
-	hljs.registerLanguage('erlang', __webpack_require__(669));
-	hljs.registerLanguage('excel', __webpack_require__(670));
-	hljs.registerLanguage('fix', __webpack_require__(671));
-	hljs.registerLanguage('flix', __webpack_require__(672));
-	hljs.registerLanguage('fortran', __webpack_require__(673));
-	hljs.registerLanguage('fsharp', __webpack_require__(674));
-	hljs.registerLanguage('gams', __webpack_require__(675));
-	hljs.registerLanguage('gauss', __webpack_require__(676));
-	hljs.registerLanguage('gcode', __webpack_require__(677));
-	hljs.registerLanguage('gherkin', __webpack_require__(678));
-	hljs.registerLanguage('glsl', __webpack_require__(679));
-	hljs.registerLanguage('go', __webpack_require__(680));
-	hljs.registerLanguage('golo', __webpack_require__(681));
-	hljs.registerLanguage('gradle', __webpack_require__(682));
-	hljs.registerLanguage('groovy', __webpack_require__(683));
-	hljs.registerLanguage('haml', __webpack_require__(684));
-	hljs.registerLanguage('handlebars', __webpack_require__(685));
-	hljs.registerLanguage('haskell', __webpack_require__(686));
-	hljs.registerLanguage('haxe', __webpack_require__(687));
-	hljs.registerLanguage('hsp', __webpack_require__(688));
-	hljs.registerLanguage('htmlbars', __webpack_require__(689));
-	hljs.registerLanguage('http', __webpack_require__(690));
-	hljs.registerLanguage('hy', __webpack_require__(691));
-	hljs.registerLanguage('inform7', __webpack_require__(692));
-	hljs.registerLanguage('ini', __webpack_require__(693));
-	hljs.registerLanguage('irpf90', __webpack_require__(694));
-	hljs.registerLanguage('java', __webpack_require__(695));
-	hljs.registerLanguage('javascript', __webpack_require__(696));
-	hljs.registerLanguage('json', __webpack_require__(697));
-	hljs.registerLanguage('julia', __webpack_require__(698));
-	hljs.registerLanguage('kotlin', __webpack_require__(699));
-	hljs.registerLanguage('lasso', __webpack_require__(700));
-	hljs.registerLanguage('ldif', __webpack_require__(701));
-	hljs.registerLanguage('leaf', __webpack_require__(702));
-	hljs.registerLanguage('less', __webpack_require__(703));
-	hljs.registerLanguage('lisp', __webpack_require__(704));
-	hljs.registerLanguage('livecodeserver', __webpack_require__(705));
-	hljs.registerLanguage('livescript', __webpack_require__(706));
-	hljs.registerLanguage('llvm', __webpack_require__(707));
-	hljs.registerLanguage('lsl', __webpack_require__(708));
-	hljs.registerLanguage('lua', __webpack_require__(709));
-	hljs.registerLanguage('makefile', __webpack_require__(710));
-	hljs.registerLanguage('mathematica', __webpack_require__(711));
-	hljs.registerLanguage('matlab', __webpack_require__(712));
-	hljs.registerLanguage('maxima', __webpack_require__(713));
-	hljs.registerLanguage('mel', __webpack_require__(714));
-	hljs.registerLanguage('mercury', __webpack_require__(715));
-	hljs.registerLanguage('mipsasm', __webpack_require__(716));
-	hljs.registerLanguage('mizar', __webpack_require__(717));
-	hljs.registerLanguage('perl', __webpack_require__(718));
-	hljs.registerLanguage('mojolicious', __webpack_require__(719));
-	hljs.registerLanguage('monkey', __webpack_require__(720));
-	hljs.registerLanguage('moonscript', __webpack_require__(721));
-	hljs.registerLanguage('n1ql', __webpack_require__(722));
-	hljs.registerLanguage('nginx', __webpack_require__(723));
-	hljs.registerLanguage('nimrod', __webpack_require__(724));
-	hljs.registerLanguage('nix', __webpack_require__(725));
-	hljs.registerLanguage('nsis', __webpack_require__(726));
-	hljs.registerLanguage('objectivec', __webpack_require__(727));
-	hljs.registerLanguage('ocaml', __webpack_require__(728));
-	hljs.registerLanguage('openscad', __webpack_require__(729));
-	hljs.registerLanguage('oxygene', __webpack_require__(730));
-	hljs.registerLanguage('parser3', __webpack_require__(731));
-	hljs.registerLanguage('pf', __webpack_require__(732));
-	hljs.registerLanguage('php', __webpack_require__(733));
-	hljs.registerLanguage('pony', __webpack_require__(734));
-	hljs.registerLanguage('powershell', __webpack_require__(735));
-	hljs.registerLanguage('processing', __webpack_require__(736));
-	hljs.registerLanguage('profile', __webpack_require__(737));
-	hljs.registerLanguage('prolog', __webpack_require__(738));
-	hljs.registerLanguage('protobuf', __webpack_require__(739));
-	hljs.registerLanguage('puppet', __webpack_require__(740));
-	hljs.registerLanguage('purebasic', __webpack_require__(741));
-	hljs.registerLanguage('python', __webpack_require__(742));
-	hljs.registerLanguage('q', __webpack_require__(743));
-	hljs.registerLanguage('qml', __webpack_require__(744));
-	hljs.registerLanguage('r', __webpack_require__(745));
-	hljs.registerLanguage('rib', __webpack_require__(746));
-	hljs.registerLanguage('roboconf', __webpack_require__(747));
-	hljs.registerLanguage('rsl', __webpack_require__(748));
-	hljs.registerLanguage('ruleslanguage', __webpack_require__(749));
-	hljs.registerLanguage('rust', __webpack_require__(750));
-	hljs.registerLanguage('scala', __webpack_require__(751));
-	hljs.registerLanguage('scheme', __webpack_require__(752));
-	hljs.registerLanguage('scilab', __webpack_require__(753));
-	hljs.registerLanguage('scss', __webpack_require__(754));
-	hljs.registerLanguage('smali', __webpack_require__(755));
-	hljs.registerLanguage('smalltalk', __webpack_require__(756));
-	hljs.registerLanguage('sml', __webpack_require__(757));
-	hljs.registerLanguage('sqf', __webpack_require__(758));
-	hljs.registerLanguage('sql', __webpack_require__(759));
-	hljs.registerLanguage('stan', __webpack_require__(760));
-	hljs.registerLanguage('stata', __webpack_require__(761));
-	hljs.registerLanguage('step21', __webpack_require__(762));
-	hljs.registerLanguage('stylus', __webpack_require__(763));
-	hljs.registerLanguage('subunit', __webpack_require__(764));
-	hljs.registerLanguage('swift', __webpack_require__(765));
-	hljs.registerLanguage('taggerscript', __webpack_require__(766));
-	hljs.registerLanguage('yaml', __webpack_require__(767));
-	hljs.registerLanguage('tap', __webpack_require__(768));
-	hljs.registerLanguage('tcl', __webpack_require__(769));
-	hljs.registerLanguage('tex', __webpack_require__(770));
-	hljs.registerLanguage('thrift', __webpack_require__(771));
-	hljs.registerLanguage('tp', __webpack_require__(772));
-	hljs.registerLanguage('twig', __webpack_require__(773));
-	hljs.registerLanguage('typescript', __webpack_require__(774));
-	hljs.registerLanguage('vala', __webpack_require__(775));
-	hljs.registerLanguage('vbnet', __webpack_require__(776));
-	hljs.registerLanguage('vbscript', __webpack_require__(777));
-	hljs.registerLanguage('vbscript-html', __webpack_require__(778));
-	hljs.registerLanguage('verilog', __webpack_require__(779));
-	hljs.registerLanguage('vhdl', __webpack_require__(780));
-	hljs.registerLanguage('vim', __webpack_require__(781));
-	hljs.registerLanguage('x86asm', __webpack_require__(782));
-	hljs.registerLanguage('xl', __webpack_require__(783));
-	hljs.registerLanguage('xquery', __webpack_require__(784));
-	hljs.registerLanguage('zephir', __webpack_require__(785));
+	hljs.registerLanguage('1c', __webpack_require__(615));
+	hljs.registerLanguage('abnf', __webpack_require__(616));
+	hljs.registerLanguage('accesslog', __webpack_require__(617));
+	hljs.registerLanguage('actionscript', __webpack_require__(618));
+	hljs.registerLanguage('ada', __webpack_require__(619));
+	hljs.registerLanguage('apache', __webpack_require__(620));
+	hljs.registerLanguage('applescript', __webpack_require__(621));
+	hljs.registerLanguage('cpp', __webpack_require__(622));
+	hljs.registerLanguage('arduino', __webpack_require__(623));
+	hljs.registerLanguage('armasm', __webpack_require__(624));
+	hljs.registerLanguage('xml', __webpack_require__(625));
+	hljs.registerLanguage('asciidoc', __webpack_require__(626));
+	hljs.registerLanguage('aspectj', __webpack_require__(627));
+	hljs.registerLanguage('autohotkey', __webpack_require__(628));
+	hljs.registerLanguage('autoit', __webpack_require__(629));
+	hljs.registerLanguage('avrasm', __webpack_require__(630));
+	hljs.registerLanguage('awk', __webpack_require__(631));
+	hljs.registerLanguage('axapta', __webpack_require__(632));
+	hljs.registerLanguage('bash', __webpack_require__(633));
+	hljs.registerLanguage('basic', __webpack_require__(634));
+	hljs.registerLanguage('bnf', __webpack_require__(635));
+	hljs.registerLanguage('brainfuck', __webpack_require__(636));
+	hljs.registerLanguage('cal', __webpack_require__(637));
+	hljs.registerLanguage('capnproto', __webpack_require__(638));
+	hljs.registerLanguage('ceylon', __webpack_require__(639));
+	hljs.registerLanguage('clean', __webpack_require__(640));
+	hljs.registerLanguage('clojure', __webpack_require__(641));
+	hljs.registerLanguage('clojure-repl', __webpack_require__(642));
+	hljs.registerLanguage('cmake', __webpack_require__(643));
+	hljs.registerLanguage('coffeescript', __webpack_require__(644));
+	hljs.registerLanguage('coq', __webpack_require__(645));
+	hljs.registerLanguage('cos', __webpack_require__(646));
+	hljs.registerLanguage('crmsh', __webpack_require__(647));
+	hljs.registerLanguage('crystal', __webpack_require__(648));
+	hljs.registerLanguage('cs', __webpack_require__(649));
+	hljs.registerLanguage('csp', __webpack_require__(650));
+	hljs.registerLanguage('css', __webpack_require__(651));
+	hljs.registerLanguage('d', __webpack_require__(652));
+	hljs.registerLanguage('markdown', __webpack_require__(653));
+	hljs.registerLanguage('dart', __webpack_require__(654));
+	hljs.registerLanguage('delphi', __webpack_require__(655));
+	hljs.registerLanguage('diff', __webpack_require__(656));
+	hljs.registerLanguage('django', __webpack_require__(657));
+	hljs.registerLanguage('dns', __webpack_require__(658));
+	hljs.registerLanguage('dockerfile', __webpack_require__(659));
+	hljs.registerLanguage('dos', __webpack_require__(660));
+	hljs.registerLanguage('dsconfig', __webpack_require__(661));
+	hljs.registerLanguage('dts', __webpack_require__(662));
+	hljs.registerLanguage('dust', __webpack_require__(663));
+	hljs.registerLanguage('ebnf', __webpack_require__(664));
+	hljs.registerLanguage('elixir', __webpack_require__(665));
+	hljs.registerLanguage('elm', __webpack_require__(666));
+	hljs.registerLanguage('ruby', __webpack_require__(667));
+	hljs.registerLanguage('erb', __webpack_require__(668));
+	hljs.registerLanguage('erlang-repl', __webpack_require__(669));
+	hljs.registerLanguage('erlang', __webpack_require__(670));
+	hljs.registerLanguage('excel', __webpack_require__(671));
+	hljs.registerLanguage('fix', __webpack_require__(672));
+	hljs.registerLanguage('flix', __webpack_require__(673));
+	hljs.registerLanguage('fortran', __webpack_require__(674));
+	hljs.registerLanguage('fsharp', __webpack_require__(675));
+	hljs.registerLanguage('gams', __webpack_require__(676));
+	hljs.registerLanguage('gauss', __webpack_require__(677));
+	hljs.registerLanguage('gcode', __webpack_require__(678));
+	hljs.registerLanguage('gherkin', __webpack_require__(679));
+	hljs.registerLanguage('glsl', __webpack_require__(680));
+	hljs.registerLanguage('go', __webpack_require__(681));
+	hljs.registerLanguage('golo', __webpack_require__(682));
+	hljs.registerLanguage('gradle', __webpack_require__(683));
+	hljs.registerLanguage('groovy', __webpack_require__(684));
+	hljs.registerLanguage('haml', __webpack_require__(685));
+	hljs.registerLanguage('handlebars', __webpack_require__(686));
+	hljs.registerLanguage('haskell', __webpack_require__(687));
+	hljs.registerLanguage('haxe', __webpack_require__(688));
+	hljs.registerLanguage('hsp', __webpack_require__(689));
+	hljs.registerLanguage('htmlbars', __webpack_require__(690));
+	hljs.registerLanguage('http', __webpack_require__(691));
+	hljs.registerLanguage('hy', __webpack_require__(692));
+	hljs.registerLanguage('inform7', __webpack_require__(693));
+	hljs.registerLanguage('ini', __webpack_require__(694));
+	hljs.registerLanguage('irpf90', __webpack_require__(695));
+	hljs.registerLanguage('java', __webpack_require__(696));
+	hljs.registerLanguage('javascript', __webpack_require__(697));
+	hljs.registerLanguage('json', __webpack_require__(698));
+	hljs.registerLanguage('julia', __webpack_require__(699));
+	hljs.registerLanguage('kotlin', __webpack_require__(700));
+	hljs.registerLanguage('lasso', __webpack_require__(701));
+	hljs.registerLanguage('ldif', __webpack_require__(702));
+	hljs.registerLanguage('leaf', __webpack_require__(703));
+	hljs.registerLanguage('less', __webpack_require__(704));
+	hljs.registerLanguage('lisp', __webpack_require__(705));
+	hljs.registerLanguage('livecodeserver', __webpack_require__(706));
+	hljs.registerLanguage('livescript', __webpack_require__(707));
+	hljs.registerLanguage('llvm', __webpack_require__(708));
+	hljs.registerLanguage('lsl', __webpack_require__(709));
+	hljs.registerLanguage('lua', __webpack_require__(710));
+	hljs.registerLanguage('makefile', __webpack_require__(711));
+	hljs.registerLanguage('mathematica', __webpack_require__(712));
+	hljs.registerLanguage('matlab', __webpack_require__(713));
+	hljs.registerLanguage('maxima', __webpack_require__(714));
+	hljs.registerLanguage('mel', __webpack_require__(715));
+	hljs.registerLanguage('mercury', __webpack_require__(716));
+	hljs.registerLanguage('mipsasm', __webpack_require__(717));
+	hljs.registerLanguage('mizar', __webpack_require__(718));
+	hljs.registerLanguage('perl', __webpack_require__(719));
+	hljs.registerLanguage('mojolicious', __webpack_require__(720));
+	hljs.registerLanguage('monkey', __webpack_require__(721));
+	hljs.registerLanguage('moonscript', __webpack_require__(722));
+	hljs.registerLanguage('n1ql', __webpack_require__(723));
+	hljs.registerLanguage('nginx', __webpack_require__(724));
+	hljs.registerLanguage('nimrod', __webpack_require__(725));
+	hljs.registerLanguage('nix', __webpack_require__(726));
+	hljs.registerLanguage('nsis', __webpack_require__(727));
+	hljs.registerLanguage('objectivec', __webpack_require__(728));
+	hljs.registerLanguage('ocaml', __webpack_require__(729));
+	hljs.registerLanguage('openscad', __webpack_require__(730));
+	hljs.registerLanguage('oxygene', __webpack_require__(731));
+	hljs.registerLanguage('parser3', __webpack_require__(732));
+	hljs.registerLanguage('pf', __webpack_require__(733));
+	hljs.registerLanguage('php', __webpack_require__(734));
+	hljs.registerLanguage('pony', __webpack_require__(735));
+	hljs.registerLanguage('powershell', __webpack_require__(736));
+	hljs.registerLanguage('processing', __webpack_require__(737));
+	hljs.registerLanguage('profile', __webpack_require__(738));
+	hljs.registerLanguage('prolog', __webpack_require__(739));
+	hljs.registerLanguage('protobuf', __webpack_require__(740));
+	hljs.registerLanguage('puppet', __webpack_require__(741));
+	hljs.registerLanguage('purebasic', __webpack_require__(742));
+	hljs.registerLanguage('python', __webpack_require__(743));
+	hljs.registerLanguage('q', __webpack_require__(744));
+	hljs.registerLanguage('qml', __webpack_require__(745));
+	hljs.registerLanguage('r', __webpack_require__(746));
+	hljs.registerLanguage('rib', __webpack_require__(747));
+	hljs.registerLanguage('roboconf', __webpack_require__(748));
+	hljs.registerLanguage('rsl', __webpack_require__(749));
+	hljs.registerLanguage('ruleslanguage', __webpack_require__(750));
+	hljs.registerLanguage('rust', __webpack_require__(751));
+	hljs.registerLanguage('scala', __webpack_require__(752));
+	hljs.registerLanguage('scheme', __webpack_require__(753));
+	hljs.registerLanguage('scilab', __webpack_require__(754));
+	hljs.registerLanguage('scss', __webpack_require__(755));
+	hljs.registerLanguage('smali', __webpack_require__(756));
+	hljs.registerLanguage('smalltalk', __webpack_require__(757));
+	hljs.registerLanguage('sml', __webpack_require__(758));
+	hljs.registerLanguage('sqf', __webpack_require__(759));
+	hljs.registerLanguage('sql', __webpack_require__(760));
+	hljs.registerLanguage('stan', __webpack_require__(761));
+	hljs.registerLanguage('stata', __webpack_require__(762));
+	hljs.registerLanguage('step21', __webpack_require__(763));
+	hljs.registerLanguage('stylus', __webpack_require__(764));
+	hljs.registerLanguage('subunit', __webpack_require__(765));
+	hljs.registerLanguage('swift', __webpack_require__(766));
+	hljs.registerLanguage('taggerscript', __webpack_require__(767));
+	hljs.registerLanguage('yaml', __webpack_require__(768));
+	hljs.registerLanguage('tap', __webpack_require__(769));
+	hljs.registerLanguage('tcl', __webpack_require__(770));
+	hljs.registerLanguage('tex', __webpack_require__(771));
+	hljs.registerLanguage('thrift', __webpack_require__(772));
+	hljs.registerLanguage('tp', __webpack_require__(773));
+	hljs.registerLanguage('twig', __webpack_require__(774));
+	hljs.registerLanguage('typescript', __webpack_require__(775));
+	hljs.registerLanguage('vala', __webpack_require__(776));
+	hljs.registerLanguage('vbnet', __webpack_require__(777));
+	hljs.registerLanguage('vbscript', __webpack_require__(778));
+	hljs.registerLanguage('vbscript-html', __webpack_require__(779));
+	hljs.registerLanguage('verilog', __webpack_require__(780));
+	hljs.registerLanguage('vhdl', __webpack_require__(781));
+	hljs.registerLanguage('vim', __webpack_require__(782));
+	hljs.registerLanguage('x86asm', __webpack_require__(783));
+	hljs.registerLanguage('xl', __webpack_require__(784));
+	hljs.registerLanguage('xquery', __webpack_require__(785));
+	hljs.registerLanguage('zephir', __webpack_require__(786));
 
 	module.exports = hljs;
 
 /***/ },
-/* 613 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -58970,7 +59164,7 @@
 
 
 /***/ },
-/* 614 */
+/* 615 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -59053,7 +59247,7 @@
 	};
 
 /***/ },
-/* 615 */
+/* 616 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59128,7 +59322,7 @@
 	};
 
 /***/ },
-/* 616 */
+/* 617 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59170,7 +59364,7 @@
 	};
 
 /***/ },
-/* 617 */
+/* 618 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59248,7 +59442,7 @@
 	};
 
 /***/ },
-/* 618 */
+/* 619 */
 /***/ function(module, exports) {
 
 	module.exports = // We try to support full Ada2012
@@ -59425,7 +59619,7 @@
 	};
 
 /***/ },
-/* 619 */
+/* 620 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59475,7 +59669,7 @@
 	};
 
 /***/ },
-/* 620 */
+/* 621 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59565,7 +59759,7 @@
 	};
 
 /***/ },
-/* 621 */
+/* 622 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59735,7 +59929,7 @@
 	};
 
 /***/ },
-/* 622 */
+/* 623 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59839,7 +60033,7 @@
 	};
 
 /***/ },
-/* 623 */
+/* 624 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59935,7 +60129,7 @@
 	};
 
 /***/ },
-/* 624 */
+/* 625 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60042,7 +60236,7 @@
 	};
 
 /***/ },
-/* 625 */
+/* 626 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60234,7 +60428,7 @@
 	};
 
 /***/ },
-/* 626 */
+/* 627 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -60382,7 +60576,7 @@
 	};
 
 /***/ },
-/* 627 */
+/* 628 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60434,7 +60628,7 @@
 	};
 
 /***/ },
-/* 628 */
+/* 629 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60574,7 +60768,7 @@
 	};
 
 /***/ },
-/* 629 */
+/* 630 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60640,7 +60834,7 @@
 	};
 
 /***/ },
-/* 630 */
+/* 631 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60697,7 +60891,7 @@
 	};
 
 /***/ },
-/* 631 */
+/* 632 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60732,7 +60926,7 @@
 	};
 
 /***/ },
-/* 632 */
+/* 633 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60811,7 +61005,7 @@
 	};
 
 /***/ },
-/* 633 */
+/* 634 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60866,7 +61060,7 @@
 	};
 
 /***/ },
-/* 634 */
+/* 635 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -60899,7 +61093,7 @@
 	};
 
 /***/ },
-/* 635 */
+/* 636 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -60940,7 +61134,7 @@
 	};
 
 /***/ },
-/* 636 */
+/* 637 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61024,7 +61218,7 @@
 	};
 
 /***/ },
-/* 637 */
+/* 638 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61077,7 +61271,7 @@
 	};
 
 /***/ },
-/* 638 */
+/* 639 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61148,7 +61342,7 @@
 	};
 
 /***/ },
-/* 639 */
+/* 640 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61177,7 +61371,7 @@
 	};
 
 /***/ },
-/* 640 */
+/* 641 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61276,7 +61470,7 @@
 	};
 
 /***/ },
-/* 641 */
+/* 642 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61295,7 +61489,7 @@
 	};
 
 /***/ },
-/* 642 */
+/* 643 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61337,7 +61531,7 @@
 	};
 
 /***/ },
-/* 643 */
+/* 644 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61487,7 +61681,7 @@
 	};
 
 /***/ },
-/* 644 */
+/* 645 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61558,7 +61752,7 @@
 	};
 
 /***/ },
-/* 645 */
+/* 646 */
 /***/ function(module, exports) {
 
 	module.exports = function cos (hljs) {
@@ -61686,7 +61880,7 @@
 	};
 
 /***/ },
-/* 646 */
+/* 647 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61784,7 +61978,7 @@
 	};
 
 /***/ },
-/* 647 */
+/* 648 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61965,7 +62159,7 @@
 	};
 
 /***/ },
-/* 648 */
+/* 649 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62136,7 +62330,7 @@
 	};
 
 /***/ },
-/* 649 */
+/* 650 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62162,7 +62356,7 @@
 	};
 
 /***/ },
-/* 650 */
+/* 651 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62271,7 +62465,7 @@
 	};
 
 /***/ },
-/* 651 */
+/* 652 */
 /***/ function(module, exports) {
 
 	module.exports = /**
@@ -62533,7 +62727,7 @@
 	};
 
 /***/ },
-/* 652 */
+/* 653 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62645,7 +62839,7 @@
 	};
 
 /***/ },
-/* 653 */
+/* 654 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -62750,7 +62944,7 @@
 	};
 
 /***/ },
-/* 654 */
+/* 655 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62823,7 +63017,7 @@
 	};
 
 /***/ },
-/* 655 */
+/* 656 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62867,7 +63061,7 @@
 	};
 
 /***/ },
-/* 656 */
+/* 657 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62935,7 +63129,7 @@
 	};
 
 /***/ },
-/* 657 */
+/* 658 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62968,7 +63162,7 @@
 	};
 
 /***/ },
-/* 658 */
+/* 659 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62994,7 +63188,7 @@
 	};
 
 /***/ },
-/* 659 */
+/* 660 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63050,7 +63244,7 @@
 	};
 
 /***/ },
-/* 660 */
+/* 661 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63101,7 +63295,7 @@
 	};
 
 /***/ },
-/* 661 */
+/* 662 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63229,7 +63423,7 @@
 	};
 
 /***/ },
-/* 662 */
+/* 663 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63265,7 +63459,7 @@
 	};
 
 /***/ },
-/* 663 */
+/* 664 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63302,7 +63496,7 @@
 	};
 
 /***/ },
-/* 664 */
+/* 665 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63403,7 +63597,7 @@
 	};
 
 /***/ },
-/* 665 */
+/* 666 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63490,7 +63684,7 @@
 	};
 
 /***/ },
-/* 666 */
+/* 667 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63670,7 +63864,7 @@
 	};
 
 /***/ },
-/* 667 */
+/* 668 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63689,7 +63883,7 @@
 	};
 
 /***/ },
-/* 668 */
+/* 669 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63739,7 +63933,7 @@
 	};
 
 /***/ },
-/* 669 */
+/* 670 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63889,7 +64083,7 @@
 	};
 
 /***/ },
-/* 670 */
+/* 671 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63941,7 +64135,7 @@
 	};
 
 /***/ },
-/* 671 */
+/* 672 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63974,7 +64168,7 @@
 	};
 
 /***/ },
-/* 672 */
+/* 673 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -64023,7 +64217,7 @@
 	};
 
 /***/ },
-/* 673 */
+/* 674 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -64098,7 +64292,7 @@
 	};
 
 /***/ },
-/* 674 */
+/* 675 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -64161,7 +64355,7 @@
 	};
 
 /***/ },
-/* 675 */
+/* 676 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -64319,7 +64513,7 @@
 	};
 
 /***/ },
-/* 676 */
+/* 677 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -64547,7 +64741,7 @@
 	};
 
 /***/ },
-/* 677 */
+/* 678 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -64618,7 +64812,7 @@
 	};
 
 /***/ },
-/* 678 */
+/* 679 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -64659,7 +64853,7 @@
 	};
 
 /***/ },
-/* 679 */
+/* 680 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -64780,7 +64974,7 @@
 	};
 
 /***/ },
-/* 680 */
+/* 681 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -64838,7 +65032,7 @@
 	};
 
 /***/ },
-/* 681 */
+/* 682 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -64865,7 +65059,7 @@
 	};
 
 /***/ },
-/* 682 */
+/* 683 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -64904,7 +65098,7 @@
 	};
 
 /***/ },
-/* 683 */
+/* 684 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65002,7 +65196,7 @@
 	};
 
 /***/ },
-/* 684 */
+/* 685 */
 /***/ function(module, exports) {
 
 	module.exports = // TODO support filter tags like :javascript, support inline HTML
@@ -65113,7 +65307,7 @@
 	};
 
 /***/ },
-/* 685 */
+/* 686 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65151,7 +65345,7 @@
 	};
 
 /***/ },
-/* 686 */
+/* 687 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65277,7 +65471,7 @@
 	};
 
 /***/ },
-/* 687 */
+/* 688 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65393,7 +65587,7 @@
 	};
 
 /***/ },
-/* 688 */
+/* 689 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65443,7 +65637,7 @@
 	};
 
 /***/ },
-/* 689 */
+/* 690 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65518,7 +65712,7 @@
 	};
 
 /***/ },
-/* 690 */
+/* 691 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65563,7 +65757,7 @@
 	};
 
 /***/ },
-/* 691 */
+/* 692 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65669,7 +65863,7 @@
 	};
 
 /***/ },
-/* 692 */
+/* 693 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65730,7 +65924,7 @@
 	};
 
 /***/ },
-/* 693 */
+/* 694 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65800,7 +65994,7 @@
 	};
 
 /***/ },
-/* 694 */
+/* 695 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65880,7 +66074,7 @@
 	};
 
 /***/ },
-/* 695 */
+/* 696 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -65992,7 +66186,7 @@
 	};
 
 /***/ },
-/* 696 */
+/* 697 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -66167,7 +66361,7 @@
 	};
 
 /***/ },
-/* 697 */
+/* 698 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -66208,7 +66402,7 @@
 	};
 
 /***/ },
-/* 698 */
+/* 699 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -66390,7 +66584,7 @@
 	};
 
 /***/ },
-/* 699 */
+/* 700 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -66568,7 +66762,7 @@
 	};
 
 /***/ },
-/* 700 */
+/* 701 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -66735,7 +66929,7 @@
 	};
 
 /***/ },
-/* 701 */
+/* 702 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -66762,7 +66956,7 @@
 	};
 
 /***/ },
-/* 702 */
+/* 703 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -66806,7 +67000,7 @@
 	};
 
 /***/ },
-/* 703 */
+/* 704 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -66950,7 +67144,7 @@
 	};
 
 /***/ },
-/* 704 */
+/* 705 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -67057,7 +67251,7 @@
 	};
 
 /***/ },
-/* 705 */
+/* 706 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -67218,7 +67412,7 @@
 	};
 
 /***/ },
-/* 706 */
+/* 707 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -67371,7 +67565,7 @@
 	};
 
 /***/ },
-/* 707 */
+/* 708 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -67464,7 +67658,7 @@
 	};
 
 /***/ },
-/* 708 */
+/* 709 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -67551,7 +67745,7 @@
 	};
 
 /***/ },
-/* 709 */
+/* 710 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -67621,7 +67815,7 @@
 	};
 
 /***/ },
-/* 710 */
+/* 711 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -67670,7 +67864,7 @@
 	};
 
 /***/ },
-/* 711 */
+/* 712 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -67732,7 +67926,7 @@
 	};
 
 /***/ },
-/* 712 */
+/* 713 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -67824,7 +68018,7 @@
 	};
 
 /***/ },
-/* 713 */
+/* 714 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -68234,7 +68428,7 @@
 	};
 
 /***/ },
-/* 714 */
+/* 715 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -68463,7 +68657,7 @@
 	};
 
 /***/ },
-/* 715 */
+/* 716 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -68549,7 +68743,7 @@
 	};
 
 /***/ },
-/* 716 */
+/* 717 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -68639,7 +68833,7 @@
 	};
 
 /***/ },
-/* 717 */
+/* 718 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -68662,7 +68856,7 @@
 	};
 
 /***/ },
-/* 718 */
+/* 719 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -68823,7 +69017,7 @@
 	};
 
 /***/ },
-/* 719 */
+/* 720 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -68852,7 +69046,7 @@
 	};
 
 /***/ },
-/* 720 */
+/* 721 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -68931,7 +69125,7 @@
 	};
 
 /***/ },
-/* 721 */
+/* 722 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69047,7 +69241,7 @@
 	};
 
 /***/ },
-/* 722 */
+/* 723 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69120,7 +69314,7 @@
 	};
 
 /***/ },
-/* 723 */
+/* 724 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69217,7 +69411,7 @@
 	};
 
 /***/ },
-/* 724 */
+/* 725 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69276,7 +69470,7 @@
 	};
 
 /***/ },
-/* 725 */
+/* 726 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69329,7 +69523,7 @@
 	};
 
 /***/ },
-/* 726 */
+/* 727 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69439,7 +69633,7 @@
 	};
 
 /***/ },
-/* 727 */
+/* 728 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69534,7 +69728,7 @@
 	};
 
 /***/ },
-/* 728 */
+/* 729 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69609,7 +69803,7 @@
 	};
 
 /***/ },
-/* 729 */
+/* 730 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69670,7 +69864,7 @@
 	};
 
 /***/ },
-/* 730 */
+/* 731 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69744,7 +69938,7 @@
 	};
 
 /***/ },
-/* 731 */
+/* 732 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69796,7 +69990,7 @@
 	};
 
 /***/ },
-/* 732 */
+/* 733 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69852,7 +70046,7 @@
 	};
 
 /***/ },
-/* 733 */
+/* 734 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -69983,7 +70177,7 @@
 	};
 
 /***/ },
-/* 734 */
+/* 735 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70078,7 +70272,7 @@
 	};
 
 /***/ },
-/* 735 */
+/* 736 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70163,7 +70357,7 @@
 	};
 
 /***/ },
-/* 736 */
+/* 737 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70215,7 +70409,7 @@
 	};
 
 /***/ },
-/* 737 */
+/* 738 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70249,7 +70443,7 @@
 	};
 
 /***/ },
-/* 738 */
+/* 739 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70341,7 +70535,7 @@
 	};
 
 /***/ },
-/* 739 */
+/* 740 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70381,7 +70575,7 @@
 	};
 
 /***/ },
-/* 740 */
+/* 741 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70500,7 +70694,7 @@
 	};
 
 /***/ },
-/* 741 */
+/* 742 */
 /***/ function(module, exports) {
 
 	module.exports = // Base deafult colors in PB IDE: background: #FFFFDF; foreground: #000000;
@@ -70562,7 +70756,7 @@
 	};
 
 /***/ },
-/* 742 */
+/* 743 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70682,7 +70876,7 @@
 	};
 
 /***/ },
-/* 743 */
+/* 744 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70709,7 +70903,7 @@
 	};
 
 /***/ },
-/* 744 */
+/* 745 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70882,7 +71076,7 @@
 	};
 
 /***/ },
-/* 745 */
+/* 746 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70956,7 +71150,7 @@
 	};
 
 /***/ },
-/* 746 */
+/* 747 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -70987,7 +71181,7 @@
 	};
 
 /***/ },
-/* 747 */
+/* 748 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71058,7 +71252,7 @@
 	};
 
 /***/ },
-/* 748 */
+/* 749 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71098,7 +71292,7 @@
 	};
 
 /***/ },
-/* 749 */
+/* 750 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71163,7 +71357,7 @@
 	};
 
 /***/ },
-/* 750 */
+/* 751 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71275,7 +71469,7 @@
 	};
 
 /***/ },
-/* 751 */
+/* 752 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71394,7 +71588,7 @@
 	};
 
 /***/ },
-/* 752 */
+/* 753 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71542,7 +71736,7 @@
 	};
 
 /***/ },
-/* 753 */
+/* 754 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71600,7 +71794,7 @@
 	};
 
 /***/ },
-/* 754 */
+/* 755 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71702,7 +71896,7 @@
 	};
 
 /***/ },
-/* 755 */
+/* 756 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71762,7 +71956,7 @@
 	};
 
 /***/ },
-/* 756 */
+/* 757 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71816,7 +72010,7 @@
 	};
 
 /***/ },
-/* 757 */
+/* 758 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -71886,7 +72080,7 @@
 	};
 
 /***/ },
-/* 758 */
+/* 759 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -72261,7 +72455,7 @@
 	};
 
 /***/ },
-/* 759 */
+/* 760 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -72425,7 +72619,7 @@
 	};
 
 /***/ },
-/* 760 */
+/* 761 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -72512,7 +72706,7 @@
 	};
 
 /***/ },
-/* 761 */
+/* 762 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -72554,7 +72748,7 @@
 	};
 
 /***/ },
-/* 762 */
+/* 763 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -72605,7 +72799,7 @@
 	};
 
 /***/ },
-/* 763 */
+/* 764 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73063,7 +73257,7 @@
 	};
 
 /***/ },
-/* 764 */
+/* 765 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73101,7 +73295,7 @@
 	};
 
 /***/ },
-/* 765 */
+/* 766 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73222,7 +73416,7 @@
 	};
 
 /***/ },
-/* 766 */
+/* 767 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73270,7 +73464,7 @@
 	};
 
 /***/ },
-/* 767 */
+/* 768 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73362,7 +73556,7 @@
 	};
 
 /***/ },
-/* 768 */
+/* 769 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73402,7 +73596,7 @@
 	};
 
 /***/ },
-/* 769 */
+/* 770 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73467,7 +73661,7 @@
 	};
 
 /***/ },
-/* 770 */
+/* 771 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73533,7 +73727,7 @@
 	};
 
 /***/ },
-/* 771 */
+/* 772 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73572,7 +73766,7 @@
 	};
 
 /***/ },
-/* 772 */
+/* 773 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73660,7 +73854,7 @@
 	};
 
 /***/ },
-/* 773 */
+/* 774 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73730,7 +73924,7 @@
 	};
 
 /***/ },
-/* 774 */
+/* 775 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73890,7 +74084,7 @@
 	};
 
 /***/ },
-/* 775 */
+/* 776 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -73944,7 +74138,7 @@
 	};
 
 /***/ },
-/* 776 */
+/* 777 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74004,7 +74198,7 @@
 	};
 
 /***/ },
-/* 777 */
+/* 778 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74047,7 +74241,7 @@
 	};
 
 /***/ },
-/* 778 */
+/* 779 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74063,7 +74257,7 @@
 	};
 
 /***/ },
-/* 779 */
+/* 780 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74166,7 +74360,7 @@
 	};
 
 /***/ },
-/* 780 */
+/* 781 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74231,7 +74425,7 @@
 	};
 
 /***/ },
-/* 781 */
+/* 782 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74341,7 +74535,7 @@
 	};
 
 /***/ },
-/* 782 */
+/* 783 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74481,7 +74675,7 @@
 	};
 
 /***/ },
-/* 783 */
+/* 784 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74558,7 +74752,7 @@
 	};
 
 /***/ },
-/* 784 */
+/* 785 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74633,7 +74827,7 @@
 	};
 
 /***/ },
-/* 785 */
+/* 786 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74744,7 +74938,7 @@
 	};
 
 /***/ },
-/* 786 */
+/* 787 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74752,8 +74946,8 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(31);
 	var findDOMNode = ReactDOM.findDOMNode;
-	var className = __webpack_require__(787);
-	var debounce = __webpack_require__(788);
+	var className = __webpack_require__(788);
+	var debounce = __webpack_require__(789);
 
 	function normalizeLineEndings(str) {
 		if (!str) return str;
@@ -74781,7 +74975,7 @@
 			};
 		},
 		getCodeMirrorInstance: function getCodeMirrorInstance() {
-			return this.props.codeMirrorInstance || __webpack_require__(789);
+			return this.props.codeMirrorInstance || __webpack_require__(790);
 		},
 		getInitialState: function getInitialState() {
 			return {
@@ -74860,7 +75054,7 @@
 	module.exports = CodeMirror;
 
 /***/ },
-/* 787 */
+/* 788 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -74914,7 +75108,7 @@
 
 
 /***/ },
-/* 788 */
+/* 789 */
 /***/ function(module, exports) {
 
 	/**
@@ -75297,7 +75491,7 @@
 
 
 /***/ },
-/* 789 */
+/* 790 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -84608,7 +84802,7 @@
 
 
 /***/ },
-/* 790 */
+/* 791 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -84616,7 +84810,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(789));
+	    mod(__webpack_require__(790));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -85416,7 +85610,7 @@
 
 
 /***/ },
-/* 791 */
+/* 792 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -85424,7 +85618,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(789));
+	    mod(__webpack_require__(790));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -85816,7 +86010,7 @@
 
 
 /***/ },
-/* 792 */
+/* 793 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -85824,7 +86018,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(789), __webpack_require__(791), __webpack_require__(793));
+	    mod(__webpack_require__(790), __webpack_require__(792), __webpack_require__(794));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "../xml/xml", "../meta"], mod);
 	  else // Plain browser env
@@ -86630,7 +86824,7 @@
 
 
 /***/ },
-/* 793 */
+/* 794 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -86638,7 +86832,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(789));
+	    mod(__webpack_require__(790));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -86850,7 +87044,7 @@
 
 
 /***/ },
-/* 794 */
+/* 795 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87002,7 +87196,7 @@
 	exports.default = FlashcardViewer;
 
 /***/ },
-/* 795 */
+/* 796 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87017,7 +87211,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _dialogFolderCreate = __webpack_require__(796);
+	var _dialogFolderCreate = __webpack_require__(797);
 
 	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
 
@@ -87190,7 +87384,7 @@
 	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
 
 /***/ },
-/* 796 */
+/* 797 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87320,7 +87514,7 @@
 	exports.default = DialogFolderCreate;
 
 /***/ },
-/* 797 */
+/* 798 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87471,7 +87665,7 @@
 	exports.default = MenubarTile;
 
 /***/ },
-/* 798 */
+/* 799 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87481,7 +87675,7 @@
 	});
 	exports.default = undefined;
 
-	var _Snackbar = __webpack_require__(799);
+	var _Snackbar = __webpack_require__(800);
 
 	var _Snackbar2 = _interopRequireDefault(_Snackbar);
 
@@ -87490,7 +87684,7 @@
 	exports.default = _Snackbar2.default;
 
 /***/ },
-/* 799 */
+/* 800 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87539,11 +87733,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _ClickAwayListener = __webpack_require__(800);
+	var _ClickAwayListener = __webpack_require__(801);
 
 	var _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);
 
-	var _SnackbarBody = __webpack_require__(801);
+	var _SnackbarBody = __webpack_require__(802);
 
 	var _SnackbarBody2 = _interopRequireDefault(_SnackbarBody);
 
@@ -87804,7 +87998,7 @@
 	exports.default = Snackbar;
 
 /***/ },
-/* 800 */
+/* 801 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87934,7 +88128,7 @@
 	exports.default = ClickAwayListener;
 
 /***/ },
-/* 801 */
+/* 802 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87964,7 +88158,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _withWidth = __webpack_require__(802);
+	var _withWidth = __webpack_require__(803);
 
 	var _withWidth2 = _interopRequireDefault(_withWidth);
 
@@ -88103,7 +88297,7 @@
 	exports.default = (0, _withWidth2.default)()(SnackbarBody);
 
 /***/ },
-/* 802 */
+/* 803 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -88253,11 +88447,11 @@
 	}
 
 /***/ },
-/* 803 */
+/* 804 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(804);
+	var defaultClickRejectionStrategy = __webpack_require__(805);
 
 	var alreadyInjected = false;
 
@@ -88279,13 +88473,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(805)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(806)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 804 */
+/* 805 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -88296,7 +88490,7 @@
 
 
 /***/ },
-/* 805 */
+/* 806 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -88320,14 +88514,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(806);
+	var EventConstants = __webpack_require__(807);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(807);
+	var TouchEventUtils = __webpack_require__(808);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(808);
+	var keyOf = __webpack_require__(809);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -88473,7 +88667,7 @@
 
 
 /***/ },
-/* 806 */
+/* 807 */
 /***/ function(module, exports) {
 
 	/**
@@ -88569,7 +88763,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 807 */
+/* 808 */
 /***/ function(module, exports) {
 
 	/**
@@ -88617,7 +88811,7 @@
 
 
 /***/ },
-/* 808 */
+/* 809 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -88654,200 +88848,6 @@
 	};
 
 	module.exports = keyOf;
-
-/***/ },
-/* 809 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _Dialog = __webpack_require__(606);
-
-	var _Dialog2 = _interopRequireDefault(_Dialog);
-
-	var _FlatButton = __webpack_require__(584);
-
-	var _FlatButton2 = _interopRequireDefault(_FlatButton);
-
-	var _RaisedButton = __webpack_require__(552);
-
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
-	var _menuTextField = __webpack_require__(587);
-
-	var _menuTextField2 = _interopRequireDefault(_menuTextField);
-
-	var _menuButton = __webpack_require__(551);
-
-	var _menuButton2 = _interopRequireDefault(_menuButton);
-
-	var _MuiThemeProvider = __webpack_require__(402);
-
-	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
-
-	var _getMuiTheme = __webpack_require__(489);
-
-	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var fs = __webpack_require__(224);
-
-	var PreviewThumbnail = function (_React$Component) {
-	  _inherits(PreviewThumbnail, _React$Component);
-
-	  function PreviewThumbnail() {
-	    _classCallCheck(this, PreviewThumbnail);
-
-	    return _possibleConstructorReturn(this, (PreviewThumbnail.__proto__ || Object.getPrototypeOf(PreviewThumbnail)).call(this));
-	  }
-
-	  _createClass(PreviewThumbnail, [{
-	    key: 'render',
-	    value: function render() {
-	      console.log('Thumnail printing state: ' + this.props.store.getState().state);
-	      console.log(this.props.store.getState().state);
-	      return _react2.default.createElement('img', { src: 'data:image/jpeg;base64, ' + this.props.store.getState().state.photoAlert.photo, width: '300px', height: '250px' });
-	    }
-	  }]);
-
-	  return PreviewThumbnail;
-	}(_react2.default.Component);
-
-	var DialogMobilePhotoSupply = function (_React$Component2) {
-	  _inherits(DialogMobilePhotoSupply, _React$Component2);
-
-	  function DialogMobilePhotoSupply(props) {
-	    _classCallCheck(this, DialogMobilePhotoSupply);
-
-	    var _this2 = _possibleConstructorReturn(this, (DialogMobilePhotoSupply.__proto__ || Object.getPrototypeOf(DialogMobilePhotoSupply)).call(this, props));
-
-	    _this2.state = {
-	      value: ""
-	    };
-
-	    _this2.handleChange = _this2.handleChange.bind(_this2);
-	    _this2.insertPhoto = _this2.insertPhoto.bind(_this2);
-	    return _this2;
-	  }
-
-	  _createClass(DialogMobilePhotoSupply, [{
-	    key: 'handleChange',
-	    value: function handleChange(event) {
-	      this.setState({
-	        value: event.target.value
-	      });
-	    }
-	  }, {
-	    key: 'guid',
-	    value: function guid() {
-	      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-	        var r = Math.random() * 16 | 0,
-	            v = c == 'x' ? r : r & 0x3 | 0x8;
-	        return v.toString(16);
-	      });
-	    }
-	  }, {
-	    key: 'insertPhoto',
-	    value: function insertPhoto() {
-	      var state = this.props.store.getState();
-	      console.log(state);
-
-	      var content = "";
-	      var label = this.state.value;
-	      var guid = this.guid();
-	      var store = this.props.store;
-	      if (state.state.userid) {
-	        content = '![' + label + '](@:' + guid + ')';
-	        store.dispatch({
-	          type: 'ADD_PHOTO',
-	          name: label,
-	          guid: guid,
-	          data: state.state.photoAlert.photo,
-	          folderIndex: state.state.folderIndex,
-	          pageIndex: state.state.pageIndex
-	        });
-	      }
-
-	      this.props.codeMirror.replaceSelection(content);
-
-	      this.props.close();
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this3 = this;
-
-	      var actions = [_react2.default.createElement(_FlatButton2.default, {
-	        label: 'Cancel',
-	        primary: false,
-	        keyboardFocused: false,
-	        onTouchTap: function onTouchTap() {
-	          return _this3.props.close();
-	        }
-	      }), _react2.default.createElement(_FlatButton2.default, {
-	        label: 'Insert',
-	        primary: true,
-	        keyboardFocused: false,
-	        onTouchTap: function onTouchTap() {
-	          return _this3.insertPhoto();
-	        }
-	      })];
-
-	      return _react2.default.createElement(
-	        _MuiThemeProvider2.default,
-	        null,
-	        _react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement(
-	            _Dialog2.default,
-	            {
-	              title: 'Mobile Photo Insert',
-	              actions: actions,
-	              modal: false,
-	              open: this.props.open,
-	              onRequestClose: function onRequestClose() {
-	                return _this3.props.close();
-	              }
-	            },
-	            _react2.default.createElement(PreviewThumbnail, {
-	              store: this.props.store
-	            }),
-	            _react2.default.createElement(_menuTextField2.default, {
-	              hintStyle: { textAlign: 'left' },
-	              hintText: "Photo Label",
-	              value: this.state.value,
-	              onChange: this.handleChange,
-	              primary: true,
-	              keyboardFocused: true
-	            })
-	          )
-	        )
-	      );
-	    }
-	  }]);
-
-	  return DialogMobilePhotoSupply;
-	}(_react2.default.Component);
-
-	exports.default = DialogMobilePhotoSupply;
 
 /***/ }
 /******/ ]);
