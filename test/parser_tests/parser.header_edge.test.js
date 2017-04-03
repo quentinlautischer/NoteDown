@@ -44,7 +44,7 @@ test('setext header edge test 6', () => {
 
 test('setext header edge test 7', () => {
   const raw_str = '    Header 1\n-----';
-  const rendered = '<h2>    Header 1</h2>';
+  const rendered = '<pre><code>Header 1\n</code></pre><hr />'; //code rendered before headers
   
   expect(parser.parse(raw_str)).toBe(rendered);
 });
@@ -86,7 +86,7 @@ test('setext header edge test 12', () => {
 
 test('setext header edge test 13', () => {
   const raw_str = '![link](url)\n=====';
-  const rendered = '<h1><img src="url" alt="link" title="" /></h1>';
+  const rendered = '<h1><img width="350px" src="url" alt="link" /></h1>';
   
   expect(parser.parse(raw_str)).toBe(rendered);
 });
@@ -121,6 +121,6 @@ test('atx header edge test 4', () => {
 
 test('atx header edge test 5', () => {
   const raw_str = '# ![link](url)';
-  const rendered = '<h1><img src="url" alt="link" title="" /></h1>';
+  const rendered = '<h1><img width="350px" src="url" alt="link" /></h1>';
   expect(parser.parse(raw_str)).toBe(rendered);
 });

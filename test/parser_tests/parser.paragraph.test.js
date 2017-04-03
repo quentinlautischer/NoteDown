@@ -44,7 +44,7 @@ test('paragraph test 6', () => {
 
 test('paragraph test 7', () => {
   const raw_str = 'This is an ![image](url).';
-  const rendered = '<p>This is <img src="url" alt="image" title="" />.</p>';
+  const rendered = '<p>This is an <img width=\"350px\" src=\"url\" alt=\"image\" />.</p>';
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });

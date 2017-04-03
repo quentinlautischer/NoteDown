@@ -126,3 +126,33 @@ test('table test 4 - two row two col no align', () => {
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });
+
+test('table test 5 - nested span parsing', () => {
+  var raw_str = 
+"| Table | Table1 |\n\
+|-------|--------|\n\
+|*Stuff*  | __stuff__  |\n\
+|[Stuff](url) | `stuff` |\n"
+
+  var rendered =  
+'<table>\
+<thead>\
+<tr>\
+<th>Table</th>\
+<th>Table1</th>\
+</tr>\
+</thead>\
+<tbody>\
+<tr>\
+<td><em>Stuff</em></td>\
+<td><strong>stuff</strong></td>\
+</tr>\
+<tr>\
+<td><a href="url">Stuff</a></td>\
+<td><code>stuff</code></td>\
+</tr>\
+</tbody>\
+</table>';
+
+  expect(parser.parse(raw_str)).toBe(rendered);
+});
