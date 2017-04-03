@@ -22,6 +22,8 @@ class NotesEditScene extends Component {
         this.storeDidUpdate = this.storeDidUpdate.bind(this);
 
         this.unsubscribe = null;
+
+        setInterval(this.props.requestPushData, 1000 * 60 * 10); // autosave every 10 minutes
     }
 
     insertShortcutText(text, isBlock) {

@@ -57,12 +57,13 @@ class NotesViewScene extends Component {
             title: 'NotesEditScene',
             component: NotesEditScene,
             passProps: {
-                socket: this.props.socket
+                socket: this.props.socket,
+                requestPushData: this.requestPushData.bind(this)
             },
             onPress: this.onPress.bind(this),
             onBack: this.onBack.bind(this),
             rightIconName: 'cloud-upload',
-            backIconName: 'arrow-left'
+            backIconName: 'arrow-left',
         })
     }
 
