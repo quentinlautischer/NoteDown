@@ -131,9 +131,9 @@ class App extends React.Component {
     ipc.send('request-pull-data', data);
   }
 
-  request_push_data() {
+  request_push_data(force = false) {
     console.log("requesting data push");
-    const data = {userid: store.getState().state.userid, notes: store.getState().notes};
+    const data = {userid: store.getState().state.userid, notes: store.getState().notes, force_push: force};
     ipc.send('request-push-data', data);
   }
 
