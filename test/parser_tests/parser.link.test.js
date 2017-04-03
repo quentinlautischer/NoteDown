@@ -16,14 +16,14 @@ test('link test 2', () => {
 
 test('link test 3', () => {
   const raw_str = '[link][cite]\n\n\n[cite]: url';
-  const rendered = '<p><a href="url">link</a></p>\n\n\n';
+  const rendered = '<p><a href="url">link</a></p>';
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });
 
 test('link test 4', () => {
   const raw_str = '[link] [cite]\n\n\n[cite]: url';
-  const rendered = '<p><a href="url">link</a></p>';
+  const rendered = '<p>[link] <a href="url">cite</a></p>';
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });

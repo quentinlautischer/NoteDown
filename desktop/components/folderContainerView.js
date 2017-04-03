@@ -23,7 +23,6 @@ class FolderContainerView extends React.Component {
     this.unsubscribe = null;
   }
 
-
   componentDidMount(){
    this.unsubscribe = this.props.store.subscribe( this.storeDidUpdate );
   }
@@ -101,7 +100,6 @@ class FolderContainerView extends React.Component {
   }
 
   render() {
-    console.log("FolderviewContainer Rendering!!!!!");
     return (
       <div className="folder-container-view">
         {this.props.store.getState().notes.folders.map(this.renderFolder, this)}
