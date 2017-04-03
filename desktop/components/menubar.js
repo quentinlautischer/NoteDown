@@ -126,7 +126,7 @@ function menuLogout(store) {
 }
 
 function menuPushToCloud(store) {
-  const data = {userid: store.getState().state.userid, notes: store.getState().notes};
+  const data = {userid: store.getState().state.userid, notes: store.getState().notes, force_push: false};
   ipc.send('request-push-data', data);
   store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pushing data to cloud'});
 }

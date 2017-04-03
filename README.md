@@ -1,4 +1,4 @@
-#setup 
+# Setup 
 ```bash
 npm install -g electron-prebuilt
 ```
@@ -51,4 +51,3 @@ From root:
 ```bash
   npm run android
 ```
-

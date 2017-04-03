@@ -110,7 +110,8 @@ createAccountModel = function(email, password, name) {
 createNotesModel = function(userid) {
   var notes = new Notes({
     userid: userid,
-    folders: []
+    folders: [],
+    updatedAt: ""
   });
   return notes;
 }
@@ -213,6 +214,7 @@ pullDataRequest = function(socket, data) {
     }
 
     if (results.length) {
+      results[0].notes.updatedAt = results[0].updatedAt;
       const event = {event: "request-pull-data-response", data: {result: true, notes: results[0].notes}};
       socket.emit('data', event);
     } else {
@@ -224,20 +226,42 @@ pullDataRequest = function(socket, data) {
 }
 
 pushDataRequest = function(socket, data) {
-  console.log(`push-data-request from user: ${data.userid}`);
+  console.log(`push-data-request (forced push?: ${data.force_push}) from user: ${data.userid}`);
   console.log(`push-data-request data: ${data.notes}`);
-  console.log(`push-data-request folders: ${data.notes.folders}`);
 
-  Account.findOneAndUpdate({ email: data.userid }, { notes: data.notes }, function (err, results) {
+  Account.find({ email: data.userid}, function (err, results) {
     if (err) {
       console.error(err);
       socket.emit('server-error', { msg: 'Server Encountered An Error' })
+    }
+    if (results.length) {
+      console.log(results[0]);
+      console.log(`User Update Time: ${data.notes.updatedAt} Server Update Time: ${results[0].updatedAt}`);
+      if (true || data.force_push || data.notes.updatedAt == results[0].updatedAt) {
+        // No other push occurred.
+        console.log("no push conflict");
+        Account.findOneAndUpdate({ email: data.userid }, { notes: data.notes }, function (err, results) {
+          if (err) {
+            console.error(err);
+            socket.emit('server-error', { msg: 'Server Encountered An Error' })
+          } else {
+            console.log("Push Data success");
+            const event = {event: "request-push-data-response", data: {result: true}};
+            socket.emit('data', event);
+          }
+        });
+      } else {
+        // Another push occurred user needs to choose.
+        console.log("Push Data Conflict");
+        socket.emit('push-conflict');
+      }
+      
     } else {
-      const event = {event: "request-push-data-response", data: {result: true}};
-      socket.emit('data', event);
-
+      // What do we do here?
+      socket.emit('server-error', { msg: 'Server Encountered An Error' })
     }
   });
+  
 }
 
 /////////////////////////////////////////////

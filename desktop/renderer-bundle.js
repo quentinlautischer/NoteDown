@@ -274,8 +274,10 @@
 	  }, {
 	    key: 'request_push_data',
 	    value: function request_push_data() {
+	      var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
 	      console.log("requesting data push");
-	      var data = { userid: store.getState().state.userid, notes: store.getState().notes };
+	      var data = { userid: store.getState().state.userid, notes: store.getState().notes, force_push: force };
 	      ipc.send('request-push-data', data);
 	    }
 	  }, {
@@ -24622,7 +24624,7 @@
 	}
 
 	function menuPushToCloud(store) {
-	  var data = { userid: store.getState().state.userid, notes: store.getState().notes };
+	  var data = { userid: store.getState().state.userid, notes: store.getState().notes, force_push: false };
 	  ipc.send('request-push-data', data);
 	  store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Pushing data to cloud' });
 	}
@@ -87352,7 +87354,6 @@
 	    value: function render() {
 	      var _this2 = this;
 
-	      console.log("FolderviewContainer Rendering!!!!!");
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'folder-container-view' },
