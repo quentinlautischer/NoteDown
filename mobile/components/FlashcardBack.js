@@ -14,7 +14,7 @@ export default class FlashcardBack extends Component {
         return(
             <View style={styles.view}>
                 <View style={styles.card}>
-                    <StepsView steps={this.props.content} />
+                    <StepsView steps={this.props.content} onRank={this.props.onRank} />
                 </View>
             </View>
 

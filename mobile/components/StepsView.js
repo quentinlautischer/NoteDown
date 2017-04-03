@@ -31,9 +31,11 @@ class StepsView extends Component {
 
     onClick() {
         var currentStep = this.context.store.getState().flashcards.step;
-        if (currentStep < this.props.steps.length) {
+        if (currentStep < this.props.steps.length - 1) {
             this.setState({stepIndex: currentStep + 1});
             this.context.store.dispatch({type: 'SET_FLASHCARD_STEP', step: currentStep + 1});
+        } else if (this.props.onRank) {
+            this.props.onRank(0);
         }
 
     }

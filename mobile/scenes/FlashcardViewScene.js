@@ -5,7 +5,8 @@ import {
     Navigator,
     TouchableHighlight,
     StyleSheet,
-    WebView
+    WebView,
+    Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
@@ -125,6 +126,19 @@ class FlashcardViewScene extends Component {
         }
     }
 
+    onRank() {
+        Alert.alert(
+            'Rank',
+            'Select difficulty level',
+            [
+                {text: 'Easy', onPress: () => console.log('1')},
+                {text: 'Medium', onPress: () => console.log('2')},
+                {text: 'Hard', onPress: () => console.log('3')},
+            ],
+            { cancelable: false }
+        )
+    }
+
     render() {
         const config = {
             velocityThreshold: 0.3,
@@ -155,7 +169,8 @@ class FlashcardViewScene extends Component {
                                 navigator={navigator}
                                 content={this.context.store.getState().flashcards.flashcardFolders
                                     .folders[this.context.store.getState().state.folderIndex]
-                                    .flashcards[this.state.flashcardIndex].hints} />
+                                    .flashcards[this.state.flashcardIndex].hints}
+                                onRank={this.onRank.bind(this)} />
                         } else if (route.index === 2) { // back
                             return <FlashcardBack
                                 navigator={navigator}
