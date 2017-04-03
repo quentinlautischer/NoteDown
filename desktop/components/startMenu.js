@@ -139,6 +139,7 @@ class StartMenu extends React.Component {
     this.setState({
       mode: 'login',
     });
+    ipc.send('initialize-socket', null);
   }
 
   enterSignUpForm() {

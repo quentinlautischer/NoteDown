@@ -21,7 +21,7 @@ removeOnlineUser = function(state, action) {
       index = i;
     }
   }
-  if (index) {
+  if (index != null) {
     return update(state, {
       onlineUsers: {$splice: [[index, 1]]}
     });

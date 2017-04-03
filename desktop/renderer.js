@@ -17,6 +17,7 @@ import FolderContainerView from './components/folderContainerView';
 import MenubarTile from './components/menubarTile';
 
 import DialogFileDrag from './components/dialogFileDrag';
+import DialogContainer from './components/dialogContainer';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -72,6 +73,11 @@ class App extends React.Component {
               onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
               onActionTouchTap={() => store.dispatch({type: 'PHOTO_ALERT'})}
             />
+            <DialogContainer
+              open={store.getState().state.dialog_open}
+              close={() => store.dispatch({type: 'DIALOG_CLOSE'})}
+              store={store}
+            />
           </div>
         );
       case 'editor':
@@ -86,6 +92,11 @@ class App extends React.Component {
               autoHideDuration={store.getState().state.snackbar.time}
               onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
               onActionTouchTap={() => store.dispatch({type: 'PHOTO_ALERT'})}
+            />
+            <DialogContainer
+              open={store.getState().state.dialog_open}
+              close={() => store.dispatch({type: 'DIALOG_CLOSE'})}
+              store={store}
             />
           </div>
         );
@@ -103,6 +114,11 @@ class App extends React.Component {
               onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
               onActionTouchTap={() => store.dispatch({type: 'PHOTO_ALERT'})}
             />
+            <DialogContainer
+              open={store.getState().state.dialog_open}
+              close={() => store.dispatch({type: 'DIALOG_CLOSE'})}
+              store={store}
+            />
           </div>
         );
       case 'flashcard':
@@ -117,6 +133,11 @@ class App extends React.Component {
               autoHideDuration={store.getState().state.snackbar.time}
               onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
               onActionTouchTap={() => store.dispatch({type: 'PHOTO_ALERT'})}
+            />
+            <DialogContainer
+              open={store.getState().state.dialog_open}
+              close={() => store.dispatch({type: 'DIALOG_CLOSE'})}
+              store={store}
             />
           </div>
         )
@@ -168,6 +189,19 @@ class App extends React.Component {
 
     ipc.on('request-push-data-response', (event, data) => {
       console.log('request-push-data-response: ' + data);
+      if (data.result) {
+        this.request_pull_data();  
+      } else {
+        if (data.type == 'push-conflict') {
+          console.log("Push Data Conflict")
+          store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Push Data Conflict'});
+          store.dispatch({type: 'DIALOG_OPEN', dialog_type: 'push-conflict'});
+        } else {
+          console.log("Push Data Failed.")
+          store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Push Data Failed'});
+        }
+      }
+      
     })
 
     ipc.on('request-pull-data-response', (event, data) => {
