@@ -39,7 +39,7 @@ class Navigate extends Component {
                     <Navigator.NavigationBar
                     routeMapper={{
                         LeftButton: (route, navigator, index, navState) => {
-                            if (route.title == 'LoginScene' || route.title == 'MenuScene') {
+                            if (route.title == 'LoginScene') { // TODO: check the state instead & delete route titles
                                 return null;
                             } else if (route.onBack) { // function & icon provided
                                 return(

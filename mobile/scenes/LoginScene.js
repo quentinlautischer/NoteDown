@@ -12,6 +12,7 @@ import SocketIOClient from 'socket.io-client';
 import MenuButton from '../components/MenuButton';
 import LoginInput from '../components/LoginInput';
 import MenuScene from './MenuScene'; // for navigation
+import SettingsScene from './SettingsScene';
 
 // const HOST = '127.0.0.1';
 var HOST = "localhost"; // allows me to test on android
@@ -48,7 +49,6 @@ class LoginScene extends Component {
                 console.log("Mobile client pulled data: ", data);
                 this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
                 if (this.context.store.getState().state.mode === 'login') {
-                    this.context.store.dispatch({type: 'MENU_MODE'});
                     this._navigate();
                 }
             }
@@ -74,7 +74,9 @@ class LoginScene extends Component {
                 socket: this.socket
             },
             onPress: this.onPress.bind(this),
-            rightIconName: 'logout'
+            rightIconName: 'logout',
+            onBack: this.onBack.bind(this),
+            backIconName: 'settings'
         });
         Keyboard.dismiss();
     }
@@ -90,6 +92,12 @@ class LoginScene extends Component {
         this.refs[PASSWORD_REF].clearText();
 
         this.props.navigator.pop();
+    }
+
+    onBack() {
+        this.context.store.dispatch({type: 'SETTINGS_MODE'});
+
+        this.props.navigator.push({component: SettingsScene});
     }
 
     attemptLogin() {

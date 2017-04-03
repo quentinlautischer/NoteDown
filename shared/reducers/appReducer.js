@@ -61,6 +61,10 @@ function selectPage(state, action) {
   return Object.assign({}, state, {pageIndex: action.index});
 }
 
+function settingsMode(state, action) {
+  return Object.assign({}, state, {mode: 'settings'});
+}
+
 function showSnackbar(state, action) {
   state = update(state, { snackbar: {
       open: {$set : true}
@@ -149,7 +153,8 @@ const appReducer = createReducer(initial_state, {
   'CLOSE_SNACKBAR': closeSnackbar,
   'PHOTO_ALERT': showPhotoAlert,
   'PHOTO_ALERT_SET_PHOTO': setPhotoAlertPhoto,
-  'CLOSE_PHOTO_ALERT': closePhotoAlert
+  'CLOSE_PHOTO_ALERT': closePhotoAlert,
+  'SETTINGS_MODE': settingsMode
 });
 
 export default appReducer;

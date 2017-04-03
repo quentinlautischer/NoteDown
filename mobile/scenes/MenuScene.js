@@ -29,6 +29,7 @@ class MenuScene extends Component {
     }
 
     componentDidMount() {
+        this.context.store.dispatch({type: 'MENU_MODE'});
         var state = this.context.store.getState();
         var folders = shared.extractFlashcardsInFolders(state.notes.folders);
         this.context.store.dispatch({type: 'SET_FLASHCARD_FOLDERS', flashcardFolders: folders});
