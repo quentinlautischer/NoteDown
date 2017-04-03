@@ -325,7 +325,8 @@ function check_codeblock_lang(blocks) {
 /  and a solution with 3 steps 'Step1', 'Step2', Step3'
 */
 function check_flashcard(blocks) {
-  var patt = /^\{(.+)\}$/
+  var patt = /^\{(.+)\}$/;
+  var q_patt = /(.+?)\|rank:([0-9]+)/i; //For rank
   var match;
 
   for (var b = 0; b < blocks.length; b++) {
@@ -335,8 +336,13 @@ function check_flashcard(blocks) {
         match = [];
         for (var m = 0; m < 3; m++) { match.push(patt.exec(content[l+m])); }
         if (match[0] != null && match[1] != null && match[2] != null) {
+          var question = parse_span(match[0][1]);
+          var hints = match[1][1].split('|');
+          var answer = match[2][1].split('|');
+          for (var i = 0; i < hints.length; i++) { hints[i] = parse_span(hints[i]); }
+          for (var i = 0; i < answer.length; i++) { answer[i] = parse_span(answer[i]); }
           var raw1 = {content:content.slice(0,l)};
-          var flashcard = {tag:'div', content:makeFlashcard(match[0][1], match[2][1].split('|'), match[1][1].split('|'))};
+          var flashcard = {tag:'div', content:makeFlashcard(question, answer, hints)};
           var raw2 = {content:content.slice(l+3,content.length)};
 
           blocks.splice(b, 1, raw1, flashcard, raw2);
@@ -945,6 +951,7 @@ function extractFlashcards(pages) {
 
 module.exports = {
     parse: parse,
+    check_flashcard: check_flashcard,
     extractFlashcardsInFolders: extractFlashcardsInFolders,
     extractFlashcards: extractFlashcards,
     makeFlashcard: makeFlashcard
