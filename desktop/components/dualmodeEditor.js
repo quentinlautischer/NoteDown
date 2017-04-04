@@ -43,6 +43,7 @@ class DualmodeEditor extends React.Component {
     hljs.initHighlightingOnLoad();
     this.unsubscribe = this.props.store.subscribe( this.storeDidUpdate );
     this.codeMirror = this.refs.editor.getCodeMirror();
+    this.parse(this.getContent());
   }
 
   componentWillUnmount() {
@@ -113,6 +114,7 @@ class DualmodeEditor extends React.Component {
 
     var rendered = shared.parse(content, this.props.store, imageMapper);
     this.setState({ rendered_content: rendered });
+
   }
 
   drop(e) {
@@ -159,15 +161,15 @@ class DualmodeEditor extends React.Component {
         />
 
         <div className="render-container">
-          <div className="toc-nav-show"><i className="icon-bars" aria-hidden="true"></i></div>
-          <TocNav   
-            store={this.props.store} 
-            info={this.getContent()} 
-            scrollTo={id => this.scrollTo(id)}
-          />
           <div id="renderField" className="markdown-output-renderer" 
             dangerouslySetInnerHTML= {{__html: this.state.rendered_content}}>
           </div>
+           <div className="toc-nav-show"><i className="icon-bars" aria-hidden="true"></i></div>
+          <TocNav   
+            store={this.props.store}
+            info={this.state.rendered_content} 
+            scrollTo={id => this.scrollTo(id)}
+          />
         </div>
         <DialogFileDrag
           open={this.state.fileDragDialogOpen} 

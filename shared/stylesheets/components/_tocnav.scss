@@ -11,6 +11,11 @@
   display: block;
 }
 
+.toc-nav-btns {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .toc-nav {
   display: none;
   position: fixed;
@@ -24,10 +29,9 @@
   box-shadow: 0 0 30px rgba(0,0,0,0.1);
   resize: none;
   outline: none;
-  font-size: 1.3em;
   color: map-get($colors, dark);
   background-color: map-get($colors, secondary1);
-  font-size: 12px;
+  font-size: 20px;
   z-index: 5;
 
   li {
@@ -47,6 +51,10 @@
 
 .toc-nav:hover {
   display: block;
+}
+
+.hidden {
+  display: none;
 }
 
 .toc-li {
@@ -83,6 +91,18 @@
 
 .toc-btn {
   color: map-get($colors, primary2);
+
+  &.left {
+    float: left;
+  }
+
+  &.right {
+    float: right;
+  }
+
+  &.hidden {
+    display: none;
+  }
 
   &:hover {
     color: map-get($colors, secondary2);

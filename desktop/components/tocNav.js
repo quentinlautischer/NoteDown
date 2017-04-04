@@ -9,15 +9,6 @@ class TocNav extends React.Component {
     this.state = {
       zoom: 'in'
     }
-    // All Data
-    this.data = {
-      previousPages: [], //List of Pages Identified by first Header
-      currentPage: [], //List of (Headers, Mag) on current page
-      nextPages: [] //List of Pages Identified by Header that are after
-    }
-    // this.scope // Some tracker of current zoom
-
-    // Going to need a return to folder button or something
 
     this.scrollTo  = this.scrollTo.bind(this);
     this.renderTocItem = this.renderTocItem.bind(this);
@@ -37,31 +28,27 @@ class TocNav extends React.Component {
   }
 
   componentDidUpdate() {
-    var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
-    var array = [];
-    for (var i=0, max=all.length; i < max; i++) {
-      array.push({
-        ref: all[i],
-        name: all[i].innerHTML,
-        id: i,
-        mag: all[i].localName
-      })
-    }
-    this.array = array;
+    // this.array = this.generatePageArray();
   }
 
   componentWillUpdate() {
-        var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
-    var array = [];
-    for (var i=0, max=all.length; i < max; i++) {
-      array.push({
-        ref: all[i],
-        name: all[i].innerHTML,
-        id: i,
-        mag: all[i].localName
-      })
-    }
-    this.array = array;
+    // this.array = this.generatePageArray();
+  }
+
+  generatePageArray() {
+    try {
+      var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
+      var array = [];
+      for (var i=0, max=all.length; i < max; i++) {
+        array.push({
+          ref: all[i],
+          name: all[i].innerHTML,
+          id: i,
+          mag: all[i].localName
+        })
+      }
+      this.array = array;
+    } catch (err){}     
   }
 
   generatePagesArray() {
@@ -70,15 +57,22 @@ class TocNav extends React.Component {
     var pages = state.notes.folders[state.state.folderIndex].pages;
     var i;
     for(i=0; i < pages.length; i++){
-      array.push(this.extractPageHeader(pages[i]));
+      var pageItem = {
+        name: this.extractPageHeader(pages[i]),
+        id: pages[i]._id,
+        index: i
+      } 
+      array.push(pageItem);
     }
-    // console.log(`Array: ${array}`);
     return array;
   }
   
   scrollTo(ref, e) {
-    // this.props.scrollTo(id);
     ref.scrollIntoView();
+  }
+
+  changePage(index, e) {
+    this.props.store.dispatch({type: 'SELECT_PAGE', index: index});
   }
 
   renderTocItem({ref, name, id, mag}) {
@@ -89,10 +83,12 @@ class TocNav extends React.Component {
     );
   }
 
-  renderPageItem({name}) {
+  renderPageItem({name, id, index}) {
+    var currentIndex = this.props.store.getState().state.pageIndex;
+    console.log(`Current Page Index: ${currentIndex} Current Page Item: ${index}`)
     return (
-      <li key={name} onClick={this.scrollTo.bind(this, name)}>
-          <span className="toc-li">{name}</span>
+      <li key={id} onClick={this.changePage.bind(this, index)}>
+          <span className="toc-li"><i className={'icon-arrow-right ' + (index == currentIndex ? '' : 'hidden')} aria-hidden="true"></i>{name}</span>
       </li>
     );
   }
@@ -141,9 +137,25 @@ class TocNav extends React.Component {
     return page.content.split('\n')[0];
   }
 
-  extractLastPageHeader() {
+  hasNextPage() {
+    var state = this.props.store.getState();
+    if (state.state.pageIndex < state.notes.folders[state.state.folderIndex].pages.length-1) {
+      return true
+    }
+    return false;
+  }
+
+  hasPrevPage() {
     var state = this.props.store.getState();
     if (state.state.pageIndex != 0) {
+      return true;
+    }
+    return false;
+  }
+
+  extractLastPageHeader() {
+    var state = this.props.store.getState();
+    if (this.hasPrevPage()) {
       return this.extractPageHeader(state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex-1]);
     } else {
       return 'Undefined';
@@ -152,7 +164,7 @@ class TocNav extends React.Component {
 
   extractNextPageHeader() {
     var state = this.props.store.getState();
-    if (state.state.pageIndex < state.notes.folders[state.state.folderIndex].pages.length-1) {
+    if (this.hasNextPage()) {
        return this.extractPageHeader(state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex+1]);
     } else {
       return 'Undefined';
@@ -162,54 +174,59 @@ class TocNav extends React.Component {
   render() {
     var state = this.props.store.getState();
     // console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
+    this.generatePageArray();
     this.pagesArray = this.generatePagesArray();
-    if (this.state.zoom == 'in') {
-      return (      
-        <div className="toc-nav">
-          <span>
-            <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
-            &nbsp;&nbsp;&nbsp;
-            <span className="toc-btn" onClick={this.createNewPage}><i className="icon-file-text" aria-hidden="true"></i></span>
-            &nbsp;&nbsp;&nbsp;
-            <span className="toc-btn" onClick={this.deletePage}><i className="icon-trash" aria-hidden="true"></i></span>
-            &nbsp;&nbsp;&nbsp;
-            <span className="toc-btn" onClick={this.pageContentView}><i className="icon-search-plus" aria-hidden="true"></i></span>
-            &nbsp;&nbsp;&nbsp;
-            <span className="toc-btn" onClick={this.pagesView}><i className="icon-search-minus" aria-hidden="true"></i></span>
-          </span>
-          <br/>
-          <div>
-            <span style={{float: 'left'}} className="toc-btn" onClick={this.selectPreviousPage}><i className="icon-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;{this.extractLastPageHeader()} </span>  
-            <span style={{float: 'right'}}  className="toc-btn" onClick={this.selectNextPage}>{this.extractNextPageHeader()}&nbsp;&nbsp;<i className="icon-arrow-right" aria-hidden="true"></i></span>
-          </div>
-          <br/>
-          <div className="toc-nav-content">
-            <ul>
-              {this.array.map(this.renderTocItem, this)}
-            </ul>
-          </div>
-      </div>
-    );
-    } else if (this.state.zoom == 'out') {
-      return (      
-        <div className="toc-nav">
-          <span>
-            <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
-            &nbsp;&nbsp;&nbsp;
-            <span className="toc-btn" onClick={this.pageContentView}><i className="icon-search-plus" aria-hidden="true"></i></span>
-            &nbsp;&nbsp;&nbsp;
-            <span className="toc-btn" onClick={this.pagesView}><i className="icon-search-minus" aria-hidden="true"></i></span>
-          </span>
-          <br/>
-          <div className="toc-nav-content">
-            <ul>
-              {this.pagesArray.map(this.renderPageItem, this)}
-            </ul>
-          </div>
-      </div>
-    );
-    }
-    
+    try {
+      if (this.state.zoom == 'in') {
+        return (      
+          <div className="toc-nav">
+            <div className="toc-nav-btns">
+              <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
+              &nbsp;&nbsp;&nbsp;
+              <span className="toc-btn" onClick={this.pagesView}><i className="icon-search-minus" aria-hidden="true"></i></span>
+              &nbsp;&nbsp;&nbsp;
+              <span className="toc-btn" onClick={this.createNewPage}><i className="icon-file-text" aria-hidden="true"></i></span>
+              &nbsp;&nbsp;&nbsp;
+              <span className="toc-btn" onClick={this.deletePage}><i className="icon-trash" aria-hidden="true"></i></span>
+            </div>
+            <br/>
+            <div>
+              <span className={'toc-btn left ' + (this.hasPrevPage() ? '' : 'hidden')} onClick={this.selectPreviousPage}>
+                <i className="icon-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;{this.extractLastPageHeader()}
+              </span>  
+              <span className={'toc-btn right ' + (this.hasNextPage() ? '' : 'hidden')} onClick={this.selectNextPage}>
+                {this.extractNextPageHeader()}&nbsp;&nbsp;<i className="icon-arrow-right" aria-hidden="true"></i>
+              </span>
+              <span className={'toc-btn right ' + (this.hasNextPage() ? 'hidden' : '')} onClick={this.createNewPage}>
+                <i className="icon-file-text" aria-hidden="true"></i>&nbsp;&nbsp;<i className="icon-arrow-right" aria-hidden="true"></i>
+              </span>
+            </div>
+            <br/>
+            <div className="toc-nav-content">
+              <ul>
+                {this.array.map(this.renderTocItem, this)}
+              </ul>
+            </div>
+        </div>
+      );
+      } else if (this.state.zoom == 'out') {
+        return (      
+          <div className="toc-nav">
+            <span>
+              <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
+              &nbsp;&nbsp;&nbsp;
+              <span className="toc-btn" onClick={this.pageContentView}><i className="icon-search-plus" aria-hidden="true"></i></span>
+            </span>
+            <br/>
+            <div className="toc-nav-content">
+              <ul>
+                {this.pagesArray.map(this.renderPageItem, this)}
+              </ul>
+            </div>
+        </div>
+      );
+      }
+    } catch (err) { console.log(err); return null; }
   }
 }
 
