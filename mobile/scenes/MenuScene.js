@@ -8,7 +8,6 @@ import {
 import { connect } from 'react-redux';
 import MenuButton from '../components/MenuButton';
 import colors from '../app/constants';
-import shared from '../shared/parser.js';
 
 // navigate
 import FoldersScene from './FoldersScene';
@@ -30,9 +29,6 @@ class MenuScene extends Component {
 
     componentDidMount() {
         this.context.store.dispatch({type: 'MENU_MODE'});
-        var state = this.context.store.getState();
-        var folders = shared.extractFlashcardsInFolders(state.notes.folders);
-        this.context.store.dispatch({type: 'SET_FLASHCARD_FOLDERS', flashcardFolders: folders});
     }
 
     render() {
