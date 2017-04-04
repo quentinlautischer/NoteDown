@@ -56,7 +56,6 @@ class LoginScene extends Component {
                 if (data.data.result) {
                     this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
                     if (this.context.store.getState().state.mode === 'login') {
-                        this.callToast(CLOUD_PULL_SUCC);
                         this._navigate();
                     }
                     this.updateSavedContent();
