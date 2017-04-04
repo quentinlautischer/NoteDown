@@ -21,6 +21,8 @@ const USERNAME_REF="un";
 const PASSWORD_REF="pw";
 
 const LOGIN_ERR = "Could not login.  Please verify your username and password";
+const CLOUD_PULL_ERR = "An error occured trying to pull your data from the cloud";
+const CLOUD_PUSH_ERR = "An error occured trying to push your data to the cloud";
 
 class LoginScene extends Component {
     constructor(props) {
@@ -46,12 +48,51 @@ class LoginScene extends Component {
             // recieve the user's data (to populate their folders)
             } else if (data.event === 'request-pull-data-response') {
                 console.log("Mobile client pulled data: ", data);
-                this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
-                if (this.context.store.getState().state.mode === 'login') {
-                    this.context.store.dispatch({type: 'MENU_MODE'});
-                    this._navigate();
+                if (data.data.result) {
+                    this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
+                    if (this.context.store.getState().state.mode === 'login') {
+                        this.context.store.dispatch({type: 'MENU_MODE'});
+                        this._navigate();
+                    }
+                    this.updateSavedContent();
+                } else {
+                    Alert.alert('Error', CLOUD_PULL_ERR);
+                }
+            } else if (data.event === 'request-push-data-response') {
+                console.log('request-push-data-response: ' + data);
+                if (data.data.result) {
+                    this.requestPullData();
+                } else {
+                    if (data.data.type == 'push-conflict') {
+                        this.handlePushConflict();
+                    } else {
+                        Alert.alert('Error', CLOUD_PUSH_ERR);
+                    }
                 }
             }
+        });
+    }
+
+    handlePushConflict() {
+        Alert.alert(
+            'Push conflict',
+            'What would you like to do?',
+            [
+                {text: 'Overwrite pull', onPress: () => this.requestPullData()},
+                {text: 'Force push', onPress: () => this.forcePushData()},
+            ],
+            { cancelable: false }
+        )
+    }
+
+    updateSavedContent() {
+        var folderIdx = this.context.store.getState().state.folderIndex;
+        var pageIdx = this.context.store.getState().state.pageIndex;
+
+        this.context.store.dispatch({type: 'UPDATE_PAGE_SAVED_CONTENT',
+            content: this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].content,
+            folderIndex: this.context.store.getState().state.folderIndex,
+            pageIndex: this.context.store.getState().state.pageIndex
         });
     }
 
@@ -63,6 +104,12 @@ class LoginScene extends Component {
         var state = this.context.store.getState();
         const data = {userid: state.state.userid};
         this.socket.emit('request-pull-data', data);
+    }
+
+    forcePushData() {
+        var state = this.context.store.getState();
+        const data = {userid: state.state.userid, notes: state.notes, force_push: true};
+        this.socket.emit('request-push-data', data);
     }
 
     _navigate() {

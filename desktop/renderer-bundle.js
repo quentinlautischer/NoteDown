@@ -104,7 +104,7 @@
 
 	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
 
-	var _dialogContainer = __webpack_require__(810);
+	var _dialogContainer = __webpack_require__(799);
 
 	var _dialogContainer2 = _interopRequireDefault(_dialogContainer);
 
@@ -116,11 +116,11 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	var _Snackbar = __webpack_require__(799);
+	var _Snackbar = __webpack_require__(801);
 
 	var _Snackbar2 = _interopRequireDefault(_Snackbar);
 
-	var _reactTapEventPlugin = __webpack_require__(804);
+	var _reactTapEventPlugin = __webpack_require__(806);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -25309,6 +25309,7 @@
 	*/
 	function check_flashcard(blocks) {
 	  var patt = /^\{(.+)\}$/;
+	  var q_patt = /(.+?)\|rank:([0-9]+)/i; //For rank
 	  var match;
 
 	  for (var b = 0; b < blocks.length; b++) {
@@ -25320,8 +25321,17 @@
 	          match.push(patt.exec(content[l + m]));
 	        }
 	        if (match[0] != null && match[1] != null && match[2] != null) {
+	          var question = parse_span(match[0][1]);
+	          var hints = match[1][1].split('|');
+	          var answer = match[2][1].split('|');
+	          for (var i = 0; i < hints.length; i++) {
+	            hints[i] = parse_span(hints[i]);
+	          }
+	          for (var i = 0; i < answer.length; i++) {
+	            answer[i] = parse_span(answer[i]);
+	          }
 	          var raw1 = { content: content.slice(0, l) };
-	          var flashcard = { tag: 'div', content: makeFlashcard(match[0][1], match[2][1].split('|'), match[1][1].split('|')) };
+	          var flashcard = { tag: 'div', content: makeFlashcard(question, answer, hints) };
 	          var raw2 = { content: content.slice(l + 3, content.length) };
 
 	          blocks.splice(b, 1, raw1, flashcard, raw2);
@@ -25956,6 +25966,7 @@
 
 	module.exports = {
 	  parse: parse,
+	  check_flashcard: check_flashcard,
 	  extractFlashcardsInFolders: extractFlashcardsInFolders,
 	  extractFlashcards: extractFlashcards,
 	  makeFlashcard: makeFlashcard
@@ -87760,9 +87771,207 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pushConflictDialog = __webpack_require__(800);
+
+	var _pushConflictDialog2 = _interopRequireDefault(_pushConflictDialog);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DialogContainer = function (_React$Component) {
+	  _inherits(DialogContainer, _React$Component);
+
+	  function DialogContainer() {
+	    _classCallCheck(this, DialogContainer);
+
+	    return _possibleConstructorReturn(this, (DialogContainer.__proto__ || Object.getPrototypeOf(DialogContainer)).apply(this, arguments));
+	  }
+
+	  _createClass(DialogContainer, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      if (this.props.store.getState().state.dialog_type == 'push-conflict') {
+	        return _react2.default.createElement(_pushConflictDialog2.default, {
+	          store: this.props.store,
+	          open: this.props.open,
+	          close: function close() {
+	            return _this2.props.close();
+	          }
+	        });
+	      } else {
+	        return null;
+	      }
+	    }
+	  }]);
+
+	  return DialogContainer;
+	}(_react2.default.Component);
+
+	exports.default = DialogContainer;
+
+/***/ },
+/* 800 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Dialog = __webpack_require__(606);
+
+	var _Dialog2 = _interopRequireDefault(_Dialog);
+
+	var _FlatButton = __webpack_require__(584);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	var _RaisedButton = __webpack_require__(552);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _menuTextField = __webpack_require__(587);
+
+	var _menuTextField2 = _interopRequireDefault(_menuTextField);
+
+	var _menuButton = __webpack_require__(551);
+
+	var _menuButton2 = _interopRequireDefault(_menuButton);
+
+	var _MuiThemeProvider = __webpack_require__(402);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(489);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ipc = __webpack_require__(223).ipcRenderer;
+
+	var PushConflictDialog = function (_React$Component) {
+	  _inherits(PushConflictDialog, _React$Component);
+
+	  function PushConflictDialog(props) {
+	    _classCallCheck(this, PushConflictDialog);
+
+	    return _possibleConstructorReturn(this, (PushConflictDialog.__proto__ || Object.getPrototypeOf(PushConflictDialog)).call(this, props));
+	  }
+
+	  _createClass(PushConflictDialog, [{
+	    key: 'request_pull_data',
+	    value: function request_pull_data() {
+	      console.log("requesting data pull");
+	      var data = { userid: this.props.store.getState().state.userid };
+	      ipc.send('request-pull-data', data);
+	    }
+	  }, {
+	    key: 'request_push_data',
+	    value: function request_push_data() {
+	      var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+	      console.log("requesting data push");
+	      var data = { userid: this.props.store.getState().state.userid, notes: this.props.store.getState().notes, force_push: force };
+	      ipc.send('request-push-data', data);
+	    }
+	  }, {
+	    key: 'overwritePull',
+	    value: function overwritePull() {
+	      this.request_pull_data();
+	      this.props.close();
+	    }
+	  }, {
+	    key: 'forcePush',
+	    value: function forcePush() {
+	      this.request_push_data(true);
+	      this.props.close();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var actions = [_react2.default.createElement(_FlatButton2.default, {
+	        label: 'Overwrite Pull',
+	        primary: false,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this2.overwritePull();
+	        }
+	      }), _react2.default.createElement(_FlatButton2.default, {
+	        label: 'Force Push',
+	        primary: true,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this2.forcePush();
+	        }
+	      })];
+
+	      return _react2.default.createElement(
+	        _MuiThemeProvider2.default,
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(_Dialog2.default, {
+	            title: 'Push Conflict',
+	            actions: actions,
+	            modal: false,
+	            open: this.props.open,
+	            onRequestClose: function onRequestClose() {
+	              return _this2.props.close();
+	            }
+	          })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return PushConflictDialog;
+	}(_react2.default.Component);
+
+	exports.default = PushConflictDialog;
+
+/***/ },
+/* 801 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.default = undefined;
 
-	var _Snackbar = __webpack_require__(800);
+	var _Snackbar = __webpack_require__(802);
 
 	var _Snackbar2 = _interopRequireDefault(_Snackbar);
 
@@ -87771,7 +87980,7 @@
 	exports.default = _Snackbar2.default;
 
 /***/ },
-/* 800 */
+/* 802 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87820,11 +88029,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _ClickAwayListener = __webpack_require__(801);
+	var _ClickAwayListener = __webpack_require__(803);
 
 	var _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);
 
-	var _SnackbarBody = __webpack_require__(802);
+	var _SnackbarBody = __webpack_require__(804);
 
 	var _SnackbarBody2 = _interopRequireDefault(_SnackbarBody);
 
@@ -88085,7 +88294,7 @@
 	exports.default = Snackbar;
 
 /***/ },
-/* 801 */
+/* 803 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -88215,7 +88424,7 @@
 	exports.default = ClickAwayListener;
 
 /***/ },
-/* 802 */
+/* 804 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -88245,7 +88454,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _withWidth = __webpack_require__(803);
+	var _withWidth = __webpack_require__(805);
 
 	var _withWidth2 = _interopRequireDefault(_withWidth);
 
@@ -88384,7 +88593,7 @@
 	exports.default = (0, _withWidth2.default)()(SnackbarBody);
 
 /***/ },
-/* 803 */
+/* 805 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -88534,11 +88743,11 @@
 	}
 
 /***/ },
-/* 804 */
+/* 806 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(805);
+	var defaultClickRejectionStrategy = __webpack_require__(807);
 
 	var alreadyInjected = false;
 
@@ -88560,13 +88769,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(806)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(808)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 805 */
+/* 807 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -88577,7 +88786,7 @@
 
 
 /***/ },
-/* 806 */
+/* 808 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -88601,14 +88810,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(807);
+	var EventConstants = __webpack_require__(809);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(808);
+	var TouchEventUtils = __webpack_require__(810);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(809);
+	var keyOf = __webpack_require__(811);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -88754,7 +88963,7 @@
 
 
 /***/ },
-/* 807 */
+/* 809 */
 /***/ function(module, exports) {
 
 	/**
@@ -88850,7 +89059,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 808 */
+/* 810 */
 /***/ function(module, exports) {
 
 	/**
@@ -88898,7 +89107,7 @@
 
 
 /***/ },
-/* 809 */
+/* 811 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -88935,204 +89144,6 @@
 	};
 
 	module.exports = keyOf;
-
-/***/ },
-/* 810 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _pushConflictDialog = __webpack_require__(811);
-
-	var _pushConflictDialog2 = _interopRequireDefault(_pushConflictDialog);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var DialogContainer = function (_React$Component) {
-	  _inherits(DialogContainer, _React$Component);
-
-	  function DialogContainer() {
-	    _classCallCheck(this, DialogContainer);
-
-	    return _possibleConstructorReturn(this, (DialogContainer.__proto__ || Object.getPrototypeOf(DialogContainer)).apply(this, arguments));
-	  }
-
-	  _createClass(DialogContainer, [{
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      if (this.props.store.getState().state.dialog_type == 'push-conflict') {
-	        return _react2.default.createElement(_pushConflictDialog2.default, {
-	          store: this.props.store,
-	          open: this.props.open,
-	          close: function close() {
-	            return _this2.props.close();
-	          }
-	        });
-	      } else {
-	        return null;
-	      }
-	    }
-	  }]);
-
-	  return DialogContainer;
-	}(_react2.default.Component);
-
-	exports.default = DialogContainer;
-
-/***/ },
-/* 811 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _Dialog = __webpack_require__(606);
-
-	var _Dialog2 = _interopRequireDefault(_Dialog);
-
-	var _FlatButton = __webpack_require__(584);
-
-	var _FlatButton2 = _interopRequireDefault(_FlatButton);
-
-	var _RaisedButton = __webpack_require__(552);
-
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
-	var _menuTextField = __webpack_require__(587);
-
-	var _menuTextField2 = _interopRequireDefault(_menuTextField);
-
-	var _menuButton = __webpack_require__(551);
-
-	var _menuButton2 = _interopRequireDefault(_menuButton);
-
-	var _MuiThemeProvider = __webpack_require__(402);
-
-	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
-
-	var _getMuiTheme = __webpack_require__(489);
-
-	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ipc = __webpack_require__(223).ipcRenderer;
-
-	var PushConflictDialog = function (_React$Component) {
-	  _inherits(PushConflictDialog, _React$Component);
-
-	  function PushConflictDialog(props) {
-	    _classCallCheck(this, PushConflictDialog);
-
-	    return _possibleConstructorReturn(this, (PushConflictDialog.__proto__ || Object.getPrototypeOf(PushConflictDialog)).call(this, props));
-	  }
-
-	  _createClass(PushConflictDialog, [{
-	    key: 'request_pull_data',
-	    value: function request_pull_data() {
-	      console.log("requesting data pull");
-	      var data = { userid: this.props.store.getState().state.userid };
-	      ipc.send('request-pull-data', data);
-	    }
-	  }, {
-	    key: 'request_push_data',
-	    value: function request_push_data() {
-	      var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-	      console.log("requesting data push");
-	      var data = { userid: this.props.store.getState().state.userid, notes: this.props.store.getState().notes, force_push: force };
-	      ipc.send('request-push-data', data);
-	    }
-	  }, {
-	    key: 'overwritePull',
-	    value: function overwritePull() {
-	      this.request_pull_data();
-	      this.props.close();
-	    }
-	  }, {
-	    key: 'forcePush',
-	    value: function forcePush() {
-	      this.request_push_data(true);
-	      this.props.close();
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      var actions = [_react2.default.createElement(_FlatButton2.default, {
-	        label: 'Overwrite Pull',
-	        primary: false,
-	        keyboardFocused: false,
-	        onTouchTap: function onTouchTap() {
-	          return _this2.overwritePull();
-	        }
-	      }), _react2.default.createElement(_FlatButton2.default, {
-	        label: 'Force Push',
-	        primary: true,
-	        keyboardFocused: false,
-	        onTouchTap: function onTouchTap() {
-	          return _this2.forcePush();
-	        }
-	      })];
-
-	      return _react2.default.createElement(
-	        _MuiThemeProvider2.default,
-	        null,
-	        _react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement(_Dialog2.default, {
-	            title: 'Push Conflict',
-	            actions: actions,
-	            modal: false,
-	            open: this.props.open,
-	            onRequestClose: function onRequestClose() {
-	              return _this2.props.close();
-	            }
-	          })
-	        )
-	      );
-	    }
-	  }]);
-
-	  return PushConflictDialog;
-	}(_react2.default.Component);
-
-	exports.default = PushConflictDialog;
 
 /***/ }
 /******/ ]);

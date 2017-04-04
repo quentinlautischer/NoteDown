@@ -49,7 +49,6 @@ class NotesViewScene extends Component {
     goToEdit() {
         this.context.store.dispatch({type: 'EDITOR_MODE'});
         this._navigate();
-        this.updateSavedContent();
     }
 
     _navigate() {
@@ -65,17 +64,6 @@ class NotesViewScene extends Component {
             rightIconName: 'cloud-upload',
             backIconName: 'arrow-left',
         })
-    }
-
-    updateSavedContent() {
-        var folderIdx = this.context.store.getState().state.folderIndex;
-        var pageIdx = this.context.store.getState().state.pageIndex;
-
-        this.context.store.dispatch({type: 'UPDATE_PAGE_SAVED_CONTENT',
-            content: this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].content,
-            folderIndex: this.context.store.getState().state.folderIndex,
-            pageIndex: this.context.store.getState().state.pageIndex
-        });
     }
 
     onPress() {
@@ -128,9 +116,8 @@ class NotesViewScene extends Component {
 
     requestPushData() {
         var state = this.context.store.getState();
-        const data = {userid: state.state.userid, notes: state.notes};
+        const data = {userid: state.state.userid, notes: state.notes, force_push: false};
         this.props.socket.emit('request-push-data', data);
-        this.updateSavedContent();
     }
 
     requestPullData() {
