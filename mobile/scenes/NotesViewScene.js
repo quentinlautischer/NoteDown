@@ -26,7 +26,7 @@ class NotesViewScene extends Component {
         super(props);
 
         this.state = {
-            open: false,
+            content: '',
             tocHeight: 0, // percentage of total height,
             tocVisibility: 'hidden'
         };
@@ -35,6 +35,12 @@ class NotesViewScene extends Component {
     }
 
     componentDidMount(){
+        this.setState({
+            content: this.context.store.getState().notes
+                     .folders[this.context.store.getState().state.folderIndex]
+                     .pages[this.context.store.getState().state.pageIndex]
+                     .content
+        });
         this.unsubscribe = this.context.store.subscribe( this.storeDidUpdate );
     }
 
@@ -43,13 +49,17 @@ class NotesViewScene extends Component {
     }
 
     storeDidUpdate() {
-        this.setState({open: this.context.store.getState().sessionActive});
+        this.setState({
+            content: this.context.store.getState().notes
+                     .folders[this.context.store.getState().state.folderIndex]
+                     .pages[this.context.store.getState().state.pageIndex]
+                     .content
+        });
     }
 
     goToEdit() {
         this.context.store.dispatch({type: 'EDITOR_MODE'});
         this._navigate();
-        this.updateSavedContent();
     }
 
     _navigate() {
@@ -57,24 +67,14 @@ class NotesViewScene extends Component {
             title: 'NotesEditScene',
             component: NotesEditScene,
             passProps: {
-                socket: this.props.socket
+                socket: this.props.socket,
+                requestPushData: this.requestPushData.bind(this)
             },
             onPress: this.onPress.bind(this),
             onBack: this.onBack.bind(this),
             rightIconName: 'cloud-upload',
-            backIconName: 'arrow-left'
+            backIconName: 'arrow-left',
         })
-    }
-
-    updateSavedContent() {
-        var folderIdx = this.context.store.getState().state.folderIndex;
-        var pageIdx = this.context.store.getState().state.pageIndex;
-
-        this.context.store.dispatch({type: 'UPDATE_PAGE_SAVED_CONTENT',
-            content: this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].content,
-            folderIndex: this.context.store.getState().state.folderIndex,
-            pageIndex: this.context.store.getState().state.pageIndex
-        });
     }
 
     onPress() {
@@ -127,9 +127,8 @@ class NotesViewScene extends Component {
 
     requestPushData() {
         var state = this.context.store.getState();
-        const data = {userid: state.state.userid, notes: state.notes};
+        const data = {userid: state.state.userid, notes: state.notes, force_push: false};
         this.props.socket.emit('request-push-data', data);
-        this.updateSavedContent();
     }
 
     requestPullData() {
@@ -185,10 +184,7 @@ class NotesViewScene extends Component {
                         return <NotesView
                             store={this.context.store}
                             navigator={navigator}
-                            content={this.context.store.getState().notes
-                                .folders[this.context.store.getState().state.folderIndex]
-                                .pages[this.context.store.getState().state.pageIndex]
-                                .content}
+                            content={this.state.content}
                             height={this.state.tocHeight}
                             visibility={this.state.tocVisibility} />
                     }}

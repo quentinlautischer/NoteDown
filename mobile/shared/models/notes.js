@@ -8,7 +8,7 @@ const FolderModel = require('./folder')
 const notesSchema = new mongoose.Schema({
   userid: { type: String, unique: true, index: true },
   folders: [FolderModel.schema]
-});
+}, { timestamps: { createdAt: 'created_at' } });
 
 // create the model
 const notesModel = mongoose.model('Notes', notesSchema);
