@@ -327,8 +327,9 @@
 
 	      ipc.on('request-login-response', function (event, data) {
 	        console.log('received login response: ' + data);
-	        if (data.result == true) {
+	        if (data.result) {
 	          store.dispatch({ type: 'SET_USER', userid: data.userid });
+	          store.dispatch({ type: 'FOLDER_MODE' });
 	          _this2.request_pull_data();
 	        } else {
 	          dialog.showErrorBox('error', data.msg);
@@ -339,6 +340,7 @@
 	        console.log('received signup reply: ' + JSON.stringify(data));
 	        if (data.result == true) {
 	          store.dispatch({ type: 'SET_USER', userid: data.userid });
+	          store.dispatch({ type: 'FOLDER_MODE' });
 	          _this2.request_pull_data();
 	        } else {
 	          dialog.showErrorBox('error', data.msg);
@@ -366,7 +368,6 @@
 
 	        if (data.result == true) {
 	          store.dispatch({ type: 'SET_NOTES', notes: data.notes });
-	          store.dispatch({ type: 'FOLDER_MODE' });
 	          store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Notes updated from cloud' });
 	        } else {
 	          dialog.showErrorBox('error', data.msg);
@@ -24361,7 +24362,8 @@
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function setNotes(state, action) {
-	  console.log('Setting Notes: ' + action.notes);
+	  console.log('Setting Notes:');
+	  console.log(action.notes);
 	  return action.notes;
 	}
 
@@ -55920,6 +55922,7 @@
 	      hljs.initHighlightingOnLoad();
 	      this.unsubscribe = this.props.store.subscribe(this.storeDidUpdate);
 	      this.codeMirror = this.refs.editor.getCodeMirror();
+	      this.parse(this.getContent());
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -56074,6 +56077,8 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'render-container' },
+	          _react2.default.createElement('div', { id: 'renderField', className: 'markdown-output-renderer',
+	            dangerouslySetInnerHTML: { __html: this.state.rendered_content } }),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'toc-nav-show' },
@@ -56081,13 +56086,11 @@
 	          ),
 	          _react2.default.createElement(_tocNav2.default, {
 	            store: this.props.store,
-	            info: this.getContent(),
+	            info: this.state.rendered_content,
 	            scrollTo: function scrollTo(id) {
 	              return _this2.scrollTo(id);
 	            }
-	          }),
-	          _react2.default.createElement('div', { id: 'renderField', className: 'markdown-output-renderer',
-	            dangerouslySetInnerHTML: { __html: this.state.rendered_content } })
+	          })
 	        ),
 	        _react2.default.createElement(_dialogFileDrag2.default, {
 	          open: this.state.fileDragDialogOpen,
@@ -56213,15 +56216,6 @@
 	    _this.state = {
 	      zoom: 'in'
 	    };
-	    // All Data
-	    _this.data = {
-	      previousPages: [], //List of Pages Identified by first Header
-	      currentPage: [], //List of (Headers, Mag) on current page
-	      nextPages: [] //List of Pages Identified by Header that are after
-	    };
-	    // this.scope // Some tracker of current zoom
-
-	    // Going to need a return to folder button or something
 
 	    _this.scrollTo = _this.scrollTo.bind(_this);
 	    _this.renderTocItem = _this.renderTocItem.bind(_this);
@@ -56244,32 +56238,29 @@
 	  _createClass(TocNav, [{
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate() {
-	      var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
-	      var array = [];
-	      for (var i = 0, max = all.length; i < max; i++) {
-	        array.push({
-	          ref: all[i],
-	          name: all[i].innerHTML,
-	          id: i,
-	          mag: all[i].localName
-	        });
-	      }
-	      this.array = array;
+	      // this.array = this.generatePageArray();
 	    }
 	  }, {
 	    key: 'componentWillUpdate',
 	    value: function componentWillUpdate() {
-	      var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
-	      var array = [];
-	      for (var i = 0, max = all.length; i < max; i++) {
-	        array.push({
-	          ref: all[i],
-	          name: all[i].innerHTML,
-	          id: i,
-	          mag: all[i].localName
-	        });
-	      }
-	      this.array = array;
+	      // this.array = this.generatePageArray();
+	    }
+	  }, {
+	    key: 'generatePageArray',
+	    value: function generatePageArray() {
+	      try {
+	        var all = document.getElementById('renderField').querySelectorAll("h1, h2, h3, h4, h5, h6");
+	        var array = [];
+	        for (var i = 0, max = all.length; i < max; i++) {
+	          array.push({
+	            ref: all[i],
+	            name: all[i].innerHTML,
+	            id: i,
+	            mag: all[i].localName
+	          });
+	        }
+	        this.array = array;
+	      } catch (err) {}
 	    }
 	  }, {
 	    key: 'generatePagesArray',
@@ -56279,16 +56270,24 @@
 	      var pages = state.notes.folders[state.state.folderIndex].pages;
 	      var i;
 	      for (i = 0; i < pages.length; i++) {
-	        array.push(this.extractPageHeader(pages[i]));
+	        var pageItem = {
+	          name: this.extractPageHeader(pages[i]),
+	          id: pages[i]._id,
+	          index: i
+	        };
+	        array.push(pageItem);
 	      }
-	      // console.log(`Array: ${array}`);
 	      return array;
 	    }
 	  }, {
 	    key: 'scrollTo',
 	    value: function scrollTo(ref, e) {
-	      // this.props.scrollTo(id);
 	      ref.scrollIntoView();
+	    }
+	  }, {
+	    key: 'changePage',
+	    value: function changePage(index, e) {
+	      this.props.store.dispatch({ type: 'SELECT_PAGE', index: index });
 	    }
 	  }, {
 	    key: 'renderTocItem',
@@ -56311,14 +56310,19 @@
 	  }, {
 	    key: 'renderPageItem',
 	    value: function renderPageItem(_ref2) {
-	      var name = _ref2.name;
+	      var name = _ref2.name,
+	          id = _ref2.id,
+	          index = _ref2.index;
 
+	      var currentIndex = this.props.store.getState().state.pageIndex;
+	      console.log('Current Page Index: ' + currentIndex + ' Current Page Item: ' + index);
 	      return _react2.default.createElement(
 	        'li',
-	        { key: name, onClick: this.scrollTo.bind(this, name) },
+	        { key: id, onClick: this.changePage.bind(this, index) },
 	        _react2.default.createElement(
 	          'span',
 	          { className: 'toc-li' },
+	          _react2.default.createElement('i', { className: 'icon-arrow-right ' + (index == currentIndex ? '' : 'hidden'), 'aria-hidden': 'true' }),
 	          name
 	        )
 	      );
@@ -56376,10 +56380,28 @@
 	      return page.content.split('\n')[0];
 	    }
 	  }, {
+	    key: 'hasNextPage',
+	    value: function hasNextPage() {
+	      var state = this.props.store.getState();
+	      if (state.state.pageIndex < state.notes.folders[state.state.folderIndex].pages.length - 1) {
+	        return true;
+	      }
+	      return false;
+	    }
+	  }, {
+	    key: 'hasPrevPage',
+	    value: function hasPrevPage() {
+	      var state = this.props.store.getState();
+	      if (state.state.pageIndex != 0) {
+	        return true;
+	      }
+	      return false;
+	    }
+	  }, {
 	    key: 'extractLastPageHeader',
 	    value: function extractLastPageHeader() {
 	      var state = this.props.store.getState();
-	      if (state.state.pageIndex != 0) {
+	      if (this.hasPrevPage()) {
 	        return this.extractPageHeader(state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex - 1]);
 	      } else {
 	        return 'Undefined';
@@ -56389,7 +56411,7 @@
 	    key: 'extractNextPageHeader',
 	    value: function extractNextPageHeader() {
 	      var state = this.props.store.getState();
-	      if (state.state.pageIndex < state.notes.folders[state.state.folderIndex].pages.length - 1) {
+	      if (this.hasNextPage()) {
 	        return this.extractPageHeader(state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex + 1]);
 	      } else {
 	        return 'Undefined';
@@ -56400,111 +56422,110 @@
 	    value: function render() {
 	      var state = this.props.store.getState();
 	      // console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
+	      this.generatePageArray();
 	      this.pagesArray = this.generatePagesArray();
-	      if (this.state.zoom == 'in') {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'toc-nav' },
-	          _react2.default.createElement(
-	            'span',
-	            null,
-	            _react2.default.createElement(
-	              'span',
-	              { className: 'toc-btn', onClick: this.folderview },
-	              _react2.default.createElement('i', { className: 'icon-folderview', 'aria-hidden': 'true' })
-	            ),
-	            '\xA0\xA0\xA0',
-	            _react2.default.createElement(
-	              'span',
-	              { className: 'toc-btn', onClick: this.createNewPage },
-	              _react2.default.createElement('i', { className: 'icon-file-text', 'aria-hidden': 'true' })
-	            ),
-	            '\xA0\xA0\xA0',
-	            _react2.default.createElement(
-	              'span',
-	              { className: 'toc-btn', onClick: this.deletePage },
-	              _react2.default.createElement('i', { className: 'icon-trash', 'aria-hidden': 'true' })
-	            ),
-	            '\xA0\xA0\xA0',
-	            _react2.default.createElement(
-	              'span',
-	              { className: 'toc-btn', onClick: this.pageContentView },
-	              _react2.default.createElement('i', { className: 'icon-search-plus', 'aria-hidden': 'true' })
-	            ),
-	            '\xA0\xA0\xA0',
-	            _react2.default.createElement(
-	              'span',
-	              { className: 'toc-btn', onClick: this.pagesView },
-	              _react2.default.createElement('i', { className: 'icon-search-minus', 'aria-hidden': 'true' })
-	            )
-	          ),
-	          _react2.default.createElement('br', null),
-	          _react2.default.createElement(
+	      try {
+	        if (this.state.zoom == 'in') {
+	          return _react2.default.createElement(
 	            'div',
-	            null,
+	            { className: 'toc-nav' },
 	            _react2.default.createElement(
-	              'span',
-	              { style: { float: 'left' }, className: 'toc-btn', onClick: this.selectPreviousPage },
-	              _react2.default.createElement('i', { className: 'icon-arrow-left', 'aria-hidden': 'true' }),
-	              '\xA0\xA0',
-	              this.extractLastPageHeader(),
-	              ' '
+	              'div',
+	              { className: 'toc-nav-btns' },
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'toc-btn', onClick: this.folderview },
+	                _react2.default.createElement('i', { className: 'icon-folderview', 'aria-hidden': 'true' })
+	              ),
+	              '\xA0\xA0\xA0',
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'toc-btn', onClick: this.pagesView },
+	                _react2.default.createElement('i', { className: 'icon-search-minus', 'aria-hidden': 'true' })
+	              ),
+	              '\xA0\xA0\xA0',
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'toc-btn', onClick: this.createNewPage },
+	                _react2.default.createElement('i', { className: 'icon-file-text', 'aria-hidden': 'true' })
+	              ),
+	              '\xA0\xA0\xA0',
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'toc-btn', onClick: this.deletePage },
+	                _react2.default.createElement('i', { className: 'icon-trash', 'aria-hidden': 'true' })
+	              )
 	            ),
+	            _react2.default.createElement('br', null),
 	            _react2.default.createElement(
-	              'span',
-	              { style: { float: 'right' }, className: 'toc-btn', onClick: this.selectNextPage },
-	              this.extractNextPageHeader(),
-	              '\xA0\xA0',
-	              _react2.default.createElement('i', { className: 'icon-arrow-right', 'aria-hidden': 'true' })
-	            )
-	          ),
-	          _react2.default.createElement('br', null),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'toc-nav-content' },
-	            _react2.default.createElement(
-	              'ul',
+	              'div',
 	              null,
-	              this.array.map(this.renderTocItem, this)
-	            )
-	          )
-	        );
-	      } else if (this.state.zoom == 'out') {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'toc-nav' },
-	          _react2.default.createElement(
-	            'span',
-	            null,
-	            _react2.default.createElement(
-	              'span',
-	              { className: 'toc-btn', onClick: this.folderview },
-	              _react2.default.createElement('i', { className: 'icon-folderview', 'aria-hidden': 'true' })
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'toc-btn left ' + (this.hasPrevPage() ? '' : 'hidden'), onClick: this.selectPreviousPage },
+	                _react2.default.createElement('i', { className: 'icon-arrow-left', 'aria-hidden': 'true' }),
+	                '\xA0\xA0',
+	                this.extractLastPageHeader()
+	              ),
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'toc-btn right ' + (this.hasNextPage() ? '' : 'hidden'), onClick: this.selectNextPage },
+	                this.extractNextPageHeader(),
+	                '\xA0\xA0',
+	                _react2.default.createElement('i', { className: 'icon-arrow-right', 'aria-hidden': 'true' })
+	              ),
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'toc-btn right ' + (this.hasNextPage() ? 'hidden' : ''), onClick: this.createNewPage },
+	                _react2.default.createElement('i', { className: 'icon-file-text', 'aria-hidden': 'true' }),
+	                '\xA0\xA0',
+	                _react2.default.createElement('i', { className: 'icon-arrow-right', 'aria-hidden': 'true' })
+	              )
 	            ),
-	            '\xA0\xA0\xA0',
+	            _react2.default.createElement('br', null),
 	            _react2.default.createElement(
-	              'span',
-	              { className: 'toc-btn', onClick: this.pageContentView },
-	              _react2.default.createElement('i', { className: 'icon-search-plus', 'aria-hidden': 'true' })
-	            ),
-	            '\xA0\xA0\xA0',
-	            _react2.default.createElement(
-	              'span',
-	              { className: 'toc-btn', onClick: this.pagesView },
-	              _react2.default.createElement('i', { className: 'icon-search-minus', 'aria-hidden': 'true' })
+	              'div',
+	              { className: 'toc-nav-content' },
+	              _react2.default.createElement(
+	                'ul',
+	                null,
+	                this.array.map(this.renderTocItem, this)
+	              )
 	            )
-	          ),
-	          _react2.default.createElement('br', null),
-	          _react2.default.createElement(
+	          );
+	        } else if (this.state.zoom == 'out') {
+	          return _react2.default.createElement(
 	            'div',
-	            { className: 'toc-nav-content' },
+	            { className: 'toc-nav' },
 	            _react2.default.createElement(
-	              'ul',
+	              'span',
 	              null,
-	              this.pagesArray.map(this.renderPageItem, this)
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'toc-btn', onClick: this.folderview },
+	                _react2.default.createElement('i', { className: 'icon-folderview', 'aria-hidden': 'true' })
+	              ),
+	              '\xA0\xA0\xA0',
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'toc-btn', onClick: this.pageContentView },
+	                _react2.default.createElement('i', { className: 'icon-search-plus', 'aria-hidden': 'true' })
+	              )
+	            ),
+	            _react2.default.createElement('br', null),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'toc-nav-content' },
+	              _react2.default.createElement(
+	                'ul',
+	                null,
+	                this.pagesArray.map(this.renderPageItem, this)
+	              )
 	            )
-	          )
-	        );
+	          );
+	        }
+	      } catch (err) {
+	        console.log(err);return null;
 	      }
 	    }
 	  }]);

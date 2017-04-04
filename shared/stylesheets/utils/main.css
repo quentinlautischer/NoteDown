@@ -64,6 +64,12 @@
     background-color: #4d4b50; }
   .markdown-output-renderer pre {
     background-color: #4d4b50; }
+  .markdown-output-renderer table {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto; }
+  .markdown-output-renderer table, .markdown-output-renderer th, .markdown-output-renderer td {
+    border: 1px solid #4d4b50; }
 
 .notedown-title-logo {
   width: 100%;
@@ -162,6 +168,10 @@
 .toc-nav-show:hover + .toc-nav {
   display: block; }
 
+.toc-nav-btns {
+  margin-left: auto;
+  margin-right: auto; }
+
 .toc-nav {
   display: none;
   position: fixed;
@@ -175,10 +185,9 @@
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
   resize: none;
   outline: none;
-  font-size: 1.3em;
   color: #434146;
   background-color: #303e4d;
-  font-size: 12px;
+  font-size: 20px;
   z-index: 5; }
   .toc-nav li {
     list-style: none; }
@@ -192,6 +201,9 @@
 
 .toc-nav:hover {
   display: block; }
+
+.hidden {
+  display: none; }
 
 .toc-li {
   color: #fed75e; }
@@ -218,6 +230,12 @@
 
 .toc-btn {
   color: #fed75e; }
+  .toc-btn.left {
+    float: left; }
+  .toc-btn.right {
+    float: right; }
+  .toc-btn.hidden {
+    display: none; }
   .toc-btn:hover {
     color: #feb255; }
 

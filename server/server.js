@@ -236,7 +236,7 @@ pushDataRequest = function(socket, data) {
     if (results.length) {
       console.log(results[0]);
       console.log(`User Update Time: ${data.notes.updatedAt} Server Update Time: ${results[0].notes.updatedAt.toISOString()}`);
-      if (data.force_push || data.notes.updatedAt != results[0].notes.updatedAt.toISOString()) {
+      if (data.force_push || data.notes.updatedAt == results[0].notes.updatedAt.toISOString()) {
         // No other push occurred.
         console.log("no push conflict");
         var date = new Date();

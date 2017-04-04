@@ -169,8 +169,9 @@ class App extends React.Component {
 
     ipc.on('request-login-response', (event, data) => {
       console.log('received login response: ' + data);
-      if (data.result == true) {
+      if (data.result) {
         store.dispatch({type: 'SET_USER', userid: data.userid});
+        store.dispatch({type: 'FOLDER_MODE'});
         this.request_pull_data();
       } else {
         dialog.showErrorBox('error', data.msg);
@@ -181,6 +182,7 @@ class App extends React.Component {
       console.log('received signup reply: ' + JSON.stringify(data));
       if (data.result == true) {
         store.dispatch({type: 'SET_USER', userid: data.userid});
+        store.dispatch({type: 'FOLDER_MODE'});
         this.request_pull_data();
       } else {
         dialog.showErrorBox('error', data.msg);
@@ -209,7 +211,6 @@ class App extends React.Component {
 
       if (data.result == true){
         store.dispatch({type: 'SET_NOTES', notes: data.notes});
-        store.dispatch({type: 'FOLDER_MODE'});
         store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Notes updated from cloud'});
       } else {
         dialog.showErrorBox('error', data.msg);

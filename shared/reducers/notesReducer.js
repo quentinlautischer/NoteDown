@@ -4,7 +4,8 @@ import createReducer from './reducerUtilities'
 
 
 function setNotes(state, action){
-  console.log(`Setting Notes: ${action.notes}`);
+  console.log(`Setting Notes:`);
+  console.log(action.notes);
   return action.notes;
 }
 
