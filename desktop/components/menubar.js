@@ -123,6 +123,7 @@ function menuLogout(store) {
   store.dispatch({type: 'MENU_MODE'});
   store.dispatch({type: 'SET_USER', userid: null});
   store.dispatch({type: 'SET_NOTES', notes: null});
+  ipc.send('close-socket', null);
 }
 
 function menuPushToCloud(store) {

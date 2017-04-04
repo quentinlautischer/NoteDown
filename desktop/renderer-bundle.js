@@ -104,6 +104,10 @@
 
 	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
 
+	var _dialogContainer = __webpack_require__(810);
+
+	var _dialogContainer2 = _interopRequireDefault(_dialogContainer);
+
 	var _MuiThemeProvider = __webpack_require__(402);
 
 	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
@@ -197,6 +201,13 @@
 	              onActionTouchTap: function onActionTouchTap() {
 	                return store.dispatch({ type: 'PHOTO_ALERT' });
 	              }
+	            }),
+	            _react2.default.createElement(_dialogContainer2.default, {
+	              open: store.getState().state.dialog_open,
+	              close: function close() {
+	                return store.dispatch({ type: 'DIALOG_CLOSE' });
+	              },
+	              store: store
 	            })
 	          );
 	        case 'editor':
@@ -216,6 +227,13 @@
 	              onActionTouchTap: function onActionTouchTap() {
 	                return store.dispatch({ type: 'PHOTO_ALERT' });
 	              }
+	            }),
+	            _react2.default.createElement(_dialogContainer2.default, {
+	              open: store.getState().state.dialog_open,
+	              close: function close() {
+	                return store.dispatch({ type: 'DIALOG_CLOSE' });
+	              },
+	              store: store
 	            })
 	          );
 	        case 'folderview':
@@ -235,7 +253,14 @@
 	              }
 	            }, 'onActionTouchTap', function onActionTouchTap() {
 	              return store.dispatch({ type: 'PHOTO_ALERT' });
-	            }))
+	            })),
+	            _react2.default.createElement(_dialogContainer2.default, {
+	              open: store.getState().state.dialog_open,
+	              close: function close() {
+	                return store.dispatch({ type: 'DIALOG_CLOSE' });
+	              },
+	              store: store
+	            })
 	          );
 	        case 'flashcard':
 	          return _react2.default.createElement(
@@ -254,6 +279,13 @@
 	              onActionTouchTap: function onActionTouchTap() {
 	                return store.dispatch({ type: 'PHOTO_ALERT' });
 	              }
+	            }),
+	            _react2.default.createElement(_dialogContainer2.default, {
+	              open: store.getState().state.dialog_open,
+	              close: function close() {
+	                return store.dispatch({ type: 'DIALOG_CLOSE' });
+	              },
+	              store: store
 	            })
 	          );
 	        default:
@@ -315,6 +347,18 @@
 
 	      ipc.on('request-push-data-response', function (event, data) {
 	        console.log('request-push-data-response: ' + data);
+	        if (data.result) {
+	          _this2.request_pull_data();
+	        } else {
+	          if (data.type == 'push-conflict') {
+	            console.log("Push Data Conflict");
+	            store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Push Data Conflict' });
+	            store.dispatch({ type: 'DIALOG_OPEN', dialog_type: 'push-conflict' });
+	          } else {
+	            console.log("Push Data Failed.");
+	            store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Push Data Failed' });
+	          }
+	        }
 	      });
 
 	      ipc.on('request-pull-data-response', function (event, data) {
@@ -23933,12 +23977,29 @@
 	  });
 	}
 
+	function openDialog(state, action) {
+	  state = (0, _immutabilityHelper2.default)(state, {
+	    dialog_open: { $set: true }
+	  });
+	  return (0, _immutabilityHelper2.default)(state, {
+	    dialog_type: { $set: action.dialog_type }
+	  });
+	}
+
+	function closeDialog(state, action) {
+	  return (0, _immutabilityHelper2.default)(state, {
+	    dialog_open: { $set: false }
+	  });
+	}
+
 	var initial_state = {
 	  mode: 'menu',
 	  userid: null,
 	  folderIndex: 0,
 	  pageIndex: 0,
 	  quickmode_filepath: null,
+	  dialog_open: false,
+	  dialog_type: null,
 	  snackbar: {
 	    open: false,
 	    time: 4000,
@@ -23971,7 +24032,9 @@
 	  'CLOSE_SNACKBAR': closeSnackbar,
 	  'PHOTO_ALERT': showPhotoAlert,
 	  'PHOTO_ALERT_SET_PHOTO': setPhotoAlertPhoto,
-	  'CLOSE_PHOTO_ALERT': closePhotoAlert
+	  'CLOSE_PHOTO_ALERT': closePhotoAlert,
+	  'DIALOG_OPEN': openDialog,
+	  'DIALOG_CLOSE': closeDialog
 	});
 
 	exports.default = appReducer;
@@ -24621,6 +24684,7 @@
 	  store.dispatch({ type: 'MENU_MODE' });
 	  store.dispatch({ type: 'SET_USER', userid: null });
 	  store.dispatch({ type: 'SET_NOTES', notes: null });
+	  ipc.send('close-socket', null);
 	}
 
 	function menuPushToCloud(store) {
@@ -24938,6 +25002,7 @@
 
 	  check_codeblock_lang(block_array);
 	  check_codeblock(block_array);
+	  check_refs(block_array);
 	  check_header_setext(block_array);
 	  check_header_atx(block_array);
 	  check_blockquote(block_array);
@@ -24946,7 +25011,6 @@
 	  check_list_ordered(block_array);
 	  check_list_unordered(block_array);
 	  check_table(block_array);
-	  check_refs(block_array);
 	  check_paragraph(block_array);
 
 	  if (!allow_raw) {
@@ -24966,6 +25030,7 @@
 	  var span_array = [{ content: str }];
 
 	  check_backslash_escape(span_array);
+	  check_html_escape(span_array);
 	  check_links(span_array);
 	  check_autolink(span_array);
 	  check_links_ref(span_array);
@@ -25027,7 +25092,7 @@
 	          var mag = match[1].charAt(0) == '=' ? 1 : 2;
 
 	          var raw1 = { content: content.slice(0, l - 1) };
-	          var header_setext = { tag: 'h' + mag, content: content[l - 1] };
+	          var header_setext = { tag: 'h' + mag, content: parse_span(content[l - 1]) };
 	          var raw2 = { content: content.slice(l + 1, content.length) };
 
 	          blocks.splice(b, 1, raw1, header_setext, raw2);
@@ -25054,7 +25119,7 @@
 	        if ((match = patt.exec(content[l])) != null) {
 
 	          var raw1 = { content: content.slice(0, l) };
-	          var header_atx = { tag: 'h' + match[1].length, content: match[2] };
+	          var header_atx = { tag: 'h' + match[1].length, content: parse_span(match[2]) };
 	          var raw2 = { content: content.slice(l + 1, content.length) };
 
 	          blocks.splice(b, 1, raw1, header_atx, raw2);
@@ -25215,13 +25280,13 @@
 	          }
 	          var raw1 = { content: content.slice(0, l) };
 	          var code = null;
-	          if (code_class != null) {
+	          if (code_class != null && code_class.trim().length > 0) {
 	            var highlit = hljs.highlight(code_class, inner_content, true);
 	            code = { tag: 'code', content: highlit.value };
 	          } else {
 	            code = { tag: 'code', content: inner_content };
 	          }
-	          code.attributes = { class: code_class != null ? code_class : 'nohighlight' };
+	          code.attributes = { class: code_class != null && code_class.trim().length > 0 ? code_class : 'nohighlight' };
 	          var pre = { tag: 'pre', content: render_block([code]) };
 	          var raw2 = { content: content.slice(end + 1, content.length) };
 
@@ -25531,7 +25596,7 @@
 	      for (var l = 0; l < content.length; l++) {
 	        if ((match = patt.exec(content[l])) != null) {
 	          var title = match[4]; //may be null, image parse will handle
-	          link_refs.push([match[1], match[2], match[4]]);
+	          link_refs.push([match[1].toLowerCase(), match[2], match[4]]);
 
 	          var raw1 = { content: content.slice(0, l) };
 	          var raw2 = { content: content.slice(l + 1, content.length) };
@@ -25557,6 +25622,26 @@
 	    content = content.replace(/\\-/g, '&minus;').replace(/\\\./g, '&period;').replace(/\\!/g, '&excl;').replace(/\\\|/g, '&vert;');
 	    content = content.replace(/\\&/g, '&amp;').replace(/\\</g, '&lt;').replace(/\\>/g, '&gt;');
 	    span_array[s].content = content;
+	  }
+	}
+
+	function check_html_escape(span_array) {
+	  var patt = /<[A-z0-9]+\s+(?:[^\s]+=(['"]).+?\1)*\s*\/?>/;
+	  var match;
+
+	  for (var s = 0; s < span_array.length; s++) {
+	    if (span_array[s].tag == null) {
+	      var content = span_array[s].content;
+	      if ((match = patt.exec(content)) != null) {
+
+	        var raw1 = { content: content.slice(0, match.index) };
+	        var html = { tag: 'html', content: match[0] };
+	        var raw2 = { content: content.slice(match.index + match[0].length, content.length) };
+
+	        span_array.splice(s, 1, raw1, html, raw2);
+	        s++;
+	      }
+	    }
 	  }
 	}
 
@@ -25634,7 +25719,8 @@
 	        var ref = match[3];
 	        if (ref == null) {
 	          ref = alt;
-	        };
+	        }
+	        ref = ref.toLowerCase();
 
 	        var src = null;
 	        var title = null;
@@ -42935,6 +43021,7 @@
 	      this.setState({
 	        mode: 'login'
 	      });
+	      ipc.send('initialize-socket', null);
 	    }
 	  }, {
 	    key: 'enterSignUpForm',
@@ -88848,6 +88935,204 @@
 	};
 
 	module.exports = keyOf;
+
+/***/ },
+/* 810 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pushConflictDialog = __webpack_require__(811);
+
+	var _pushConflictDialog2 = _interopRequireDefault(_pushConflictDialog);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DialogContainer = function (_React$Component) {
+	  _inherits(DialogContainer, _React$Component);
+
+	  function DialogContainer() {
+	    _classCallCheck(this, DialogContainer);
+
+	    return _possibleConstructorReturn(this, (DialogContainer.__proto__ || Object.getPrototypeOf(DialogContainer)).apply(this, arguments));
+	  }
+
+	  _createClass(DialogContainer, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      if (this.props.store.getState().state.dialog_type == 'push-conflict') {
+	        return _react2.default.createElement(_pushConflictDialog2.default, {
+	          store: this.props.store,
+	          open: this.props.open,
+	          close: function close() {
+	            return _this2.props.close();
+	          }
+	        });
+	      } else {
+	        return null;
+	      }
+	    }
+	  }]);
+
+	  return DialogContainer;
+	}(_react2.default.Component);
+
+	exports.default = DialogContainer;
+
+/***/ },
+/* 811 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Dialog = __webpack_require__(606);
+
+	var _Dialog2 = _interopRequireDefault(_Dialog);
+
+	var _FlatButton = __webpack_require__(584);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	var _RaisedButton = __webpack_require__(552);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _menuTextField = __webpack_require__(587);
+
+	var _menuTextField2 = _interopRequireDefault(_menuTextField);
+
+	var _menuButton = __webpack_require__(551);
+
+	var _menuButton2 = _interopRequireDefault(_menuButton);
+
+	var _MuiThemeProvider = __webpack_require__(402);
+
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _getMuiTheme = __webpack_require__(489);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ipc = __webpack_require__(223).ipcRenderer;
+
+	var PushConflictDialog = function (_React$Component) {
+	  _inherits(PushConflictDialog, _React$Component);
+
+	  function PushConflictDialog(props) {
+	    _classCallCheck(this, PushConflictDialog);
+
+	    return _possibleConstructorReturn(this, (PushConflictDialog.__proto__ || Object.getPrototypeOf(PushConflictDialog)).call(this, props));
+	  }
+
+	  _createClass(PushConflictDialog, [{
+	    key: 'request_pull_data',
+	    value: function request_pull_data() {
+	      console.log("requesting data pull");
+	      var data = { userid: this.props.store.getState().state.userid };
+	      ipc.send('request-pull-data', data);
+	    }
+	  }, {
+	    key: 'request_push_data',
+	    value: function request_push_data() {
+	      var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+	      console.log("requesting data push");
+	      var data = { userid: this.props.store.getState().state.userid, notes: this.props.store.getState().notes, force_push: force };
+	      ipc.send('request-push-data', data);
+	    }
+	  }, {
+	    key: 'overwritePull',
+	    value: function overwritePull() {
+	      this.request_pull_data();
+	      this.props.close();
+	    }
+	  }, {
+	    key: 'forcePush',
+	    value: function forcePush() {
+	      this.request_push_data(true);
+	      this.props.close();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var actions = [_react2.default.createElement(_FlatButton2.default, {
+	        label: 'Overwrite Pull',
+	        primary: false,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this2.overwritePull();
+	        }
+	      }), _react2.default.createElement(_FlatButton2.default, {
+	        label: 'Force Push',
+	        primary: true,
+	        keyboardFocused: false,
+	        onTouchTap: function onTouchTap() {
+	          return _this2.forcePush();
+	        }
+	      })];
+
+	      return _react2.default.createElement(
+	        _MuiThemeProvider2.default,
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(_Dialog2.default, {
+	            title: 'Push Conflict',
+	            actions: actions,
+	            modal: false,
+	            open: this.props.open,
+	            onRequestClose: function onRequestClose() {
+	              return _this2.props.close();
+	            }
+	          })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return PushConflictDialog;
+	}(_react2.default.Component);
+
+	exports.default = PushConflictDialog;
 
 /***/ }
 /******/ ]);

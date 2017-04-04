@@ -111,12 +111,29 @@ function closePhotoAlert(state, action) {
   });
 }
 
+function openDialog(state, action) {
+  state = update(state, {
+    dialog_open: {$set: true}
+  });
+  return update(state, {
+    dialog_type: {$set: action.dialog_type}
+  });
+}
+
+function closeDialog(state, action) {
+  return update(state, {
+    dialog_open: {$set: false}
+  });
+}
+
 const initial_state = {
   mode: 'menu',
   userid: null,
   folderIndex: 0,
   pageIndex: 0,
   quickmode_filepath: null,
+  dialog_open: false,
+  dialog_type: null,
   snackbar: {
     open: false,
     time: 4000,
@@ -149,7 +166,9 @@ const appReducer = createReducer(initial_state, {
   'CLOSE_SNACKBAR': closeSnackbar,
   'PHOTO_ALERT': showPhotoAlert,
   'PHOTO_ALERT_SET_PHOTO': setPhotoAlertPhoto,
-  'CLOSE_PHOTO_ALERT': closePhotoAlert
+  'CLOSE_PHOTO_ALERT': closePhotoAlert,
+  'DIALOG_OPEN': openDialog,
+  'DIALOG_CLOSE': closeDialog
 });
 
 export default appReducer;

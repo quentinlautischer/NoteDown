@@ -214,7 +214,6 @@ pullDataRequest = function(socket, data) {
     }
 
     if (results.length) {
-      results[0].notes.updatedAt = results[0].updatedAt;
       const event = {event: "request-pull-data-response", data: {result: true, notes: results[0].notes}};
       socket.emit('data', event);
     } else {
@@ -236,10 +235,12 @@ pushDataRequest = function(socket, data) {
     }
     if (results.length) {
       console.log(results[0]);
-      console.log(`User Update Time: ${data.notes.updatedAt} Server Update Time: ${results[0].updatedAt}`);
-      if (true || data.force_push || data.notes.updatedAt == results[0].updatedAt) {
+      console.log(`User Update Time: ${data.notes.updatedAt} Server Update Time: ${results[0].notes.updatedAt.toISOString()}`);
+      if (data.force_push || data.notes.updatedAt != results[0].notes.updatedAt.toISOString()) {
         // No other push occurred.
         console.log("no push conflict");
+        var date = new Date();
+        data.notes.updatedAt = date.toISOString();
         Account.findOneAndUpdate({ email: data.userid }, { notes: data.notes }, function (err, results) {
           if (err) {
             console.error(err);
@@ -253,12 +254,13 @@ pushDataRequest = function(socket, data) {
       } else {
         // Another push occurred user needs to choose.
         console.log("Push Data Conflict");
-        socket.emit('push-conflict');
+        const event = {event: "request-push-data-response", data: {result: false, type: 'push-conflict', msg: 'Push Conflict'}};
+        socket.emit('data', event);
       }
       
     } else {
-      // What do we do here?
-      socket.emit('server-error', { msg: 'Server Encountered An Error' })
+      const event = {event: "request-push-data-response", data: {result: false, type: 'error', msg: 'Could not find account'}};
+      socket.emit('data', event);
     }
   });
   

@@ -43,11 +43,9 @@ function createWindow () {
   mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
-    socket.destroy();
+    closeSocket();
     mainWindow = null
   })
-
-  initServerComm();
 }
 
 app.on('ready', createWindow)
@@ -73,6 +71,7 @@ app.on('maximize', function () {
 })
 
 function initServerComm() {
+  console.log('initializing socket');
   socket = io('http://' + HOST + ':' + PORT);
   // socket = io(HOST);
 
@@ -81,6 +80,22 @@ function initServerComm() {
     mainWindow.webContents.send(data.event, data.data);
   });
 }
+
+ipcMain.on('initialize-socket', (event, data) => {
+  initServerComm();
+});
+
+function closeSocket() {
+  try {
+    socket.destroy();  
+  } catch(err) {
+    console.log(`${err}`);
+  }
+}
+
+ipcMain.on('close-socket', (event, data) => {
+  closeSocket();
+})
 
 ipcMain.on('create-folder-request', (event, data) => {
   const folder = new Folder({
