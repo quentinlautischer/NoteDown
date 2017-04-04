@@ -23927,6 +23927,10 @@
 	  return Object.assign({}, state, { pageIndex: action.index });
 	}
 
+	function settingsMode(state, action) {
+	  return Object.assign({}, state, { mode: 'settings' });
+	}
+
 	function showSnackbar(state, action) {
 	  state = (0, _immutabilityHelper2.default)(state, { snackbar: {
 	      open: { $set: true }
@@ -24034,7 +24038,8 @@
 	  'PHOTO_ALERT_SET_PHOTO': setPhotoAlertPhoto,
 	  'CLOSE_PHOTO_ALERT': closePhotoAlert,
 	  'DIALOG_OPEN': openDialog,
-	  'DIALOG_CLOSE': closeDialog
+	  'DIALOG_CLOSE': closeDialog,
+	  'SETTINGS_MODE': settingsMode
 	});
 
 	exports.default = appReducer;
@@ -24475,15 +24480,21 @@
 	  return Object.assign({}, state, { cursor_position: action.position });
 	}
 
+	function autosaveEnabled(state, action) {
+	  return Object.assign({}, state, { autosave_enabled: action.value });
+	}
+
 	var initial_state = {
 	  mode: 'quickmode',
-	  cursor_position: 0
+	  cursor_position: 0,
+	  autosave_enabled: true
 	};
 
 	var editorReducer = (0, _reducerUtilities2.default)(initial_state, {
 	  'EDITOR_MODE_QUICKMODE': editorModeQuickmode,
 	  'EDITOR_MODE_CLOUD': editorModeCloud,
-	  'CURSOR_CHANGE': cursorChange
+	  'CURSOR_CHANGE': cursorChange,
+	  'AUTOSAVE_ENABLED': autosaveEnabled
 	});
 
 	exports.default = editorReducer;

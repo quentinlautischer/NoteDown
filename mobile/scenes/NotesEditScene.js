@@ -23,7 +23,7 @@ class NotesEditScene extends Component {
 
         this.unsubscribe = null;
 
-        setInterval(this.props.requestPushData, 1000 * 60 * 10); // autosave every 10 minutes
+        this.interval = null;
     }
 
     insertShortcutText(text, isBlock) {
@@ -37,10 +37,16 @@ class NotesEditScene extends Component {
         this.unsubscribe = this.context.store.subscribe( this.storeDidUpdate );
         var text = this.getContent();
         this.setState({ content: text });
+
+        console.log("autosave state on mount " + this.context.store.getState().editor.autosave_enabled);
+        if (this.context.store.getState().editor.autosave_enabled) {
+            this.interval = setInterval(this.props.requestPushData, 1000 * 60 * 5); // autosave every 5 minutes
+        }
     }
 
     componentWillUnmount() {
         this.unsubscribe();
+        clearInterval(this.interval);
     }
 
     handleChange(text) {
