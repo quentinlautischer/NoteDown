@@ -45,6 +45,7 @@ class FlashcardsMenuScene extends Component {
                     <TitleText text='My Decks' style={styles.title}/>
                     <ListView
                         dataSource={this.state.dataSource}
+                        enableEmptySections={true}
                         renderRow={(rowData, sectionID, rowID, highlightRow) =>
                             <TouchableHighlight onPress = { () => this.selectFolder(rowID) }>
                                 <ListItem iconName='cards' text={rowData.name} />

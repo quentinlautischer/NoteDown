@@ -95,6 +95,7 @@ class FoldersScene extends Component {
                     <TitleText text='My Folders' />
                     <ListView
                         dataSource={this.state.dataSource}
+                        enableEmptySections={true}
                         renderRow={(rowData, sectionID, rowID, highlightRow) =>
                             <TouchableHighlight onPress = { () => this.selectFolder(rowID) }>
                                 <ListItem iconName='folder' text={rowData.name} />

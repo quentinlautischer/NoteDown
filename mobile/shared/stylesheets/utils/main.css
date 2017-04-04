@@ -1,6 +1,7 @@
 @charset "UTF-8";
 @import url(../../node_modules/codemirror/theme/duotone-light.css);
 @import url(../../node_modules/highlight.js/styles/atom-one-dark.css);
+@import url(../../node_modules/katex/dist/katex.min.css);
 .menu-button {
   width: pecentage(1/4);
   text-align: center;
