@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import SocketIOClient from 'socket.io-client';
+import Toast from 'react-native-root-toast';
 import MenuButton from '../components/MenuButton';
 import LoginInput from '../components/LoginInput';
 import MenuScene from './MenuScene'; // for navigation
@@ -25,6 +26,8 @@ const PASSWORD_REF="pw";
 const LOGIN_ERR = "Could not login.  Please verify your username and password";
 const CLOUD_PULL_ERR = "An error occured trying to pull your data from the cloud";
 const CLOUD_PUSH_ERR = "An error occured trying to push your data to the cloud";
+const CLOUD_PULL_SUCC = "Successfully retrieved your data from the cloud";
+const CLOUD_PUSH_SUCC = "Successfully pushed your data to the cloud";
 
 class LoginScene extends Component {
     constructor(props) {
@@ -53,6 +56,7 @@ class LoginScene extends Component {
                 if (data.data.result) {
                     this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
                     if (this.context.store.getState().state.mode === 'login') {
+                        this.callToast(CLOUD_PULL_SUCC);
                         this._navigate();
                     }
                     this.updateSavedContent();
@@ -60,9 +64,9 @@ class LoginScene extends Component {
                     Alert.alert('Error', CLOUD_PULL_ERR);
                 }
             } else if (data.event === 'request-push-data-response') {
-                console.log('request-push-data-response: ' + data);
                 if (data.data.result) {
                     this.requestPullData();
+                    this.callToast(CLOUD_PUSH_SUCC);
                 } else {
                     if (data.data.type == 'push-conflict') {
                         this.handlePushConflict();
@@ -73,6 +77,14 @@ class LoginScene extends Component {
             }
         });
         this.retrieveSettings();
+    }
+
+    callToast(msg) {
+        let toast = Toast.show(msg, {
+            duration: 1400, // ms
+            position: 0, // middle of screen
+            shadow: true
+        });
     }
 
     handlePushConflict() {
