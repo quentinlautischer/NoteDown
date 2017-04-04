@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
     View,
     TouchableHighlight,
-    StyleSheet
+    StyleSheet,
+    AsyncStorage
 } from 'react-native';
 import { connect } from 'react-redux';
 import SettingsList from 'react-native-settings-list';
@@ -26,7 +27,12 @@ class SettingsScene extends Component {
 
     componentWillUnmount() {
         this.unsubscribe();
-        console.log("autosave state on unmount " + this.context.store.getState().editor.autosave_enabled);
+        this.saveSettingsToDisk();
+    }
+
+    saveSettingsToDisk() {
+        const key = `@${this.context.store.getState().state.userid}:AUTOSAVE_ENABLED`;
+        AsyncStorage.setItem(key, this.context.store.getState().editor.autosave_enabled.toString());
     }
 
     storeDidUpdate() {

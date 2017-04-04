@@ -5,7 +5,8 @@ import {
     TouchableHighlight,
     StyleSheet,
     Alert,
-    Keyboard
+    Keyboard,
+    AsyncStorage
 } from 'react-native';
 import { connect } from 'react-redux';
 import SocketIOClient from 'socket.io-client';
@@ -53,10 +54,18 @@ class LoginScene extends Component {
                 }
             }
         });
+        this.retrieveSettings();
     }
 
     clearText() {
         this.refs['un'].clear(0);
+    }
+
+    retrieveSettings() {
+        const key = `@${this.context.store.getState().state.userid}:AUTOSAVE_ENABLED`;
+        AsyncStorage.getItem(key).then((isAutosave) => {
+            this.context.store.dispatch({type: 'AUTOSAVE_ENABLED', value: isAutosave === 'true'});
+        }).done();
     }
 
     requestPullData() {
