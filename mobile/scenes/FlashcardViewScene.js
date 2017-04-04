@@ -19,34 +19,31 @@ import FlashcardBack from '../components/FlashcardBack';
 var FC_NAV_REF = 'fc_nav';
 
 class FlashcardViewScene extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            flashcardIndex: 0
-        };
-    }
 
     componentDidMount() {
         Orientation.lockToLandscape(); //this will lock the view to Landscape
+        this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: 0});
         console.log('FCs: ' + JSON.stringify(this.context.store.getState().flashcards));
     }
 
     componentWillUnmount() {
         Orientation.unlockAllOrientations();
+        this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: 0});
     }
 
     onSwipeLeft(gestureState) {
         var state = this.context.store.getState();
         // go to next page
-        if (this.state.flashcardIndex < state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards.length - 1) {
+        if (state.flashcards.currentIndex < state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards.length - 1) {
             this.cardTransition();
         }
     }
 
     onSwipeRight(gestureState) {
+        var state = this.context.store.getState().flashcards;
+
         // go to previous page
-        if (this.state.flashcardIndex > 0) {
+        if (state.currentIndex > 0) {
             this.cardTransition(this.goToPrevious.bind(this));
         }
     }
@@ -71,7 +68,7 @@ class FlashcardViewScene extends Component {
 
         this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
         this.refs[FC_NAV_REF].replaceAtIndex(
-            { index: 0, content: flashcards[this.state.flashcardIndex]},
+            { index: 0, content: flashcards[state.flashcards.currentIndex]},
             -1,
             cb
         );
@@ -82,14 +79,16 @@ class FlashcardViewScene extends Component {
         var flashcards = state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards;
         this.refs[FC_NAV_REF].push({
             index: 0,
-            content: flashcards[this.state.flashcardIndex + 1].front
+            content: flashcards[state.flashcards.currentIndex + 1].front
         });
-        this.setState({ flashcardIndex: this.state.flashcardIndex + 1 });
+        this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: state.flashcards.currentIndex + 1});
     }
 
     goToPrevious() {
+        var state = this.context.store.getState().flashcards;
+
         this.refs[FC_NAV_REF].pop();
-        this.setState({ flashcardIndex: this.state.flashcardIndex - 1 });
+        this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: state.currentIndex - 1});
     }
 
     onSwipeUp(gestureState) {
@@ -158,19 +157,19 @@ class FlashcardViewScene extends Component {
                                 navigator={navigator}
                                 content={this.context.store.getState().flashcards.flashcardFolders
                                     .folders[this.context.store.getState().state.folderIndex]
-                                    .flashcards[this.state.flashcardIndex].front} />
+                                    .flashcards[this.context.store.getState().flashcards.currentIndex].front} />
                         } else if (route.index === 1) { // hints
                             return <FlashcardBack
                                 navigator={navigator}
                                 content={this.context.store.getState().flashcards.flashcardFolders
                                     .folders[this.context.store.getState().state.folderIndex]
-                                    .flashcards[this.state.flashcardIndex].hints} />
+                                    .flashcards[this.context.store.getState().flashcards.currentIndex].hints} />
                         } else if (route.index === 2) { // back
                             return <FlashcardBack
                                 navigator={navigator}
                                 content={this.context.store.getState().flashcards.flashcardFolders
                                     .folders[this.context.store.getState().state.folderIndex]
-                                    .flashcards[this.state.flashcardIndex].back}
+                                    .flashcards[this.context.store.getState().flashcards.currentIndex].back}
                                 onRank={this.onRank.bind(this)} />
                         }
                     }}

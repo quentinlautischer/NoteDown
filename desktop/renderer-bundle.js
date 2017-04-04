@@ -24540,6 +24540,10 @@
 	  return Object.assign({}, state, { flashcards: action.flashcards });
 	}
 
+	function setFlashcardIndex(state, action) {
+	  return Object.assign({}, state, { currentIndex: action.currentIndex });
+	}
+
 	function setFlashcardFolders(state, action) {
 	  return Object.assign({}, state, { flashcardFolders: action.flashcardFolders });
 	}
@@ -24559,6 +24563,7 @@
 	  'PREV_FLASHCARD': prevFlashcard,
 	  'SET_FLASHCARDS': setFlashcards,
 	  'SET_FLASHCARD_FOLDERS': setFlashcardFolders,
+	  'SET_FLASHCARD_INDEX': setFlashcardIndex,
 	  'SET_FLASHCARD_STEP': setFlashcardStep
 	});
 
