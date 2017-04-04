@@ -63,4 +63,14 @@
   pre{
     background-color: map-get($colors, dark2); 
   }
+
+  table {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  table, th, td {
+    border: 1px solid map-get($colors, dark2);
+  }
 }

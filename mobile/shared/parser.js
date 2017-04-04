@@ -266,6 +266,7 @@ function check_codeblock(blocks) {
     }
   }
 }
+
 ////////////////////////////////////////////
 /* Finds code delimited by a line: ```code_language at the start
 /  and a line ``` at the end
@@ -828,7 +829,7 @@ function check_codespan(span_array) {
   for (var i = matches.length-2; i >= 0; i-=2) { //Invariant: All code bookends are evenly paired and adjacent
     var content = span_array[matches[i].span].content;
     var span1 = {content:span_array[matches[i].span].content.slice(0, matches[i].index)};
-    var html = {tag:'emphasis', content:'<code>'};
+    var html = {tag:'code', content:'<code>'};
     if (matches[i].span == matches[i+1].span) {
       html.content += span_array[matches[i].span].content.slice(matches[i].index + matches[i].content.length, matches[i+1].index);
     } else {
@@ -841,6 +842,7 @@ function check_codespan(span_array) {
     span_array.splice(matches[i].span, matches[i+1].span-matches[i].span + 1, span1, html, span2);
   }
 }
+
 function check_break(span_array) {
   var patt = /(?:[ ]{2,}|\t+)\n/;
   var match;
@@ -859,6 +861,40 @@ function check_break(span_array) {
       }
     }
   }
+}
+
+function check_math(span_array) {
+  var patt = /\${2}/g;
+  var matches = [];
+
+  for (var s = 0; s < span_array.length; s++) {
+    if (span_array[s].tag == null) {
+      var content = span_array[s].content;
+      var match;
+      while ((match = patt.exec(content)) != null) {
+        matches.push({span:s, index:match.index, content:match[0]});
+      }
+    }
+  }
+  if (matches.length % 2 != 0) { matches.pop(); }
+  
+  for (var i = matches.length-2; i >= 0; i-=2) { //Invariant: All math bookends are evenly paired and adjacent
+    var content = span_array[matches[i].span].content;
+    var span1 = {content:span_array[matches[i].span].content.slice(0, matches[i].index)};
+    var math = {tag:'math', content:''};
+    if (matches[i].span == matches[i+1].span) {
+      math.content += span_array[matches[i].span].content.slice(matches[i].index + 2, matches[i+1].index);
+    } else {
+      math.content += span_array[matches[i].span].content.slice(matches[i].index + 2, span_array[matches[i].span].content.length);
+      for (var j = matches[i].span + 1; j < matches[i+1].span; j++) { math.content += span_array[j].content; }
+      math.content += span_array[matches[i+1].span].content.slice(0, matches[i+1].index);
+    }
+	//TODO: Connect to plugin
+	//math.content = placeholderFunction(math.content);
+    var span2 = {content:span_array[matches[i+1].span].content.slice(matches[i+1].index + 2, span_array[matches[i+1].span].content.length)};
+    span_array.splice(matches[i].span, matches[i+1].span-matches[i].span + 1, span1, math, span2);
+  }
+
 }
 
 /* Functions to convert content extracted from MarkDown to HTML (for flashcards) */
