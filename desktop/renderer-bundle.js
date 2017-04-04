@@ -25915,7 +25915,6 @@
 
 	  for (var i = matches.length - 2; i >= 0; i -= 2) {
 	    //Invariant: All math bookends are evenly paired and adjacent
-	    console.log("Doing Math Yo");
 	    var content = span_array[matches[i].span].content;
 	    var span1 = { content: span_array[matches[i].span].content.slice(0, matches[i].index) };
 	    var math = { tag: 'math', content: '' };
@@ -25928,11 +25927,9 @@
 	      }
 	      math.content += span_array[matches[i + 1].span].content.slice(0, matches[i + 1].index);
 	    }
-	    //TODO: Connect to plugin
-	    console.log('Math input data: ' + math.content);
-	    math.content = katex.renderToString(math.content);
-	    console.log("Math Content:");
-	    console.log(math.content);
+	    try {
+	      math.content = katex.renderToString(math.content);
+	    } catch (err) {}
 	    var span2 = { content: span_array[matches[i + 1].span].content.slice(matches[i + 1].index + 2, span_array[matches[i + 1].span].content.length) };
 	    span_array.splice(matches[i].span, matches[i + 1].span - matches[i].span + 1, span1, math, span2);
 	  }

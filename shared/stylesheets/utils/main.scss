@@ -13,6 +13,7 @@ $mdi-font-path:"../../node_modules/mdi/fonts";
 @import "../../node_modules/codemirror/theme/duotone-light.css";
 
 @import "../../node_modules/highlight.js/styles/atom-one-dark.css";
+@import "../../node_modules/katex/dist/katex.min.css";
 
 .icon-lightbulb {
   @extend .mdi;
