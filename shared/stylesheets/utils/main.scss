@@ -129,8 +129,10 @@ $mdi-font-path:"../../node_modules/mdi/fonts";
 
 .start-menu {
   position: relative;
-  margin-top: 20%;
+  margin-top: 10%;
+  margin-bottom: auto;
   align: center;
+  vertical-align: center;
   -webkit-app-region: no-drag;
 }
 
@@ -175,6 +177,10 @@ $mdi-font-path:"../../node_modules/mdi/fonts";
   float: right;
 }
 
+.dialog {
+  -webkit-app-region: no-drag;
+}
+
 
 body {
   margin: 0;
@@ -190,8 +196,8 @@ body {
   font-family: "Verdana", sans-serif;
   background-color: map-get($colors, primary1);
 
-  overflow: hidden;
-  -webkit-app-region: drag;
+  overflow-x: hidden;
+  // -webkit-app-region: drag;
   -webkit-user-select: none;
 
   ::-webkit-scrollbar

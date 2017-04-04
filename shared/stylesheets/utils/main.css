@@ -142,7 +142,7 @@
   display: inline-block;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
   -webkit-app-region: no-drag; }
 
 .menu-text-field {
@@ -8723,8 +8723,10 @@ span.CodeMirror-selectedtext {
 
 .start-menu {
   position: relative;
-  margin-top: 20%;
+  margin-top: 10%;
+  margin-bottom: auto;
   align: center;
+  vertical-align: center;
   -webkit-app-region: no-drag; }
 
 .menubar-custom {
@@ -8761,6 +8763,9 @@ span.CodeMirror-selectedtext {
 .window-tile {
   float: right; }
 
+.dialog {
+  -webkit-app-region: no-drag; }
+
 body {
   margin: 0;
   box-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.15), 0 -0.5px 0 rgba(0, 0, 0, 0.15), 0.5px 0 0 rgba(0, 0, 0, 0.15), -0.5px 0 0 rgba(0, 0, 0, 0.15), 0 1px 1px rgba(0, 0, 0, 0.15);
@@ -8772,8 +8777,7 @@ body {
   -webkit-box-sizing: border-box;
   font-family: "Verdana", sans-serif;
   background-color: #8bbf9f;
-  overflow: hidden;
-  -webkit-app-region: drag;
+  overflow-x: hidden;
   -webkit-user-select: none; }
   body ::-webkit-scrollbar {
     width: 6px;

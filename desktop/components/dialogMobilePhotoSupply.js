@@ -93,7 +93,7 @@ class DialogMobilePhotoSupply extends React.Component {
 
     return (
       <MuiThemeProvider>
-        <div>
+        <div className="dialog">
           <Dialog
             title="Mobile Photo Insert"
             actions={actions}

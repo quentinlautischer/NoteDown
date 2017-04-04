@@ -24758,19 +24758,19 @@
 	      }
 	    }, {
 	      role: 'FolderView',
-	      label: 'FolderView',
+	      label: 'Folders',
 	      visible: is_logged_in(state),
 	      click: function click() {
 	        menuFolderview(store);
 	      }
-	    }, {
-	      role: 'Flashcards',
-	      label: 'Flashcards',
-	      visible: is_logged_in(state),
-	      click: function click() {
-	        menuFlashcards(store);
-	      }
-	    }, {
+	    },
+	    // {
+	    //   role: 'Flashcards',
+	    //   label: 'Flashcards',
+	    //   visible: is_logged_in(state),
+	    //   click () { menuFlashcards(store) }
+	    // },
+	    {
 	      type: 'separator'
 	    }, {
 	      role: 'Login',
@@ -52055,6 +52055,10 @@
 
 	var _menuTextField2 = _interopRequireDefault(_menuTextField);
 
+	var _menuPasswordField = __webpack_require__(856);
+
+	var _menuPasswordField2 = _interopRequireDefault(_menuPasswordField);
+
 	var _TextField = __webpack_require__(613);
 
 	var _TextField2 = _interopRequireDefault(_TextField);
@@ -52173,22 +52177,13 @@
 	            { className: 'start-menu' },
 	            _react2.default.createElement(_notedownTitleLogo2.default, null),
 	            _react2.default.createElement(_menuTextField2.default, { value: this.state.username, className: 'username', hintText: 'Username/Email', onChange: this.handleUsernameChange }),
-	            _react2.default.createElement(_menuTextField2.default, { value: this.state.password, className: 'password-field', hintText: 'Password', onChange: this.handlePasswordChange }),
+	            _react2.default.createElement(_menuPasswordField2.default, { value: this.state.password, className: 'password-field', hintText: 'Password', onChange: this.handlePasswordChange }),
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'login-signup-toggle' },
 	              _react2.default.createElement(_menuButton2.default, { className: 'login-btn', label: 'Login', onClick: function onClick() {
 	                  return _this2.request_login(_this2.state.username, _this2.state.password);
 	                } }),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
 	              _react2.default.createElement(_FlatButton2.default, { className: 'menu-button', label: 'Sign-Up', onClick: function onClick() {
 	                  return _this2.enterSignUpForm();
 	                } }),
@@ -52207,7 +52202,7 @@
 	            { className: 'start-menu' },
 	            _react2.default.createElement(_notedownTitleLogo2.default, null),
 	            _react2.default.createElement(_menuTextField2.default, { value: this.state.username, className: 'username', hintText: 'Username/Email', onChange: this.handleUsernameChange }),
-	            _react2.default.createElement(_menuTextField2.default, { value: this.state.password, className: 'password-field', hintText: 'Password', onChange: this.handlePasswordChange }),
+	            _react2.default.createElement(_menuPasswordField2.default, { value: this.state.password, className: 'password-field', hintText: 'Password', onChange: this.handlePasswordChange }),
 	            _react2.default.createElement(_menuTextField2.default, { value: this.state.name, className: 'name', hintText: 'Name', onChange: this.handleNameChange }),
 	            _react2.default.createElement(
 	              'div',
@@ -52215,15 +52210,6 @@
 	              _react2.default.createElement(_menuButton2.default, { label: 'Sign-Up', onClick: function onClick() {
 	                  return _this2.request_signup(_this2.state.username, _this2.state.password, _this2.state.name);
 	                } }),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
 	              _react2.default.createElement(_FlatButton2.default, { className: 'menu-button', label: 'Login', onClick: function onClick() {
 	                  return _this2.enterLoginForm();
 	                } }),
@@ -66019,7 +66005,7 @@
 	        null,
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'dialog' },
 	          _react2.default.createElement(
 	            _Dialog2.default,
 	            {
@@ -67278,7 +67264,7 @@
 	        null,
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'dialog' },
 	          _react2.default.createElement(
 	            _Dialog2.default,
 	            {
@@ -96679,6 +96665,7 @@
 	      var name = _ref.name,
 	          _id = _ref._id;
 
+	      // <div className="folder-flashcards-btn" onClick={this.viewFlashcards.bind(this, _id)}><i className="icon-cards"></i></div>
 	      return _react2.default.createElement(
 	        'div',
 	        { key: _id, className: 'folder-view', onClick: this.selectFolder.bind(this, _id) },
@@ -96687,11 +96674,6 @@
 	          'div',
 	          { className: 'folder-delete-btn', onClick: this.deleteFolder.bind(this, _id) },
 	          _react2.default.createElement('i', { className: 'icon-close' })
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'folder-flashcards-btn', onClick: this.viewFlashcards.bind(this, _id) },
-	          _react2.default.createElement('i', { className: 'icon-cards' })
 	        )
 	      );
 	    }
@@ -96830,7 +96812,7 @@
 	        null,
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'dialog' },
 	          _react2.default.createElement(
 	            _Dialog2.default,
 	            {
@@ -97188,7 +97170,7 @@
 	        null,
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'dialog' },
 	          _react2.default.createElement(_Dialog2.default, {
 	            title: 'Push Conflict',
 	            actions: actions,
@@ -98392,6 +98374,86 @@
 	};
 
 	module.exports = keyOf;
+
+/***/ },
+/* 837 */,
+/* 838 */,
+/* 839 */,
+/* 840 */,
+/* 841 */,
+/* 842 */,
+/* 843 */,
+/* 844 */,
+/* 845 */,
+/* 846 */,
+/* 847 */,
+/* 848 */,
+/* 849 */,
+/* 850 */,
+/* 851 */,
+/* 852 */,
+/* 853 */,
+/* 854 */,
+/* 855 */,
+/* 856 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _TextField2 = __webpack_require__(613);
+
+	var _TextField3 = _interopRequireDefault(_TextField2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MenuPasswordField = function (_TextField) {
+	  _inherits(MenuPasswordField, _TextField);
+
+	  function MenuPasswordField() {
+	    _classCallCheck(this, MenuPasswordField);
+
+	    return _possibleConstructorReturn(this, (MenuPasswordField.__proto__ || Object.getPrototypeOf(MenuPasswordField)).call(this));
+	  }
+
+	  _createClass(MenuPasswordField, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'menu-text-field' },
+	        _react2.default.createElement(_TextField3.default, {
+	          ref: 'password',
+	          type: 'password',
+	          hintStyle: { textAlign: 'center' },
+	          className: this.props.className + " menu-text-field",
+	          hintText: this.props.hintText,
+	          value: this.props.value,
+	          onChange: this.props.onChange
+	        })
+	      );
+	    }
+	  }]);
+
+	  return MenuPasswordField;
+	}(_TextField3.default);
+
+	exports.default = MenuPasswordField;
 
 /***/ }
 /******/ ]);

@@ -6,8 +6,10 @@ import NoteDownTitleLogo from './notedownTitleLogo';
 import MenuButton from './menuButton';
 import FlatButton from 'material-ui/FlatButton'
 import MenuTextField from './menuTextField';
+import MenuPasswordField from './menuPasswordField';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
+
 
 import { connect } from 'react-redux';
 
@@ -93,10 +95,9 @@ class StartMenu extends React.Component {
         <div className="start-menu">
           <NoteDownTitleLogo />
           <MenuTextField value={this.state.username}  className="username" hintText="Username/Email" onChange={this.handleUsernameChange}/>
-          <MenuTextField value={this.state.password} className="password-field" hintText="Password" onChange={this.handlePasswordChange}/>
+          <MenuPasswordField value={this.state.password} className="password-field" hintText="Password" onChange={this.handlePasswordChange}/>
           <div className="login-signup-toggle">
             <MenuButton className="login-btn" label="Login" onClick={() => this.request_login(this.state.username, this.state.password)} /> 
-            <br/><br/><br/><br/><br/><br/><br/><br/><br/>
             <FlatButton className="menu-button" label="Sign-Up" onClick={() => this.enterSignUpForm()} /> 
             <FlatButton label="Quickmode" onClick={() => this.quickmode()} />
           </div>
@@ -109,11 +110,10 @@ class StartMenu extends React.Component {
         <div className="start-menu">
           <NoteDownTitleLogo />
           <MenuTextField value={this.state.username}  className="username" hintText="Username/Email" onChange={this.handleUsernameChange}/>
-          <MenuTextField value={this.state.password} className="password-field" hintText="Password" onChange={this.handlePasswordChange}/>
+          <MenuPasswordField value={this.state.password} className="password-field" hintText="Password" onChange={this.handlePasswordChange}/>
           <MenuTextField value={this.state.name} className="name" hintText="Name" onChange={this.handleNameChange}/>
           <div className="login-signup-toggle">
             <MenuButton label="Sign-Up" onClick={() => this.request_signup(this.state.username, this.state.password, this.state.name)} />              
-            <br/><br/><br/><br/><br/><br/><br/><br/><br/>
             <FlatButton className="menu-button" label="Login" onClick={() => this.enterLoginForm()} />
             <FlatButton label="Quickmode" onClick={() => this.quickmode()} />
           </div>

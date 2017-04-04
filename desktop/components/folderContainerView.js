@@ -91,10 +91,10 @@ class FolderContainerView extends React.Component {
   }
 
   renderFolder({name, _id}) {
+    // <div className="folder-flashcards-btn" onClick={this.viewFlashcards.bind(this, _id)}><i className="icon-cards"></i></div>
     return (
       <div key={_id} className="folder-view" onClick={this.selectFolder.bind(this, _id)}>{name}
         <div className="folder-delete-btn" onClick={this.deleteFolder.bind(this, _id)}><i className="icon-close"></i></div>
-        <div className="folder-flashcards-btn" onClick={this.viewFlashcards.bind(this, _id)}><i className="icon-cards"></i></div>
       </div>
     );
   }

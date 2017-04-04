@@ -54,7 +54,7 @@ class PushConflictDialog extends React.Component {
 
     return (
       <MuiThemeProvider>
-        <div>
+        <div  className="dialog">
           <Dialog
             title="Push Conflict"
             actions={actions}

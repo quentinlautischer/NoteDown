@@ -182,16 +182,16 @@ const menubar_template_builder = function(store) {
       },
       {
         role: 'FolderView',
-        label: 'FolderView',
+        label: 'Folders',
         visible: is_logged_in(state),
         click () { menuFolderview(store) }
       },
-      {
-        role: 'Flashcards',
-        label: 'Flashcards',
-        visible: is_logged_in(state),
-        click () { menuFlashcards(store) }
-      },
+      // {
+      //   role: 'Flashcards',
+      //   label: 'Flashcards',
+      //   visible: is_logged_in(state),
+      //   click () { menuFlashcards(store) }
+      // },
       {
         type: 'separator'
       },

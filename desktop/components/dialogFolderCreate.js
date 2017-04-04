@@ -42,7 +42,7 @@ class DialogFolderCreate extends React.Component {
 
     return (
       <MuiThemeProvider>
-        <div>
+        <div  className="dialog">
           <Dialog
             title="Create New Folder"
             actions={actions}

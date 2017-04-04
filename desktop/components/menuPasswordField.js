@@ -1,7 +1,8 @@
 import React from 'react';
+
 import TextField from 'material-ui/TextField';
 
-class MenuTextField extends TextField {
+class MenuPasswordField extends TextField {
   constructor() {
     super();
   }
@@ -9,11 +10,13 @@ class MenuTextField extends TextField {
   render() {
     return (
       <div className="menu-text-field">
-        <TextField 
+        <TextField
+          ref='password'
+          type="password"
           hintStyle={{ textAlign: 'center' }} 
           className={this.props.className + " menu-text-field"}
           hintText={this.props.hintText}
-          value={this.props.value} 
+          value={this.props.value}
           onChange={this.props.onChange}
         />
       </div>
@@ -21,5 +24,4 @@ class MenuTextField extends TextField {
   }
 }
 
-
-export default MenuTextField;
+export default MenuPasswordField;

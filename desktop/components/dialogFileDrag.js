@@ -115,7 +115,7 @@ class DialogFileDrag extends React.Component {
 
     return (
       <MuiThemeProvider>
-        <div>
+        <div className="dialog">
           <Dialog
             title="File Drag Dialog"
             actions={actions}
