@@ -1,5 +1,6 @@
 // import hljs from './node_modules/highlight.js/lib/highlight.js';
 var hljs = require('highlight.js');
+var katex = require('katex');
 
 import flashcardTemplate from './models/flashcardTemplate.js';
 
@@ -53,6 +54,7 @@ function parse_span(str) {
   //Span-level elements
   var span_array = [{content:str}];
 
+  check_math(span_array);
   check_backslash_escape(span_array);
   check_html_escape(span_array);
   check_links(span_array);
@@ -879,6 +881,7 @@ function check_math(span_array) {
   if (matches.length % 2 != 0) { matches.pop(); }
   
   for (var i = matches.length-2; i >= 0; i-=2) { //Invariant: All math bookends are evenly paired and adjacent
+    console.log("Doing Math Yo");
     var content = span_array[matches[i].span].content;
     var span1 = {content:span_array[matches[i].span].content.slice(0, matches[i].index)};
     var math = {tag:'math', content:''};
@@ -890,7 +893,10 @@ function check_math(span_array) {
       math.content += span_array[matches[i+1].span].content.slice(0, matches[i+1].index);
     }
 	//TODO: Connect to plugin
-	//math.content = placeholderFunction(math.content);
+    console.log(`Math input data: ${math.content}`);
+    math.content = katex.renderToString(math.content);
+    console.log("Math Content:");
+    console.log(math.content);
     var span2 = {content:span_array[matches[i+1].span].content.slice(matches[i+1].index + 2, span_array[matches[i+1].span].content.length)};
     span_array.splice(matches[i].span, matches[i+1].span-matches[i].span + 1, span1, math, span2);
   }
