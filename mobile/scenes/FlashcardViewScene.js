@@ -125,12 +125,19 @@ class FlashcardViewScene extends Component {
             'Rank',
             'Select difficulty level',
             [
-                {text: 'Easy', onPress: () => console.log('1')},
-                {text: 'Medium', onPress: () => console.log('2')},
-                {text: 'Hard', onPress: () => console.log('3')},
+                {text: 'I know it!', onPress: () => this.saveRank(1)},
+                {text: 'Review a bit more', onPress: () => this.saveRank(2)},
+                {text: 'Really difficult', onPress: () => this.saveRank(3)},
             ],
             { cancelable: false }
         )
+    }
+
+    saveRank() {
+        var state = this.context.store.getState();
+        if (state.flashcards.currentIndex < state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards.length - 1) {
+            this.cardTransition();
+        }
     }
 
     render() {
