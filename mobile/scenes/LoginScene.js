@@ -9,6 +9,7 @@ import {
     AsyncStorage
 } from 'react-native';
 import { connect } from 'react-redux';
+import shared from '../shared/parser.js';
 import SocketIOClient from 'socket.io-client';
 import Toast from 'react-native-root-toast';
 import MenuButton from '../components/MenuButton';
@@ -56,7 +57,6 @@ class LoginScene extends Component {
                 if (data.data.result) {
                     this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
                     if (this.context.store.getState().state.mode === 'login') {
-                        this.callToast(CLOUD_PULL_SUCC);
                         this._navigate();
                     }
                     this.updateSavedContent();
@@ -108,6 +108,13 @@ class LoginScene extends Component {
             folderIndex: this.context.store.getState().state.folderIndex,
             pageIndex: this.context.store.getState().state.pageIndex
         });
+        this.updateFlashcards();
+    }
+
+    updateFlashcards() {
+        var state = this.context.store.getState();
+        var folders = shared.extractFlashcardsInFolders(state.notes.folders);
+        this.context.store.dispatch({type: 'SET_FLASHCARD_FOLDERS', flashcardFolders: folders});
     }
 
     clearText() {

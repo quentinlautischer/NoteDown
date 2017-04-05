@@ -329,7 +329,7 @@ function check_codeblock_lang(blocks) {
 */
 function check_flashcard(blocks) {
   var patt = /^\{(.+)\}$/;
-  var q_patt = /(.+?)\|rank:([0-9]+)/i; //For rank
+  var rank_patt = /\{(.+?)\|rank:([0-9]+)\}/i; //For rank
   var match;
 
   for (var b = 0; b < blocks.length; b++) {
@@ -339,13 +339,22 @@ function check_flashcard(blocks) {
         match = [];
         for (var m = 0; m < 3; m++) { match.push(patt.exec(content[l+m])); }
         if (match[0] != null && match[1] != null && match[2] != null) {
-          var question = parse_span(match[0][1]);
+          var question;
+          var rank = 2;
+          var match_rank = rank_patt.exec(match[0]);
+          if (match_rank != null) {
+            question = parse_span(match_rank[1]);
+            rank = parseInt(match_rank[2]);
+            if (rank < 1 || rank > 3) { rank = 2; }
+          } else {
+            question = parse_span(match[0][1]);
+          }
           var hints = match[1][1].split('|');
           var answer = match[2][1].split('|');
           for (var i = 0; i < hints.length; i++) { hints[i] = parse_span(hints[i]); }
           for (var i = 0; i < answer.length; i++) { answer[i] = parse_span(answer[i]); }
           var raw1 = {content:content.slice(0,l)};
-          var flashcard = {tag:'div', content:makeFlashcard(question, answer, hints)};
+          var flashcard = {tag:'div', content:makeFlashcard(question, answer, hints, rank)};
           var raw2 = {content:content.slice(l+3,content.length)};
 
           blocks.splice(b, 1, raw1, flashcard, raw2);
@@ -915,7 +924,8 @@ function getContentLines(arr, name) {
     return lines;
 }
 
-function makeFlashcard(front, back, hints) {
+
+function makeFlashcard(front, back, hints, rank) {
   return (`
     <div class="flip-container">
       <div class="flipper">

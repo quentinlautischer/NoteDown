@@ -13,6 +13,8 @@
     "react-native-action-button": "^2.6.3",
     "react-native-camera": "git+https://github.com/lwansbrough/react-native-camera.git",
     "react-native-fetch-blob": "^0.10.2",
+    "react-native-image-progress": "^0.6.0",
+    "react-native-image-resizer": "^0.1.0",
     "react-native-linear-gradient": "^2.0.0",
     "react-native-orientation": "yamill/react-native-orientation",
     "react-native-root-toast": "^1.0.5",

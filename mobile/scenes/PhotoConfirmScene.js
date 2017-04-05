@@ -4,18 +4,37 @@ import {
     Text,
     CameraRoll,
     StyleSheet,
-    Image,
-    TouchableHighlight
+    TouchableHighlight,
+    ActivityIndicator
 } from 'react-native';
-import colors from '../app/constants';
+import {connect} from 'react-redux';
+import constants from '../app/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNFetchBlob from 'react-native-fetch-blob';
+import ImageResizer from 'react-native-image-resizer';
+import Toast from 'react-native-root-toast';
+import Image from 'react-native-image-progress';
+import Progress from 'react-native-progress/Bar';
 
-export default class PhotoConfirmScene extends Component {
-    encodePhoto() {
+class PhotoConfirmScene extends Component {
+
+    onPress() {
+        this.compressPhoto();
+    }
+
+    compressPhoto() {
+        ImageResizer.createResizedImage(this.props.image.path, constants.IMG_SIZE, constants.IMG_SIZE, 'JPEG', 100, 0, null).then((resizeImageUri) => {
+            this.encodePhoto(resizeImageUri);
+        }).catch((err) => {
+            // something went wrong
+            console.log('Compression error ' + err);
+        });
+    }
+
+    encodePhoto(resizeImageUri) {
         let data = ''
         RNFetchBlob.fs.readStream(
-            this.props.image.path, // path to photo
+            resizeImageUri, // path to photo
             'base64', // encoding type
             4095) // buffer size
             .then((ifstream) => {
@@ -34,17 +53,31 @@ export default class PhotoConfirmScene extends Component {
             this.props.navigator.pop();
     }
 
+    callToast(msg) {
+        let toast = Toast.show(msg, {
+            duration: 1400, // ms
+            position: 0, // middle of screen
+            shadow: true
+        });
+    }
+
     render() {
         return(
             <View style={styles.container}>
                 <Image
                     source={{uri: this.props.image.path}}
+                    indicator={Progress.Pie}
+                    indicatorProps={{
+                        size: 60,
+                        borderWidth: 0,
+                        color: constants.DARK,
+                    }}
                     style={styles.img}
                 />
                 <TouchableHighlight
                     style={styles.check}
-                    onPress={this.encodePhoto.bind(this)}>
-                    <Icon name='check' size={35} color={colors.DARK} />
+                    onPress={this.onPress.bind(this)}>
+                    <Icon name='check' size={35} color={constants.DARK} />
                 </TouchableHighlight>
             </View>
         );
@@ -61,8 +94,23 @@ const styles = StyleSheet.create({
     },
     check: {
         flex: 1,
-        backgroundColor: colors.PRIMARY1,
+        backgroundColor: constants.PRIMARY1,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    wheelContainer: {
+        flex: 1,
+        marginTop:40,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    wheel: {
+        height: 80
     }
 });
+
+PhotoConfirmScene.contextTypes = {
+    store: React.PropTypes.object.isRequired
+};
+
+export default connect()(PhotoConfirmScene);

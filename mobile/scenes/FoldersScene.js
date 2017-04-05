@@ -23,7 +23,6 @@ class FoldersScene extends Component {
         super(props);
         this.state = {
             dataSource: null,
-            open: false
         };
 
         this.selectFolder = this.selectFolder.bind(this);
@@ -32,7 +31,16 @@ class FoldersScene extends Component {
         this.unsubscribe = null;
     }
 
-    componentWillMount() {
+    componentWillMount(){
+        this.setRows();
+        this.unsubscribe = this.context.store.subscribe( this.storeDidUpdate );
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
+    setRows() {
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.setState({ dataSource: ds.cloneWithRows(this.context.store.getState().notes.folders) });
     }
@@ -78,7 +86,7 @@ class FoldersScene extends Component {
     }
 
     storeDidUpdate(){
-        this.setState({open: this.context.store.getState().sessionActive});
+        this.setRows();
     }
 
     selectFolder(rowID) {
