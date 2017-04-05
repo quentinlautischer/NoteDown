@@ -2,6 +2,7 @@
 
 .markdown-input-editor {
   position: absolute;
+  font-size: 20px;
   box-sizing: border-box;
   top: map-get($windows-dimensions, menubar-custom-height)-1px;
   left: 1%;
@@ -28,6 +29,7 @@
 
 .markdown-output-renderer {
   position: absolute;
+  font-size: 20px;
   box-sizing: border-box;
   top: map-get($windows-dimensions, menubar-custom-height)-1px;
   left: 50%;

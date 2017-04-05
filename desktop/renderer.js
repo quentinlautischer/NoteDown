@@ -27,8 +27,6 @@ import Snackbar from 'material-ui/Snackbar';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-var hljs = require('highlight.js');
-
 const ipc = require('electron').ipcRenderer;
 const {remote} = require('electron');
 const fs = require('fs')
@@ -45,7 +43,6 @@ class App extends React.Component {
 
   // This is temp for now --- Cant figure out how to have the DOM update on store subs.
   componentDidMount(){
-    hljs.initHighlighting();
     store.subscribe( this.storeDidUpdate.bind(this) );
   }
 
@@ -55,9 +52,13 @@ class App extends React.Component {
 
   render() {
     // May be invisible but this keep the accelerator keybinds active.
+    var time1 = new Date().getTime();
+    // this takes 13ms ouch... lets find a better way
     const menubar = Menu.buildFromTemplate(menubuilder(store));
     Menu.setApplicationMenu(menubar);
     // console.log(store.getState());
+    var time2 = new Date().getTime();
+    console.log(`Setting menus ${time2-time1}ms`)
 
     switch (store.getState().state.mode) {
       case 'menu':
@@ -150,12 +151,14 @@ class App extends React.Component {
     console.log("requesting data pull");
     const data = {userid: store.getState().state.userid};
     ipc.send('request-pull-data', data);
+    store.dispatch({type: 'DIALOG_OPEN', dialog_type: 'pull-wait'});
   }
 
   request_push_data(force = false) {
     console.log("requesting data push");
     const data = {userid: store.getState().state.userid, notes: store.getState().notes, force_push: force};
     ipc.send('request-push-data', data);
+    store.dispatch({type: 'DIALOG_OPEN', dialog_type: 'push-wait'});
   }
 
   init_ipc_app() {
@@ -191,6 +194,7 @@ class App extends React.Component {
 
     ipc.on('request-push-data-response', (event, data) => {
       console.log('request-push-data-response: ' + data);
+      store.dispatch({type: 'DIALOG_CLOSE'});
       if (data.result) {
         this.request_pull_data();  
       } else {
@@ -208,7 +212,7 @@ class App extends React.Component {
 
     ipc.on('request-pull-data-response', (event, data) => {
       console.log('request-pull-data-response: ' + data);
-
+      store.dispatch({type: 'DIALOG_CLOSE'});
       if (data.result == true){
         store.dispatch({type: 'SET_NOTES', notes: data.notes});
         store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Notes updated from cloud'});

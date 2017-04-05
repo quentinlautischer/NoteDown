@@ -122,19 +122,25 @@ function menuLogin(store) {
 function menuLogout(store) {
   store.dispatch({type: 'MENU_MODE'});
   store.dispatch({type: 'SET_USER', userid: null});
-  store.dispatch({type: 'SET_NOTES', notes: null});
+  store.dispatch({type: 'SET_NOTES', notes: {
+    userid: null, 
+    images: [], 
+    folders: []
+  }});
   ipc.send('close-socket', null);
 }
 
 function menuPushToCloud(store) {
   const data = {userid: store.getState().state.userid, notes: store.getState().notes, force_push: false};
   ipc.send('request-push-data', data);
+  store.dispatch({type: 'DIALOG_OPEN', dialog_type: 'push-wait'});
   store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pushing data to cloud'});
 }
 
 function menuPullFromCloud(store) {
   const data = {userid: store.getState().state.userid};
   ipc.send('request-pull-data', data);
+  store.dispatch({type: 'DIALOG_OPEN', dialog_type: 'pull-wait'});
   store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pulling data from cloud'});
 }
 

@@ -669,7 +669,7 @@ function check_links(span_array) {
         var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
 
         if (match[1].length == 0) {
-          var a1 = {tag:'a', content:'<a href="' + src + (title == null ? '' : ('" title="' + title)) + '">'};
+          var a1 = {tag:'a', content:'<a target="_blank" href="' + src + (title == null ? '' : ('" title="' + title)) + '">'};
           var content = {content:alt};
           var a2 = {tag:'a', content:'</a>'};
           span_array.splice(s, 1, raw1, a1, content, a2, raw2);
@@ -701,7 +701,7 @@ function check_autolink(span_array) {
         var raw1 = {content:content.slice(0,match.index)};
         var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
 
-        var a = {tag:'a', content:'<a href="' + match[1] + '">' + match[1] + '</a>'};
+        var a = {tag:'a', content:'<a target="_blank" href="' + match[1] + '">' + match[1] + '</a>'};
         span_array.splice(s, 1, raw1, a, raw2);
         s++;
       }
@@ -737,7 +737,7 @@ function check_links_ref(span_array) {
         var raw2 = {content:content.slice(match.index + match[0].length,content.length)};
 
         if (match[1].length == 0) {
-          var a1 = {tag:'a', content:'<a href="' + src + (title == null ? '' : ('" title="' + title)) + '">'};
+          var a1 = {tag:'a', content:'<a target="_blank" href="' + src + (title == null ? '' : ('" title="' + title)) + '">'};
           var content = {content:alt};
           var a2 = {tag:'a', content:'</a>'};
           span_array.splice(s, 1, raw1, a1, content, a2, raw2);
@@ -916,10 +916,23 @@ function getContentLines(arr, name) {
 }
 
 function makeFlashcard(front, back, hints) {
-    return flashcardTemplate.html1 + getFrontContent(front)
-        + flashcardTemplate.html2 + getContentLines(hints, 'hint')
-        + flashcardTemplate.html3 + getContentLines(back, 'solution')
-        + flashcardTemplate.html4 + flashcardTemplate.css + flashcardTemplate.js;
+  return (`
+    <div class="flip-container">
+      <div class="flipper">
+        <div class="front">
+          <span class="flashcard-content">${front}</span>
+        </div>
+        <div class="back">
+          <span class="flashcard-content">${back}</span>
+        </div>
+      </div>
+    </div>`
+  );
+
+    // return flashcardTemplate.html1 + getFrontContent(front)
+    //     + flashcardTemplate.html2 + getContentLines(hints, 'hint')
+    //     + flashcardTemplate.html3 + getContentLines(back, 'solution')
+    //     + flashcardTemplate.html4 + flashcardTemplate.css + flashcardTemplate.js;
 }
 
 

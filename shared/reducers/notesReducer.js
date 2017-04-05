@@ -41,7 +41,8 @@ function deletePage(state, action){
 }
 
 function pageContentChange(state, action){
-  return update(state, {
+  var time1 = new Date().getTime();
+  state = update(state, {
     folders: {
       [action.folderIndex]:{
         pages: {
@@ -51,7 +52,10 @@ function pageContentChange(state, action){
         }
       }
     }
-  });
+  }); 
+  var time2 = new Date().getTime();
+  console.log(`Update Settting new page content: ${time2-time1} ms or ${(time2-time1) / 1000} seconds`);
+  return state;
 }
 
 function updatePageSavedContent(state, action) {
@@ -86,16 +90,7 @@ function addPhoto(state, action) {
 const initial_state = {
   userid: null,
   images: [],
-  folders: [ {
-      name: "Folder",
-      pages: [
-        {
-          content: "",
-          images: []
-        }
-      ]
-    }
-  ]
+  folders: []
 }
 
 const notesReducer = createReducer(initial_state, {
