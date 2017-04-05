@@ -187,6 +187,13 @@ const menubar_template_builder = function(store) {
         click () { menuSaveas(store) }
       },
       {
+        role: 'Export Markdown',
+        label: 'Export Markdown',
+        enabled: is_logged_in(state),
+        visible: is_logged_in(state),
+        click () { menuSaveas(store) }
+      },
+      {
         role: 'FolderView',
         label: 'Folders',
         visible: is_logged_in(state),
