@@ -5,13 +5,14 @@ import {
     Text,
     TouchableHighlight
 } from 'react-native';
+import {connect} from 'react-redux';
 import colors from '../app/constants';
 import Camera from 'react-native-camera';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import PhotoConfirmScene from './PhotoConfirmScene';
 
-export default class CameraScene extends Component {
+class CameraScene extends Component {
     takePicture() {
         this.camera.capture()
         .then((data) => this._navigate(data))
@@ -69,3 +70,9 @@ const styles = StyleSheet.create({
         marginBottom: 40
     }
 });
+
+CameraScene.contextTypes = {
+    store: React.PropTypes.object.isRequired
+};
+
+export default connect()(CameraScene);

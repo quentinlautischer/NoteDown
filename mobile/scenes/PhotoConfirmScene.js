@@ -4,24 +4,26 @@ import {
     Text,
     CameraRoll,
     StyleSheet,
-    Image,
-    TouchableHighlight
+    TouchableHighlight,
+    ActivityIndicator
 } from 'react-native';
+import {connect} from 'react-redux';
 import colors from '../app/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ImageResizer from 'react-native-image-resizer';
 import Toast from 'react-native-root-toast';
+import Image from 'react-native-image-progress';
+import Progress from 'react-native-progress/Bar';
 
-export default class PhotoConfirmScene extends Component {
+class PhotoConfirmScene extends Component {
+
     onPress() {
         this.compressPhoto();
     }
 
     compressPhoto() {
-        console.log('PATH: ' + this.props.image.path);
         ImageResizer.createResizedImage(this.props.image.path, 300, 300, 'JPEG', 100, 0, null).then((resizeImageUri) => {
-            console.log('Compression complete, photo at ' + resizeImageUri);
             this.encodePhoto(resizeImageUri);
         }).catch((err) => {
             // something went wrong
@@ -64,6 +66,12 @@ export default class PhotoConfirmScene extends Component {
             <View style={styles.container}>
                 <Image
                     source={{uri: this.props.image.path}}
+                    indicator={Progress.Pie}
+                    indicatorProps={{
+                        size: 60,
+                        borderWidth: 0,
+                        color: colors.DARK,
+                    }}
                     style={styles.img}
                 />
                 <TouchableHighlight
@@ -89,5 +97,20 @@ const styles = StyleSheet.create({
         backgroundColor: colors.PRIMARY1,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    wheelContainer: {
+        flex: 1,
+        marginTop:40,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    wheel: {
+        height: 80
     }
 });
+
+PhotoConfirmScene.contextTypes = {
+    store: React.PropTypes.object.isRequired
+};
+
+export default connect()(PhotoConfirmScene);
