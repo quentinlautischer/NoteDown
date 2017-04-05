@@ -11,5 +11,6 @@ module.exports = {
     LIGHT: '#EDEDEE',
     ACCENT_GRAY: 'rgba(77,82,87,1)',
     PRIMARY1_GRADM: '#bddbc9',
-    PRIMARY1_GRADL: '#deede4'
+    PRIMARY1_GRADL: '#deede4',
+    IMG_SIZE: 350
 }

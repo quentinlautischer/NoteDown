@@ -8,7 +8,7 @@ import {
     ActivityIndicator
 } from 'react-native';
 import {connect} from 'react-redux';
-import colors from '../app/constants';
+import constants from '../app/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ImageResizer from 'react-native-image-resizer';
@@ -23,7 +23,7 @@ class PhotoConfirmScene extends Component {
     }
 
     compressPhoto() {
-        ImageResizer.createResizedImage(this.props.image.path, 300, 300, 'JPEG', 100, 0, null).then((resizeImageUri) => {
+        ImageResizer.createResizedImage(this.props.image.path, constants.IMG_SIZE, constants.IMG_SIZE, 'JPEG', 100, 0, null).then((resizeImageUri) => {
             this.encodePhoto(resizeImageUri);
         }).catch((err) => {
             // something went wrong
@@ -70,14 +70,14 @@ class PhotoConfirmScene extends Component {
                     indicatorProps={{
                         size: 60,
                         borderWidth: 0,
-                        color: colors.DARK,
+                        color: constants.DARK,
                     }}
                     style={styles.img}
                 />
                 <TouchableHighlight
                     style={styles.check}
                     onPress={this.onPress.bind(this)}>
-                    <Icon name='check' size={35} color={colors.DARK} />
+                    <Icon name='check' size={35} color={constants.DARK} />
                 </TouchableHighlight>
             </View>
         );
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     },
     check: {
         flex: 1,
-        backgroundColor: colors.PRIMARY1,
+        backgroundColor: constants.PRIMARY1,
         alignItems: 'center',
         justifyContent: 'center'
     },
