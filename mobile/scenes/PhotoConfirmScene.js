@@ -10,12 +10,29 @@ import {
 import colors from '../app/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNFetchBlob from 'react-native-fetch-blob';
+import ImageResizer from 'react-native-image-resizer';
+import Toast from 'react-native-root-toast';
 
 export default class PhotoConfirmScene extends Component {
-    encodePhoto() {
+    onPress() {
+        this.compressPhoto();
+    }
+
+    compressPhoto() {
+        console.log('PATH: ' + this.props.image.path);
+        ImageResizer.createResizedImage(this.props.image.path, 300, 300, 'JPEG', 100, 0, null).then((resizeImageUri) => {
+            console.log('Compression complete, photo at ' + resizeImageUri);
+            this.encodePhoto(resizeImageUri);
+        }).catch((err) => {
+            // something went wrong
+            console.log('Compression error ' + err);
+        });
+    }
+
+    encodePhoto(resizeImageUri) {
         let data = ''
         RNFetchBlob.fs.readStream(
-            this.props.image.path, // path to photo
+            resizeImageUri, // path to photo
             'base64', // encoding type
             4095) // buffer size
             .then((ifstream) => {
@@ -34,6 +51,14 @@ export default class PhotoConfirmScene extends Component {
             this.props.navigator.pop();
     }
 
+    callToast(msg) {
+        let toast = Toast.show(msg, {
+            duration: 1400, // ms
+            position: 0, // middle of screen
+            shadow: true
+        });
+    }
+
     render() {
         return(
             <View style={styles.container}>
@@ -43,7 +68,7 @@ export default class PhotoConfirmScene extends Component {
                 />
                 <TouchableHighlight
                     style={styles.check}
-                    onPress={this.encodePhoto.bind(this)}>
+                    onPress={this.onPress.bind(this)}>
                     <Icon name='check' size={35} color={colors.DARK} />
                 </TouchableHighlight>
             </View>
