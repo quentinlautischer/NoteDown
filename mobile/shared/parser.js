@@ -888,7 +888,7 @@ function check_math(span_array) {
     }
   }
   if (matches.length % 2 != 0) { matches.pop(); }
-  
+
   for (var i = matches.length-2; i >= 0; i-=2) { //Invariant: All math bookends are evenly paired and adjacent
     var content = span_array[matches[i].span].content;
     var span1 = {content:span_array[matches[i].span].content.slice(0, matches[i].index)};
@@ -927,7 +927,7 @@ function getContentLines(arr, name) {
 
 function makeFlashcard(front, back, hints, rank) {
   return (`
-    <div class="flip-container" onclick="void(0)">
+    <div class="flip-container"  onclick="void(0)">
       <div class="flipper">
         <div class="front">
           <span class="flashcard-content">${front}</span>
