@@ -18,8 +18,9 @@ import MenuScene from './MenuScene'; // for navigation
 import SettingsScene from './SettingsScene';
 
 // const HOST = '127.0.0.1';
-var HOST = "localhost"; // allows me to test on android
-const PORT = '3000';
+// var HOST = "localhost"; // allows me to test on android
+// const PORT = '3000';
+var HOST  = 'https://mighty-garden-9993.herokuapp.com/'
 
 const USERNAME_REF="un";
 const PASSWORD_REF="pw";
@@ -35,7 +36,8 @@ class LoginScene extends Component {
         super(props);
 
         // Creating the socket-client instance will automatically connect to the server.
-        this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
+        // this.socket = SocketIOClient('http://' + HOST + ':' + PORT);
+        this.socket = SocketIOClient(HOST);
 
         this.clearText = this.clearText.bind(this);
     }

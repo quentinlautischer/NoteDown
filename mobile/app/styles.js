@@ -1,5 +1,5 @@
 // used in components/NotesView.js to style the output HTML
-module.exports.FLASHCARD_STYLES = 
+module.exports.FLASHCARD_STYLES =
 `
 .flip-container {
   margin: 15vh auto;
@@ -20,15 +20,15 @@ module.exports.FLASHCARD_STYLES =
 }
 
 .flip-container, .front, .back {
-  width: 45vw;
-  height: 30vw;
+  width: 80vw;
+  height: 45vw;
   border-radius: 24px;
   box-sizing: border-box;
   }
-  
+
 .front, .back {
   text-align: center;
-  font-size: 2.4em;
+  font-size: 1.5em;
   line-height: 1em;
   padding-top: 20%; // calc(50% - 1em);
   vertical-align: middle;
