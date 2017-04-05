@@ -1,4 +1,81 @@
 // used in components/NotesView.js to style the output HTML
+module.exports.FLASHCARD_STYLES = 
+`
+.flip-container {
+  margin: 15vh auto;
+  -webkit-perspective: 1000;
+  }
+
+/* flip the pane  */
+.flip-container:hover .flipper, .flip-container:hover .flipper {
+  -webkit-transform: rotateY(180deg);
+}
+
+.flip-container:focus .flipper, .flip-container:focus .flipper {
+  -webkit-transform: rotateY(180deg);
+}
+
+.flip-container:active .flipper, .flip-container:active .flipper {
+  -webkit-transform: rotateY(180deg);
+}
+
+.flip-container, .front, .back {
+  width: 45vw;
+  height: 30vw;
+  border-radius: 24px;
+  box-sizing: border-box;
+  }
+  
+.front, .back {
+  text-align: center;
+  font-size: 2.4em;
+  line-height: 1em;
+  padding-top: 20%; // calc(50% - 1em);
+  vertical-align: middle;
+  color: map-get($colors, dark);
+  border: 1px solid map-get($colors, light);
+  overflow: hidden;
+  }
+
+/* flip speed goes here */
+.flipper {
+    -webkit-transition: 0.6s;
+    -webkit-transform-style: preserve-3d;
+    position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+    -webkit-backface-visibility: hidden;
+    -webkit-transition: 0.6s;
+    -webkit-transform-style: preserve-3d;
+    -webkit-transform: rotateY(0deg);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.front span,
+.back span{
+
+}
+
+/* front pane, placed above back */
+.front {
+  z-index: 2;
+  background-color: rgba(139, 191, 159, 1);
+}
+
+/* back, initially hidden pane */
+.back {
+  -webkit-transform: rotateY(-180deg);
+  background-color: rgba(48, 62, 77, 1);
+}
+
+.flashcard-content {
+  display: inline-block;
+  vertical-align: middle;
+}
+`;
 
 module.exports.HIGHLIGHT_STYLES =
 `

@@ -927,7 +927,7 @@ function getContentLines(arr, name) {
 
 function makeFlashcard(front, back, hints, rank) {
   return (`
-    <div class="flip-container">
+    <div class="flip-container"  onclick="void(0)">
       <div class="flipper">
         <div class="front">
           <span class="flashcard-content">${front}</span>
