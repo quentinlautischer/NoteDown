@@ -67,7 +67,7 @@ class MenubarTile extends React.Component {
       </div>
     );
     } else {
-      return (<div/>);
+      return ( <div className="menubar-custom"/>);
     }
   }
   

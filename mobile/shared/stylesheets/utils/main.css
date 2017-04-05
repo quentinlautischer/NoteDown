@@ -19,6 +19,7 @@
 
 .markdown-input-editor {
   position: absolute;
+  font-size: 20px;
   box-sizing: border-box;
   top: 30px;
   left: 1%;
@@ -40,6 +41,7 @@
 
 .markdown-output-renderer {
   position: absolute;
+  font-size: 20px;
   box-sizing: border-box;
   top: 30px;
   left: 50%;
@@ -801,7 +803,7 @@ span.CodeMirror-selectedtext {
   src: url("../../node_modules/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"), url("../../node_modules/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0") format("woff2"), url("../../node_modules/font-awesome/fonts/fontawesome-webfont.woff?v=4.7.0") format("woff"), url("../../node_modules/font-awesome/fonts/fontawesome-webfont.ttf?v=4.7.0") format("truetype"), url("../../node_modules/font-awesome/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
   font-weight: normal;
   font-style: normal; }
-.fa, .icon-user, .icon-tree, .icon-square-solid, .icon-minus, .icon-square, .icon-clone, .icon-times, .icon-trash {
+.fa, .icon-spinning-cog, .icon-user, .icon-tree, .icon-square-solid, .icon-minus, .icon-square, .icon-clone, .icon-times, .icon-trash {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
   font-size: inherit;
@@ -815,7 +817,7 @@ span.CodeMirror-selectedtext {
   line-height: 0.75em;
   vertical-align: -15%; }
 
-.fa-2x {
+.fa-2x, .icon-spinning-cog {
   font-size: 2em; }
 
 .fa-3x {
@@ -827,7 +829,7 @@ span.CodeMirror-selectedtext {
 .fa-5x {
   font-size: 5em; }
 
-.fa-fw {
+.fa-fw, .icon-spinning-cog {
   width: 1.28571em;
   text-align: center; }
 
@@ -858,9 +860,9 @@ span.CodeMirror-selectedtext {
 .fa-pull-right {
   float: right; }
 
-.fa.fa-pull-left, .fa-pull-left.icon-user, .fa-pull-left.icon-tree, .fa-pull-left.icon-square-solid, .fa-pull-left.icon-minus, .fa-pull-left.icon-square, .fa-pull-left.icon-clone, .fa-pull-left.icon-times, .fa-pull-left.icon-trash {
+.fa.fa-pull-left, .fa-pull-left.icon-spinning-cog, .fa-pull-left.icon-user, .fa-pull-left.icon-tree, .fa-pull-left.icon-square-solid, .fa-pull-left.icon-minus, .fa-pull-left.icon-square, .fa-pull-left.icon-clone, .fa-pull-left.icon-times, .fa-pull-left.icon-trash {
   margin-right: .3em; }
-.fa.fa-pull-right, .fa-pull-right.icon-user, .fa-pull-right.icon-tree, .fa-pull-right.icon-square-solid, .fa-pull-right.icon-minus, .fa-pull-right.icon-square, .fa-pull-right.icon-clone, .fa-pull-right.icon-times, .fa-pull-right.icon-trash {
+.fa.fa-pull-right, .fa-pull-right.icon-spinning-cog, .fa-pull-right.icon-user, .fa-pull-right.icon-tree, .fa-pull-right.icon-square-solid, .fa-pull-right.icon-minus, .fa-pull-right.icon-square, .fa-pull-right.icon-clone, .fa-pull-right.icon-times, .fa-pull-right.icon-trash {
   margin-left: .3em; }
 
 /* Deprecated as of 4.4.0 */
@@ -870,12 +872,12 @@ span.CodeMirror-selectedtext {
 .pull-left {
   float: left; }
 
-.fa.pull-left, .pull-left.icon-user, .pull-left.icon-tree, .pull-left.icon-square-solid, .pull-left.icon-minus, .pull-left.icon-square, .pull-left.icon-clone, .pull-left.icon-times, .pull-left.icon-trash {
+.fa.pull-left, .pull-left.icon-spinning-cog, .pull-left.icon-user, .pull-left.icon-tree, .pull-left.icon-square-solid, .pull-left.icon-minus, .pull-left.icon-square, .pull-left.icon-clone, .pull-left.icon-times, .pull-left.icon-trash {
   margin-right: .3em; }
-.fa.pull-right, .pull-right.icon-user, .pull-right.icon-tree, .pull-right.icon-square-solid, .pull-right.icon-minus, .pull-right.icon-square, .pull-right.icon-clone, .pull-right.icon-times, .pull-right.icon-trash {
+.fa.pull-right, .pull-right.icon-spinning-cog, .pull-right.icon-user, .pull-right.icon-tree, .pull-right.icon-square-solid, .pull-right.icon-minus, .pull-right.icon-square, .pull-right.icon-clone, .pull-right.icon-times, .pull-right.icon-trash {
   margin-left: .3em; }
 
-.fa-spin {
+.fa-spin, .icon-spinning-cog {
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear; }
 
@@ -1017,7 +1019,8 @@ span.CodeMirror-selectedtext {
   content: ""; }
 
 .fa-gear:before,
-.fa-cog:before {
+.fa-cog:before,
+.icon-spinning-cog:before {
   content: ""; }
 
 .fa-trash-o:before {
@@ -3121,7 +3124,7 @@ span.CodeMirror-selectedtext {
   src: url("../../node_modules/mdi/fonts/materialdesignicons-webfont.eot?#iefix&v=1.8.36") format("embedded-opentype"), url("../../node_modules/mdi/fonts/materialdesignicons-webfont.woff2?v=1.8.36") format("woff2"), url("../../node_modules/mdi/fonts/materialdesignicons-webfont.woff?v=1.8.36") format("woff"), url("../../node_modules/mdi/fonts/materialdesignicons-webfont.ttf?v=1.8.36") format("truetype"), url("../../node_modules/mdi/fonts/materialdesignicons-webfont.svg?v=1.8.36#materialdesigniconsregular") format("svg");
   font-weight: normal;
   font-style: normal; }
-.mdi:before, .icon-lightbulb:before, .icon-cards:before, .icon-close:before, .icon-minimize:before, .icon-maximize:before, .icon-restore:before, .icon-bars:before, .icon-arrow-left:before, .icon-arrow-right:before, .icon-search-plus:before, .icon-search-minus:before, .icon-folderview:before, .icon-file-text:before,
+.mdi:before, .icon-cloud-push:before, .icon-cloud-pull:before, .icon-lightbulb:before, .icon-cards:before, .icon-close:before, .icon-minimize:before, .icon-maximize:before, .icon-restore:before, .icon-bars:before, .icon-arrow-left:before, .icon-arrow-right:before, .icon-search-plus:before, .icon-search-minus:before, .icon-folderview:before, .icon-file-text:before,
 .mdi-set {
   display: inline-block;
   font: normal normal normal 24px/1 "Material Design Icons";
@@ -4380,7 +4383,7 @@ span.CodeMirror-selectedtext {
 .mdi-cloud-circle:before {
   content: "\F161"; }
 
-.mdi-cloud-download:before {
+.mdi-cloud-download:before, .icon-cloud-pull:before {
   content: "\F162"; }
 
 .mdi-cloud-outline:before {
@@ -4398,7 +4401,7 @@ span.CodeMirror-selectedtext {
 .mdi-cloud-sync:before {
   content: "\F63F"; }
 
-.mdi-cloud-upload:before {
+.mdi-cloud-upload:before, .icon-cloud-push:before {
   content: "\F167"; }
 
 .mdi-code-array:before {
@@ -8640,16 +8643,16 @@ span.CodeMirror-selectedtext {
 .mdi-zip-box:before {
   content: "\F5C4"; }
 
-.mdi-18px.mdi-set, .mdi-18px.mdi:before, .mdi-18px.icon-lightbulb:before, .mdi-18px.icon-cards:before, .mdi-18px.icon-close:before, .mdi-18px.icon-minimize:before, .mdi-18px.icon-maximize:before, .mdi-18px.icon-restore:before, .mdi-18px.icon-bars:before, .mdi-18px.icon-arrow-left:before, .mdi-18px.icon-arrow-right:before, .mdi-18px.icon-search-plus:before, .mdi-18px.icon-search-minus:before, .mdi-18px.icon-folderview:before, .mdi-18px.icon-file-text:before {
+.mdi-18px.mdi-set, .mdi-18px.mdi:before, .mdi-18px.icon-cloud-push:before, .mdi-18px.icon-cloud-pull:before, .mdi-18px.icon-lightbulb:before, .mdi-18px.icon-cards:before, .mdi-18px.icon-close:before, .mdi-18px.icon-minimize:before, .mdi-18px.icon-maximize:before, .mdi-18px.icon-restore:before, .mdi-18px.icon-bars:before, .mdi-18px.icon-arrow-left:before, .mdi-18px.icon-arrow-right:before, .mdi-18px.icon-search-plus:before, .mdi-18px.icon-search-minus:before, .mdi-18px.icon-folderview:before, .mdi-18px.icon-file-text:before {
   font-size: 18px; }
 
-.mdi-24px.mdi-set, .mdi-24px.mdi:before, .mdi-24px.icon-lightbulb:before, .mdi-24px.icon-cards:before, .mdi-24px.icon-close:before, .mdi-24px.icon-minimize:before, .mdi-24px.icon-maximize:before, .mdi-24px.icon-restore:before, .mdi-24px.icon-bars:before, .mdi-24px.icon-arrow-left:before, .mdi-24px.icon-arrow-right:before, .mdi-24px.icon-search-plus:before, .mdi-24px.icon-search-minus:before, .mdi-24px.icon-folderview:before, .mdi-24px.icon-file-text:before {
+.mdi-24px.mdi-set, .mdi-24px.mdi:before, .mdi-24px.icon-cloud-push:before, .mdi-24px.icon-cloud-pull:before, .mdi-24px.icon-lightbulb:before, .mdi-24px.icon-cards:before, .mdi-24px.icon-close:before, .mdi-24px.icon-minimize:before, .mdi-24px.icon-maximize:before, .mdi-24px.icon-restore:before, .mdi-24px.icon-bars:before, .mdi-24px.icon-arrow-left:before, .mdi-24px.icon-arrow-right:before, .mdi-24px.icon-search-plus:before, .mdi-24px.icon-search-minus:before, .mdi-24px.icon-folderview:before, .mdi-24px.icon-file-text:before {
   font-size: 24px; }
 
-.mdi-36px.mdi-set, .mdi-36px.mdi:before, .mdi-36px.icon-lightbulb:before, .mdi-36px.icon-cards:before, .mdi-36px.icon-close:before, .mdi-36px.icon-minimize:before, .mdi-36px.icon-maximize:before, .mdi-36px.icon-restore:before, .mdi-36px.icon-bars:before, .mdi-36px.icon-arrow-left:before, .mdi-36px.icon-arrow-right:before, .mdi-36px.icon-search-plus:before, .mdi-36px.icon-search-minus:before, .mdi-36px.icon-folderview:before, .mdi-36px.icon-file-text:before {
+.mdi-36px.mdi-set, .mdi-set.icon-cloud-push, .mdi-set.icon-cloud-pull, .mdi-36px.mdi:before, .icon-cloud-push:before, .icon-cloud-pull:before, .mdi-36px.icon-lightbulb:before, .mdi-36px.icon-cards:before, .mdi-36px.icon-close:before, .mdi-36px.icon-minimize:before, .mdi-36px.icon-maximize:before, .mdi-36px.icon-restore:before, .mdi-36px.icon-bars:before, .mdi-36px.icon-arrow-left:before, .mdi-36px.icon-arrow-right:before, .mdi-36px.icon-search-plus:before, .mdi-36px.icon-search-minus:before, .mdi-36px.icon-folderview:before, .mdi-36px.icon-file-text:before {
   font-size: 36px; }
 
-.mdi-48px.mdi-set, .mdi-48px.mdi:before, .mdi-48px.icon-lightbulb:before, .mdi-48px.icon-cards:before, .mdi-48px.icon-close:before, .mdi-48px.icon-minimize:before, .mdi-48px.icon-maximize:before, .mdi-48px.icon-restore:before, .mdi-48px.icon-bars:before, .mdi-48px.icon-arrow-left:before, .mdi-48px.icon-arrow-right:before, .mdi-48px.icon-search-plus:before, .mdi-48px.icon-search-minus:before, .mdi-48px.icon-folderview:before, .mdi-48px.icon-file-text:before {
+.mdi-48px.mdi-set, .mdi-48px.mdi:before, .mdi-48px.icon-cloud-push:before, .mdi-48px.icon-cloud-pull:before, .mdi-48px.icon-lightbulb:before, .mdi-48px.icon-cards:before, .mdi-48px.icon-close:before, .mdi-48px.icon-minimize:before, .mdi-48px.icon-maximize:before, .mdi-48px.icon-restore:before, .mdi-48px.icon-bars:before, .mdi-48px.icon-arrow-left:before, .mdi-48px.icon-arrow-right:before, .mdi-48px.icon-search-plus:before, .mdi-48px.icon-search-minus:before, .mdi-48px.icon-folderview:before, .mdi-48px.icon-file-text:before {
   font-size: 48px; }
 
 .mdi-dark {
@@ -8765,6 +8768,60 @@ span.CodeMirror-selectedtext {
 
 .dialog {
   -webkit-app-region: no-drag; }
+
+.flip-container {
+  margin: 15vh auto;
+  -webkit-perspective: 1000; }
+
+/* flip the pane  */
+.flip-container:hover .flipper, .flip-container:hover .flipper {
+  -webkit-transform: rotateY(180deg); }
+
+.flip-container, .front, .back {
+  width: 45vw;
+  height: 30vw;
+  border-radius: 24px;
+  box-sizing: border-box; }
+
+.front, .back {
+  text-align: center;
+  font-size: 2.4em;
+  line-height: 1em;
+  padding-top: 20%;
+  vertical-align: middle;
+  color: #434146;
+  border: 1px solid #EDEDEE;
+  overflow: hidden; }
+
+/* flip speed goes here */
+.flipper {
+  -webkit-transition: 0.6s;
+  -webkit-transform-style: preserve-3d;
+  position: relative; }
+
+/* hide back of pane during swap */
+.front, .back {
+  -webkit-backface-visibility: hidden;
+  -webkit-transition: 0.6s;
+  -webkit-transform-style: preserve-3d;
+  -webkit-transform: rotateY(0deg);
+  position: absolute;
+  top: 0;
+  left: 0; }
+
+/* front pane, placed above back */
+.front {
+  z-index: 2;
+  background-color: #8bbf9f; }
+
+/* back, initially hidden pane */
+.back {
+  -webkit-transform: rotateY(-180deg);
+  background-color: #fed75e; }
+
+.flashcard-content {
+  display: inline-block;
+  vertical-align: middle; }
 
 body {
   margin: 0;

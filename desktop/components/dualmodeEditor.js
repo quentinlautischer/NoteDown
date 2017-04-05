@@ -40,7 +40,7 @@ class DualmodeEditor extends React.Component {
   }
 
   componentDidMount(){
-    hljs.initHighlightingOnLoad();
+
     this.unsubscribe = this.props.store.subscribe( this.storeDidUpdate );
     this.codeMirror = this.refs.editor.getCodeMirror();
     this.parse(this.getContent());
@@ -57,15 +57,18 @@ class DualmodeEditor extends React.Component {
 
   handleCodeMirrorChange(codeMirrorInstance, changeObj) {
     this.updateContent(codeMirrorInstance);
-    this.parse(codeMirrorInstance);
   }
 
   updateContent(content) {
+    console.log(`Content length: ${content.length}`)
+    var start = new Date().getTime();
     this.props.store.dispatch({type: 'PAGE_CONTENT_CHANGE', 
       content: content, 
       folderIndex: this.props.store.getState().state.folderIndex,
       pageIndex: this.props.store.getState().state.pageIndex
     });
+    var end = new Date().getTime();
+    console.log(`Update Content took: ${end-start} ms or ${(end-start)/1000} seconds`);    
   }
 
   openFileDragDialog() {
@@ -101,6 +104,7 @@ class DualmodeEditor extends React.Component {
   }
 
   parse(content) {
+    var start = new Date().getTime();
     var imageMapper = function(guid, store){
       var state = store.getState();
       var images = state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].images;
@@ -111,8 +115,9 @@ class DualmodeEditor extends React.Component {
         }
       }
     }
-
     var rendered = shared.parse(content, this.props.store, imageMapper);
+    var end = new Date().getTime();
+    console.log(`Parse took: ${end-start} ms or ${(end-start)/1000} seconds`);
     this.setState({ rendered_content: rendered });
 
   }
@@ -144,7 +149,6 @@ class DualmodeEditor extends React.Component {
       mode: 'markdown',
       theme: 'duotone-light'
     };
-    hljs.initHighlighting();
     return (
       <div className="dualMode-container"
         onDragOver={this.preventDefault}

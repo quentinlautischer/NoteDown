@@ -18,12 +18,14 @@ class PushConflictDialog extends React.Component {
     console.log("requesting data pull");
     const data = {userid: this.props.store.getState().state.userid};
     ipc.send('request-pull-data', data);
+    store.dispatch({type: 'DIALOG_OPEN', dialog_type: 'pull-wait'});
   }
 
   request_push_data(force = false) {
     console.log("requesting data push");
     const data = {userid: this.props.store.getState().state.userid, notes: this.props.store.getState().notes, force_push: force};
     ipc.send('request-push-data', data);
+    store.dispatch({type: 'DIALOG_OPEN', dialog_type: 'push-wait'});
   }
 
   overwritePull(){

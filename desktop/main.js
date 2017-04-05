@@ -1,20 +1,3 @@
-const electron = require('electron')
-const app = electron.app
-const BrowserWindow = electron.BrowserWindow
-
-const path = require('path')
-const url = require('url')
-
-const ipcMain = require('electron').ipcMain;
-const http = require('http');
-
-// var HOST = '127.0.0.1';
-var HOST = 'localhost'; // allows me to test on android
-// var HOST  = 'https://mighty-garden-9993.herokuapp.com/'
-var PORT = '3000';
-var io = require('socket.io-client');
-
-
 var mongoose = require('mongoose');
 var Account = require('../shared/models/account')
 var Notes = require('../shared/models/notes')
@@ -22,9 +5,51 @@ var Image = require('../shared/models/image')
 var Folder = require('../shared/models/folder')
 var Page = require('../shared/models/page')
 
+const electron = require('electron')
+const app = electron.app
+const BrowserWindow = electron.BrowserWindow
+var open = require('open')
+
+const path = require('path')
+const url = require('url')
+
+const ipcMain = require('electron').ipcMain;
+const http = require('http');
+
+
+////////////////////////////////
+// REMOTE
+var HOST  = 'https://mighty-garden-9993.herokuapp.com/'
+////////////////////////////////
+////////////////////////////////
+// LOCAL
+// var HOST = '127.0.0.1';
+// var HOST = 'localhost';
+// var PORT = '3000';
+///////////////////////////////
+
+var io = require('socket.io-client');
 var socket;
 
 let mainWindow
+
+function initServerComm() {
+  console.log('initializing socket');
+  ///////////////////////////////////////////
+  // LOCAL
+  // socket = io('http://' + HOST + ':' + PORT);
+  ///////////////////////////////////////////
+
+  ///////////////////////////////////////////
+  // REMOTE
+  socket = io(HOST);
+  ///////////////////////////////////////////
+
+  socket.on('data', (data) => {
+    console.log(`received data event (${data.event}) from server`);
+    mainWindow.webContents.send(data.event, data.data);
+  });
+}
 
 function createWindow () {
   
@@ -41,6 +66,12 @@ function createWindow () {
   }))
 
   mainWindow.webContents.openDevTools()
+
+  mainWindow.webContents.on('new-window', function(event, url){
+    event.preventDefault();
+    console.log("about to open");
+    open(url);
+  });
 
   mainWindow.on('closed', function () {
     closeSocket();
@@ -69,17 +100,6 @@ app.on('activate', function () {
 app.on('maximize', function () {
 
 })
-
-function initServerComm() {
-  console.log('initializing socket');
-  socket = io('http://' + HOST + ':' + PORT);
-  // socket = io(HOST);
-
-  socket.on('data', (data) => {
-    console.log(`received data event (${data.event}) from server`);
-    mainWindow.webContents.send(data.event, data.data);
-  });
-}
 
 ipcMain.on('initialize-socket', (event, data) => {
   initServerComm();

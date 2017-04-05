@@ -116,6 +116,7 @@ function closePhotoAlert(state, action) {
 }
 
 function openDialog(state, action) {
+  console.log(`Setting Dialog type: ${action.dialog_type}`)
   state = update(state, {
     dialog_open: {$set: true}
   });

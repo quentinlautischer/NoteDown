@@ -15,7 +15,7 @@ export default class NotesView extends Component {
 
     generateTOC(renderedContent) {
         // the negative margins correct a weird error where the webview doesn't touch the edges
-        return `<style>${renderStyles.HIGHLIGHT_STYLES + renderStyles.LINK_STYLES + renderStyles.MATH_STYLES}</style><div style="padding:10px;margin-top:-8px;margin-right:-8px;margin-bottom:-8px;">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
+        return `<style>${renderStyles.HIGHLIGHT_STYLES + renderStyles.FLASHCARD_STYLES + renderStyles.LINK_STYLES + renderStyles.MATH_STYLES}</style><div style="padding:10px;margin-top:-8px;margin-right:-8px;margin-bottom:-8px;">${renderedContent}</div><div id='toc' style="position:fixed;padding:10px;overflow-y:auto;bottom:0;height:${this.props.height}%;width:100%;background-color:#303e4d;visibility:${this.props.visibility}"></div>`;
     }
 
 
