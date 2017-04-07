@@ -13,7 +13,6 @@ import colors from '../app/constants';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 import NotesView from '../components/NotesView';
 import NotesEditScene from './NotesEditScene'; // navigate
@@ -28,7 +27,9 @@ class NotesViewScene extends Component {
         this.state = {
             content: '',
             tocHeight: 0, // percentage of total height,
-            tocVisibility: 'hidden'
+            tocVisibility: 'hidden',
+            prevColor: colors.MED,
+            nextColor: colors.LIGHT,
         };
 
         this.storeDidUpdate = this.storeDidUpdate.bind(this);
@@ -41,6 +42,12 @@ class NotesViewScene extends Component {
                      .pages[this.context.store.getState().state.pageIndex]
                      .content
         });
+
+        // dim the 'next' button if only 1 page
+        if (this.context.store.getState().notes.folders[this.context.store.getState().state.folderIndex].pages.length < 2) {
+            this.setState({nextColor: colors.MED});
+        }
+
         this.unsubscribe = this.context.store.subscribe( this.storeDidUpdate );
     }
 
@@ -136,11 +143,15 @@ class NotesViewScene extends Component {
         this.props.socket.emit('request-pull-data', {userid: state.state.userid});
     }
 
-    onSwipeLeft(gestureState) {
+    goToNext(gestureState) {
         var state = this.context.store.getState();
         var pages = state.notes.folders[state.state.folderIndex].pages;
         // go to next page
+        if (state.state.pageIndex === pages.length - 2) {
+            this.setState({nextColor: colors.MED});
+        }
         if (state.state.pageIndex < pages.length - 1) {
+            this.setState({prevColor: colors.LIGHT});
             this.refs[PAGE_NAV_REF].push({
                 content: pages[state.state.pageIndex + 1].content
             });
@@ -148,10 +159,14 @@ class NotesViewScene extends Component {
         }
     }
 
-    onSwipeRight(gestureState) {
+    goToPrevious(gestureState) {
         var state = this.context.store.getState();
         // go to previous page
+        if (state.state.pageIndex === 1) {
+            this.setState({prevColor: colors.MED});
+        }
         if (state.state.pageIndex > 0) {
+            this.setState({nextColor: colors.LIGHT});
             this.refs[PAGE_NAV_REF].pop();
             this.context.store.dispatch({type: 'SELECT_PAGE', index: state.state.pageIndex - 1});
         }
@@ -172,13 +187,22 @@ class NotesViewScene extends Component {
         };
 
         return (
-            <GestureRecognizer
-                onSwipeLeft={(state) => this.onSwipeLeft(state)}
-                onSwipeRight={(state) => this.onSwipeRight(state)}
-                config={config}
-                style={styles.view}>
+            <View style={styles.view}>
+            <View style={styles.nav}>
+                <TouchableHighlight
+                    style={styles.button}
+                    onPress={ () => this.goToPrevious()}>
+                    <Icon name={'skip-previous'} size={28} color={this.state.prevColor} />
+                </TouchableHighlight>
+                <TouchableHighlight
+                    style={styles.button}
+                    onPress={ () => this.goToNext()}>
+                    <Icon name={'skip-next'} size={28} color={this.state.nextColor} />
+                </TouchableHighlight>
+            </View>
 
                 <Navigator // this is where the WebView that shows the rendered notes lives
+                    style={styles.page}
                     ref={PAGE_NAV_REF}
                     renderScene={(route, navigator) => {
                         return <NotesView
@@ -190,7 +214,8 @@ class NotesViewScene extends Component {
                     }}
                 />
 
-                <ActionButton buttonColor={colors.PRIMARY2}>
+                <ActionButton
+                    buttonColor={colors.PRIMARY2}>
                     <ActionButton.Item buttonColor={colors.SECONDARY1} title='cloud pull' onPress={ () => this.requestPullData() }>
                         <Icon name='cloud-download' size={22} color={colors.LIGHT} />
                     </ActionButton.Item>
@@ -201,7 +226,7 @@ class NotesViewScene extends Component {
                         <Icon2 name='md-list' size={22} color={colors.LIGHT} />
                     </ActionButton.Item>
                 </ActionButton>
-            </GestureRecognizer>
+            </View>
         )
     }
 }
@@ -211,6 +236,23 @@ var styles = StyleSheet.create({
         flex: 1,
         marginTop:45,
         backgroundColor: colors.LIGHT
+    },
+    page: {
+        flex: 1
+    },
+    nav: {
+        height: 40,
+        backgroundColor: colors.DARK,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    button: {
+        height: 28,
+        paddingLeft: 6,
+        paddingRight: 6,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     actionButtonIcon: {
         fontSize: 20,
