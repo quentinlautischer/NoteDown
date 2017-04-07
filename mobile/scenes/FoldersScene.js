@@ -59,6 +59,12 @@ class FoldersScene extends Component {
             rightIconName: 'cards',
             backIconName: 'arrow-left'
         });
+        var folderIdx = this.context.store.getState().state.folderIndex;
+        this.context.store.dispatch({type: 'UPDATE_PAGE_SAVED_CONTENT',
+            content: this.context.store.getState().notes.folders[folderIdx].pages[0].content,
+            folderIndex: this.context.store.getState().state.folderIndex,
+            pageIndex: 0
+        });
     }
 
     onPress() {

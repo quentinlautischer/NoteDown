@@ -103,6 +103,10 @@ class NotesViewScene extends Component {
         var currentPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].content;
         var savedPageContent = this.context.store.getState().notes.folders[folderIndex].pages[pageIndex].savedContent;
 
+        console.log("need to save?");
+        console.log("current: " + currentPageContent);
+        console.log("saved: " + savedPageContent);
+
         return currentPageContent !== savedPageContent;
     }
 
@@ -156,6 +160,7 @@ class NotesViewScene extends Component {
                 content: pages[state.state.pageIndex + 1].content
             });
             this.context.store.dispatch({type: 'SELECT_PAGE', index: state.state.pageIndex + 1});
+            this.updateSavedContent();
         }
     }
 
@@ -169,7 +174,19 @@ class NotesViewScene extends Component {
             this.setState({nextColor: colors.LIGHT});
             this.refs[PAGE_NAV_REF].pop();
             this.context.store.dispatch({type: 'SELECT_PAGE', index: state.state.pageIndex - 1});
+            this.updateSavedContent();
         }
+    }
+
+    updateSavedContent() {
+        var folderIdx = this.context.store.getState().state.folderIndex;
+        var pageIdx = this.context.store.getState().state.pageIndex;
+
+        this.context.store.dispatch({type: 'UPDATE_PAGE_SAVED_CONTENT',
+            content: this.context.store.getState().notes.folders[folderIdx].pages[pageIdx].content,
+            folderIndex: this.context.store.getState().state.folderIndex,
+            pageIndex: this.context.store.getState().state.pageIndex
+        });
     }
 
     toggleTOC() {
@@ -208,7 +225,10 @@ class NotesViewScene extends Component {
                         return <NotesView
                             store={this.context.store}
                             navigator={navigator}
-                            content={this.state.content}
+                            content={this.context.store.getState().notes
+                                     .folders[this.context.store.getState().state.folderIndex]
+                                     .pages[this.context.store.getState().state.pageIndex]
+                                     .content}
                             height={this.state.tocHeight}
                             visibility={this.state.tocVisibility} />
                     }}
