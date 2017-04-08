@@ -159,7 +159,6 @@ class FlashcardViewScene extends Component {
             return(
                 <GestureRecognizer
                     onSwipeLeft={(state) => this.onSwipeLeft(state)}
-                    onSwipeRight={(state) => this.onSwipeRight(state)}
                     onSwipeUp={(state) => this.onSwipeUp(state)}
                     onSwipeDown={(state) => this.onSwipeDown(state)}
                     config={config}
