@@ -24552,7 +24552,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _immutabilityHelper = __webpack_require__(216);
@@ -24567,89 +24567,122 @@
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+	function findFirstFlashcard(state, action) {
+	    return findNextCardWithHighEnoughRank((0, _immutabilityHelper2.default)(state, { currentIndex: { $set: -1 } }));
+	}
+
 	function nextFlashcard(state, action) {
-	  return findNextCardWithHighEnoughRank(state);
+	    return findNextCardWithHighEnoughRank(state);
 	}
 
 	function findNextCardWithHighEnoughRank(state) {
-	  var minRank = state.showMediumDifficultyCards === true ? 2 : 3;
-	  var numFlashcardsInFolder = state.flashcards[state.folderIndex].flashcards.length;
+	    var numFlashcardsInFolder = state.flashcards[state.folderIndex].flashcards.length;
 
-	  for (var i = 1; i < numFlashcardsInFolder; i++) {
-	    var realIndex = (state.currentIndex + i) % numFlashcardsInFolder;
-	    if (state.flashcards[state.folderIndex].flashcards[realIndex].rank >= minRank) {
-	      if (state.currentIndex + i >= numFlashcardsInFolder) {
-	        // this is a loop-around; update showMediumDifficultyCards
-	        state = (0, _immutabilityHelper2.default)(state, {
-	          showMediumDifficultyCards: { $set: !state.showMediumDifficultyCards }
-	        });
-	      }
-	      return (0, _immutabilityHelper2.default)(state, {
-	        currentIndex: { $set: realIndex }
-	      });
+	    var res = findNextInRange(state, state.currentIndex + 1, numFlashcardsInFolder);
+	    if (res !== null) {
+	        return res;
 	    }
-	  }
-	  // didn't find one
-	  // if we were hiding medium cards before, there might be one we can show if we toggle this
-	  if (minRank === 3) {
-	    return findNextCardWithHighEnoughRank((0, _immutabilityHelper2.default)(state, { showMediumDifficultyCards: { $set: true } }));
-	  }
-	  return (0, _immutabilityHelper2.default)(state, {
-	    currentIndex: { $set: -1 } // indicates no more cards to learn
-	  });
+
+	    showMediumDifficultyCards: {
+	        $set: !state.showMediumDifficultyCards;
+	    }
+	    var res = findNextInRange(state, 0, numFlashcardsInFolder);
+	    if (res !== null) {
+	        return res;
+	    }
+
+	    if (!state.showMediumDifficultyCards) {
+	        showMediumDifficultyCards: {
+	            $set: !state.showMediumDifficultyCards;
+	        }
+	        var res = findNextInRange(state, 0, state.currentIndex + 1);
+	        if (res !== null) {
+	            return res;
+	        }
+	    }
+
+	    return (0, _immutabilityHelper2.default)(state, {
+	        currentIndex: { $set: -1 } // indicates no more cards to learn
+	    });
+	}
+
+	function findNextInRange(state, start, end) {
+	    var minRank = state.showMediumDifficultyCards === true ? 2 : 3;
+	    for (var i = start; i < end; i++) {
+	        if (state.flashcards[state.flashcardFolderIndex].flashcards[i].rank >= minRank) {
+	            return (0, _immutabilityHelper2.default)(state, {
+	                currentIndex: { $set: i }
+	            });
+	        }
+	    }
+	    return null;
 	}
 
 	function prevFlashcard(state, action) {
-	  if (state.currentIndex > 0) {
-	    return Object.assign({}, state, { currentIndex: state.currentIndex - 1 });
-	  }
-	  return state;
+	    if (state.currentIndex > 0) {
+	        return Object.assign({}, state, { currentIndex: state.currentIndex - 1 });
+	    }
+	    return state;
 	}
 
 	function setFlashcards(state, action) {
-	  return Object.assign({}, state, { flashcards: action.flashcards });
+	    return Object.assign({}, state, { flashcards: action.flashcards });
 	}
 
 	function setFlashcardIndex(state, action) {
-	  return Object.assign({}, state, { currentIndex: action.currentIndex });
+	    return Object.assign({}, state, { currentIndex: action.currentIndex });
 	}
 
 	function selectFlashcardFolder(state, action) {
-	  return Object.assign({}, state, { flashcardFolderIndex: action.flashcardFolderIndex });
+	    return Object.assign({}, state, { flashcardFolderIndex: action.flashcardFolderIndex });
 	}
 
 	function setFlashcardStep(state, action) {
-	  return Object.assign({}, state, { step: action.step });
+	    return Object.assign({}, state, { step: action.step });
 	}
 
 	function rankFlashcard(state, action) {
-	  var folder = state.flashcardFolderIndex;
-	  var card = state.currentIndex;
-	  console.log('reducer applying rank ' + action.value + ' to (' + folder + ',' + card + ')');
-	  return (0, _immutabilityHelper2.default)(state, {
-	    flashcards: _defineProperty({}, folder, {
-	      flashcards: _defineProperty({}, card, {
-	        rank: { $set: action.value }
-	      })
-	    })
-	  });
+	    var folder = state.flashcardFolderIndex;
+	    var card = state.currentIndex;
+	    console.log('reducer applying rank ' + action.value + ' to (' + folder + ',' + card + ')');
+	    return (0, _immutabilityHelper2.default)(state, {
+	        flashcards: _defineProperty({}, folder, {
+	            flashcards: _defineProperty({}, card, {
+	                rank: { $set: action.value }
+	            })
+	        })
+	    });
+	}
+
+	function mapFlashcardFolder(state, action) {
+	    for (var i = 0; i < state.flashcards.length; i++) {
+	        console.log('FC: ' + JSON.stringify(state.flashcards[i], null, 2));
+	        console.log('ACT: ' + action.notesFolder);
+	        if (state.flashcards[i].index === action.notesFolder) {
+	            return Object.assign({}, state, { flashcardFolderIndex: i });
+	        }
+	    }
+	    // should never get here
+	    return Object.assign({}, state, { flashcardFolderIndex: 0 });
 	}
 
 	var initial_state = {
-	  flashcards: [],
-	  flashcardFolderIndex: 0,
-	  currentIndex: 0,
-	  showMediumDifficultyCards: false
+	    flashcards: [],
+	    flashcardFolderIndex: 0,
+	    currentIndex: 0,
+	    showMediumDifficultyCards: false
 	};
 
 	var flashcardReducer = (0, _reducerUtilities2.default)(initial_state, {
-	  'NEXT_FLASHCARD': nextFlashcard,
-	  'PREV_FLASHCARD': prevFlashcard,
-	  'SET_FLASHCARDS': setFlashcards,
-	  'SELECT_FLASHCARD_FOLDER': selectFlashcardFolder,
-	  'SET_FLASHCARD_INDEX': setFlashcardIndex,
-	  'SET_FLASHCARD_STEP': setFlashcardStep,
-	  'RANK_FLASHCARD': rankFlashcard
+	    'NEXT_FLASHCARD': nextFlashcard,
+	    'PREV_FLASHCARD': prevFlashcard,
+	    'SET_FLASHCARDS': setFlashcards,
+	    'SELECT_FLASHCARD_FOLDER': selectFlashcardFolder,
+	    'SET_FLASHCARD_INDEX': setFlashcardIndex,
+	    'SET_FLASHCARD_STEP': setFlashcardStep,
+	    'RANK_FLASHCARD': rankFlashcard,
+	    'MAP_FLASHCARD_FOLDER': mapFlashcardFolder,
+	    'FIND_FIRST_FLASHCARD': findFirstFlashcard
 	});
 
 	exports.default = flashcardReducer;

@@ -2,38 +2,51 @@ import update from '../node_modules/immutability-helper';
 
 import createReducer from './reducerUtilities'
 
+function findFirstFlashcard(state, action) {
+    return findNextCardWithHighEnoughRank(update(state, {currentIndex: {$set: -1}}));
+}
+
 function nextFlashcard(state, action) {
     return findNextCardWithHighEnoughRank(state);
 }
 
 function findNextCardWithHighEnoughRank(state) {
-    var minRank = (state.showMediumDifficultyCards === true) ? 2 : 3;
     var numFlashcardsInFolder = state.flashcards[state.folderIndex].flashcards.length;
 
-    for (var i = 1; i < numFlashcardsInFolder; i++) {
-        var realIndex = (state.currentIndex + i) % numFlashcardsInFolder;
-        if (state.flashcards[state.folderIndex].flashcards[realIndex].rank >= minRank) {
-            if (state.currentIndex + i >= numFlashcardsInFolder) {
-                // this is a loop-around; update showMediumDifficultyCards
-                state = update(state, {
-                    showMediumDifficultyCards: {$set: !state.showMediumDifficultyCards}
-                });
-            }
-            return update(state, {
-                currentIndex: {$set: realIndex}
-            });
+    var res = findNextInRange(state, state.currentIndex + 1, numFlashcardsInFolder);
+    if (res !== null) {
+        return res;
+    }
+
+    showMediumDifficultyCards: {$set: !state.showMediumDifficultyCards}
+    var res = findNextInRange(state, 0, numFlashcardsInFolder);
+    if (res !== null) {
+        return res;
+    }
+
+    if (!state.showMediumDifficultyCards) {
+        showMediumDifficultyCards: {$set: !state.showMediumDifficultyCards}
+        var res = findNextInRange(state, 0, state.currentIndex + 1);
+        if (res !== null) {
+            return res;
         }
     }
-    // didn't find one
-    // if we were hiding medium cards before, there might be one we can show if we toggle this
-    if (minRank === 3) {
-        return findNextCardWithHighEnoughRank(
-            update(state, {showMediumDifficultyCards: {$set: true}})
-        );
-    }
+
     return update(state, {
         currentIndex: {$set: -1} // indicates no more cards to learn
     });
+}
+
+function findNextInRange(state, start, end) {
+    var minRank = (state.showMediumDifficultyCards === true) ? 2 : 3;
+    for (var i = start; i < end; i++) {
+        if (state.flashcards[state.flashcardFolderIndex].flashcards[i].rank >= minRank) {
+            return update(state, {
+                currentIndex: {$set: i}
+            });
+        }
+    }
+    return null;
 }
 
 function prevFlashcard(state, action) {
@@ -76,6 +89,18 @@ function rankFlashcard(state, action) {
   });
 }
 
+function mapFlashcardFolder(state, action) {
+    for (var i = 0; i < state.flashcards.length; i++) {
+        console.log('FC: ' + JSON.stringify(state.flashcards[i], null, 2));
+        console.log('ACT: ' + action.notesFolder);
+        if (state.flashcards[i].index === action.notesFolder) {
+            return Object.assign({}, state, {flashcardFolderIndex: i});
+        }
+    }
+    // should never get here
+    return Object.assign({}, state, {flashcardFolderIndex: 0});
+}
+
 const initial_state = {
   flashcards: [],
   flashcardFolderIndex: 0,
@@ -90,7 +115,9 @@ const flashcardReducer = createReducer(initial_state, {
   'SELECT_FLASHCARD_FOLDER': selectFlashcardFolder,
   'SET_FLASHCARD_INDEX': setFlashcardIndex,
   'SET_FLASHCARD_STEP': setFlashcardStep,
-  'RANK_FLASHCARD': rankFlashcard
+  'RANK_FLASHCARD': rankFlashcard,
+  'MAP_FLASHCARD_FOLDER': mapFlashcardFolder,
+  'FIND_FIRST_FLASHCARD': findFirstFlashcard
 });
 
 export default flashcardReducer;

@@ -69,20 +69,29 @@ class FoldersScene extends Component {
 
     onPress() {
         var state = this.context.store.getState();
-        if (state.flashcards.flashcards[state.state.folderIndex] // if this doesn't exist the next part of the condition causes an error
-                && state.flashcards.flashcards[state.state.folderIndex].flashcards.length > 0) {
-            this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
+        // if (state.flashcards.flashcards[state.state.folderIndex] // if this doesn't exist the next part of the condition causes an error
+        //         && state.flashcards.flashcards[state.state.folderIndex].flashcards.length > 0) {
+            this.updateStateForFCs();
             this.props.navigator.push({
                 component: FlashcardViewScene,
-                passProps: this.props
-            })
-        } else {
-            let toast = Toast.show('No flashcards for this folder', {
-                duration: 1400, // ms
-                position: 0, // middle of screen
-                shadow: true
+                passProps: {
+                    ...this.props,
+                    currentIndex: this.context.store.getState().flashcards.currentIndex
+                }
             });
-        }
+        // } else {
+        //     let toast = Toast.show('No flashcards for this folder', {
+        //         duration: 1400, // ms
+        //         position: 0, // middle of screen
+        //         shadow: true
+        //     });
+        // }
+    }
+
+    updateStateForFCs() {
+        this.context.store.dispatch({type: 'MAP_FLASHCARD_FOLDER', notesFolder: this.context.store.getState().state.folderIndex});
+        this.context.store.dispatch({type: 'FIND_FIRST_FLASHCARD'});
+        this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
     }
 
     onBack() {
