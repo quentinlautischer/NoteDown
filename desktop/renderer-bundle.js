@@ -24568,10 +24568,35 @@
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function nextFlashcard(state, action) {
-	  if (state.currentIndex < state.flashcards.length) {
-	    return Object.assign({}, state, { currentIndex: state.currentIndex + 1 });
+	  return findNextCardWithHighEnoughRank(state);
+	}
+
+	function findNextCardWithHighEnoughRank(state) {
+	  var minRank = state.showMediumDifficultyCards === true ? 2 : 3;
+	  var numFlashcardsInFolder = state.flashcards[state.folderIndex].flashcards.length;
+
+	  for (var i = 1; i < numFlashcardsInFolder; i++) {
+	    var realIndex = (state.currentIndex + i) % numFlashcardsInFolder;
+	    if (state.flashcards[state.folderIndex].flashcards[realIndex].rank >= minRank) {
+	      if (state.currentIndex + i >= numFlashcardsInFolder) {
+	        // this is a loop-around; update showMediumDifficultyCards
+	        state = (0, _immutabilityHelper2.default)(state, {
+	          showMediumDifficultyCards: { $set: !state.showMediumDifficultyCards }
+	        });
+	      }
+	      return (0, _immutabilityHelper2.default)(state, {
+	        currentIndex: { $set: realIndex }
+	      });
+	    }
 	  }
-	  return state;
+	  // didn't find one
+	  // if we were hiding medium cards before, there might be one we can show if we toggle this
+	  if (minRank === 3) {
+	    return findNextCardWithHighEnoughRank((0, _immutabilityHelper2.default)(state, { showMediumDifficultyCards: { $set: true } }));
+	  }
+	  return (0, _immutabilityHelper2.default)(state, {
+	    currentIndex: { $set: -1 } // indicates no more cards to learn
+	  });
 	}
 
 	function prevFlashcard(state, action) {
@@ -24613,7 +24638,8 @@
 	var initial_state = {
 	  flashcards: [],
 	  flashcardFolderIndex: 0,
-	  currentIndex: 0
+	  currentIndex: 0,
+	  showMediumDifficultyCards: false
 	};
 
 	var flashcardReducer = (0, _reducerUtilities2.default)(initial_state, {

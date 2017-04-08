@@ -3,10 +3,37 @@ import update from '../node_modules/immutability-helper';
 import createReducer from './reducerUtilities'
 
 function nextFlashcard(state, action) {
-  if (state.currentIndex < state.flashcards.length){
-    return Object.assign({}, state, {currentIndex: state.currentIndex + 1});
-  }
-  return state;
+    return findNextCardWithHighEnoughRank(state);
+}
+
+function findNextCardWithHighEnoughRank(state) {
+    var minRank = (state.showMediumDifficultyCards === true) ? 2 : 3;
+    var numFlashcardsInFolder = state.flashcards[state.folderIndex].flashcards.length;
+
+    for (var i = 1; i < numFlashcardsInFolder; i++) {
+        var realIndex = (state.currentIndex + i) % numFlashcardsInFolder;
+        if (state.flashcards[state.folderIndex].flashcards[realIndex].rank >= minRank) {
+            if (state.currentIndex + i >= numFlashcardsInFolder) {
+                // this is a loop-around; update showMediumDifficultyCards
+                state = update(state, {
+                    showMediumDifficultyCards: {$set: !state.showMediumDifficultyCards}
+                });
+            }
+            return update(state, {
+                currentIndex: {$set: realIndex}
+            });
+        }
+    }
+    // didn't find one
+    // if we were hiding medium cards before, there might be one we can show if we toggle this
+    if (minRank === 3) {
+        return findNextCardWithHighEnoughRank(
+            update(state, {showMediumDifficultyCards: {$set: true}})
+        );
+    }
+    return update(state, {
+        currentIndex: {$set: -1} // indicates no more cards to learn
+    });
 }
 
 function prevFlashcard(state, action) {
@@ -52,7 +79,8 @@ function rankFlashcard(state, action) {
 const initial_state = {
   flashcards: [],
   flashcardFolderIndex: 0,
-  currentIndex: 0
+  currentIndex: 0,
+  showMediumDifficultyCards: false
 }
 
 const flashcardReducer = createReducer(initial_state, {

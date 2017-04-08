@@ -37,6 +37,7 @@ class FlashcardsMenuScene extends Component {
     selectFolder(rowID) {
         var index = parseInt(rowID.replace('FOLDER', ''));
         this.context.store.dispatch({type: 'SELECT_FLASHCARD_FOLDER', flashcardFolderIndex: index});
+        this.context.store.dispatch({type: 'FIND_FIRST_FLASHCARD'});
         this._navigate();
     }
 

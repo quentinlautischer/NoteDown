@@ -22,7 +22,6 @@ class FlashcardViewScene extends Component {
 
     componentDidMount() {
         Orientation.lockToLandscape(); //this will lock the view to Landscape
-        this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: 0});
     }
 
     componentWillUnmount() {
@@ -31,20 +30,11 @@ class FlashcardViewScene extends Component {
     }
 
     onSwipeLeft(gestureState) {
-        var state = this.context.store.getState().flashcards;
-        // go to next page
-        if (state.currentIndex < state.flashcards[state.flashcardFolderIndex].flashcards.length - 1) {
-            this.cardTransition();
-        }
+        this.cardTransition();
     }
 
     onSwipeRight(gestureState) {
-        var state = this.context.store.getState().flashcards;
-
-        // go to previous page
-        if (state.currentIndex > 0) {
-            this.cardTransition(this.goToPrevious.bind(this));
-        }
+        this.cardTransition(this.goToPrevious.bind(this));
     }
 
     /*
@@ -76,7 +66,7 @@ class FlashcardViewScene extends Component {
     goToNext() {
         var state = this.context.store.getState().flashcards;
         this.refs[FC_NAV_REF].push({ index: 0 });
-        this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: state.currentIndex + 1});
+        this.context.store.dispatch({type: 'NEXT_FLASHCARD'});
     }
 
     goToPrevious() {
@@ -139,52 +129,60 @@ class FlashcardViewScene extends Component {
             directionalOffsetThreshold: 80
         };
 
-        return (
-            <GestureRecognizer
-                onSwipeLeft={(state) => this.onSwipeLeft(state)}
-                onSwipeRight={(state) => this.onSwipeRight(state)}
-                onSwipeUp={(state) => this.onSwipeUp(state)}
-                onSwipeDown={(state) => this.onSwipeDown(state)}
-                config={config}
-                style={styles.container}>
+        console.log('curr idx: ' + this.context.store.getState().flashcards.currentIndex);
+        if (this.context.store.getState().flashcards.currentIndex === -1) {
+            // out of flashcard to show
+            return(
+                <View><Text>Folder complete!</Text></View>
+            )
+        } else {
+            return(
+                <GestureRecognizer
+                    onSwipeLeft={(state) => this.onSwipeLeft(state)}
+                    onSwipeRight={(state) => this.onSwipeRight(state)}
+                    onSwipeUp={(state) => this.onSwipeUp(state)}
+                    onSwipeDown={(state) => this.onSwipeDown(state)}
+                    config={config}
+                    style={styles.container}>
 
-                <Navigator // this is where the WebView that shows the rendered notes lives
-                    ref={FC_NAV_REF}
-                    initialRoute={{index: 0}}
-                    renderScene={(route, navigator) => {
-                        if (route.index === 0) { // front
-                            return <FlashcardFront
-                                navigator={navigator}
-                                content={this.context.store.getState().flashcards
-                                    .flashcards[this.context.store.getState().flashcards.flashcardFolderIndex]
-                                    .flashcards[this.context.store.getState().flashcards.currentIndex].front} />
-                        } else if (route.index === 1) { // hints
-                            return <FlashcardBack
-                                navigator={navigator}
-                                content={this.context.store.getState().flashcards
-                                    .flashcards[this.context.store.getState().flashcards.flashcardFolderIndex]
-                                    .flashcards[this.context.store.getState().flashcards.currentIndex].hints} />
-                        } else if (route.index === 2) { // back
-                            return <FlashcardBack
-                                navigator={navigator}
-                                content={this.context.store.getState().flashcards
-                                    .flashcards[this.context.store.getState().flashcards.flashcardFolderIndex]
-                                    .flashcards[this.context.store.getState().flashcards.currentIndex].back}
-                                onRank={this.onRank.bind(this)} />
-                        }
-                    }}
-                    configureScene={(route, routeStack) => {
-                        if (route.index === 0) { // front
-                            return Navigator.SceneConfigs.PushFromRight
-                        } else if (route.index == 1) { // hints
-                            return Navigator.SceneConfigs.VerticalDownSwipeJump
-                        } else { // back
-                            return Navigator.SceneConfigs.VerticalUpSwipeJump
-                        }
-                    }}
-                />
-            </GestureRecognizer>
-        )
+                    <Navigator // this is where the WebView that shows the rendered notes lives
+                        ref={FC_NAV_REF}
+                        initialRoute={{index: 0}}
+                        renderScene={(route, navigator) => {
+                            if (route.index === 0) { // front
+                                return <FlashcardFront
+                                    navigator={navigator}
+                                    content={this.context.store.getState().flashcards
+                                        .flashcards[this.context.store.getState().flashcards.flashcardFolderIndex]
+                                        .flashcards[this.context.store.getState().flashcards.currentIndex].front} />
+                            } else if (route.index === 1) { // hints
+                                return <FlashcardBack
+                                    navigator={navigator}
+                                    content={this.context.store.getState().flashcards
+                                        .flashcards[this.context.store.getState().flashcards.flashcardFolderIndex]
+                                        .flashcards[this.context.store.getState().flashcards.currentIndex].hints} />
+                            } else if (route.index === 2) { // back
+                                return <FlashcardBack
+                                    navigator={navigator}
+                                    content={this.context.store.getState().flashcards
+                                        .flashcards[this.context.store.getState().flashcards.flashcardFolderIndex]
+                                        .flashcards[this.context.store.getState().flashcards.currentIndex].back}
+                                    onRank={this.onRank.bind(this)} />
+                            }
+                        }}
+                        configureScene={(route, routeStack) => {
+                            if (route.index === 0) { // front
+                                return Navigator.SceneConfigs.PushFromRight
+                            } else if (route.index == 1) { // hints
+                                return Navigator.SceneConfigs.VerticalDownSwipeJump
+                            } else { // back
+                                return Navigator.SceneConfigs.VerticalUpSwipeJump
+                            }
+                        }}
+                    />
+                </GestureRecognizer>
+            )
+        }
     }
 }
 
