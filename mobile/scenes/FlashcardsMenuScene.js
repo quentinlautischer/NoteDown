@@ -28,7 +28,9 @@ class FlashcardsMenuScene extends Component {
         this.props.navigator.push({
             title: 'FlashcardsViewScene',
             component: FlashcardViewScene,
-            passProps: this.props
+            passProps: this.props,
+            onBack: this.onBack.bind(this),
+            backIconName: 'arrow-left',
         });
     }
 
@@ -36,6 +38,21 @@ class FlashcardsMenuScene extends Component {
         var index = parseInt(rowID.replace('FOLDER', ''));
         this.context.store.dispatch({type: 'SELECT_FLASHCARD_FOLDER', flashcardFolderIndex: index});
         this._navigate();
+    }
+
+    onBack() {
+        var state = this.context.store.getState().flashcards;
+        this.context.store.dispatch({type: 'SAVE_CARDS', flashcards: state.flashcards[state.flashcardFolderIndex]});
+
+        this.requestPushData();
+        this.context.store.dispatch({type: 'FLASHCARD_MODE'});
+        this.props.navigator.pop();
+    }
+
+    requestPushData() {
+        var state = this.context.store.getState();
+        const data = {userid: state.state.userid, notes: state.notes, force_push: false};
+        this.props.socket.emit('request-push-data', data);
     }
 
     render() {

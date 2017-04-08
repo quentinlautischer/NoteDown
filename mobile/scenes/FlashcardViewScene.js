@@ -28,11 +28,6 @@ class FlashcardViewScene extends Component {
     componentWillUnmount() {
         Orientation.unlockAllOrientations();
         this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: 0});
-
-        var state = this.context.store.getState().flashcards;
-        this.context.store.dispatch({type: 'SAVE_CARDS', flashcards: state.flashcards[state.flashcardFolderIndex]});
-
-        console.log("AFTER RANK APPLIED: " + JSON.stringify(this.context.store.getState().flashcards, null, 2));
     }
 
     onSwipeLeft(gestureState) {
@@ -121,20 +116,21 @@ class FlashcardViewScene extends Component {
             'Rank',
             'Select difficulty level',
             [
-                {text: 'I know it!', onPress: () => this.saveRank(1)},
-                {text: 'Review a bit more', onPress: () => this.saveRank(2)},
-                {text: 'Really difficult', onPress: () => this.saveRank(3)},
+                {text: 'I know it!', onPress: () => this.storeRank(1)},
+                {text: 'Review a bit more', onPress: () => this.storeRank(2)},
+                {text: 'Really difficult', onPress: () => this.storeRank(3)},
             ],
             { cancelable: false }
         )
     }
 
-    saveRank(rank) {
+    storeRank(rank) {
         var state = this.context.store.getState().flashcards;
         this.context.store.dispatch({type: "RANK_FLASHCARD", value: rank});
         if (state.currentIndex < state.flashcards[state.flashcardFolderIndex].flashcards.length - 1) {
             this.cardTransition();
         }
+        console.log("STATE AFTER STORE: " + JSON.stringify(this.context.store.getState().flashcards, null, 2));
     }
 
     render() {
