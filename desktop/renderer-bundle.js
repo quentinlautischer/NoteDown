@@ -24576,25 +24576,21 @@
 	}
 
 	function findNextCardWithHighEnoughRank(state) {
-	    var numFlashcardsInFolder = state.flashcards[state.folderIndex].flashcards.length;
+	    var numFlashcardsInFolder = state.flashcards[state.flashcardFolderIndex].flashcards.length;
 
 	    var res = findNextInRange(state, state.currentIndex + 1, numFlashcardsInFolder);
 	    if (res !== null) {
 	        return res;
 	    }
 
-	    showMediumDifficultyCards: {
-	        $set: !state.showMediumDifficultyCards;
-	    }
+	    state = (0, _immutabilityHelper2.default)(state, { showMediumDifficultyCards: { $set: !state.showMediumDifficultyCards } });
 	    var res = findNextInRange(state, 0, numFlashcardsInFolder);
 	    if (res !== null) {
 	        return res;
 	    }
 
 	    if (!state.showMediumDifficultyCards) {
-	        showMediumDifficultyCards: {
-	            $set: !state.showMediumDifficultyCards;
-	        }
+	        state = (0, _immutabilityHelper2.default)(state, { showMediumDifficultyCards: { $set: !state.showMediumDifficultyCards } });
 	        var res = findNextInRange(state, 0, state.currentIndex + 1);
 	        if (res !== null) {
 	            return res;
@@ -24668,7 +24664,7 @@
 	    flashcards: [],
 	    flashcardFolderIndex: 0,
 	    currentIndex: 0,
-	    showMediumDifficultyCards: false
+	    showMediumDifficultyCards: true
 	};
 
 	var flashcardReducer = (0, _reducerUtilities2.default)(initial_state, {
