@@ -28,9 +28,12 @@ class FlashcardsMenuScene extends Component {
         this.props.navigator.push({
             title: 'FlashcardsViewScene',
             component: FlashcardViewScene,
-            passProps: this.props,
+            passProps: {
+                ...this.props,
+                currentIndex: this.context.store.getState().flashcards.currentIndex,
+            },
             onBack: this.onBack.bind(this),
-            backIconName: 'arrow-left',
+            backIconName: 'arrow-left'
         });
     }
 

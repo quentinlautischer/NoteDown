@@ -19,14 +19,31 @@ import FlashcardBack from '../components/FlashcardBack';
 var FC_NAV_REF = 'fc_nav';
 
 class FlashcardViewScene extends Component {
+    constructor(props) {
+        super(props);
+        console.log('currentIndex ' + this.props.currentIndex);
+        this.state = {
+            currentIndex: this.props.currentIndex
+        }
+
+        this.storeDidUpdate = this.storeDidUpdate.bind(this);
+    }
+
+    storeDidUpdate() {
+        this.setState({
+            currentIndex: this.context.store.getState().flashcards.currentIndex
+        });
+    }
 
     componentDidMount() {
+        this.unsubscribe = this.context.store.subscribe( this.storeDidUpdate );
         Orientation.lockToLandscape(); //this will lock the view to Landscape
     }
 
     componentWillUnmount() {
         Orientation.unlockAllOrientations();
         this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: 0});
+        this.unsubscribe();
     }
 
     onSwipeLeft(gestureState) {
@@ -120,7 +137,7 @@ class FlashcardViewScene extends Component {
         if (state.currentIndex < state.flashcards[state.flashcardFolderIndex].flashcards.length - 1) {
             this.cardTransition();
         }
-        console.log("STATE AFTER STORE: " + JSON.stringify(this.context.store.getState().flashcards, null, 2));
+        // console.log("STATE AFTER STORE: " + JSON.stringify(this.context.store.getState().flashcards, null, 2));
     }
 
     render() {
@@ -129,11 +146,14 @@ class FlashcardViewScene extends Component {
             directionalOffsetThreshold: 80
         };
 
-        console.log('curr idx: ' + this.context.store.getState().flashcards.currentIndex);
-        if (this.context.store.getState().flashcards.currentIndex === -1) {
+        if (this.state.currentIndex === -1) {
             // out of flashcard to show
             return(
-                <View><Text>Folder complete!</Text></View>
+                <View style={styles.emptyMsg}>
+                    <Text style={styles.emptyMsgText}>
+                        Folder complete!
+                    </Text>
+                </View>
             )
         } else {
             return(
@@ -191,6 +211,16 @@ var styles = StyleSheet.create({
         flex:1,
         backgroundColor: colors.PRIMARY1,
         marginTop:40
+    },
+    emptyMsg: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    emptyMsgText: {
+        color: colors.DARK,
+        textAlign: 'center',
+        fontSize: 22
     }
 });
 
