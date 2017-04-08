@@ -24378,6 +24378,40 @@
 	  return action.notes;
 	}
 
+	function updateFlashcardRanksInNotes(state, action) {
+	  var newNotes = state.notes;
+	  var folderIndex = action.flashcards.index;
+	  var flashcardList = action.flashcards.flashcards;
+	  var folderPages = state.folders[folderIndex].pages;
+
+	  var newPages = []; // will replace old pages after updates
+	  folderPages.forEach(function (page) {
+	    var newPageContent = page.content;
+	    flashcardList.forEach(function (card) {
+	      var hintsRegEx = card.hints.join('\\|'); // escape | bc it means 'or' in regex
+	      var backRegEx = card.back.join('\\|');
+	      var hints = card.hints.join('|');
+	      var back = card.back.join('|');
+	      var replaceMe = '{' + card.front + '\\|rank:[123]}\\s{' + hintsRegEx + '}\\s{' + backRegEx + '}';
+	      var replacePatt = new RegExp(replaceMe);
+	      var replaceBy = '{' + card.front + '|rank:' + card.rank + '}\n{' + hints + '}\n{' + back + '}';
+
+	      newPageContent = newPageContent.replace(replacePatt, replaceBy);
+	    });
+	    newPages.push({
+	      content: newPageContent,
+	      _id: page._id,
+	      images: page.images
+	    });
+	  });
+
+	  return (0, _immutabilityHelper2.default)(state, {
+	    folders: _defineProperty({}, folderIndex, {
+	      pages: { $set: newPages }
+	    })
+	  });
+	}
+
 	function addFolder(state, action) {
 	  console.log('adding folder: ' + action.folder);
 	  return (0, _immutabilityHelper2.default)(state, { folders: { $push: [action.folder] } });
@@ -24415,7 +24449,7 @@
 	    })
 	  });
 	  var time2 = new Date().getTime();
-	  console.log('Update Settting new page content: ' + (time2 - time1) + ' ms or ' + (time2 - time1) / 1000 + ' seconds');
+	  console.log('Update Setting new page content: ' + (time2 - time1) + ' ms or ' + (time2 - time1) / 1000 + ' seconds');
 	  return state;
 	}
 
@@ -24454,7 +24488,8 @@
 	  'DELETE_PAGE': deletePage,
 	  'PAGE_CONTENT_CHANGE': pageContentChange,
 	  'UPDATE_PAGE_SAVED_CONTENT': updatePageSavedContent,
-	  'ADD_PHOTO': addPhoto
+	  'ADD_PHOTO': addPhoto,
+	  'SAVE_CARDS': updateFlashcardRanksInNotes
 	});
 
 	exports.default = notesReducer;

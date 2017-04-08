@@ -28,6 +28,11 @@ class FlashcardViewScene extends Component {
     componentWillUnmount() {
         Orientation.unlockAllOrientations();
         this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: 0});
+
+        var state = this.context.store.getState().flashcards;
+        this.context.store.dispatch({type: 'SAVE_CARDS', flashcards: state.flashcards[state.flashcardFolderIndex]});
+
+        console.log("AFTER RANK APPLIED: " + JSON.stringify(this.context.store.getState().flashcards, null, 2));
     }
 
     onSwipeLeft(gestureState) {
@@ -130,7 +135,6 @@ class FlashcardViewScene extends Component {
         if (state.currentIndex < state.flashcards[state.flashcardFolderIndex].flashcards.length - 1) {
             this.cardTransition();
         }
-        console.log("AFTER RANK APPLIED: " + JSON.stringify(this.context.store.getState().flashcards, null, 2));
     }
 
     render() {
