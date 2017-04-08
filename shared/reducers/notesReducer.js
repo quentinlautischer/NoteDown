@@ -52,7 +52,7 @@ function pageContentChange(state, action){
         }
       }
     }
-  }); 
+  });
   var time2 = new Date().getTime();
   console.log(`Update Settting new page content: ${time2-time1} ms or ${(time2-time1) / 1000} seconds`);
   return state;

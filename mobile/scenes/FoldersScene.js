@@ -69,8 +69,8 @@ class FoldersScene extends Component {
 
     onPress() {
         var state = this.context.store.getState();
-        if (state.flashcards.flashcardFolders.folders[state.state.folderIndex] // if this doesn't exist the next part of the condition causes an error
-                && state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards.length > 0) {
+        if (state.flashcards.flashcards[state.state.folderIndex] // if this doesn't exist the next part of the condition causes an error
+                && state.flashcards.flashcards[state.state.folderIndex].flashcards.length > 0) {
             this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
             this.props.navigator.push({
                 component: FlashcardViewScene,

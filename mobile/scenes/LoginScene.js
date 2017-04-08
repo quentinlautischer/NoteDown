@@ -55,7 +55,7 @@ class LoginScene extends Component {
 
             // recieve the user's data (to populate their folders)
             } else if (data.event === 'request-pull-data-response') {
-                console.log("Mobile client pulled data: ", data);
+                // console.log("Mobile client pulled data: ", data);
                 if (data.data.result) {
                     this.context.store.dispatch({type: 'SET_NOTES', notes: data.data.notes});
                     if (this.context.store.getState().state.mode === 'login') {
@@ -116,7 +116,8 @@ class LoginScene extends Component {
     updateFlashcards() {
         var state = this.context.store.getState();
         var folders = shared.extractFlashcardsInFolders(state.notes.folders);
-        this.context.store.dispatch({type: 'SET_FLASHCARD_FOLDERS', flashcardFolders: folders});
+        console.log('EXCTRACTED ' + JSON.stringify(folders, null, 2));
+        this.context.store.dispatch({type: 'SET_FLASHCARDS', flashcards: folders.flashcards});
     }
 
     clearText() {
@@ -163,7 +164,7 @@ class LoginScene extends Component {
 
         this.context.store.dispatch({type: 'SET_USER', userid: null});
         this.context.store.dispatch({type: 'SET_NOTES', notes: null});
-        this.context.store.dispatch({type: 'SET_FLASHCARD_FOLDERS', notes: null});
+        this.context.store.dispatch({type: 'SET_FLASHCARDS', flashcards: null});
 
         this.refs[USERNAME_REF].clearText();
         this.refs[PASSWORD_REF].clearText();

@@ -18413,10 +18413,10 @@
 	 */
 
 	function getUnboundedScrollPosition(scrollable) {
-	  if (scrollable === window) {
+	  if (scrollable.Window && scrollable instanceof scrollable.Window) {
 	    return {
-	      x: window.pageXOffset || document.documentElement.scrollLeft,
-	      y: window.pageYOffset || document.documentElement.scrollTop
+	      x: scrollable.pageXOffset || scrollable.document.documentElement.scrollLeft,
+	      y: scrollable.pageYOffset || scrollable.document.documentElement.scrollTop
 	    };
 	  }
 	  return {
@@ -19164,7 +19164,9 @@
 	 * @return {boolean} Whether or not the object is a DOM node.
 	 */
 	function isNode(object) {
-	  return !!(object && (typeof Node === 'function' ? object instanceof Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
+	  var doc = object ? object.ownerDocument || object : document;
+	  var defaultView = doc.defaultView || window;
+	  return !!(object && (typeof defaultView.Node === 'function' ? object instanceof defaultView.Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
 	}
 
 	module.exports = isNode;
@@ -19194,15 +19196,19 @@
 	 *
 	 * The activeElement will be null only if the document or document body is not
 	 * yet defined.
+	 *
+	 * @param {?DOMDocument} doc Defaults to current document.
+	 * @return {?DOMElement}
 	 */
-	function getActiveElement() /*?DOMElement*/{
-	  if (typeof document === 'undefined') {
+	function getActiveElement(doc) /*?DOMElement*/{
+	  doc = doc || (typeof document !== 'undefined' ? document : undefined);
+	  if (typeof doc === 'undefined') {
 	    return null;
 	  }
 	  try {
-	    return document.activeElement || document.body;
+	    return doc.activeElement || doc.body;
 	  } catch (e) {
-	    return document.body;
+	    return doc.body;
 	  }
 	}
 
@@ -24524,6 +24530,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 	function nextFlashcard(state, action) {
 	  if (state.currentIndex < state.flashcards.length) {
 	    return Object.assign({}, state, { currentIndex: state.currentIndex + 1 });
@@ -24539,7 +24547,6 @@
 	}
 
 	function setFlashcards(state, action) {
-	  console.log('flashcards set: ' + action.flashcards);
 	  return Object.assign({}, state, { flashcards: action.flashcards });
 	}
 
@@ -24547,17 +24554,30 @@
 	  return Object.assign({}, state, { currentIndex: action.currentIndex });
 	}
 
-	function setFlashcardFolders(state, action) {
-	  return Object.assign({}, state, { flashcardFolders: action.flashcardFolders });
+	function selectFlashcardFolder(state, action) {
+	  return Object.assign({}, state, { flashcardFolderIndex: action.flashcardFolderIndex });
 	}
 
 	function setFlashcardStep(state, action) {
 	  return Object.assign({}, state, { step: action.step });
 	}
 
+	function rankFlashcard(state, action) {
+	  var folder = state.flashcardFolderIndex;
+	  var card = state.currentIndex;
+	  console.log('reducer applying rank ' + action.value + ' to (' + folder + ',' + card + ')');
+	  return (0, _immutabilityHelper2.default)(state, {
+	    flashcards: _defineProperty({}, folder, {
+	      flashcards: _defineProperty({}, card, {
+	        rank: { $set: action.value }
+	      })
+	    })
+	  });
+	}
+
 	var initial_state = {
 	  flashcards: [],
-	  flashcardFolders: [],
+	  flashcardFolderIndex: 0,
 	  currentIndex: 0
 	};
 
@@ -24565,9 +24585,10 @@
 	  'NEXT_FLASHCARD': nextFlashcard,
 	  'PREV_FLASHCARD': prevFlashcard,
 	  'SET_FLASHCARDS': setFlashcards,
-	  'SET_FLASHCARD_FOLDERS': setFlashcardFolders,
+	  'SELECT_FLASHCARD_FOLDER': selectFlashcardFolder,
 	  'SET_FLASHCARD_INDEX': setFlashcardIndex,
-	  'SET_FLASHCARD_STEP': setFlashcardStep
+	  'SET_FLASHCARD_STEP': setFlashcardStep,
+	  'RANK_FLASHCARD': rankFlashcard
 	});
 
 	exports.default = flashcardReducer;
@@ -25979,7 +26000,7 @@
 	  arr.forEach(function (line) {
 	    lines += '<p id=' + name + i++ + '>' + line + '</p>';
 	  });
-	  console.log(lines);
+	  // console.log(lines);
 	  return lines;
 	}
 
@@ -25993,8 +26014,8 @@
 	}
 
 	function get_flashcard(blocks) {
-	  console.log("getting flashcards");
 	  var patt = /^\{(.+)\}$/;
+	  var rank_patt = /\{(.+?)\|rank:([0-9]+)\}/i; //For rank
 	  var match;
 	  var flashcards = [];
 
@@ -26007,14 +26028,24 @@
 	          match.push(patt.exec(content[l + m]));
 	        }
 	        if (match[0] != null && match[1] != null && match[2] != null) {
+	          var question;
+	          var myrank = 2;
+	          var match_rank = rank_patt.exec(match[0]);
+	          if (match_rank != null) {
+	            question = match_rank[1];
+	            myrank = parseInt(match_rank[2]);
+	            if (myrank < 1 || myrank > 3) {
+	              myrank = 2;
+	            }
+	          } else {
+	            question = match[0][1];
+	          }
 	          var raw1 = { content: content.slice(0, l) };
-	          //   console.log(`Flashcard front: ${match[0][1]}`);
-	          //   console.log(`Flashcard hint: ${ match[2][1].split('|')}`);
-	          //   console.log(`Flashcard back: ${match[1][1].split('|')}`);
 	          flashcards.push({
-	            front: match[0][1],
+	            front: question,
 	            back: match[2][1].split('|'),
-	            hints: match[1][1].split('|')
+	            hints: match[1][1].split('|'),
+	            rank: myrank
 	          });
 	          var raw2 = { content: content.slice(l + 3, content.length) };
 
@@ -26025,24 +26056,23 @@
 	      }
 	    }
 	  }
-
 	  return flashcards;
 	}
 
 	function extractFlashcardsInFolders(folders) {
-	  var flashcardFolders = [];
+	  var flashcards = [];
 	  for (var i = 0; i < folders.length; i++) {
 	    var folder = folders[i];
 	    var currFolderFlashcards = extractFlashcards(folder.pages);
 	    if (currFolderFlashcards.length > 0) {
-	      flashcardFolders.push({
+	      flashcards.push({
 	        index: i,
 	        name: folder.name,
 	        flashcards: currFolderFlashcards
 	      });
 	    }
 	  }
-	  return { folders: flashcardFolders };
+	  return { flashcards: flashcards };
 	}
 
 	function extractFlashcards(pages) {
@@ -64350,6 +64380,10 @@
 
 	var _keys2 = _interopRequireDefault(_keys);
 
+	var _objectWithoutProperties2 = __webpack_require__(584);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
 	var _assign = __webpack_require__(580);
 
 	var _assign2 = _interopRequireDefault(_assign);
@@ -64416,12 +64450,17 @@
 	var state = {};
 
 	function forEachListener(props, iteratee) {
-	  (0, _keys2.default)(props).forEach(function (name) {
+	  var children = props.children,
+	      target = props.target,
+	      eventProps = (0, _objectWithoutProperties3.default)(props, ['children', 'target']);
+
+
+	  (0, _keys2.default)(eventProps).forEach(function (name) {
 	    if (name.substring(0, 2) !== 'on') {
 	      return;
 	    }
 
-	    var prop = props[name];
+	    var prop = eventProps[name];
 	    var type = typeof prop === 'undefined' ? 'undefined' : (0, _typeof3.default)(prop);
 	    var isObject = type === 'object';
 	    var isFunction = type === 'function';

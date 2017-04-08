@@ -920,7 +920,7 @@ function getContentLines(arr, name) {
     arr.forEach(function(line) {
         lines += '<p id=' + name + i++ + '>' + line + '</p>';
     });
-    console.log(lines);
+    // console.log(lines);
     return lines;
 }
 
@@ -948,8 +948,8 @@ function makeFlashcard(front, back, hints, rank) {
 
 
 function get_flashcard(blocks) {
-  console.log("getting flashcards");
-  var patt = /^\{(.+)\}$/
+  var patt = /^\{(.+)\}$/;
+  var rank_patt = /\{(.+?)\|rank:([0-9]+)\}/i; //For rank
   var match;
   var flashcards = [];
 
@@ -960,14 +960,22 @@ function get_flashcard(blocks) {
         match = [];
         for (var m = 0; m < 3; m++) { match.push(patt.exec(content[l+m])); }
         if (match[0] != null && match[1] != null && match[2] != null) {
+          var question;
+          var myrank = 2;
+          var match_rank = rank_patt.exec(match[0]);
+          if (match_rank != null) {
+            question = match_rank[1];
+            myrank = parseInt(match_rank[2]);
+            if (myrank < 1 || myrank > 3) { myrank = 2; }
+          } else {
+            question = match[0][1];
+          }
           var raw1 = {content:content.slice(0,l)};
-        //   console.log(`Flashcard front: ${match[0][1]}`);
-        //   console.log(`Flashcard hint: ${ match[2][1].split('|')}`);
-        //   console.log(`Flashcard back: ${match[1][1].split('|')}`);
           flashcards.push({
-            front: match[0][1],
+            front: question,
             back: match[2][1].split('|'),
-            hints: match[1][1].split('|')
+            hints: match[1][1].split('|'),
+            rank: myrank
           });
           var raw2 = {content:content.slice(l+3,content.length)};
 
@@ -978,24 +986,23 @@ function get_flashcard(blocks) {
       }
     }
   }
-
   return flashcards;
 }
 
 function extractFlashcardsInFolders(folders) {
-    var flashcardFolders = [];
+    var flashcards = [];
     for(var i = 0; i < folders.length; i++) {
         var folder = folders[i];
         var currFolderFlashcards = extractFlashcards(folder.pages);
         if (currFolderFlashcards.length > 0) {
-            flashcardFolders.push({
+            flashcards.push({
                 index: i,
                 name: folder.name,
                 flashcards: currFolderFlashcards
             });
         }
     }
-    return { folders: flashcardFolders };
+    return { flashcards };
 }
 
 function extractFlashcards(pages) {

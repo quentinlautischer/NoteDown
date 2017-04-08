@@ -19,7 +19,7 @@ class FlashcardsMenuScene extends Component {
         super(props);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSource: ds.cloneWithRows(this.props.flashcardFolders)
+            dataSource: ds.cloneWithRows(this.props.flashcards)
         };
     }
 
@@ -33,8 +33,8 @@ class FlashcardsMenuScene extends Component {
     }
 
     selectFolder(rowID) {
-        var index = parseInt(rowID.replace('FOLDER', ''))
-        this.context.store.dispatch({type: 'SELECT_FOLDER', index: index});
+        var index = parseInt(rowID.replace('FOLDER', ''));
+        this.context.store.dispatch({type: 'SELECT_FLASHCARD_FOLDER', flashcardFolderIndex: index});
         this._navigate();
     }
 

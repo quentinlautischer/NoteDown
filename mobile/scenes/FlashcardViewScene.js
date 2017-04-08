@@ -23,7 +23,6 @@ class FlashcardViewScene extends Component {
     componentDidMount() {
         Orientation.lockToLandscape(); //this will lock the view to Landscape
         this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: 0});
-        console.log('FCs: ' + JSON.stringify(this.context.store.getState().flashcards));
     }
 
     componentWillUnmount() {
@@ -32,9 +31,9 @@ class FlashcardViewScene extends Component {
     }
 
     onSwipeLeft(gestureState) {
-        var state = this.context.store.getState();
+        var state = this.context.store.getState().flashcards;
         // go to next page
-        if (state.flashcards.currentIndex < state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards.length - 1) {
+        if (state.currentIndex < state.flashcards[state.flashcardFolderIndex].flashcards.length - 1) {
             this.cardTransition();
         }
     }
@@ -63,25 +62,21 @@ class FlashcardViewScene extends Component {
      * Flips back to front then performs the callback
      */
     flipToFrontAndTransition(cb) {
-        var state = this.context.store.getState();
-        var flashcards = state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards;
+        var state = this.context.store.getState().flashcards;
+        var flashcards = state.flashcards[state.flashcardFolderIndex].flashcards;
 
         this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
         this.refs[FC_NAV_REF].replaceAtIndex(
-            { index: 0, content: flashcards[state.flashcards.currentIndex]},
+            { index: 0 },
             -1,
             cb
         );
     }
 
     goToNext() {
-        var state = this.context.store.getState();
-        var flashcards = state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards;
-        this.refs[FC_NAV_REF].push({
-            index: 0,
-            content: flashcards[state.flashcards.currentIndex + 1].front
-        });
-        this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: state.flashcards.currentIndex + 1});
+        var state = this.context.store.getState().flashcards;
+        this.refs[FC_NAV_REF].push({ index: 0 });
+        this.context.store.dispatch({type: 'SET_FLASHCARD_INDEX', currentIndex: state.currentIndex + 1});
     }
 
     goToPrevious() {
@@ -94,9 +89,7 @@ class FlashcardViewScene extends Component {
     onSwipeUp(gestureState) {
         if (this.context.store.getState().state.mode === 'flashcardFront') {
             this.context.store.dispatch({type: 'FLASHCARD_BACK_MODE'});
-            this.refs[FC_NAV_REF].push({
-                index: 2
-            });
+            this.refs[FC_NAV_REF].push({ index: 2 });
         }
         else if (this.context.store.getState().state.mode === 'flashcardHints') {
             this.flipToFront();
@@ -109,9 +102,7 @@ class FlashcardViewScene extends Component {
         }
         else if (this.context.store.getState().state.mode === 'flashcardFront') {
             this.context.store.dispatch({type: 'FLASHCARD_HINTS_MODE'});
-            this.refs[FC_NAV_REF].push({
-                index: 1
-            });
+            this.refs[FC_NAV_REF].push({ index: 1 });
         }
     }
 
@@ -133,11 +124,13 @@ class FlashcardViewScene extends Component {
         )
     }
 
-    saveRank() {
-        var state = this.context.store.getState();
-        if (state.flashcards.currentIndex < state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards.length - 1) {
+    saveRank(rank) {
+        var state = this.context.store.getState().flashcards;
+        this.context.store.dispatch({type: "RANK_FLASHCARD", value: rank});
+        if (state.currentIndex < state.flashcards[state.flashcardFolderIndex].flashcards.length - 1) {
             this.cardTransition();
         }
+        console.log("AFTER RANK APPLIED: " + JSON.stringify(this.context.store.getState().flashcards, null, 2));
     }
 
     render() {
@@ -162,20 +155,20 @@ class FlashcardViewScene extends Component {
                         if (route.index === 0) { // front
                             return <FlashcardFront
                                 navigator={navigator}
-                                content={this.context.store.getState().flashcards.flashcardFolders
-                                    .folders[this.context.store.getState().state.folderIndex]
+                                content={this.context.store.getState().flashcards
+                                    .flashcards[this.context.store.getState().flashcards.flashcardFolderIndex]
                                     .flashcards[this.context.store.getState().flashcards.currentIndex].front} />
                         } else if (route.index === 1) { // hints
                             return <FlashcardBack
                                 navigator={navigator}
-                                content={this.context.store.getState().flashcards.flashcardFolders
-                                    .folders[this.context.store.getState().state.folderIndex]
+                                content={this.context.store.getState().flashcards
+                                    .flashcards[this.context.store.getState().flashcards.flashcardFolderIndex]
                                     .flashcards[this.context.store.getState().flashcards.currentIndex].hints} />
                         } else if (route.index === 2) { // back
                             return <FlashcardBack
                                 navigator={navigator}
-                                content={this.context.store.getState().flashcards.flashcardFolders
-                                    .folders[this.context.store.getState().state.folderIndex]
+                                content={this.context.store.getState().flashcards
+                                    .flashcards[this.context.store.getState().flashcards.flashcardFolderIndex]
                                     .flashcards[this.context.store.getState().flashcards.currentIndex].back}
                                 onRank={this.onRank.bind(this)} />
                         }

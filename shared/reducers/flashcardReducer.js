@@ -17,7 +17,6 @@ function prevFlashcard(state, action) {
 }
 
 function setFlashcards(state, action) {
-  console.log(`flashcards set: ${action.flashcards}`)
   return Object.assign({}, state, {flashcards: action.flashcards});
 }
 
@@ -25,17 +24,34 @@ function setFlashcardIndex(state, action) {
   return Object.assign({}, state, {currentIndex: action.currentIndex});
 }
 
-function setFlashcardFolders(state, action) {
-  return Object.assign({}, state, {flashcardFolders: action.flashcardFolders});
+function selectFlashcardFolder(state, action) {
+  return Object.assign({}, state, {flashcardFolderIndex: action.flashcardFolderIndex});
 }
 
 function setFlashcardStep(state, action) {
   return Object.assign({}, state, {step: action.step});
 }
 
+function rankFlashcard(state, action) {
+    const folder = state.flashcardFolderIndex;
+    const card = state.currentIndex;
+    console.log(`reducer applying rank ${action.value} to (${folder},${card})`);
+  return update(state, {
+    flashcards: {
+      [folder]: {
+        flashcards: {
+          [card]: {
+            rank: {$set : action.value}
+          }
+        }
+      }
+    }
+  });
+}
+
 const initial_state = {
   flashcards: [],
-  flashcardFolders: [],
+  flashcardFolderIndex: 0,
   currentIndex: 0
 }
 
@@ -43,9 +59,10 @@ const flashcardReducer = createReducer(initial_state, {
   'NEXT_FLASHCARD': nextFlashcard,
   'PREV_FLASHCARD': prevFlashcard,
   'SET_FLASHCARDS': setFlashcards,
-  'SET_FLASHCARD_FOLDERS': setFlashcardFolders,
+  'SELECT_FLASHCARD_FOLDER': selectFlashcardFolder,
   'SET_FLASHCARD_INDEX': setFlashcardIndex,
-  'SET_FLASHCARD_STEP': setFlashcardStep
+  'SET_FLASHCARD_STEP': setFlashcardStep,
+  'RANK_FLASHCARD': rankFlashcard
 });
 
 export default flashcardReducer;
