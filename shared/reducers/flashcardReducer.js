@@ -91,14 +91,12 @@ function rankFlashcard(state, action) {
 
 function mapFlashcardFolder(state, action) {
     for (var i = 0; i < state.flashcards.length; i++) {
-        console.log('FC: ' + JSON.stringify(state.flashcards[i], null, 2));
-        console.log('ACT: ' + action.notesFolder);
         if (state.flashcards[i].index === action.notesFolder) {
             return Object.assign({}, state, {flashcardFolderIndex: i});
         }
     }
-    // should never get here
-    return Object.assign({}, state, {flashcardFolderIndex: 0});
+    // no fcs for folder
+    return Object.assign({}, state, {flashcardFolderIndex: -1});
 }
 
 const initial_state = {
