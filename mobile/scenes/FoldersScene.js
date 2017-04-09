@@ -68,21 +68,57 @@ class FoldersScene extends Component {
     }
 
     onPress() {
-        var state = this.context.store.getState();
-        if (state.flashcards.flashcardFolders.folders[state.state.folderIndex] // if this doesn't exist the next part of the condition causes an error
-                && state.flashcards.flashcardFolders.folders[state.state.folderIndex].flashcards.length > 0) {
-            this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
-            this.props.navigator.push({
-                component: FlashcardViewScene,
-                passProps: this.props
-            })
-        } else {
-            let toast = Toast.show('No flashcards for this folder', {
+        var fcExist = this.updateStateForFCs();
+        if (!fcExist) {
+            let toast = Toast.show('No flashcards to show for this folder', {
                 duration: 1400, // ms
                 position: 0, // middle of screen
                 shadow: true
             });
+        } else { // at least 1 fc to show
+            this.props.navigator.push({
+                component: FlashcardViewScene,
+                passProps: {
+                    ...this.props,
+                    currentIndex: this.context.store.getState().flashcards.currentIndex
+                },
+                onPress: this.onPressFlashcards.bind(this),
+                rightIconName: 'refresh'
+            });
+            this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
         }
+    }
+
+    onPressFlashcards() {
+        Alert.alert(
+            'Reset Ranks',
+            'Revert flashcard ranks to default for this folder?',
+            [
+                {text: 'Yes', onPress: () => {
+                    this.context.store.dispatch({type: 'REVERT_RANKS'});
+                    var state = this.context.store.getState().flashcards;
+                    this.context.store.dispatch({type: 'SAVE_CARDS', flashcards: state.flashcards[state.flashcardFolderIndex]});
+                    this.requestPushData();
+                    this.props.navigator.pop();
+                }},
+                {text: 'No', onPress: () => {}},
+            ],
+            { cancelable: false }
+        )
+    }
+
+    requestPushData() {
+        var state = this.context.store.getState();
+        const data = {userid: state.state.userid, notes: state.notes, force_push: false};
+        this.props.socket.emit('request-push-data', data);
+    }
+
+    updateStateForFCs() {
+        this.context.store.dispatch({type: 'MAP_FLASHCARD_FOLDER', notesFolder: this.context.store.getState().state.folderIndex});
+        if (this.context.store.getState().flashcards.flashcardFolderIndex === -1) return false;
+
+        this.context.store.dispatch({type: 'FIND_FIRST_FLASHCARD'});
+        return true;
     }
 
     onBack() {

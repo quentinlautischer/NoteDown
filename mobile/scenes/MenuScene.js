@@ -21,7 +21,7 @@ class MenuScene extends Component {
             title: name,
             component: scene,
             passProps: {
-                flashcardFolders: this.context.store.getState().flashcards.flashcardFolders.folders,
+                flashcards: this.context.store.getState().flashcards.flashcards,
                 socket: this.props.socket
             }
         });
