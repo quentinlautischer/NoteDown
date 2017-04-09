@@ -137,17 +137,23 @@ class DualmodeEditor extends React.Component {
   }
 
   drop(e) {
+    // Here we screen for Photo's CodeMirror will screen for text
     e.preventDefault();
 
     var path = "";
+    var file = null;
     try {
       for (let f of e.dataTransfer.files) {
         console.log('File(s) you dragged here: ', f.path)
         path = f.path;
+        file = f;
       }  
     } catch (e) {
       console.log('error with dropped file');
     }
+    console.log(`File type: ${file.type}`);
+    if (file.type == 'image/png' || file.type == 'image/jpeg')
+    {} else {return false;}
 
     this.setState({
       fileDragDialogOpen: true,

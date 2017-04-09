@@ -53,7 +53,7 @@ function saveas(store) {
     }
     // fileName is a string that contains the path and filename created in the save file dialog.
     store.dispatch({type: 'SET_QUICK_FILEPATH', path: fileName});  
-    fs.writeFile(fileName, store.getState().notes.folders[0].pages[0].content, function (err) {
+    fs.writeFile(fileName, store.getState().notes.folders[store.getState().state.folderIndex].pages[store.getState().state.pageIndex].content, function (err) {
       if(err){
         store.dispatch({type: 'SHOW_SNACKBAR', msg: "An error occurred while saving file"});
       }        

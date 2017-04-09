@@ -117,7 +117,7 @@ class DialogFileDrag extends React.Component {
       <MuiThemeProvider>
         <div className="dialog">
           <Dialog
-            title="File Drag Dialog"
+            title="Insert Photo"
             actions={actions}
             modal={false}
             open={this.props.open}
