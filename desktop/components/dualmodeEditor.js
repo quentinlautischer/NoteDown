@@ -34,9 +34,22 @@ class DualmodeEditor extends React.Component {
     this.storeDidUpdate = this.storeDidUpdate.bind(this);
     this.drop = this.drop.bind(this);
     this.parse = this.parse.bind(this);
+    this.insertShortcutText = this.insertShortcutText.bind(this);
 
     this.codeMirror = null;
     this.unsubscribe = null;
+  }
+
+  insertShortcutText(text, isBlock) {
+    console.log(this.refs)
+    console.log('stuff');
+    var cursorPosition = this.refs.editor.getCodeMirror().getCursor();
+    console.log(`Cursor: ${cursorPosition}`);
+    console.log(this.refs.editor.getCodeMirror().getCursor());
+
+    if (isBlock) 
+      text = '\n' + text; // put block elements on new line
+    this.refs.editor.getCodeMirror().replaceRange(text, cursorPosition);
   }
 
   componentDidMount(){
@@ -56,6 +69,7 @@ class DualmodeEditor extends React.Component {
   }
 
   handleCodeMirrorChange(codeMirrorInstance, changeObj) {
+
     this.updateContent(codeMirrorInstance);
   }
 
@@ -146,8 +160,10 @@ class DualmodeEditor extends React.Component {
   render() {
     var options = {
       lineNumbers: true,
+      lineWrapping: true,
+      pollInterval: 90,
       mode: 'markdown',
-      theme: 'duotone-light'
+      theme: `base16-${this.props.store.getState().editor.inputColorMode}`
     };
     return (
       <div className="dualMode-container"
@@ -156,13 +172,16 @@ class DualmodeEditor extends React.Component {
         onDragEnd={this.preventDefault}
         onDrop={this.drop}
       >
-        <CodeMirror 
-          ref="editor"
-          className="markdown-input-editor" 
-          value={this.getContent()} 
-          onChange={this.handleCodeMirrorChange}
-          options={options}
-        />
+        <div className="input-container">
+          <FormatToolbar hidden={!this.props.store.getState().editor.formatBar} insertShortcutText={(text, isBlock) => this.insertShortcutText(text, isBlock)}/>
+          <CodeMirror 
+            ref="editor"
+            className="markdown-input-editor" 
+            value={this.getContent()} 
+            onChange={this.handleCodeMirrorChange}
+            options={options}
+          />
+        </div>
 
         <div className="render-container">
           <div id="renderField" className="markdown-output-renderer" 

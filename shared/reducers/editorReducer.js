@@ -18,8 +18,24 @@ function autosaveEnabled(state, action) {
   return Object.assign({}, state, {autosave_enabled: action.value});
 }
 
+function toggleFormatBar(state, action) {
+  return Object.assign({}, state, {formatBar: !state.formatBar})
+}
+
+function inputColorMode(state, action) {
+  if (action.color == 'dark') {
+    return Object.assign({}, state, {inputColorMode: 'dark'})
+  } else if (action.color == 'light') {
+    return Object.assign({}, state, {inputColorMode: 'light'})
+  } else {
+     return Object.assign({}, state, {inputColorMode: 'light'})
+  }
+}
+
 const initial_state = {
   mode: 'quickmode',
+  formatBar: true,
+  inputColorMode: 'dark',
   cursor_position: 0,
   autosave_enabled: true
 }
@@ -28,7 +44,9 @@ const editorReducer = createReducer(initial_state, {
   'EDITOR_MODE_QUICKMODE': editorModeQuickmode,
   'EDITOR_MODE_CLOUD': editorModeCloud,
   'CURSOR_CHANGE': cursorChange,
-  'AUTOSAVE_ENABLED': autosaveEnabled
+  'AUTOSAVE_ENABLED': autosaveEnabled,
+  'TOGGLE_FORMAT_BAR': toggleFormatBar,
+  'INPUT_COLOR_MODE': inputColorMode,
 });
 
 export default editorReducer;

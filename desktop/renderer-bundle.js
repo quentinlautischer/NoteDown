@@ -263,32 +263,6 @@
 	              store: store
 	            })
 	          );
-	        case 'flashcard':
-	          return _react2.default.createElement(
-	            'div',
-	            null,
-	            _react2.default.createElement(_menubarTile2.default, { store: store }),
-	            _react2.default.createElement(_flashcardViewer2.default, { store: store }),
-	            _react2.default.createElement(_Snackbar2.default, {
-	              open: store.getState().state.snackbar.open,
-	              message: store.getState().state.snackbar.msg,
-	              action: store.getState().state.snackbar.action,
-	              autoHideDuration: store.getState().state.snackbar.time,
-	              onRequestClose: function onRequestClose() {
-	                return store.dispatch({ type: 'CLOSE_SNACKBAR' });
-	              },
-	              onActionTouchTap: function onActionTouchTap() {
-	                return store.dispatch({ type: 'PHOTO_ALERT' });
-	              }
-	            }),
-	            _react2.default.createElement(_dialogContainer2.default, {
-	              open: store.getState().state.dialog_open,
-	              close: function close() {
-	                return store.dispatch({ type: 'DIALOG_CLOSE' });
-	              },
-	              store: store
-	            })
-	          );
 	        default:
 	          return _react2.default.createElement(
 	            'div',
@@ -24489,8 +24463,24 @@
 	  return Object.assign({}, state, { autosave_enabled: action.value });
 	}
 
+	function toggleFormatBar(state, action) {
+	  return Object.assign({}, state, { formatBar: !state.formatBar });
+	}
+
+	function inputColorMode(state, action) {
+	  if (action.color == 'dark') {
+	    return Object.assign({}, state, { inputColorMode: 'dark' });
+	  } else if (action.color == 'light') {
+	    return Object.assign({}, state, { inputColorMode: 'light' });
+	  } else {
+	    return Object.assign({}, state, { inputColorMode: 'light' });
+	  }
+	}
+
 	var initial_state = {
 	  mode: 'quickmode',
+	  formatBar: true,
+	  inputColorMode: 'dark',
 	  cursor_position: 0,
 	  autosave_enabled: true
 	};
@@ -24499,7 +24489,9 @@
 	  'EDITOR_MODE_QUICKMODE': editorModeQuickmode,
 	  'EDITOR_MODE_CLOUD': editorModeCloud,
 	  'CURSOR_CHANGE': cursorChange,
-	  'AUTOSAVE_ENABLED': autosaveEnabled
+	  'AUTOSAVE_ENABLED': autosaveEnabled,
+	  'TOGGLE_FORMAT_BAR': toggleFormatBar,
+	  'INPUT_COLOR_MODE': inputColorMode
 	});
 
 	exports.default = editorReducer;
@@ -24726,6 +24718,14 @@
 	  store.dispatch({ type: 'SHOW_SNACKBAR', msg: 'Pulling data from cloud' });
 	}
 
+	function toggleFormatBar(store) {
+	  store.dispatch({ type: 'TOGGLE_FORMAT_BAR' });
+	}
+
+	function inputColorMode(store, color) {
+	  store.dispatch({ type: 'INPUT_COLOR_MODE', color: color });
+	}
+
 	////////////////////////////////////////////////////////
 	/// Menubar Template Builder
 
@@ -24848,6 +24848,26 @@
 	  var viewMenu = {
 	    label: 'View',
 	    submenu: [{
+	      role: 'Toggle Format Bar',
+	      label: 'Toggle Format Bar',
+	      visible: is_editor(state),
+	      enabled: is_editor(state), // until I figure it out
+	      click: function click() {
+	        toggleFormatBar(store);
+	      }
+	    }, {
+	      role: 'Input Mode Light',
+	      label: 'Input Mode Light',
+	      click: function click() {
+	        inputColorMode(store, 'light');
+	      }
+	    }, {
+	      role: 'Input Mode Dark',
+	      label: 'Input Mode Dark',
+	      click: function click() {
+	        inputColorMode(store, 'dark');
+	      }
+	    }, {
 	      role: 'reload'
 	    }, {
 	      role: 'forcereload'
@@ -65211,6 +65231,7 @@
 	    _this.storeDidUpdate = _this.storeDidUpdate.bind(_this);
 	    _this.drop = _this.drop.bind(_this);
 	    _this.parse = _this.parse.bind(_this);
+	    _this.insertShortcutText = _this.insertShortcutText.bind(_this);
 
 	    _this.codeMirror = null;
 	    _this.unsubscribe = null;
@@ -65218,6 +65239,18 @@
 	  }
 
 	  _createClass(DualmodeEditor, [{
+	    key: 'insertShortcutText',
+	    value: function insertShortcutText(text, isBlock) {
+	      console.log(this.refs);
+	      console.log('stuff');
+	      var cursorPosition = this.refs.editor.getCodeMirror().getCursor();
+	      console.log('Cursor: ' + cursorPosition);
+	      console.log(this.refs.editor.getCodeMirror().getCursor());
+
+	      if (isBlock) text = '\n' + text; // put block elements on new line
+	      this.refs.editor.getCodeMirror().replaceRange(text, cursorPosition);
+	    }
+	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 
@@ -65239,6 +65272,7 @@
 	  }, {
 	    key: 'handleCodeMirrorChange',
 	    value: function handleCodeMirrorChange(codeMirrorInstance, changeObj) {
+
 	      this.updateContent(codeMirrorInstance);
 	    }
 	  }, {
@@ -65361,8 +65395,10 @@
 
 	      var options = {
 	        lineNumbers: true,
+	        lineWrapping: true,
+	        pollInterval: 90,
 	        mode: 'markdown',
-	        theme: 'duotone-light'
+	        theme: 'base16-' + this.props.store.getState().editor.inputColorMode
 	      };
 	      return _react2.default.createElement(
 	        'div',
@@ -65372,13 +65408,20 @@
 	          onDragEnd: this.preventDefault,
 	          onDrop: this.drop
 	        },
-	        _react2.default.createElement(CodeMirror, {
-	          ref: 'editor',
-	          className: 'markdown-input-editor',
-	          value: this.getContent(),
-	          onChange: this.handleCodeMirrorChange,
-	          options: options
-	        }),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'input-container' },
+	          _react2.default.createElement(_formatToolbar2.default, { hidden: !this.props.store.getState().editor.formatBar, insertShortcutText: function insertShortcutText(text, isBlock) {
+	              return _this2.insertShortcutText(text, isBlock);
+	            } }),
+	          _react2.default.createElement(CodeMirror, {
+	            ref: 'editor',
+	            className: 'markdown-input-editor',
+	            value: this.getContent(),
+	            onChange: this.handleCodeMirrorChange,
+	            options: options
+	          })
+	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'render-container' },
@@ -65587,7 +65630,8 @@
 	  }, {
 	    key: 'scrollTo',
 	    value: function scrollTo(ref, e) {
-	      ref.scrollIntoView();
+	      ref.parentNode.scrollTop = ref.offsetTop;
+	      // ref.scrollIntoView();
 	    }
 	  }, {
 	    key: 'changePage',
@@ -65792,6 +65836,11 @@
 	              'div',
 	              { className: 'toc-nav-content' },
 	              _react2.default.createElement(
+	                'span',
+	                { className: 'title' },
+	                'Table of Contents'
+	              ),
+	              _react2.default.createElement(
 	                'ul',
 	                null,
 	                this.array.map(this.renderTocItem, this)
@@ -65821,6 +65870,11 @@
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'toc-nav-content' },
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'title' },
+	                'Table of Pages'
+	              ),
 	              _react2.default.createElement(
 	                'ul',
 	                null,
@@ -67439,60 +67493,77 @@
 	  function FormatToolbar() {
 	    _classCallCheck(this, FormatToolbar);
 
-	    return _possibleConstructorReturn(this, (FormatToolbar.__proto__ || Object.getPrototypeOf(FormatToolbar)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (FormatToolbar.__proto__ || Object.getPrototypeOf(FormatToolbar)).call(this));
+
+	    _this.setHeader = _this.setHeader.bind(_this);
+	    _this.setParagraph = _this.setParagraph.bind(_this);
+	    _this.setBlockquotethis = _this.setBlockquote.bind(_this);
+	    _this.setBold = _this.setBold.bind(_this);
+	    _this.setItalic = _this.setItalic.bind(_this);
+	    _this.insertLink = _this.insertLink.bind(_this);
+	    _this.insertPhoto = _this.insertPhoto.bind(_this);
+	    _this.insertHorizontalRule = _this.insertHorizontalRule.bind(_this);
+	    _this.insertOrderedList = _this.insertOrderedList.bind(_this);
+	    _this.insertUnorderedList = _this.insertUnorderedList.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(FormatToolbar, [{
 	    key: 'setHeader',
 	    value: function setHeader(num) {
-	      document.execCommand('formatBlock', false, 'h' + num);
+	      var text = "";
+	      for (var i = 0; i < num; i++) {
+	        text += '#';
+	      }
+	      this.props.insertShortcutText(text, true);
 	    }
 	  }, {
 	    key: 'setParagraph',
 	    value: function setParagraph() {
-	      document.execCommand('formatBlock', false, 'p');
+	      this.props.insertShortcutText('p', true);
 	    }
 	  }, {
 	    key: 'setBlockquote',
 	    value: function setBlockquote() {
-	      document.execCommand('formatBlock', false, 'blockquote');
+	      this.props.insertShortcutText('blockquote', true);
 	    }
 	  }, {
 	    key: 'setBold',
 	    value: function setBold() {
-	      document.execCommand('bold', false, null);
+	      console.log("Bolding");
+	      this.props.insertShortcutText('bold', true);
 	    }
 	  }, {
 	    key: 'setItalic',
 	    value: function setItalic() {
-	      document.execCommand('italic', false, null);
+	      this.props.insertShortcutText('italic', true);
 	    }
 	  }, {
 	    key: 'insertLink',
 	    value: function insertLink() {
 	      url = prompt('Enter the link here: ', 'http:\/\/');
-	      document.execCommand('createlink', false, url);
+	      this.props.insertShortcutText('createlink', true);
 	    }
 	  }, {
 	    key: 'insertPhoto',
 	    value: function insertPhoto() {
 	      url = prompt('Enter the link here: ', 'http:\/\/');
-	      document.execCommand('insertimage', false, url);
+	      this.props.insertShortcutText('insertimage', true);
 	    }
 	  }, {
 	    key: 'insertHorizontalRule',
 	    value: function insertHorizontalRule() {
-	      document.execCommand('insertHorizontalRule', false, null);
+	      this.props.insertShortcutText('insertHorizontalRule', true);
 	    }
 	  }, {
 	    key: 'insertOrderedList',
 	    value: function insertOrderedList() {
-	      document.execCommand('insertOrderedList', false, null);
+	      this.props.insertShortcutText('insertOrderedList', true);
 	    }
 	  }, {
 	    key: 'insertUnorderedList',
 	    value: function insertUnorderedList() {
-	      document.execCommand('insertUnorderedList', false, null);
+	      this.props.insertShortcutText('insertUnorderedList', true);
 	    }
 
 	    //code, flashcards and tables.
@@ -67501,85 +67572,121 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'format-toolbar' },
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'bold', onClick: this.setBold },
-	          _react2.default.createElement('i', { className: 'fa fa-bold' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'italic', onClick: this.setBold },
-	          _react2.default.createElement('i', { className: 'fa fa-italic' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'insertUnorderedList', onClick: this.insertUnorderedList },
-	          _react2.default.createElement('i', { className: 'fa fa-list-ul' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'insertOrderedList', onClick: this.insertOrderedList },
-	          _react2.default.createElement('i', { className: 'fa fa-list-ol' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h1', onClick: this.setHeader(1) },
-	          'H1'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h2', onClick: this.setHeader(2) },
-	          'H2'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h3', onClick: this.setHeader(3) },
-	          'H3'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h4', onClick: this.setHeader(4) },
-	          'H4'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h5', onClick: this.setHeader(5) },
-	          'H5'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'h6', onClick: this.setHeader(6) },
-	          'H6'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'p', onClick: this.setParagraph },
-	          'P'
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'blockquote', onClick: this.setBlockquote },
-	          _react2.default.createElement('i', { className: 'fa fa-indent' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'horizontalRule', onClick: this.insertHorizontalRule },
-	          _react2.default.createElement('i', { className: 'fa fa-minus' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'createlink', onClick: this.insertLink },
-	          _react2.default.createElement('i', { className: 'fa fa-link' })
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', 'data-command': 'insertimage', onClick: this.insertPhoto },
-	          _react2.default.createElement('i', { className: 'fa fa-image' })
-	        )
-	      );
+	      var _this2 = this;
+
+	      if (!this.props.hidden) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'format-toolbar' },
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'bold', onClick: function onClick() {
+	                return _this2.setBold();
+	              } },
+	            _react2.default.createElement('i', { className: 'fa fa-bold' })
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'italic', onClick: function onClick() {
+	                return _this2.setBold();
+	              } },
+	            _react2.default.createElement('i', { className: 'fa fa-italic' })
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'insertUnorderedList', onClick: function onClick() {
+	                return _this2.insertUnorderedList();
+	              } },
+	            _react2.default.createElement('i', { className: 'fa fa-list-ul' })
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'insertOrderedList', onClick: function onClick() {
+	                return _this2.insertOrderedList();
+	              } },
+	            _react2.default.createElement('i', { className: 'fa fa-list-ol' })
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'h1', onClick: function onClick() {
+	                return _this2.setHeader(1);
+	              } },
+	            'H1'
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'h2', onClick: function onClick() {
+	                return _this2.setHeader(2);
+	              } },
+	            'H2'
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'h3', onClick: function onClick() {
+	                return _this2.setHeader(3);
+	              } },
+	            'H3'
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'h4', onClick: function onClick() {
+	                return _this2.setHeader(4);
+	              } },
+	            'H4'
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'h5', onClick: function onClick() {
+	                return _this2.setHeader(5);
+	              } },
+	            'H5'
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'h6', onClick: function onClick() {
+	                return _this2.setHeader(6);
+	              } },
+	            'H6'
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'p', onClick: function onClick() {
+	                return _this2.setParagraph();
+	              } },
+	            'P'
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'blockquote', onClick: function onClick() {
+	                return _this2.setBlockquote();
+	              } },
+	            _react2.default.createElement('i', { className: 'fa fa-indent' })
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'horizontalRule', onClick: function onClick() {
+	                return _this2.insertHorizontalRule();
+	              } },
+	            _react2.default.createElement('i', { className: 'fa fa-minus' })
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'createlink', onClick: function onClick() {
+	                return _this2.insertLink();
+	              } },
+	            _react2.default.createElement('i', { className: 'fa fa-link' })
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', 'data-command': 'insertimage', onClick: function onClick() {
+	                return _this2.insertPhoto();
+	              } },
+	            _react2.default.createElement('i', { className: 'fa fa-image' })
+	          )
+	        );
+	      } else {
+	        return null;
+	      }
 	    }
 	  }]);
 

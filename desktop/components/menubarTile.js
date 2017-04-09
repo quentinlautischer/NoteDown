@@ -1,4 +1,4 @@
- import React from 'react';
+import React from 'react';
 
 import menubuilder from './menubar';
 const {remote} = require('electron');

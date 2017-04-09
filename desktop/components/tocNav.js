@@ -68,7 +68,8 @@ class TocNav extends React.Component {
   }
   
   scrollTo(ref, e) {
-    ref.scrollIntoView();
+    ref.parentNode.scrollTop = ref.offsetTop;    
+    // ref.scrollIntoView();
   }
 
   changePage(index, e) {
@@ -203,6 +204,7 @@ class TocNav extends React.Component {
             </div>
             <br/>
             <div className="toc-nav-content">
+              <span className="title">Table of Contents</span>
               <ul>
                 {this.array.map(this.renderTocItem, this)}
               </ul>
@@ -219,6 +221,7 @@ class TocNav extends React.Component {
             </span>
             <br/>
             <div className="toc-nav-content">
+              <span className="title">Table of Pages</span>
               <ul>
                 {this.pagesArray.map(this.renderPageItem, this)}
               </ul>

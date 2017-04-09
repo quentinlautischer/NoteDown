@@ -1,14 +1,17 @@
 .toc-nav-show {
-  position: relative;
-  float: right;
-  margin-top: 33px;
-  margin-right: 33px;
+  position: fixed;
+  right: 25px;
+  top: map-get($windows-dimensions, menubar-custom-height)+20px;
   color: map-get($colors, primary2);
-  z-index: 4;
+  z-index: 10;
 }
 
 .toc-nav-show:hover + .toc-nav{
-  display: block;
+  left: 60%;
+}
+
+.toc-nav:hover {
+  left: 60%;
 }
 
 .toc-nav-btns {
@@ -17,13 +20,13 @@
 }
 
 .toc-nav {
-  display: none;
+  display: block;
   position: fixed;
   box-sizing: border-box;
   top: 5%;
-  left: 55%;
-  width: 43%;
-  height: 60%;
+  left: 100%;
+  width: 40%;
+  height: 90%;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 0 30px rgba(0,0,0,0.1);
@@ -33,6 +36,7 @@
   background-color: map-get($colors, secondary1);
   font-size: 20px;
   z-index: 5;
+  transition: left 0.5s;
 
   li {
     list-style: none;
@@ -45,12 +49,17 @@
 
 .toc-nav-content {
   max-height: 90%;
-  overflow-y: auto;
+  width: 100%;
   z-index: 5;
 }
 
-.toc-nav:hover {
-  display: block;
+.title {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  z-index: 5;
+  color: map-get($colors, primary2);
 }
 
 .hidden {
@@ -63,6 +72,7 @@
   &:hover {
     color: map-get($colors, secondary2);
   }
+
 }
 
 .toc-li-h1 { 
@@ -106,6 +116,10 @@
 
   &:hover {
     color: map-get($colors, secondary2);
+  }
+
+  &:active {
+    transform: translateY(2px);
   }
 }
 

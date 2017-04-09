@@ -122,26 +122,6 @@ class App extends React.Component {
             />
           </div>
         );
-      case 'flashcard':
-        return (
-          <div>
-            <MenubarTile store={store}/>
-            <FlashcardViewer store={store}/>
-            <Snackbar
-              open={store.getState().state.snackbar.open}
-              message={store.getState().state.snackbar.msg}
-              action={store.getState().state.snackbar.action}
-              autoHideDuration={store.getState().state.snackbar.time}
-              onRequestClose={() => store.dispatch({type: 'CLOSE_SNACKBAR'})}
-              onActionTouchTap={() => store.dispatch({type: 'PHOTO_ALERT'})}
-            />
-            <DialogContainer
-              open={store.getState().state.dialog_open}
-              close={() => store.dispatch({type: 'DIALOG_CLOSE'})}
-              store={store}
-            />
-          </div>
-        )
       default: 
         return (<div>Error</div>); // Make an error view?
     }

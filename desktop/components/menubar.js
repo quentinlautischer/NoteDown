@@ -144,6 +144,14 @@ function menuPullFromCloud(store) {
   store.dispatch({type: 'SHOW_SNACKBAR', msg: 'Pulling data from cloud'});
 }
 
+function toggleFormatBar(store) {
+  store.dispatch({type: 'TOGGLE_FORMAT_BAR'});
+}
+
+function inputColorMode(store, color) {
+  store.dispatch({type: 'INPUT_COLOR_MODE', color: color});
+}
+
 
 ////////////////////////////////////////////////////////
 /// Menubar Template Builder
@@ -269,6 +277,23 @@ const menubar_template_builder = function(store) {
   const viewMenu = {
     label: 'View',
     submenu: [
+      {
+        role: 'Toggle Format Bar',
+        label: 'Toggle Format Bar',
+        visible: is_editor(state),
+        enabled: is_editor(state), // until I figure it out
+        click () { toggleFormatBar(store) }
+      },
+      {
+        role: 'Input Mode Light',
+        label: 'Input Mode Light',
+        click() { inputColorMode(store, 'light') }
+      },
+      {
+        role: 'Input Mode Dark',
+        label: 'Input Mode Dark',
+        click() { inputColorMode(store, 'dark') }
+      },
       {
         role: 'reload'
       },

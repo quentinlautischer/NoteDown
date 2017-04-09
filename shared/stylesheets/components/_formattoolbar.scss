@@ -1,8 +1,15 @@
 .format-toolbar {
-  position: fixed;
+  display: relative;
+  flex-basis: content;
+  position: relative;
   text-align: center;
-  z-index: 10;
-  background-color:  map-get($colors, secondary1);;
+  z-index: 1;
+  background-color:  map-get($colors, superdark);;
+  padding: 5px;
+}
+
+.hidden {
+  display: none;
 }
 
 .format-toolbar a,
@@ -13,19 +20,24 @@
   border-radius: 1px;
   color: black;
   padding: 5px;
-  width: 1.5em;
-  margin: -2px;
-  margin-top: 10px;
+  width: 1.0em;
   display: inline-block;
   text-decoration: none;
-  box-shadow: 0px 1px 0px #CCC;
+  box-shadow: 0px 2px 0px #CCC;
 }
 
-.toolbar a:hover,
-.fore-wrapper:hover,
-.back-wrapper:hover {
+.format-toolbar a:hover{
   background: #f2f2f2;
   border-color: #8c8c8c;
+  color: map-get($colors, secondary2);
+}
+
+.format-toolbar a:active{
+  background: #f2f2f2;
+  border-color: #8c8c8c;
+  color: map-get($colors, secondary2);
+  box-shadow: 0px 2px 0px #999;
+  transform: translateY(1px);
 }
 
 a[data-command='insertOrderedList'],
@@ -45,42 +57,9 @@ a[data-command='h1'] {
 a {
   height: 1em;
   border-radius: 3px;
-  margin: 2px;
-  width: 1em;
+  margin-bottom: 3px;
+  margin-top: 3px;
+  padding: 1px;
+  width: 0.2em;
   border: 1px solid #CCC;
-}
-
-a.palette-item:hover {
-  border: 1px solid #CCC;
-  box-shadow: 0 0 3px #333;
-}
-
-.fore-palette,
-.back-palette {
-  display: none;
-}
-
-.fore-wrapper,
-.back-wrapper {
-  display: inline-block;
-  cursor: pointer;
-}
-
-.fore-wrapper:hover .fore-palette,
-.back-wrapper:hover .back-palette {
-  display: block;
-  float: left;
-  position: absolute;
-  padding: 3px;
-  width: 160px;
-  background: #FFF;
-  border: 1px solid #DDD;
-  box-shadow: 0 0 5px #CCC;
-  height: 70px;
-}
-
-.fore-palette a,
-.back-palette a {
-  background: #FFF;
-  margin-bottom: 2px;
 }
