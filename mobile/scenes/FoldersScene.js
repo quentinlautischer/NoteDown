@@ -5,7 +5,8 @@ import {
     View,
     Text,
     ListView,
-    StyleSheet
+    StyleSheet,
+    Alert
 } from 'react-native';
 import colors from '../app/constants';
 import { connect } from 'react-redux';
@@ -80,10 +81,36 @@ class FoldersScene extends Component {
                 passProps: {
                     ...this.props,
                     currentIndex: this.context.store.getState().flashcards.currentIndex
-                }
+                },
+                onPress: this.onPressFlashcards.bind(this),
+                rightIconName: 'refresh'
             });
             this.context.store.dispatch({type: 'FLASHCARD_FRONT_MODE'});
         }
+    }
+
+    onPressFlashcards() {
+        Alert.alert(
+            'Reset Ranks',
+            'Revert flashcard ranks to default for this folder?',
+            [
+                {text: 'Yes', onPress: () => {
+                    this.context.store.dispatch({type: 'REVERT_RANKS'});
+                    var state = this.context.store.getState().flashcards;
+                    this.context.store.dispatch({type: 'SAVE_CARDS', flashcards: state.flashcards[state.flashcardFolderIndex]});
+                    this.requestPushData();
+                    this.props.navigator.pop();
+                }},
+                {text: 'No', onPress: () => {}},
+            ],
+            { cancelable: false }
+        )
+    }
+
+    requestPushData() {
+        var state = this.context.store.getState();
+        const data = {userid: state.state.userid, notes: state.notes, force_push: false};
+        this.props.socket.emit('request-push-data', data);
     }
 
     updateStateForFCs() {
