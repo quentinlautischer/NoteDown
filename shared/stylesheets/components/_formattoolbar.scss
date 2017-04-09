@@ -40,9 +40,7 @@
   transform: translateY(1px);
 }
 
-a[data-command='insertOrderedList'],
-a[data-command='outdent'],
-a[data-command='blockquote'] {
+.right_margin {
   margin-right: 5px;
   border-radius: 0 3px 3px 0;
 }
