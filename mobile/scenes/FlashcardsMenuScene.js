@@ -61,7 +61,13 @@ class FlashcardsMenuScene extends Component {
             'Reset Ranks',
             'Revert flashcard ranks to default for this folder?',
             [
-                {text: 'Yes', onPress: () => this.context.store.dispatch({type: 'REVERT_RANKS'})},
+                {text: 'Yes', onPress: () => {
+                    this.context.store.dispatch({type: 'REVERT_RANKS'});
+                    var state = this.context.store.getState().flashcards;
+                    this.context.store.dispatch({type: 'SAVE_CARDS', flashcards: state.flashcards[state.flashcardFolderIndex]});
+                    this.requestPushData();
+                    this.props.navigator.pop();
+                }},
                 {text: 'No', onPress: () => {}},
             ],
             { cancelable: false }

@@ -24640,7 +24640,6 @@
 	function rankFlashcard(state, action) {
 	    var folder = state.flashcardFolderIndex;
 	    var card = state.currentIndex;
-	    console.log('reducer applying rank ' + action.value + ' to (' + folder + ',' + card + ')');
 	    return (0, _immutabilityHelper2.default)(state, {
 	        flashcards: _defineProperty({}, folder, {
 	            flashcards: _defineProperty({}, card, {
@@ -24660,6 +24659,21 @@
 	    return Object.assign({}, state, { flashcardFolderIndex: -1 });
 	}
 
+	function revertRanks(state, action) {
+	    var len = state.flashcards[state.flashcardFolderIndex].flashcards.length;
+	    console.log("LEN " + len);
+	    for (var i = 0; i < len; i++) {
+	        state = (0, _immutabilityHelper2.default)(state, {
+	            flashcards: _defineProperty({}, state.flashcardFolderIndex, {
+	                flashcards: _defineProperty({}, i, {
+	                    rank: { $set: 2 }
+	                })
+	            })
+	        });
+	    }
+	    return state;
+	}
+
 	var initial_state = {
 	    flashcards: [],
 	    flashcardFolderIndex: 0,
@@ -24676,7 +24690,8 @@
 	    'SET_FLASHCARD_STEP': setFlashcardStep,
 	    'RANK_FLASHCARD': rankFlashcard,
 	    'MAP_FLASHCARD_FOLDER': mapFlashcardFolder,
-	    'FIND_FIRST_FLASHCARD': findFirstFlashcard
+	    'FIND_FIRST_FLASHCARD': findFirstFlashcard,
+	    'REVERT_RANKS': revertRanks
 	});
 
 	exports.default = flashcardReducer;

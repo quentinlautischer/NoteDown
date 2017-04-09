@@ -75,18 +75,17 @@ function setFlashcardStep(state, action) {
 function rankFlashcard(state, action) {
     const folder = state.flashcardFolderIndex;
     const card = state.currentIndex;
-    console.log(`reducer applying rank ${action.value} to (${folder},${card})`);
-  return update(state, {
-    flashcards: {
-      [folder]: {
+    return update(state, {
         flashcards: {
-          [card]: {
-            rank: {$set : action.value}
-          }
+            [folder]: {
+                flashcards: {
+                    [card]: {
+                        rank: {$set : action.value}
+                    }
+                }
+            }
         }
-      }
-    }
-  });
+    });
 }
 
 function mapFlashcardFolder(state, action) {
@@ -97,6 +96,25 @@ function mapFlashcardFolder(state, action) {
     }
     // no fcs for folder
     return Object.assign({}, state, {flashcardFolderIndex: -1});
+}
+
+function revertRanks(state, action) {
+    var len = state.flashcards[state.flashcardFolderIndex].flashcards.length;
+    console.log("LEN " + len);
+    for (var i = 0; i < len; i++) {
+        state = update(state, {
+            flashcards: {
+                [state.flashcardFolderIndex]: {
+                    flashcards: {
+                        [i]: {
+                            rank: {$set : 2}
+                        }
+                    }
+                }
+            }
+        });
+    }
+    return state;
 }
 
 const initial_state = {
@@ -115,7 +133,8 @@ const flashcardReducer = createReducer(initial_state, {
   'SET_FLASHCARD_STEP': setFlashcardStep,
   'RANK_FLASHCARD': rankFlashcard,
   'MAP_FLASHCARD_FOLDER': mapFlashcardFolder,
-  'FIND_FIRST_FLASHCARD': findFirstFlashcard
+  'FIND_FIRST_FLASHCARD': findFirstFlashcard,
+  'REVERT_RANKS': revertRanks
 });
 
 export default flashcardReducer;
