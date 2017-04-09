@@ -4,7 +4,8 @@ import {
     TouchableHighlight,
     View,
     ListView,
-    StyleSheet
+    StyleSheet,
+    Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
@@ -33,7 +34,9 @@ class FlashcardsMenuScene extends Component {
                 currentIndex: this.context.store.getState().flashcards.currentIndex,
             },
             onBack: this.onBack.bind(this),
-            backIconName: 'arrow-left'
+            backIconName: 'arrow-left',
+            onPress: this.onPress.bind(this),
+            rightIconName: 'refresh'
         });
     }
 
@@ -51,6 +54,18 @@ class FlashcardsMenuScene extends Component {
         this.requestPushData();
         this.context.store.dispatch({type: 'FLASHCARD_MODE'});
         this.props.navigator.pop();
+    }
+
+    onPress() {
+        Alert.alert(
+            'Reset Ranks',
+            'Revert flashcard ranks to default for this folder?',
+            [
+                {text: 'Yes', onPress: () => this.context.store.dispatch({type: 'REVERT_RANKS'})},
+                {text: 'No', onPress: () => {}},
+            ],
+            { cancelable: false }
+        )
     }
 
     requestPushData() {

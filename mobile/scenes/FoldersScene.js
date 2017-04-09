@@ -5,8 +5,7 @@ import {
     View,
     Text,
     ListView,
-    StyleSheet,
-    Alert
+    StyleSheet
 } from 'react-native';
 import colors from '../app/constants';
 import { connect } from 'react-redux';
