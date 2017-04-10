@@ -58,14 +58,14 @@ test('setext header edge test 8', () => {
 
 test('setext header edge test 9', () => {
   const raw_str = '[link](url)\n=====';
-  const rendered = '<h1><a href="url">link</a></h1>';
+  const rendered = '<h1><a target=\"_blank\" href="url">link</a></h1>';
   
   expect(parser.parse(raw_str)).toBe(rendered);
 });
 
 test('setext header edge test 10', () => {
   const raw_str = '[link][cite]\n=====\n\n[cite]: url';
-  const rendered = '<h1><a href="url">link</a></h1>';
+  const rendered = '<h1><a target=\"_blank\" href="url">link</a></h1>';
   
   expect(parser.parse(raw_str)).toBe(rendered);
 });
@@ -93,14 +93,14 @@ test('setext header edge test 13', () => {
 
 test('atx header edge test 1', () => {
   const raw_str = '# [link](url)';
-  const rendered = '<h1><a href="url">link</a></h1>';
+  const rendered = '<h1><a target=\"_blank\" href="url">link</a></h1>';
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });
 
 test('atx header edge test 2', () => {
   const raw_str = '# [link][cite]\n\n[cite]: url';
-  const rendered = '<h1><a href="url">link</a></h1>';
+  const rendered = '<h1><a target=\"_blank\" href="url">link</a></h1>';
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });

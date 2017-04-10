@@ -27,7 +27,7 @@ test('extract flashcards from pages, first page', ()=> {
           images: [] },
         { _id: '2', content: 'Page 2', images: [] }
     ];
-    const expected = [{"front":"Question","back":["Step1","Step2","Step3"],"hints":["Hint1","Hint2","Hint3"]}];
+    const expected = [{"front":"Question","back":["Step1","Step2","Step3"],"hints":["Hint1","Hint2","Hint3"], "rank": 2}];
 
     expect(parser.extractFlashcards(pages)).toEqual(expected);
 });
@@ -41,7 +41,7 @@ test('extract flashcards from pages, last page', ()=> {
 {Hint1|Hint2|Hint3}
 {Step1|Step2|Step3}`, images: [] }
     ];
-    const expected = [{"front":"Question","back":["Step1","Step2","Step3"],"hints":["Hint1","Hint2","Hint3"]}];
+    const expected = [{"front":"Question","back":["Step1","Step2","Step3"],"hints":["Hint1","Hint2","Hint3"], "rank": 2}];
 
     expect(parser.extractFlashcards(pages)).toEqual(expected);
 });
@@ -55,7 +55,7 @@ test('extract flashcards from pages, single step', ()=> {
 {Hint1}
 {Step1}`, images: [] }
     ];
-    const expected = [{"front":"Question","back":["Step1"],"hints":["Hint1"]}];
+    const expected = [{"front":"Question","back":["Step1"],"hints":["Hint1"], "rank": 2}];
 
     expect(parser.extractFlashcards(pages)).toEqual(expected);
 });

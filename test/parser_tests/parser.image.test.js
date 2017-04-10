@@ -23,7 +23,7 @@ test('image test 3', () => {
 
 test('image test 4', () => {
   const raw_str = '![image] [cite]\n\n\n[cite]: url';
-  const rendered = '<p>![image] <a href="url">cite</a></p>';
+  const rendered = '<p>![image] <a target=\"_blank\" href="url">cite</a></p>';
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });

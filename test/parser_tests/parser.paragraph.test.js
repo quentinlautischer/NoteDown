@@ -23,7 +23,7 @@ test('paragraph test 3', () => {
 
 test('paragraph test 4', () => {
   const raw_str = 'This is a [link](url).';
-  const rendered = '<p>This is a <a href="url">link</a>.</p>';
+  const rendered = '<p>This is a <a target=\"_blank\" href="url">link</a>.</p>';
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });
@@ -51,7 +51,7 @@ test('paragraph test 7', () => {
 
 test('paragraph test 8', () => {
   const raw_str = 'This is an autolink: <http://www.google.com>.';
-  const rendered = '<p>This is an autolink: <a href="http://www.google.com">http://www.google.com</a>.</p>';
+  const rendered = '<p>This is an autolink: <a target=\"_blank\" href="http://www.google.com">http://www.google.com</a>.</p>';
 
   expect(parser.parse(raw_str)).toBe(rendered);
 });

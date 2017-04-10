@@ -148,7 +148,7 @@ test('table test 5 - nested span parsing', () => {
 <td><strong>stuff</strong></td>\
 </tr>\
 <tr>\
-<td><a href="url">Stuff</a></td>\
+<td><a target=\"_blank\" href="url">Stuff</a></td>\
 <td><code>stuff</code></td>\
 </tr>\
 </tbody>\
