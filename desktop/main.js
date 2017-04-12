@@ -65,7 +65,7 @@ function createWindow () {
     slashes: true
   }))
 
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   mainWindow.webContents.on('new-window', function(event, url){
     event.preventDefault();
