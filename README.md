@@ -1,3 +1,5 @@
+**As we are unable to run `sudo` on the lab machines, we are unable to verify that the following instructions work in that setting.  As such, the appropriate executable files have been included in the submission.**  The Android APK has been extracted to the project root and installed via `adb install app-release.apk`.
+
 # Setup
 
 Node.js must first be installed.  See [Node.js Downloads](https://nodejs.org/en/download/).
