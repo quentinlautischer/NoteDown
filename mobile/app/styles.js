@@ -69,7 +69,7 @@ module.exports.FLASHCARD_STYLES =
 /* back, initially hidden pane */
 .back {
   -webkit-transform: rotateY(-180deg);
-  background-color: rgba(48, 62, 77, 1);
+  background-color: rgba(254, 215, 94, 1);
 }
 
 .flashcard-content {

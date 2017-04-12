@@ -28,7 +28,6 @@ var FC_NAV_REF = 'fc_nav';
 class FlashcardViewScene extends Component {
     constructor(props) {
         super(props);
-        console.log('currentIndex ' + this.props.currentIndex);
         this.state = {
             currentIndex: this.props.currentIndex
         }
@@ -144,7 +143,6 @@ class FlashcardViewScene extends Component {
         if (state.currentIndex < state.flashcards[state.flashcardFolderIndex].flashcards.length - 1) {
             this.cardTransition();
         }
-        // console.log("STATE AFTER STORE: " + JSON.stringify(this.context.store.getState().flashcards, null, 2));
     }
 
     render() {
@@ -166,6 +164,7 @@ class FlashcardViewScene extends Component {
             return(
                 <GestureRecognizer
                     onSwipeLeft={(state) => this.onSwipeLeft(state)}
+                    onSwipeRight={(state) => this.onSwipeRight(state)}
                     onSwipeUp={(state) => this.onSwipeUp(state)}
                     onSwipeDown={(state) => this.onSwipeDown(state)}
                     config={config}
