@@ -25179,19 +25179,13 @@
 
 	'use strict';
 
-	var _flashcardTemplate = __webpack_require__(226);
-
-	var _flashcardTemplate2 = _interopRequireDefault(_flashcardTemplate);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 	/*
 	Satisfies the following functional requirements:
 	- FU-14: Desktop: Editor: Render
+	- FU-20: Desktop/Mobile: Flashcards: View
 	- FU-27: Mobile: Render: View
 	*/
 
-	// import hljs from './node_modules/highlight.js/lib/highlight.js';
 	var hljs = __webpack_require__(227);
 	var katex = __webpack_require__(401);
 
@@ -26168,11 +26162,6 @@
 
 	function makeFlashcard(front, back, hints, rank) {
 	  return '\n    <div class="flip-container"  onclick="void(0)">\n      <div class="flipper">\n        <div class="front">\n          <span class="flashcard-content">' + front + '</span>\n        </div>\n        <div class="back">\n          <span class="flashcard-content">' + back + '</span>\n        </div>\n      </div>\n    </div>';
-
-	  // return flashcardTemplate.html1 + getFrontContent(front)
-	  //     + flashcardTemplate.html2 + getContentLines(hints, 'hint')
-	  //     + flashcardTemplate.html3 + getContentLines(back, 'solution')
-	  //     + flashcardTemplate.html4 + flashcardTemplate.css + flashcardTemplate.js;
 	}
 
 	function get_flashcard(blocks) {
@@ -26261,33 +26250,7 @@
 	console.log("Shared module loaded");
 
 /***/ },
-/* 226 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	var html1 = "\n<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>\n  <!-- https://davidwalsh.name/css-flip; accessed 03/16/17 -->\n<div class='flashcard-container'>\n    <div id='flipper' class='flashcard-flipper'>\n        <div class='front'>\n            <i id='hints-button' class=\"fa fa-question-circle-o\"></i>\n            <div id='front-content' class='content'>\n                <div class='middle'>\n                    <div id='front-inner-content' class='inner'>\n";
-
-	var html2 = "\n</div>\n</div>\n</div>\n</div>\n<div class='back'>\n<i id='front-button' class=\"fa fa-arrow-left\"></i>\n<div id='back-content' class='content'>\n<div class='middle'>\n<div id='solution' class='inner'>\n    <div id='back-inner-content'>\n";
-
-	var html3 = "\n</div>\n<div id='ranking'>\n    <table>\n        <tr id='ranking-row'>\n            <td><p class='circle'>1</p></td>\n            <td><p class='circle'>2</p></td>\n            <td><p class='circle'>3</p></td>\n        </tr>\n    </table>\n</div>\n</div>\n<div id='hints' class='inner'>\n<div id='hints-inner-content'>\n";
-
-	var html4 = "\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n";
-
-	var css = "\n<style>\n    .flashcard-container {\n        font-family: Tahoma, Geneva, sans-serif;\n        perspective: 1000px; /* adds realistic-looking perspective to flip action */\n        background-color: transparent;\n        width: 80%;\n        font-size: 1em;\n        color: black;\n    }\n\n    #flipper {\n        transition: width 1s, height 1s, transform 1s;\n        transform-style: preserve-3d;\n        position: relative;\n        width: 100%;\n        padding: 25%;\n        box-sizing: border-box;\n    }\n\n    .front,\n    .back {\n        /* not sure how much of this is needed for Electron */\n        -webkit-backface-visibility: hidden;\n        -moz-backface-visibility: hidden;\n        -o-backface-visibility: hidden;\n        backface-visibility: hidden;\n\n        width: 100%;\n        height: 100%;\n        position: absolute;\n        top: 0;\n        left: 0;\n        background-color: #e7fef8;\n        border: thick solid black;\n        border-radius: 5px;\n    }\n\n    .front {\n        z-index: 2; /* moves the front forward */\n        transform: rotateY(0deg);\n    }\n\n    .back {\n        transform: rotateY(180deg);\n    }\n\n    /* flip the pane when clicked */\n    .rotateBack {\n        transform: rotateY(-180deg);\n    }\n\n    .rotateHint {\n        transform: rotateY(180deg);\n    }\n\n    /* http://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers; by Billbad; accessed 03/16/17 */\n    .content {\n        display: table;\n        position: absolute;\n        height: 100%;\n        width: 100%;\n    }\n\n    .middle {\n        display: table-cell;\n        vertical-align: middle;\n        text-align: center;\n    }\n\n    .inner {\n        margin-left: auto;\n        margin-right: auto;\n    }\n\n    #back-inner-content p,\n    #hints-inner-content p {\n        border-bottom: thin solid #0aaf82;\n        text-align: center;\n        margin-left: 20px;\n        margin-right: 20px;\n        visibility: hidden;\n    }\n\n    i {\n      position: absolute;\n      padding: 10px;\n    }\n\n    .fa {\n      font-size: 1.5em;\n    }\n\n    #hints-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n    }\n\n    #front-button {\n        z-index: 3; /* in front of everything so it can be clicked on */\n        display: none;\n    }\n\n    #ranking {\n      width: 100%;\n      position: absolute;\n      bottom: 5px;\n      visibility: hidden; /* don't allow ranking til all the solution is visible */\n    }\n\n    table {\n      display: inline; /* allows it to be centred */\n    }\n\n    td p {\n      margin: 0 30px; /* space between cells */\n    }\n\n    /* http://stackoverflow.com/questions/16615403/css-how-to-draw-circle-with-text-in-middle\n    by Jawad\n    accessed 03/18/17 */\n    .circle {\n        width: 2em;\n        height: 2em;\n        border-radius: 50%;\n        font-size: 1em;\n        color: white;\n        line-height: 2em;\n        text-align: center;\n        background: #0aaf82;\n    }\n\n    .circle:hover {\n        color: #0aaf82;\n        background-color: black;\n    }\n</style>\n";
-
-	var js = "\n<script>\n    document.getElementById('front-content').onclick = handleClick;\n    document.getElementById('back-content').onclick = handleClick;\n    document.getElementById('hints-button').onclick = clickedShowHints;\n    document.getElementById('front-button').onclick = clickedShowFront;\n\n    var viewingHints = false;\n    var viewingSolution = false;\n    var solutionIndex = 0;\n    var hintIndex = 0;\n\n    function handleClick() {\n        if (viewingHints) {\n          showNextHint();\n          return;\n        }\n        showSolutionSide();\n    }\n\n    function clickedShowHints() {\n        remove('solution', 'hints-button');\n        display('hints');\n        if(document.getElementById('hints').childElementCount > 0) {\n            document.getElementById('hint0').style.visibility = 'visible';\n            hintIndex += 1;\n        }\n\n        viewingHints = true;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function clickedShowFront() {\n        remove('front-button');\n        display('hints-button');\n\n        viewingHints = false;\n        hintIndex = 0;\n        document.getElementById('flipper').classList.toggle('rotateHint');\n    }\n\n    function remove() { // sets display of args (ids) to 'none'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'none');\n        }\n    }\n\n    function display() { // sets display of args (ids) to 'inline'\n        for (var i = 0; i < arguments.length; i++) {\n            setDisplay(arguments[i], 'inline');\n        }\n    }\n\n    function setDisplay(id, display) { // sets element 'id' to display 'display'\n        document.getElementById(id).style.display = display;\n    }\n\n    function flipFinished() { // called after a flip event to update what's displayed\n        if (viewingHints) {\n            display('front-button');\n        } else if (!viewingSolution) {\n            hideChildren(document.getElementById('back-inner-content'), 'solution');\n            hideChildren(document.getElementById('hints-inner-content'), 'hint');\n            document.getElementById('ranking').style.visibility = 'hidden';\n            display('hints-button');\n        }\n    }\n\n    function hideChildren(ele, id) {\n        for (var index = 0; index < ele.childElementCount; index++) {\n          document.getElementById(id + index).style.visibility = 'hidden';\n        }\n    }\n\n    function showNextHint() {\n        var hintsDiv = document.getElementById('hints-inner-content');\n        if (hintIndex < hintsDiv.childElementCount) {\n          document.getElementById('hint' + hintIndex).style.visibility = 'visible';\n          hintIndex += 1;\n        }\n    }\n\n    function resetCard() { // flips back to front after solution viewed, resetting everything\n        solutionIndex = 0;\n        viewingHints = false;\n        viewingSolution = false;\n        document.getElementById('flipper').classList.toggle('rotateBack');\n    }\n\n    function showNextSolutionStep() {\n        document.getElementById('solution' + solutionIndex++).style.visibility = 'visible';\n    }\n\n    function showSolutionSide() {\n        remove('hints', 'hints-button', 'front-button');\n        display('solution');\n\n        var solutionElementCount = document.getElementById('back-inner-content').childElementCount;\n        if (solutionIndex == solutionElementCount) { // solution steps & ranks are all visible at this point\n            resetCard();\n            return;\n        }\n\n        if (solutionIndex === 0) { // flip to back!\n            viewingSolution = true;\n            document.getElementById('flipper').classList.toggle('rotateBack');\n        } else if (solutionIndex == solutionElementCount - 1) { // show ranks on revealing last piece of solution\n            document.getElementById('ranking').style.visibility = 'visible';\n        }\n        showNextSolutionStep();\n    }\n\n    // The following is used to help with flashcard content display during card rotations.\n    // It allows the display to be updated when the rotation (flip) completes.\n    /* From Modernizr */\n    function whichTransitionEvent(){\n        var t;\n        var el = document.createElement('fakeelement');\n\n        // allows it to work on many browsers\n        var transitions = {\n            'transition':'transitionend',\n            'OTransition':'oTransitionEnd',\n            'MozTransition':'transitionend',\n            'WebkitTransition':'webkitTransitionEnd'\n        }\n\n        for(t in transitions){\n            if( el.style[t] !== undefined ){\n                return transitions[t];\n            }\n        }\n    }\n\n    // listen for transition to end\n    var transitionEvent = whichTransitionEvent();\n    transitionEvent && document.getElementById('flipper').addEventListener(transitionEvent, flipFinished);\n</script>\n";
-
-	module.exports = {
-	    html1: html1,
-	    html2: html2,
-	    html3: html3,
-	    html4: html4,
-	    css: css,
-	    js: js
-	};
-
-/***/ },
+/* 226 */,
 /* 227 */
 /***/ function(module, exports, __webpack_require__) {
 

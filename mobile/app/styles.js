@@ -1,4 +1,5 @@
 // used in components/NotesView.js to style the output HTML
+
 module.exports.FLASHCARD_STYLES =
 `
 .flip-container {

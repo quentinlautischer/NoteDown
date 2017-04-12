@@ -1,14 +1,12 @@
 /*
 Satisfies the following functional requirements:
 - FU-14: Desktop: Editor: Render
+- FU-20: Desktop/Mobile: Flashcards: View
 - FU-27: Mobile: Render: View
 */
 
-// import hljs from './node_modules/highlight.js/lib/highlight.js';
 var hljs = require('highlight.js');
 var katex = require('katex');
-
-import flashcardTemplate from './models/flashcardTemplate.js';
 
 var global_store, global_imageMapper; //global vars to be called by image links
 
@@ -944,11 +942,6 @@ function makeFlashcard(front, back, hints, rank) {
       </div>
     </div>`
   );
-
-    // return flashcardTemplate.html1 + getFrontContent(front)
-    //     + flashcardTemplate.html2 + getContentLines(hints, 'hint')
-    //     + flashcardTemplate.html3 + getContentLines(back, 'solution')
-    //     + flashcardTemplate.html4 + flashcardTemplate.css + flashcardTemplate.js;
 }
 
 
