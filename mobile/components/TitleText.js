@@ -1,3 +1,7 @@
+/*
+Used for both folder and flashcard deck menu titles.
+*/
+
 import React, { Component } from 'react';
 import {
     Text,

@@ -19175,7 +19175,7 @@
 	 * @return {?DOMElement}
 	 */
 	function getActiveElement(doc) /*?DOMElement*/{
-	  doc = doc || global.document;
+	  doc = doc || (typeof document !== 'undefined' ? document : undefined);
 	  if (typeof doc === 'undefined') {
 	    return null;
 	  }
@@ -23853,6 +23853,10 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	Used to manage general app state.  Relevant for all functional requirements.
+	*/
+
 	function loginMode(state, action) {
 	  return Object.assign({}, state, { mode: 'login' });
 	}
@@ -24290,6 +24294,11 @@
 	});
 	exports.default = createReducer;
 	exports.updateObject = updateObject;
+	/*
+	Reducer helper.  Required to use reducers which in turn relate to functional
+	requirements.
+	*/
+
 	function createReducer(initialState, handlers) {
 	    return function reducer() {
 	        var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -24344,7 +24353,17 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; } /*
+	                                                                                                                                                                                                                  Relevant requirements:
+	                                                                                                                                                                                                                  - FU-6: Desktop: Folder System: Creation
+	                                                                                                                                                                                                                  - FU-7: Desktop: Folder System: Deletion
+	                                                                                                                                                                                                                  - FU-10: Desktop: Editor: Dual Mode Edit
+	                                                                                                                                                                                                                  - FU-12: Desktop: Editor: Add Page
+	                                                                                                                                                                                                                  - FU-29: Mobile: Editor: Quick Edit
+	                                                                                                                                                                                                                  - FU-21: Mobile: Flashcards: Rank
+	                                                                                                                                                                                                                  - FU-30: Mobile: Editor: Save
+	                                                                                                                                                                                                                  - FU-31: Mobile and Desktop: Camera Mode
+	                                                                                                                                                                                                                  */
 
 	function setNotes(state, action) {
 	  console.log('Setting Notes:');
@@ -24488,6 +24507,14 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	Relevant requirements:
+	- FU-1: Desktop: QuickMode: Quick Create
+	- FU-2: Desktop: QuickMode: Quick Open
+	- FU-10: Desktop: Editor: Dual Mode Edit
+	- FU-29: Mobile: Editor: Quick Edit
+	*/
+
 	function editorModeQuickmode(state, action) {
 	  return Object.assign({}, state, { mode: 'quickmode' });
 	}
@@ -24557,7 +24584,13 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; } /*
+	                                                                                                                                                                                                                  Relevant requirements:
+	                                                                                                                                                                                                                  - FU-18: Desktop: Flashcards: Create
+	                                                                                                                                                                                                                  - FU-19: Desktop: Flashcards: Delete
+	                                                                                                                                                                                                                  - FU-20: Desktop/Mobile: Flashcards: View
+	                                                                                                                                                                                                                  - FU-21: Desktop/Mobile: Flashcards: Rank
+	                                                                                                                                                                                                                  */
 
 	function findFirstFlashcard(state, action) {
 	    return findNextCardWithHighEnoughRank((0, _immutabilityHelper2.default)(state, { currentIndex: { $set: -1 } }));
@@ -25151,6 +25184,12 @@
 	var _flashcardTemplate2 = _interopRequireDefault(_flashcardTemplate);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/*
+	Satisfies the following functional requirements:
+	- FU-14: Desktop: Editor: Render
+	- FU-27: Mobile: Render: View
+	*/
 
 	// import hljs from './node_modules/highlight.js/lib/highlight.js';
 	var hljs = __webpack_require__(227);

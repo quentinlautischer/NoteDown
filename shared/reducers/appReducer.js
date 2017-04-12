@@ -1,3 +1,7 @@
+/*
+Used to manage general app state.  Relevant for all functional requirements.
+*/
+
 import update from '../node_modules/immutability-helper';
 
 import createReducer from './reducerUtilities'

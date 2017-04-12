@@ -1,3 +1,11 @@
+/*
+Relevant requirements:
+- FU-1: Desktop: QuickMode: Quick Create
+- FU-2: Desktop: QuickMode: Quick Open
+- FU-10: Desktop: Editor: Dual Mode Edit
+- FU-29: Mobile: Editor: Quick Edit
+*/
+
 import update from '../node_modules/immutability-helper';
 
 import createReducer from './reducerUtilities'

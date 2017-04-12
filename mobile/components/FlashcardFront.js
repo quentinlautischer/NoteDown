@@ -1,3 +1,8 @@
+/*
+Relevant requirements:
+- FU-20: Mobile: Flashcards: View
+*/
+
 import React, { Component } from 'react';
 import {
     View,

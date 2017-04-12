@@ -1,3 +1,9 @@
+/*
+Relevant requirements:
+- FU-25: Mobile: Folder System: Navigation
+- FU-26: Mobile: Folder System: Open
+*/
+
 import React, { Component } from 'react';
 import {
     Navigator,

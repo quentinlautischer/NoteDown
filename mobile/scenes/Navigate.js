@@ -1,3 +1,6 @@
+/*
+Handles navigation between application scenes, which themselves address specific requirements
+*/
 
 import React, { Component } from 'react';
 import {

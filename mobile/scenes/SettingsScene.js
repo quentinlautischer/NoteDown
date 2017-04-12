@@ -1,3 +1,8 @@
+/*
+Relevant requirements:
+- FU-30: Mobile: Editor: Save
+*/
+
 import React, { Component } from 'react';
 import {
     View,

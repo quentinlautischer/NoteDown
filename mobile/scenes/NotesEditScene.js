@@ -1,3 +1,9 @@
+/*
+Relevant requirements:
+- FU-23: Cloud Sync: Push
+- FU-29: Mobile: Editor: Quick Edit
+*/
+
 import React, { Component } from 'react';
 import {
     View,

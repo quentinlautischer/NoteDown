@@ -1,3 +1,12 @@
+/*
+Used for both folder and flashcard deck menus.
+
+Relevant requirements:
+- FU-20: Mobile: Flashcards: View
+- FU-25: Mobile: Folder System: Navigation
+- FU-26: Mobile: Folder System: Open
+*/
+
 import React, { Component } from 'react';
 import {
     View,

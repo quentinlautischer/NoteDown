@@ -1,3 +1,11 @@
+/*
+Relevant requirements:
+- FU-18: Desktop: Flashcards: Create
+- FU-19: Desktop: Flashcards: Delete
+- FU-20: Desktop/Mobile: Flashcards: View
+- FU-21: Desktop/Mobile: Flashcards: Rank
+*/
+
 import update from '../node_modules/immutability-helper';
 
 import createReducer from './reducerUtilities'

@@ -1,3 +1,8 @@
+/*
+Relevant requirements:
+- FU-31: Mobile: Camera Mode
+*/
+
 import React, { Component } from 'react';
 import {
     View,

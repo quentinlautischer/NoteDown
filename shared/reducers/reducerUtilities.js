@@ -1,3 +1,7 @@
+/*
+Reducer helper.  Required to use reducers which in turn relate to functional
+requirements.
+*/
 
 export default function createReducer(initialState, handlers) {
   return function reducer(state = initialState, action) {
@@ -29,4 +33,3 @@ export function updateObject(oldObject, newValues) {
     // to Object.assign to ensure we correctly copy data instead of mutating
     return Object.assign({}, oldObject, newValues);
 }
-

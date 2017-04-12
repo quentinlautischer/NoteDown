@@ -1,3 +1,12 @@
+/*
+Relevant requirements:
+- FU-4: Desktop: User Account: Creation
+- FU-5: Desktop: User Account: Authentication
+- FU-22: Cloud Sync: Retrieve
+- FU-23: Cloud Sync: Push
+- FU-24: Mobile: User Account: Authentication
+*/
+
 var update = require('react-addons-update');
 
 addOnlineUser = function(state, action) {

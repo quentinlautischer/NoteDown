@@ -1,3 +1,15 @@
+/*
+Relevant requirements:
+- FU-6: Desktop: Folder System: Creation
+- FU-7: Desktop: Folder System: Deletion
+- FU-10: Desktop: Editor: Dual Mode Edit
+- FU-12: Desktop: Editor: Add Page
+- FU-29: Mobile: Editor: Quick Edit
+- FU-21: Mobile: Flashcards: Rank
+- FU-30: Mobile: Editor: Save
+- FU-31: Mobile and Desktop: Camera Mode
+*/
+
 import update from '../node_modules/immutability-helper';
 
 import createReducer from './reducerUtilities'

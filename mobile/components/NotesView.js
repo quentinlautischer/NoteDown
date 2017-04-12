@@ -1,3 +1,8 @@
+/*
+Relevant requirements:
+- FU-27: Mobile: Render: View
+*/
+
 import React, { Component } from 'react';
 import {
     View,

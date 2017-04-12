@@ -1,3 +1,8 @@
+/*
+Relevant requirements:
+- FU-29: Mobile: Editor: Quick Edit
+*/
+
 import React, { Component } from 'react';
 import {
     View,

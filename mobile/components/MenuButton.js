@@ -1,3 +1,10 @@
+/*
+Used on multiple screens as a general button.
+
+Uses specifically include:
+- FU-24: Mobile: User Account: Authentication
+*/
+
 import React, { Component } from 'react';
 import {
     View,

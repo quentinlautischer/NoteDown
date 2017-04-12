@@ -1,3 +1,9 @@
+/*
+Relevant requirements:
+- FU-20: Mobile: Flashcards: View
+- FU-21: Mobile: Flashcards: Rank
+*/
+
 import React, { Component } from 'react';
 import {
     Navigator,

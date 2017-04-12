@@ -1,6 +1,7 @@
-/*Satisfies the following functional requirements:
-FU-14: Desktop: Editor: Render
-FU-27: Mobile: Render: View
+/*
+Satisfies the following functional requirements:
+- FU-14: Desktop: Editor: Render
+- FU-27: Mobile: Render: View
 */
 
 // import hljs from './node_modules/highlight.js/lib/highlight.js';

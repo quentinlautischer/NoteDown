@@ -1,3 +1,9 @@
+/*
+Relevant requirements:
+- FU-22: Cloud Sync: Retrieve
+- FU-24: Mobile: User Account: Authentication
+*/
+
 import React, { Component } from 'react';
 import {
     View,

@@ -1,3 +1,7 @@
+/*
+Access point to features of app that address specific function requirements
+*/
+
 import React, { Component } from 'react';
 import {
     View,

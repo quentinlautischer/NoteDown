@@ -3,145 +3,13 @@
 @import 'base/all';
 @import 'themes/all';
 
-$fa-font-path:"../../node_modules/font-awesome/fonts";
-@import '../../node_modules/font-awesome/scss/font-awesome';
-
-$mdi-font-path:"../../node_modules/mdi/fonts";
-@import '../../node_modules/mdi/scss/materialdesignicons';
-
 //@import "../../node_modules/codemirror/lib/codemirror.css";
-@import "../../node_modules/codemirror/theme/duotone-light.css";
+@import "../../node_modules/codemirror/theme/base16-light.css";
+@import "../../node_modules/codemirror/theme/base16-dark.css";
 
 @import "../../node_modules/highlight.js/styles/atom-one-dark.css";
 @import "../../node_modules/katex/dist/katex.min.css";
 
-.icon-cloud-push {
-  @extend .mdi;
-  @extend .mdi-cloud-upload;
-  @extend .mdi-36px;
-}
-
-.icon-cloud-pull {
-  @extend .mdi;
-  @extend .mdi-cloud-download;
-  @extend .mdi-36px;
-}
-
-.icon-spinning-cog {
-  @extend .fa;
-  @extend .fa-cog;
-  @extend .fa-spin;
-  @extend .fa-2x;
-  @extend .fa-fw;
-}
-
-.icon-lightbulb {
-  @extend .mdi;
-  @extend .mdi-lightbulb;
-}
-
-.icon-cards {
-  @extend .mdi;
-  @extend .mdi-cards;
-}
-
-.icon-close {
-  @extend .mdi;
-  @extend .mdi-window-close;
-}
-
-.icon-minimize {
-  @extend .mdi;
-  @extend .mdi-window-minimize;
-}
-
-.icon-maximize {
-  @extend .mdi;
-  @extend .mdi-window-maximize;
-}
-
-.icon-restore {
-  @extend .mdi;
-  @extend .mdi-window-restore;
-}
-
-.icon-user {
-  @extend .fa;
-  @extend .fa-user;
-}
-
-.icon-bars {
-  @extend .mdi;
-  @extend .mdi-menu;
-}
-
-.icon-tree {
-  @extend .fa;
-  @extend .fa-tree;
-}
-
-.icon-square-solid {
-  @extend .fa;
-  @extend .fa-square;
-}
-
-.icon-arrow-left {
-  @extend .mdi;
-  @extend .mdi-page-first;
-}
-
-.icon-arrow-right {
-  @extend .mdi;
-  @extend .mdi-page-last;
-}
-
-.icon-search-plus {
-  @extend .mdi;
-  @extend .mdi-magnify-plus;
-}
-
-.icon-search-minus {
-  @extend .mdi;
-  @extend .mdi-magnify-minus;
-}
-
-.icon-folderview {
-  @extend .mdi;
-  @extend .mdi-folder-multiple;
-}
-
-.icon-minus {
-  @extend .fa;
-  @extend .fa-minus;
-  font-weight: 100;
-}
-
-.icon-square {
-  @extend .fa;
-  @extend .fa-square-o;
-  font-weight: 100;
-}
-
-.icon-clone {
-  @extend .fa;
-  @extend .fa-clone;
-}
-
-.icon-times {
-  @extend .fa;
-  @extend .fa-times;
-  font-weight: 100;
-}
-
-.icon-file-text {
-  @extend .mdi;
-  @extend .mdi-book-open-page-variant;
-}
-
-.icon-trash {
-  @extend .fa;
-  @extend .fa-trash;
-}
 
 .app-container {
   -webkit-app-region: no-drag;
@@ -157,7 +25,7 @@ $mdi-font-path:"../../node_modules/mdi/fonts";
 }
 
 .menubar-custom {
-  position: relative;
+  position: fixed;
   top: 0;
   left: 0;
   height: map-get($windows-dimensions, menubar-custom-height);
@@ -175,9 +43,10 @@ $mdi-font-path:"../../node_modules/mdi/fonts";
   width: map-get($windows-dimensions, menubar-custom-tile-width);
   height: 100%;
   line-height: map-get($windows-dimensions, menubar-custom-height);
-  color: map-get($colors, primary1);
+  color: map-get($colors, dark3);
   -webkit-app-region: no-drag;
   &:hover {
+    color: map-get($colors, primary2);
     background-color: map-get($colors, accent-gray);
   };
 
@@ -202,11 +71,8 @@ $mdi-font-path:"../../node_modules/mdi/fonts";
 }
 
 
-a {
-  color: map-get($colors, primary1);
-}
-
 body {
+  position: absolute;
   margin: 0;
   // border: 1px solid #444;
   // Retina Border Fix 
@@ -220,13 +86,14 @@ body {
   font-family: "Verdana", sans-serif;
   background-color: map-get($colors, primary1);
 
-  overflow-x: hidden;
+  overflow: hidden;
   // -webkit-app-region: drag;
   -webkit-user-select: none;
 
   ::-webkit-scrollbar
   {
-    width: 6px;
+    width: 12px;
+    height: 12px;
     background-color: transparent;
     -webkit-app-region: no-drag;
   }
@@ -234,13 +101,13 @@ body {
   ::-webkit-scrollbar-thumb
   {
     border-radius: 10px;
-    background-image: -webkit-gradient(linear,
-      left bottom,
-      left top,
-      color-stop(0.44, map-get($colors, primary1)),
-      color-stop(0.72, map-get($colors, primary1))
-    );
+    background-color: map-get($colors, light);
     -webkit-app-region: no-drag;
+  }
+
+    ::-webkit-scrollbar-corner
+  {
+    background-color: map-get($colors, dark);
   }
 
 }
