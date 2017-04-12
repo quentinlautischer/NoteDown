@@ -154,6 +154,7 @@ class App extends React.Component {
       console.log('received login response: ' + data);
       if (data.result) {
         store.dispatch({type: 'SET_USER', userid: data.userid});
+        store.dispatch({type: 'EDITOR_MODE_CLOUD'});
         store.dispatch({type: 'FOLDER_MODE'});
         this.request_pull_data();
       } else {
@@ -165,6 +166,7 @@ class App extends React.Component {
       console.log('received signup reply: ' + JSON.stringify(data));
       if (data.result == true) {
         store.dispatch({type: 'SET_USER', userid: data.userid});
+        store.dispatch({type: 'EDITOR_MODE_CLOUD'});        
         store.dispatch({type: 'FOLDER_MODE'});
         this.request_pull_data();
       } else {

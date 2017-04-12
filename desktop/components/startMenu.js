@@ -58,6 +58,7 @@ class StartMenu extends React.Component {
         }
       ]
     }});
+    this.props.store.dispatch({type: 'EDITOR_MODE_QUICKMODE'});
     this.props.store.dispatch({type: 'EDITOR_MODE'})
   }
 

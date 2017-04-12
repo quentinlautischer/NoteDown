@@ -104,6 +104,34 @@ function menuSaveas(store) {
   saveas(store);
 }
 
+function importMarkdown(store) {
+    var filename = dialog.showOpenDialog({
+    filters: [
+      {name: 'Markdown', extensions: ['md']},
+      {name: 'All Files', extensions: ['*']}
+    ]
+  }, function(fileName) {
+    importFile(fileName[0], store);
+  });
+}
+
+function importFile(filename, store) {
+    var state = store.getState();
+    fs.readFile(filename, 'utf-8', function (err, data) {
+    if(err){
+      store.dispatch({type: 'SHOW_SNACKBAR', msg: `An error ocurred reading the file: ${err.message}`});
+      return;
+    }
+    store.dispatch({type: 'ADD_PAGE', folderIndex: state.state.folderIndex, index: state.state.pageIndex+1});
+    store.dispatch({type: 'SELECT_PAGE', index: state.state.pageIndex+1})
+    store.dispatch({type: 'PAGE_CONTENT_CHANGE', 
+      content: data, 
+      folderIndex: store.getState().state.folderIndex,
+      pageIndex: store.getState().state.pageIndex
+    });
+  });
+}
+
 function menuFolderview(store) {
   store.dispatch({type: 'FOLDER_MODE'});
 }
@@ -127,6 +155,8 @@ function menuLogout(store) {
     images: [], 
     folders: []
   }});
+  store.dispatch({type: 'SELECT_FOLDER', index: 0});
+  store.dispatch({type: 'SELECT_PAGE', index: 0});
   ipc.send('close-socket', null);
 }
 
@@ -200,6 +230,13 @@ const menubar_template_builder = function(store) {
         enabled: is_logged_in(state),
         visible: is_logged_in(state),
         click () { menuSaveas(store) }
+      },
+      {
+        role: 'Import Markdown',
+        label: 'Import Markdown',
+        enabled: is_logged_in(state),
+        visible: is_logged_in(state),
+        click () { importMarkdown(store) }
       },
       {
         role: 'FolderView',
@@ -430,6 +467,16 @@ const menubar_template_builder = function(store) {
     )
     // View menu.
     menubar_template[3].submenu = [
+      {
+        role: 'Input Mode Light',
+        label: 'Input Mode Light',
+        click() { inputColorMode(store, 'light') }
+      },
+      {
+        role: 'Input Mode Dark',
+        label: 'Input Mode Dark',
+        click() { inputColorMode(store, 'dark') }
+      },
       {
         label: 'Close',
         accelerator: 'CmdOrCtrl+W',

@@ -177,59 +177,72 @@ class TocNav extends React.Component {
     // console.log(JSON.stringify(state.notes.folders[state.state.folderIndex].pages));
     this.generatePageArray();
     this.pagesArray = this.generatePagesArray();
-    try {
-      if (this.state.zoom == 'in') {
-        return (      
-          <div className="toc-nav">
-            <div className="toc-nav-btns">
-              <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
-              &nbsp;&nbsp;&nbsp;
-              <span className="toc-btn" onClick={this.pagesView}><i className="icon-search-minus" aria-hidden="true"></i></span>
-              &nbsp;&nbsp;&nbsp;
-              <span className="toc-btn" onClick={this.createNewPage}><i className="icon-file-text" aria-hidden="true"></i></span>
-              &nbsp;&nbsp;&nbsp;
-              <span className="toc-btn" onClick={this.deletePage}><i className="icon-trash" aria-hidden="true"></i></span>
-            </div>
-            <br/>
-            <div>
-              <span className={'toc-btn left ' + (this.hasPrevPage() ? '' : 'hidden')} onClick={this.selectPreviousPage}>
-                <i className="icon-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;{this.extractLastPageHeader()}
-              </span>  
-              <span className={'toc-btn right ' + (this.hasNextPage() ? '' : 'hidden')} onClick={this.selectNextPage}>
-                {this.extractNextPageHeader()}&nbsp;&nbsp;<i className="icon-arrow-right" aria-hidden="true"></i>
-              </span>
-              <span className={'toc-btn right ' + (this.hasNextPage() ? 'hidden' : '')} onClick={this.createNewPage}>
-                <i className="icon-file-text" aria-hidden="true"></i>&nbsp;&nbsp;<i className="icon-arrow-right" aria-hidden="true"></i>
-              </span>
-            </div>
-            <br/>
-            <div className="toc-nav-content">
-              <span className="title">Table of Contents</span>
-              <ul>
-                {this.array.map(this.renderTocItem, this)}
-              </ul>
-            </div>
+    if (state.editor.mode == 'quickmode'){
+      return (      
+        <div className="toc-nav">
+          <div className="toc-nav-content">
+            <span className="title">Table of Contents</span>
+            <ul>
+              {this.array.map(this.renderTocItem, this)}
+            </ul>
+          </div>
         </div>
       );
-      } else if (this.state.zoom == 'out') {
-        return (      
-          <div className="toc-nav">
-            <span>
-              <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
-              &nbsp;&nbsp;&nbsp;
-              <span className="toc-btn" onClick={this.pageContentView}><i className="icon-search-plus" aria-hidden="true"></i></span>
-            </span>
-            <br/>
-            <div className="toc-nav-content">
-              <span className="title">Table of Pages</span>
-              <ul>
-                {this.pagesArray.map(this.renderPageItem, this)}
-              </ul>
-            </div>
-        </div>
-      );
-      }
-    } catch (err) { console.log(err); return null; }
+    } else {
+      try {
+        if (this.state.zoom == 'in') {
+          return (      
+            <div className="toc-nav">
+              <div className="toc-nav-btns">
+                <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
+                &nbsp;&nbsp;&nbsp;
+                <span className="toc-btn" onClick={this.pagesView}><i className="icon-search-minus" aria-hidden="true"></i></span>
+                &nbsp;&nbsp;&nbsp;
+                <span className="toc-btn" onClick={this.createNewPage}><i className="icon-file-text" aria-hidden="true"></i></span>
+                &nbsp;&nbsp;&nbsp;
+                <span className="toc-btn" onClick={this.deletePage}><i className="icon-trash" aria-hidden="true"></i></span>
+              </div>
+              <br/>
+              <div>
+                <span className={'toc-btn left ' + (this.hasPrevPage() ? '' : 'hidden')} onClick={this.selectPreviousPage}>
+                  <i className="icon-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;{this.extractLastPageHeader()}
+                </span>  
+                <span className={'toc-btn right ' + (this.hasNextPage() ? '' : 'hidden')} onClick={this.selectNextPage}>
+                  {this.extractNextPageHeader()}&nbsp;&nbsp;<i className="icon-arrow-right" aria-hidden="true"></i>
+                </span>
+                <span className={'toc-btn right ' + (this.hasNextPage() ? 'hidden' : '')} onClick={this.createNewPage}>
+                  <i className="icon-file-text" aria-hidden="true"></i>&nbsp;&nbsp;<i className="icon-arrow-right" aria-hidden="true"></i>
+                </span>
+              </div>
+              <br/>
+              <div className="toc-nav-content">
+                <span className="title">Table of Contents</span>
+                <ul>
+                  {this.array.map(this.renderTocItem, this)}
+                </ul>
+              </div>
+          </div>
+        );
+        } else if (this.state.zoom == 'out') {
+          return (      
+            <div className="toc-nav">
+              <span>
+                <span className="toc-btn" onClick={this.folderview}><i className="icon-folderview" aria-hidden="true"></i></span>
+                &nbsp;&nbsp;&nbsp;
+                <span className="toc-btn" onClick={this.pageContentView}><i className="icon-search-plus" aria-hidden="true"></i></span>
+              </span>
+              <br/>
+              <div className="toc-nav-content">
+                <span className="title">Table of Pages</span>
+                <ul>
+                  {this.pagesArray.map(this.renderPageItem, this)}
+                </ul>
+              </div>
+          </div>
+        );
+        }
+      } catch (err) { console.log(err); return null; }
+    }
   }
 }
 
