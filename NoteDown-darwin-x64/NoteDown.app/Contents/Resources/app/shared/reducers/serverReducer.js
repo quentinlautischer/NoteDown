@@ -1,0 +1,58 @@
+/*
+Relevant requirements:
+- FU-4: Desktop: User Account: Creation
+- FU-5: Desktop: User Account: Authentication
+- FU-22: Cloud Sync: Retrieve
+- FU-23: Cloud Sync: Push
+- FU-24: Mobile: User Account: Authentication
+*/
+
+var update = require('react-addons-update');
+
+addOnlineUser = function(state, action) {
+  const user = {
+    userid: action.userid,
+    socketid: action.socketid,
+    platform: action.platform
+  }
+
+  return update(state, {
+      onlineUsers:  {$push : [user]}
+  });
+}
+
+removeOnlineUser = function(state, action) {
+  var onlineUsers = state.onlineUsers;
+  var i;
+  var index = null;
+  for(i=0;i<onlineUsers.length;i++) {
+    if (onlineUsers[i].socketid == action.socketid) {
+      index = i;
+    }
+  }
+  if (index != null) {
+    return update(state, {
+      onlineUsers: {$splice: [[index, 1]]}
+    });
+  }
+  return state;
+}
+
+const initial_state = {
+  onlineUsers: [],
+}
+
+serverReducer = function(state = initial_state, action){
+  switch (action.type) {
+    case 'ADD_ONLINE_USER':
+      return addOnlineUser(state, action);
+    case 'REMOVE_ONLINE_USER':
+      return removeOnlineUser(state, action);
+    default:
+      return state;
+  }
+}
+
+module.exports = {
+    serverReducer: serverReducer
+}

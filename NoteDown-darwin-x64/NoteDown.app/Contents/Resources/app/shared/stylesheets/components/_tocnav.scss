@@ -1,0 +1,125 @@
+.toc-nav-show {
+  position: fixed;
+  right: 25px;
+  top: map-get($windows-dimensions, menubar-custom-height)+20px;
+  color: map-get($colors, primary2);
+  z-index: 10;
+}
+
+.toc-nav-show:hover + .toc-nav{
+  left: 60%;
+}
+
+.toc-nav:hover {
+  left: 60%;
+}
+
+.toc-nav-btns {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.toc-nav {
+  display: block;
+  position: fixed;
+  box-sizing: border-box;
+  top: 5%;
+  left: 100%;
+  width: 40%;
+  height: 90%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.1);
+  resize: none;
+  outline: none;
+  color: map-get($colors, dark);
+  background-color: map-get($colors, secondary1);
+  font-size: 20px;
+  z-index: 5;
+  transition: left 0.5s;
+
+  li {
+    list-style: none;
+  }
+
+  ul {
+    list-style: none;
+  }
+}
+
+.toc-nav-content {
+  max-height: 90%;
+  width: 100%;
+  z-index: 5;
+}
+
+.title {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  z-index: 5;
+  color: map-get($colors, primary2);
+}
+
+.hidden {
+  display: none;
+}
+
+.toc-li {
+  color: map-get($colors, primary2);
+
+  &:hover {
+    color: map-get($colors, secondary2);
+  }
+
+}
+
+.toc-li-h1 { 
+  margin-left:0px;
+}
+
+.toc-li-h2 {
+  margin-left:20px;
+}
+
+.toc-li-h3 {
+  margin-left:40px;
+}
+
+.toc-li-h4 {
+  margin-left:60px;
+}
+
+.toc-li-h5 {
+  margin-left:80px;
+}
+
+.toc-li-h6 {
+  margin-left:100px;
+}
+
+.toc-btn {
+  color: map-get($colors, primary2);
+
+  &.left {
+    float: left;
+  }
+
+  &.right {
+    float: right;
+  }
+
+  &.hidden {
+    display: none;
+  }
+
+  &:hover {
+    color: map-get($colors, secondary2);
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
+}
+

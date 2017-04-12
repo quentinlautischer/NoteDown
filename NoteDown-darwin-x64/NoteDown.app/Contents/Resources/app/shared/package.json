@@ -1,0 +1,36 @@
+{
+  "name": "NoteDown.Shared",
+  "version": "0.0.1",
+  "description": "NoteDown Application Shared Code",
+  "main": "main.js",
+  "scripts": {},
+  "repository": "https",
+  "author": "ECE493 - Group 3",
+  "license": "MIT",
+  "babel": {
+    "presets": [
+      "es2015",
+      "react"
+    ]
+  },
+  "dependencies": {
+    "codemirror": "^5.25.0",
+    "font-awesome": "^4.7.0",
+    "highlight.js": "^9.10.0",
+    "immutability-helper": "^2.1.2",
+    "katex": "^0.7.1",
+    "mdi": "^1.8.36",
+    "react": "^15.4.2",
+    "react-addons-update": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0"
+  },
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0"
+  }
+}

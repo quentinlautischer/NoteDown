@@ -18,7 +18,8 @@
     "android": "cd mobile && react-native run-android && cd ..",
     "watch_sass": "cd shared && sass --watch stylesheets && cd ..",
     "mobile_watch_css": "cd mobile && node_modules/.bin/react-native-css -i ../shared/stylesheets/utils/main.css -o styles.js --watch --pretty && cd ..",
-    "mobile_watch_shared": "cpx \"shared/**/**\" \"mobile/shared\" --watch"
+    "mobile_watch_shared": "cpx \"shared/**/**\" \"mobile/shared\" --watch",
+    "desktop_watch_shared": "cpx \"shared/**/**\" \"desktop/shared\" --watch"
   },
   "babel": {
     "presets": [
