@@ -1,7 +1,13 @@
+/*
+Relevant requirements:
+- FU-10: Desktop: Editor: Dual Mode Edit
+- FU-14: Desktop Render
+*/
+
+
 import React from 'react';
 import TextField from 'react';
 
-import Renderer from './renderer';
 import TocNav from './tocNav';
 import DialogFileDrag from './dialogFileDrag';
 import DialogMobilePhotoSupply from './dialogMobilePhotoSupply';
@@ -12,7 +18,7 @@ import { connect } from 'react-redux';
 
 var ipc = require('electron').ipcRenderer;
 
-var shared = require('../../shared/parser.js');
+var shared = require('../shared/parser.js');
 
 var hljs = require('highlight.js');
 var CodeMirror = require('react-codemirror');

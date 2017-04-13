@@ -1,3 +1,9 @@
+/*
+Relevant requirements:
+- FU-5: Desktop: User: Authentication
+*/
+
+
 import React from 'react';
 import TextField from 'react';
 import NoteDownTitleLogo from './notedownTitleLogo';

@@ -1,3 +1,8 @@
+/*
+Relevant requirements:
+- FU-10: Desktop: Dual Mode Edit
+*/
+
 import React from 'react';
 import TextField from 'react';
 

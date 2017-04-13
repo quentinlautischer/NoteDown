@@ -1,3 +1,8 @@
+/*
+Relevant requirements:
+- FU-10: Desktop: Dual Mode Edit
+*/
+
 import React, { Component } from 'react';
 
 class FormatButton extends Component {

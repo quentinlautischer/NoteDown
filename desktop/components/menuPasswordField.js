@@ -1,3 +1,9 @@
+/*
+Relevant requirements:
+- FU-10: Desktop: User: Authentication
+*/
+
+
 import React from 'react';
 
 import TextField from 'material-ui/TextField';

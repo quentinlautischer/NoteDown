@@ -12,7 +12,6 @@ import flashcardReducer from './shared/reducers/flashcardReducer';
 import menubuilder from './components/menubar';
 import StartMenu from './components/startMenu';
 import DualmodeEditor from './components/dualmodeEditor';
-import FlashcardViewer from './components/flashcardViewer'
 import FolderContainerView from './components/folderContainerView';
 import MenubarTile from './components/menubarTile';
 

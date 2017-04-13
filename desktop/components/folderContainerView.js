@@ -1,9 +1,16 @@
+/*
+Relevant requirements:
+- FU-7: Desktop: Folder System: Deletion
+- FU-8: Desktop: Folder System: Navigation
+- FU-9: Desktop: Folder System: Open
+*/
+
 import React from 'react';
 import TextField from 'react';
 import DialogFolderCreate from './dialogFolderCreate'
 import { connect } from 'react-redux';
 
-var shared = require('./shared/parser.js');
+var shared = require('../shared/parser.js');
 var ipc = require('electron').ipcRenderer;
 
 class FolderContainerView extends React.Component {

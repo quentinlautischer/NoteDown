@@ -1,5 +1,11 @@
+/*
+Relevant requirements:
+- FU-8: Folder System: Navigation
+- FU-12: Desktop: Editor: Add Page
+- FU-15: Desktop: Editor: Navigation
+*/
+
 import React from 'react';
-import TocItem from './tocItem';
 
 class TocNav extends React.Component {
   constructor() {

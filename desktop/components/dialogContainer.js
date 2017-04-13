@@ -1,3 +1,10 @@
+/*
+Relevant requirements:
+- FU-22: Cloud Sync: Retrieve
+- FU-23: Cloud Sync: Push
+*/
+
+
 import React from 'react';
 
 import PushConflictDialog from './pushConflictDialog';

@@ -1,3 +1,10 @@
+/*
+Relevant requirements:
+- FU-4: User Account: Creation
+- FU-5: User Account: Authentication
+*/
+
+
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';

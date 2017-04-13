@@ -1,3 +1,14 @@
+/*
+Relevant requirements:
+- FU-1: Desktop: QuickMode: Quick Create
+- FU-2: Desktop: QuickMode: Quick Open
+- FU-3: Desktop: QuickMode: Quick Save
+- FU-13: Desktop: Editor: Save
+- FU-16: Desktop: Editor: Import
+- FU-17: Desktop: Editor: Export
+*/
+
+
 const {app, Menu} = require('electron')
 
 const {remote} = require('electron');
@@ -6,7 +17,7 @@ const {dialog} = remote;
 
 const ipc = require('electron').ipcRenderer;
 
-var shared = require('./shared/parser.js');
+var shared = require('../shared/parser.js');
 
 ////////////////////////////////////////////////////////
 /// Bool Queries

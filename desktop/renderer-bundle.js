@@ -88,23 +88,19 @@
 
 	var _dualmodeEditor2 = _interopRequireDefault(_dualmodeEditor);
 
-	var _flashcardViewer = __webpack_require__(855);
-
-	var _flashcardViewer2 = _interopRequireDefault(_flashcardViewer);
-
-	var _folderContainerView = __webpack_require__(856);
+	var _folderContainerView = __webpack_require__(853);
 
 	var _folderContainerView2 = _interopRequireDefault(_folderContainerView);
 
-	var _menubarTile = __webpack_require__(858);
+	var _menubarTile = __webpack_require__(855);
 
 	var _menubarTile2 = _interopRequireDefault(_menubarTile);
 
-	var _dialogFileDrag = __webpack_require__(630);
+	var _dialogFileDrag = __webpack_require__(628);
 
 	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
 
-	var _dialogContainer = __webpack_require__(859);
+	var _dialogContainer = __webpack_require__(856);
 
 	var _dialogContainer2 = _interopRequireDefault(_dialogContainer);
 
@@ -116,11 +112,11 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	var _Snackbar = __webpack_require__(864);
+	var _Snackbar = __webpack_require__(861);
 
 	var _Snackbar2 = _interopRequireDefault(_Snackbar);
 
-	var _reactTapEventPlugin = __webpack_require__(868);
+	var _reactTapEventPlugin = __webpack_require__(865);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
@@ -24726,6 +24722,16 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	/*
+	Relevant requirements:
+	- FU-1: Desktop: QuickMode: Quick Create
+	- FU-2: Desktop: QuickMode: Quick Open
+	- FU-3: Desktop: QuickMode: Quick Save
+	- FU-13: Desktop: Editor: Save
+	- FU-16: Desktop: Editor: Import
+	- FU-17: Desktop: Editor: Export
+	*/
 
 	var _require = __webpack_require__(223),
 	    app = _require.app,
@@ -52310,7 +52316,11 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements:
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-4: User Account: Creation
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-5: User Account: Authentication
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var ipc = __webpack_require__(223).ipcRenderer;
 
@@ -59984,7 +59994,9 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements: None
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var NoteDownTitleLogo = function (_React$Component) {
 	  _inherits(NoteDownTitleLogo, _React$Component);
@@ -60047,7 +60059,9 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements: none
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var MenuButton = function (_React$Component) {
 	  _inherits(MenuButton, _React$Component);
@@ -63633,7 +63647,9 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements: None
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var MenuTextField = function (_TextField) {
 	  _inherits(MenuTextField, _TextField);
@@ -65206,7 +65222,10 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements:
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-10: Desktop: User: Authentication
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var MenuPasswordField = function (_TextField) {
 	  _inherits(MenuPasswordField, _TextField);
@@ -65350,23 +65369,19 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _renderer = __webpack_require__(627);
-
-	var _renderer2 = _interopRequireDefault(_renderer);
-
-	var _tocNav = __webpack_require__(628);
+	var _tocNav = __webpack_require__(627);
 
 	var _tocNav2 = _interopRequireDefault(_tocNav);
 
-	var _dialogFileDrag = __webpack_require__(630);
+	var _dialogFileDrag = __webpack_require__(628);
 
 	var _dialogFileDrag2 = _interopRequireDefault(_dialogFileDrag);
 
-	var _dialogMobilePhotoSupply = __webpack_require__(636);
+	var _dialogMobilePhotoSupply = __webpack_require__(634);
 
 	var _dialogMobilePhotoSupply2 = _interopRequireDefault(_dialogMobilePhotoSupply);
 
-	var _formatToolbar = __webpack_require__(637);
+	var _formatToolbar = __webpack_require__(635);
 
 	var _formatToolbar2 = _interopRequireDefault(_formatToolbar);
 
@@ -65378,17 +65393,21 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements:
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-10: Desktop: Editor: Dual Mode Edit
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-14: Desktop Render
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var ipc = __webpack_require__(223).ipcRenderer;
 
 	var shared = __webpack_require__(225);
 
-	var hljs = __webpack_require__(673);
-	var CodeMirror = __webpack_require__(847);
+	var hljs = __webpack_require__(671);
+	var CodeMirror = __webpack_require__(845);
+	__webpack_require__(849);
+	__webpack_require__(850);
 	__webpack_require__(851);
-	__webpack_require__(852);
-	__webpack_require__(853);
 
 	var DualmodeEditor = function (_React$Component) {
 	  _inherits(DualmodeEditor, _React$Component);
@@ -65667,74 +65686,18 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _RaisedButton = __webpack_require__(576);
-
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Renderer = function (_React$Component) {
-	  _inherits(Renderer, _React$Component);
-
-	  function Renderer() {
-	    _classCallCheck(this, Renderer);
-
-	    return _possibleConstructorReturn(this, (Renderer.__proto__ || Object.getPrototypeOf(Renderer)).apply(this, arguments));
-	  }
-
-	  _createClass(Renderer, [{
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'quickmode' },
-	        _react2.default.createElement(_RaisedButton2.default, { label: 'QuickMode', onClick: function onClick() {
-	            return _this2.props.onClick();
-	          } })
-	      );
-	    }
-	  }]);
-
-	  return Renderer;
-	}(_react2.default.Component);
-
-	exports.default = Renderer;
-
-/***/ },
-/* 628 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _tocItem = __webpack_require__(629);
-
-	var _tocItem2 = _interopRequireDefault(_tocItem);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements:
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-8: Folder System: Navigation
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-12: Desktop: Editor: Add Page
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-15: Desktop: Editor: Navigation
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var TocNav = function (_React$Component) {
 	  _inherits(TocNav, _React$Component);
@@ -66101,89 +66064,7 @@
 	exports.default = TocNav;
 
 /***/ },
-/* 629 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var TocNav = function (_React$Component) {
-	  _inherits(TocNav, _React$Component);
-
-	  function TocNav() {
-	    _classCallCheck(this, TocNav);
-
-	    return _possibleConstructorReturn(this, (TocNav.__proto__ || Object.getPrototypeOf(TocNav)).apply(this, arguments));
-	  }
-
-	  _createClass(TocNav, [{
-	    key: "render",
-	    value: function render() {
-	      return _react2.default.createElement(
-	        "div",
-	        { className: "toc-nav" },
-	        _react2.default.createElement(
-	          "p",
-	          null,
-	          "Chapter 1"
-	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement(
-	          "span",
-	          null,
-	          "\xA0\xA0\xA0"
-	        ),
-	        _react2.default.createElement(
-	          "p",
-	          { href: "" },
-	          "Chapter 1.1"
-	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement(
-	          "span",
-	          null,
-	          "\xA0\xA0\xA0"
-	        ),
-	        _react2.default.createElement(
-	          "p",
-	          { href: "" },
-	          "Chapter 1.2"
-	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement(
-	          "p",
-	          { href: "" },
-	          "Chapter 2"
-	        ),
-	        _react2.default.createElement("br", null)
-	      );
-	    }
-	  }]);
-
-	  return TocNav;
-	}(_react2.default.Component);
-
-	exports.default = TocNav;
-
-/***/ },
-/* 630 */
+/* 628 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66198,7 +66079,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog = __webpack_require__(631);
+	var _Dialog = __webpack_require__(629);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -66232,7 +66113,10 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements:
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-16: Desktop: Editor: Import
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var fs = __webpack_require__(224);
 
@@ -66403,7 +66287,7 @@
 	exports.default = DialogFileDrag;
 
 /***/ },
-/* 631 */
+/* 629 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66413,7 +66297,7 @@
 	});
 	exports.default = undefined;
 
-	var _Dialog = __webpack_require__(632);
+	var _Dialog = __webpack_require__(630);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -66422,7 +66306,7 @@
 	exports.default = _Dialog2.default;
 
 /***/ },
-/* 632 */
+/* 630 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66483,11 +66367,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _Overlay = __webpack_require__(633);
+	var _Overlay = __webpack_require__(631);
 
 	var _Overlay2 = _interopRequireDefault(_Overlay);
 
-	var _RenderToLayer = __webpack_require__(635);
+	var _RenderToLayer = __webpack_require__(633);
 
 	var _RenderToLayer2 = _interopRequireDefault(_RenderToLayer);
 
@@ -67014,7 +66898,7 @@
 	exports.default = Dialog;
 
 /***/ },
-/* 633 */
+/* 631 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67063,7 +66947,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _AutoLockScrolling = __webpack_require__(634);
+	var _AutoLockScrolling = __webpack_require__(632);
 
 	var _AutoLockScrolling2 = _interopRequireDefault(_AutoLockScrolling);
 
@@ -67159,7 +67043,7 @@
 	exports.default = Overlay;
 
 /***/ },
-/* 634 */
+/* 632 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67284,7 +67168,7 @@
 	exports.default = AutoLockScrolling;
 
 /***/ },
-/* 635 */
+/* 633 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67468,7 +67352,7 @@
 	exports.default = RenderToLayer;
 
 /***/ },
-/* 636 */
+/* 634 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67483,7 +67367,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog = __webpack_require__(631);
+	var _Dialog = __webpack_require__(629);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -67517,7 +67401,9 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements: None
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var fs = __webpack_require__(224);
 
@@ -67662,7 +67548,7 @@
 	exports.default = DialogMobilePhotoSupply;
 
 /***/ },
-/* 637 */
+/* 635 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -67677,11 +67563,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _MenuItem = __webpack_require__(638);
+	var _MenuItem = __webpack_require__(636);
 
 	var _MenuItem2 = _interopRequireDefault(_MenuItem);
 
-	var _IconButton = __webpack_require__(657);
+	var _IconButton = __webpack_require__(655);
 
 	var _IconButton2 = _interopRequireDefault(_IconButton);
 
@@ -67689,11 +67575,11 @@
 
 	var _FlatButton2 = _interopRequireDefault(_FlatButton);
 
-	var _Popover = __webpack_require__(671);
+	var _Popover = __webpack_require__(669);
 
 	var _Popover2 = _interopRequireDefault(_Popover);
 
-	var _FontIcon = __webpack_require__(659);
+	var _FontIcon = __webpack_require__(657);
 
 	var _FontIcon2 = _interopRequireDefault(_FontIcon);
 
@@ -67711,7 +67597,10 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements:
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-10: Desktop: Dual Mode Edit
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var FormatToolbar = function (_React$Component) {
 	  _inherits(FormatToolbar, _React$Component);
@@ -68013,7 +67902,7 @@
 	exports.default = FormatToolbar;
 
 /***/ },
-/* 638 */
+/* 636 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68023,7 +67912,7 @@
 	});
 	exports.default = undefined;
 
-	var _MenuItem = __webpack_require__(639);
+	var _MenuItem = __webpack_require__(637);
 
 	var _MenuItem2 = _interopRequireDefault(_MenuItem);
 
@@ -68032,7 +67921,7 @@
 	exports.default = _MenuItem2.default;
 
 /***/ },
-/* 639 */
+/* 637 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68085,19 +67974,19 @@
 
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
-	var _Popover = __webpack_require__(640);
+	var _Popover = __webpack_require__(638);
 
 	var _Popover2 = _interopRequireDefault(_Popover);
 
-	var _check = __webpack_require__(644);
+	var _check = __webpack_require__(642);
 
 	var _check2 = _interopRequireDefault(_check);
 
-	var _ListItem = __webpack_require__(656);
+	var _ListItem = __webpack_require__(654);
 
 	var _ListItem2 = _interopRequireDefault(_ListItem);
 
-	var _Menu = __webpack_require__(668);
+	var _Menu = __webpack_require__(666);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -68413,7 +68302,7 @@
 	exports.default = MenuItem;
 
 /***/ },
-/* 640 */
+/* 638 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -68466,7 +68355,7 @@
 
 	var _reactEventListener2 = _interopRequireDefault(_reactEventListener);
 
-	var _RenderToLayer = __webpack_require__(635);
+	var _RenderToLayer = __webpack_require__(633);
 
 	var _RenderToLayer2 = _interopRequireDefault(_RenderToLayer);
 
@@ -68478,15 +68367,15 @@
 
 	var _Paper2 = _interopRequireDefault(_Paper);
 
-	var _lodash = __webpack_require__(641);
+	var _lodash = __webpack_require__(639);
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _PopoverAnimationDefault = __webpack_require__(642);
+	var _PopoverAnimationDefault = __webpack_require__(640);
 
 	var _PopoverAnimationDefault2 = _interopRequireDefault(_PopoverAnimationDefault);
 
-	var _iOSHelpers = __webpack_require__(643);
+	var _iOSHelpers = __webpack_require__(641);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68926,7 +68815,7 @@
 	exports.default = Popover;
 
 /***/ },
-/* 641 */
+/* 639 */
 /***/ function(module, exports) {
 
 	/**
@@ -69371,7 +69260,7 @@
 
 
 /***/ },
-/* 642 */
+/* 640 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69544,7 +69433,7 @@
 	exports.default = PopoverAnimationDefault;
 
 /***/ },
-/* 643 */
+/* 641 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -69576,7 +69465,7 @@
 	};
 
 /***/ },
-/* 644 */
+/* 642 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69589,11 +69478,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _pure = __webpack_require__(645);
+	var _pure = __webpack_require__(643);
 
 	var _pure2 = _interopRequireDefault(_pure);
 
-	var _SvgIcon = __webpack_require__(654);
+	var _SvgIcon = __webpack_require__(652);
 
 	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
 
@@ -69613,14 +69502,14 @@
 	exports.default = NavigationCheck;
 
 /***/ },
-/* 645 */
+/* 643 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _shouldUpdate = __webpack_require__(646);
+	var _shouldUpdate = __webpack_require__(644);
 
 	var _shouldUpdate2 = _interopRequireDefault(_shouldUpdate);
 
@@ -69628,7 +69517,7 @@
 
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
-	var _createHelper = __webpack_require__(647);
+	var _createHelper = __webpack_require__(645);
 
 	var _createHelper2 = _interopRequireDefault(_createHelper);
 
@@ -69641,7 +69530,7 @@
 	exports.default = (0, _createHelper2.default)(pure, 'pure', true, true);
 
 /***/ },
-/* 646 */
+/* 644 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69650,11 +69539,11 @@
 
 	var _react = __webpack_require__(1);
 
-	var _createHelper = __webpack_require__(647);
+	var _createHelper = __webpack_require__(645);
 
 	var _createHelper2 = _interopRequireDefault(_createHelper);
 
-	var _createEagerFactory = __webpack_require__(650);
+	var _createEagerFactory = __webpack_require__(648);
 
 	var _createEagerFactory2 = _interopRequireDefault(_createEagerFactory);
 
@@ -69694,7 +69583,7 @@
 	exports.default = (0, _createHelper2.default)(shouldUpdate, 'shouldUpdate');
 
 /***/ },
-/* 647 */
+/* 645 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69707,7 +69596,7 @@
 	  if (process.env.NODE_ENV !== 'production' && setDisplayName) {
 	    var _ret = function () {
 	      /* eslint-disable global-require */
-	      var wrapDisplayName = __webpack_require__(648).default;
+	      var wrapDisplayName = __webpack_require__(646).default;
 	      /* eslint-enable global-require */
 
 	      if (noArgs) {
@@ -69744,14 +69633,14 @@
 	exports.default = createHelper;
 
 /***/ },
-/* 648 */
+/* 646 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _getDisplayName = __webpack_require__(649);
+	var _getDisplayName = __webpack_require__(647);
 
 	var _getDisplayName2 = _interopRequireDefault(_getDisplayName);
 
@@ -69764,7 +69653,7 @@
 	exports.default = wrapDisplayName;
 
 /***/ },
-/* 649 */
+/* 647 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -69785,18 +69674,18 @@
 	exports.default = getDisplayName;
 
 /***/ },
-/* 650 */
+/* 648 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _createEagerElementUtil = __webpack_require__(651);
+	var _createEagerElementUtil = __webpack_require__(649);
 
 	var _createEagerElementUtil2 = _interopRequireDefault(_createEagerElementUtil);
 
-	var _isReferentiallyTransparentFunctionComponent = __webpack_require__(652);
+	var _isReferentiallyTransparentFunctionComponent = __webpack_require__(650);
 
 	var _isReferentiallyTransparentFunctionComponent2 = _interopRequireDefault(_isReferentiallyTransparentFunctionComponent);
 
@@ -69812,7 +69701,7 @@
 	exports.default = createFactory;
 
 /***/ },
-/* 651 */
+/* 649 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69851,14 +69740,14 @@
 	exports.default = createEagerElementUtil;
 
 /***/ },
-/* 652 */
+/* 650 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _isClassComponent = __webpack_require__(653);
+	var _isClassComponent = __webpack_require__(651);
 
 	var _isClassComponent2 = _interopRequireDefault(_isClassComponent);
 
@@ -69871,7 +69760,7 @@
 	exports.default = isReferentiallyTransparentFunctionComponent;
 
 /***/ },
-/* 653 */
+/* 651 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -69884,7 +69773,7 @@
 	exports.default = isClassComponent;
 
 /***/ },
-/* 654 */
+/* 652 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -69894,7 +69783,7 @@
 	});
 	exports.default = undefined;
 
-	var _SvgIcon = __webpack_require__(655);
+	var _SvgIcon = __webpack_require__(653);
 
 	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
 
@@ -69903,7 +69792,7 @@
 	exports.default = _SvgIcon2.default;
 
 /***/ },
-/* 655 */
+/* 653 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70069,7 +69958,7 @@
 	exports.default = SvgIcon;
 
 /***/ },
-/* 656 */
+/* 654 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70132,19 +70021,19 @@
 
 	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
 
-	var _IconButton = __webpack_require__(657);
+	var _IconButton = __webpack_require__(655);
 
 	var _IconButton2 = _interopRequireDefault(_IconButton);
 
-	var _expandLess = __webpack_require__(662);
+	var _expandLess = __webpack_require__(660);
 
 	var _expandLess2 = _interopRequireDefault(_expandLess);
 
-	var _expandMore = __webpack_require__(663);
+	var _expandMore = __webpack_require__(661);
 
 	var _expandMore2 = _interopRequireDefault(_expandMore);
 
-	var _NestedList = __webpack_require__(664);
+	var _NestedList = __webpack_require__(662);
 
 	var _NestedList2 = _interopRequireDefault(_NestedList);
 
@@ -70785,7 +70674,7 @@
 	exports.default = ListItem;
 
 /***/ },
-/* 657 */
+/* 655 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70795,7 +70684,7 @@
 	});
 	exports.default = undefined;
 
-	var _IconButton = __webpack_require__(658);
+	var _IconButton = __webpack_require__(656);
 
 	var _IconButton2 = _interopRequireDefault(_IconButton);
 
@@ -70804,7 +70693,7 @@
 	exports.default = _IconButton2.default;
 
 /***/ },
-/* 658 */
+/* 656 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -70861,11 +70750,11 @@
 
 	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
 
-	var _FontIcon = __webpack_require__(659);
+	var _FontIcon = __webpack_require__(657);
 
 	var _FontIcon2 = _interopRequireDefault(_FontIcon);
 
-	var _Tooltip = __webpack_require__(661);
+	var _Tooltip = __webpack_require__(659);
 
 	var _Tooltip2 = _interopRequireDefault(_Tooltip);
 
@@ -71183,7 +71072,7 @@
 	exports.default = IconButton;
 
 /***/ },
-/* 659 */
+/* 657 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71193,7 +71082,7 @@
 	});
 	exports.default = undefined;
 
-	var _FontIcon = __webpack_require__(660);
+	var _FontIcon = __webpack_require__(658);
 
 	var _FontIcon2 = _interopRequireDefault(_FontIcon);
 
@@ -71202,7 +71091,7 @@
 	exports.default = _FontIcon2.default;
 
 /***/ },
-/* 660 */
+/* 658 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71361,7 +71250,7 @@
 	exports.default = FontIcon;
 
 /***/ },
-/* 661 */
+/* 659 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71589,7 +71478,7 @@
 	exports.default = Tooltip;
 
 /***/ },
-/* 662 */
+/* 660 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71602,11 +71491,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _pure = __webpack_require__(645);
+	var _pure = __webpack_require__(643);
 
 	var _pure2 = _interopRequireDefault(_pure);
 
-	var _SvgIcon = __webpack_require__(654);
+	var _SvgIcon = __webpack_require__(652);
 
 	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
 
@@ -71626,7 +71515,7 @@
 	exports.default = NavigationExpandLess;
 
 /***/ },
-/* 663 */
+/* 661 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71639,11 +71528,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _pure = __webpack_require__(645);
+	var _pure = __webpack_require__(643);
 
 	var _pure2 = _interopRequireDefault(_pure);
 
-	var _SvgIcon = __webpack_require__(654);
+	var _SvgIcon = __webpack_require__(652);
 
 	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
 
@@ -71663,7 +71552,7 @@
 	exports.default = NavigationExpandMore;
 
 /***/ },
-/* 664 */
+/* 662 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71676,7 +71565,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _List = __webpack_require__(665);
+	var _List = __webpack_require__(663);
 
 	var _List2 = _interopRequireDefault(_List);
 
@@ -71717,7 +71606,7 @@
 	exports.default = NestedList;
 
 /***/ },
-/* 665 */
+/* 663 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71762,7 +71651,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Subheader = __webpack_require__(666);
+	var _Subheader = __webpack_require__(664);
 
 	var _Subheader2 = _interopRequireDefault(_Subheader);
 
@@ -71826,7 +71715,7 @@
 	exports.default = List;
 
 /***/ },
-/* 666 */
+/* 664 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71836,7 +71725,7 @@
 	});
 	exports.default = undefined;
 
-	var _Subheader = __webpack_require__(667);
+	var _Subheader = __webpack_require__(665);
 
 	var _Subheader2 = _interopRequireDefault(_Subheader);
 
@@ -71845,7 +71734,7 @@
 	exports.default = _Subheader2.default;
 
 /***/ },
-/* 667 */
+/* 665 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71929,7 +71818,7 @@
 	exports.default = Subheader;
 
 /***/ },
-/* 668 */
+/* 666 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -71986,7 +71875,7 @@
 
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
-	var _ClickAwayListener = __webpack_require__(669);
+	var _ClickAwayListener = __webpack_require__(667);
 
 	var _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);
 
@@ -71998,11 +71887,11 @@
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _List = __webpack_require__(665);
+	var _List = __webpack_require__(663);
 
 	var _List2 = _interopRequireDefault(_List);
 
-	var _menuUtils = __webpack_require__(670);
+	var _menuUtils = __webpack_require__(668);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -72614,7 +72503,7 @@
 	exports.default = Menu;
 
 /***/ },
-/* 669 */
+/* 667 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -72744,7 +72633,7 @@
 	exports.default = ClickAwayListener;
 
 /***/ },
-/* 670 */
+/* 668 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -72788,7 +72677,7 @@
 	}();
 
 /***/ },
-/* 671 */
+/* 669 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -72798,11 +72687,11 @@
 	});
 	exports.default = exports.PopoverAnimationVertical = exports.Popover = undefined;
 
-	var _Popover2 = __webpack_require__(640);
+	var _Popover2 = __webpack_require__(638);
 
 	var _Popover3 = _interopRequireDefault(_Popover2);
 
-	var _PopoverAnimationVertical2 = __webpack_require__(672);
+	var _PopoverAnimationVertical2 = __webpack_require__(670);
 
 	var _PopoverAnimationVertical3 = _interopRequireDefault(_PopoverAnimationVertical2);
 
@@ -72813,7 +72702,7 @@
 	exports.default = _Popover3.default;
 
 /***/ },
-/* 672 */
+/* 670 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -72961,188 +72850,188 @@
 	exports.default = PopoverAnimationVertical;
 
 /***/ },
-/* 673 */
+/* 671 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hljs = __webpack_require__(674);
+	var hljs = __webpack_require__(672);
 
-	hljs.registerLanguage('1c', __webpack_require__(675));
-	hljs.registerLanguage('abnf', __webpack_require__(676));
-	hljs.registerLanguage('accesslog', __webpack_require__(677));
-	hljs.registerLanguage('actionscript', __webpack_require__(678));
-	hljs.registerLanguage('ada', __webpack_require__(679));
-	hljs.registerLanguage('apache', __webpack_require__(680));
-	hljs.registerLanguage('applescript', __webpack_require__(681));
-	hljs.registerLanguage('cpp', __webpack_require__(682));
-	hljs.registerLanguage('arduino', __webpack_require__(683));
-	hljs.registerLanguage('armasm', __webpack_require__(684));
-	hljs.registerLanguage('xml', __webpack_require__(685));
-	hljs.registerLanguage('asciidoc', __webpack_require__(686));
-	hljs.registerLanguage('aspectj', __webpack_require__(687));
-	hljs.registerLanguage('autohotkey', __webpack_require__(688));
-	hljs.registerLanguage('autoit', __webpack_require__(689));
-	hljs.registerLanguage('avrasm', __webpack_require__(690));
-	hljs.registerLanguage('awk', __webpack_require__(691));
-	hljs.registerLanguage('axapta', __webpack_require__(692));
-	hljs.registerLanguage('bash', __webpack_require__(693));
-	hljs.registerLanguage('basic', __webpack_require__(694));
-	hljs.registerLanguage('bnf', __webpack_require__(695));
-	hljs.registerLanguage('brainfuck', __webpack_require__(696));
-	hljs.registerLanguage('cal', __webpack_require__(697));
-	hljs.registerLanguage('capnproto', __webpack_require__(698));
-	hljs.registerLanguage('ceylon', __webpack_require__(699));
-	hljs.registerLanguage('clean', __webpack_require__(700));
-	hljs.registerLanguage('clojure', __webpack_require__(701));
-	hljs.registerLanguage('clojure-repl', __webpack_require__(702));
-	hljs.registerLanguage('cmake', __webpack_require__(703));
-	hljs.registerLanguage('coffeescript', __webpack_require__(704));
-	hljs.registerLanguage('coq', __webpack_require__(705));
-	hljs.registerLanguage('cos', __webpack_require__(706));
-	hljs.registerLanguage('crmsh', __webpack_require__(707));
-	hljs.registerLanguage('crystal', __webpack_require__(708));
-	hljs.registerLanguage('cs', __webpack_require__(709));
-	hljs.registerLanguage('csp', __webpack_require__(710));
-	hljs.registerLanguage('css', __webpack_require__(711));
-	hljs.registerLanguage('d', __webpack_require__(712));
-	hljs.registerLanguage('markdown', __webpack_require__(713));
-	hljs.registerLanguage('dart', __webpack_require__(714));
-	hljs.registerLanguage('delphi', __webpack_require__(715));
-	hljs.registerLanguage('diff', __webpack_require__(716));
-	hljs.registerLanguage('django', __webpack_require__(717));
-	hljs.registerLanguage('dns', __webpack_require__(718));
-	hljs.registerLanguage('dockerfile', __webpack_require__(719));
-	hljs.registerLanguage('dos', __webpack_require__(720));
-	hljs.registerLanguage('dsconfig', __webpack_require__(721));
-	hljs.registerLanguage('dts', __webpack_require__(722));
-	hljs.registerLanguage('dust', __webpack_require__(723));
-	hljs.registerLanguage('ebnf', __webpack_require__(724));
-	hljs.registerLanguage('elixir', __webpack_require__(725));
-	hljs.registerLanguage('elm', __webpack_require__(726));
-	hljs.registerLanguage('ruby', __webpack_require__(727));
-	hljs.registerLanguage('erb', __webpack_require__(728));
-	hljs.registerLanguage('erlang-repl', __webpack_require__(729));
-	hljs.registerLanguage('erlang', __webpack_require__(730));
-	hljs.registerLanguage('excel', __webpack_require__(731));
-	hljs.registerLanguage('fix', __webpack_require__(732));
-	hljs.registerLanguage('flix', __webpack_require__(733));
-	hljs.registerLanguage('fortran', __webpack_require__(734));
-	hljs.registerLanguage('fsharp', __webpack_require__(735));
-	hljs.registerLanguage('gams', __webpack_require__(736));
-	hljs.registerLanguage('gauss', __webpack_require__(737));
-	hljs.registerLanguage('gcode', __webpack_require__(738));
-	hljs.registerLanguage('gherkin', __webpack_require__(739));
-	hljs.registerLanguage('glsl', __webpack_require__(740));
-	hljs.registerLanguage('go', __webpack_require__(741));
-	hljs.registerLanguage('golo', __webpack_require__(742));
-	hljs.registerLanguage('gradle', __webpack_require__(743));
-	hljs.registerLanguage('groovy', __webpack_require__(744));
-	hljs.registerLanguage('haml', __webpack_require__(745));
-	hljs.registerLanguage('handlebars', __webpack_require__(746));
-	hljs.registerLanguage('haskell', __webpack_require__(747));
-	hljs.registerLanguage('haxe', __webpack_require__(748));
-	hljs.registerLanguage('hsp', __webpack_require__(749));
-	hljs.registerLanguage('htmlbars', __webpack_require__(750));
-	hljs.registerLanguage('http', __webpack_require__(751));
-	hljs.registerLanguage('hy', __webpack_require__(752));
-	hljs.registerLanguage('inform7', __webpack_require__(753));
-	hljs.registerLanguage('ini', __webpack_require__(754));
-	hljs.registerLanguage('irpf90', __webpack_require__(755));
-	hljs.registerLanguage('java', __webpack_require__(756));
-	hljs.registerLanguage('javascript', __webpack_require__(757));
-	hljs.registerLanguage('json', __webpack_require__(758));
-	hljs.registerLanguage('julia', __webpack_require__(759));
-	hljs.registerLanguage('kotlin', __webpack_require__(760));
-	hljs.registerLanguage('lasso', __webpack_require__(761));
-	hljs.registerLanguage('ldif', __webpack_require__(762));
-	hljs.registerLanguage('leaf', __webpack_require__(763));
-	hljs.registerLanguage('less', __webpack_require__(764));
-	hljs.registerLanguage('lisp', __webpack_require__(765));
-	hljs.registerLanguage('livecodeserver', __webpack_require__(766));
-	hljs.registerLanguage('livescript', __webpack_require__(767));
-	hljs.registerLanguage('llvm', __webpack_require__(768));
-	hljs.registerLanguage('lsl', __webpack_require__(769));
-	hljs.registerLanguage('lua', __webpack_require__(770));
-	hljs.registerLanguage('makefile', __webpack_require__(771));
-	hljs.registerLanguage('mathematica', __webpack_require__(772));
-	hljs.registerLanguage('matlab', __webpack_require__(773));
-	hljs.registerLanguage('maxima', __webpack_require__(774));
-	hljs.registerLanguage('mel', __webpack_require__(775));
-	hljs.registerLanguage('mercury', __webpack_require__(776));
-	hljs.registerLanguage('mipsasm', __webpack_require__(777));
-	hljs.registerLanguage('mizar', __webpack_require__(778));
-	hljs.registerLanguage('perl', __webpack_require__(779));
-	hljs.registerLanguage('mojolicious', __webpack_require__(780));
-	hljs.registerLanguage('monkey', __webpack_require__(781));
-	hljs.registerLanguage('moonscript', __webpack_require__(782));
-	hljs.registerLanguage('n1ql', __webpack_require__(783));
-	hljs.registerLanguage('nginx', __webpack_require__(784));
-	hljs.registerLanguage('nimrod', __webpack_require__(785));
-	hljs.registerLanguage('nix', __webpack_require__(786));
-	hljs.registerLanguage('nsis', __webpack_require__(787));
-	hljs.registerLanguage('objectivec', __webpack_require__(788));
-	hljs.registerLanguage('ocaml', __webpack_require__(789));
-	hljs.registerLanguage('openscad', __webpack_require__(790));
-	hljs.registerLanguage('oxygene', __webpack_require__(791));
-	hljs.registerLanguage('parser3', __webpack_require__(792));
-	hljs.registerLanguage('pf', __webpack_require__(793));
-	hljs.registerLanguage('php', __webpack_require__(794));
-	hljs.registerLanguage('pony', __webpack_require__(795));
-	hljs.registerLanguage('powershell', __webpack_require__(796));
-	hljs.registerLanguage('processing', __webpack_require__(797));
-	hljs.registerLanguage('profile', __webpack_require__(798));
-	hljs.registerLanguage('prolog', __webpack_require__(799));
-	hljs.registerLanguage('protobuf', __webpack_require__(800));
-	hljs.registerLanguage('puppet', __webpack_require__(801));
-	hljs.registerLanguage('purebasic', __webpack_require__(802));
-	hljs.registerLanguage('python', __webpack_require__(803));
-	hljs.registerLanguage('q', __webpack_require__(804));
-	hljs.registerLanguage('qml', __webpack_require__(805));
-	hljs.registerLanguage('r', __webpack_require__(806));
-	hljs.registerLanguage('rib', __webpack_require__(807));
-	hljs.registerLanguage('roboconf', __webpack_require__(808));
-	hljs.registerLanguage('rsl', __webpack_require__(809));
-	hljs.registerLanguage('ruleslanguage', __webpack_require__(810));
-	hljs.registerLanguage('rust', __webpack_require__(811));
-	hljs.registerLanguage('scala', __webpack_require__(812));
-	hljs.registerLanguage('scheme', __webpack_require__(813));
-	hljs.registerLanguage('scilab', __webpack_require__(814));
-	hljs.registerLanguage('scss', __webpack_require__(815));
-	hljs.registerLanguage('smali', __webpack_require__(816));
-	hljs.registerLanguage('smalltalk', __webpack_require__(817));
-	hljs.registerLanguage('sml', __webpack_require__(818));
-	hljs.registerLanguage('sqf', __webpack_require__(819));
-	hljs.registerLanguage('sql', __webpack_require__(820));
-	hljs.registerLanguage('stan', __webpack_require__(821));
-	hljs.registerLanguage('stata', __webpack_require__(822));
-	hljs.registerLanguage('step21', __webpack_require__(823));
-	hljs.registerLanguage('stylus', __webpack_require__(824));
-	hljs.registerLanguage('subunit', __webpack_require__(825));
-	hljs.registerLanguage('swift', __webpack_require__(826));
-	hljs.registerLanguage('taggerscript', __webpack_require__(827));
-	hljs.registerLanguage('yaml', __webpack_require__(828));
-	hljs.registerLanguage('tap', __webpack_require__(829));
-	hljs.registerLanguage('tcl', __webpack_require__(830));
-	hljs.registerLanguage('tex', __webpack_require__(831));
-	hljs.registerLanguage('thrift', __webpack_require__(832));
-	hljs.registerLanguage('tp', __webpack_require__(833));
-	hljs.registerLanguage('twig', __webpack_require__(834));
-	hljs.registerLanguage('typescript', __webpack_require__(835));
-	hljs.registerLanguage('vala', __webpack_require__(836));
-	hljs.registerLanguage('vbnet', __webpack_require__(837));
-	hljs.registerLanguage('vbscript', __webpack_require__(838));
-	hljs.registerLanguage('vbscript-html', __webpack_require__(839));
-	hljs.registerLanguage('verilog', __webpack_require__(840));
-	hljs.registerLanguage('vhdl', __webpack_require__(841));
-	hljs.registerLanguage('vim', __webpack_require__(842));
-	hljs.registerLanguage('x86asm', __webpack_require__(843));
-	hljs.registerLanguage('xl', __webpack_require__(844));
-	hljs.registerLanguage('xquery', __webpack_require__(845));
-	hljs.registerLanguage('zephir', __webpack_require__(846));
+	hljs.registerLanguage('1c', __webpack_require__(673));
+	hljs.registerLanguage('abnf', __webpack_require__(674));
+	hljs.registerLanguage('accesslog', __webpack_require__(675));
+	hljs.registerLanguage('actionscript', __webpack_require__(676));
+	hljs.registerLanguage('ada', __webpack_require__(677));
+	hljs.registerLanguage('apache', __webpack_require__(678));
+	hljs.registerLanguage('applescript', __webpack_require__(679));
+	hljs.registerLanguage('cpp', __webpack_require__(680));
+	hljs.registerLanguage('arduino', __webpack_require__(681));
+	hljs.registerLanguage('armasm', __webpack_require__(682));
+	hljs.registerLanguage('xml', __webpack_require__(683));
+	hljs.registerLanguage('asciidoc', __webpack_require__(684));
+	hljs.registerLanguage('aspectj', __webpack_require__(685));
+	hljs.registerLanguage('autohotkey', __webpack_require__(686));
+	hljs.registerLanguage('autoit', __webpack_require__(687));
+	hljs.registerLanguage('avrasm', __webpack_require__(688));
+	hljs.registerLanguage('awk', __webpack_require__(689));
+	hljs.registerLanguage('axapta', __webpack_require__(690));
+	hljs.registerLanguage('bash', __webpack_require__(691));
+	hljs.registerLanguage('basic', __webpack_require__(692));
+	hljs.registerLanguage('bnf', __webpack_require__(693));
+	hljs.registerLanguage('brainfuck', __webpack_require__(694));
+	hljs.registerLanguage('cal', __webpack_require__(695));
+	hljs.registerLanguage('capnproto', __webpack_require__(696));
+	hljs.registerLanguage('ceylon', __webpack_require__(697));
+	hljs.registerLanguage('clean', __webpack_require__(698));
+	hljs.registerLanguage('clojure', __webpack_require__(699));
+	hljs.registerLanguage('clojure-repl', __webpack_require__(700));
+	hljs.registerLanguage('cmake', __webpack_require__(701));
+	hljs.registerLanguage('coffeescript', __webpack_require__(702));
+	hljs.registerLanguage('coq', __webpack_require__(703));
+	hljs.registerLanguage('cos', __webpack_require__(704));
+	hljs.registerLanguage('crmsh', __webpack_require__(705));
+	hljs.registerLanguage('crystal', __webpack_require__(706));
+	hljs.registerLanguage('cs', __webpack_require__(707));
+	hljs.registerLanguage('csp', __webpack_require__(708));
+	hljs.registerLanguage('css', __webpack_require__(709));
+	hljs.registerLanguage('d', __webpack_require__(710));
+	hljs.registerLanguage('markdown', __webpack_require__(711));
+	hljs.registerLanguage('dart', __webpack_require__(712));
+	hljs.registerLanguage('delphi', __webpack_require__(713));
+	hljs.registerLanguage('diff', __webpack_require__(714));
+	hljs.registerLanguage('django', __webpack_require__(715));
+	hljs.registerLanguage('dns', __webpack_require__(716));
+	hljs.registerLanguage('dockerfile', __webpack_require__(717));
+	hljs.registerLanguage('dos', __webpack_require__(718));
+	hljs.registerLanguage('dsconfig', __webpack_require__(719));
+	hljs.registerLanguage('dts', __webpack_require__(720));
+	hljs.registerLanguage('dust', __webpack_require__(721));
+	hljs.registerLanguage('ebnf', __webpack_require__(722));
+	hljs.registerLanguage('elixir', __webpack_require__(723));
+	hljs.registerLanguage('elm', __webpack_require__(724));
+	hljs.registerLanguage('ruby', __webpack_require__(725));
+	hljs.registerLanguage('erb', __webpack_require__(726));
+	hljs.registerLanguage('erlang-repl', __webpack_require__(727));
+	hljs.registerLanguage('erlang', __webpack_require__(728));
+	hljs.registerLanguage('excel', __webpack_require__(729));
+	hljs.registerLanguage('fix', __webpack_require__(730));
+	hljs.registerLanguage('flix', __webpack_require__(731));
+	hljs.registerLanguage('fortran', __webpack_require__(732));
+	hljs.registerLanguage('fsharp', __webpack_require__(733));
+	hljs.registerLanguage('gams', __webpack_require__(734));
+	hljs.registerLanguage('gauss', __webpack_require__(735));
+	hljs.registerLanguage('gcode', __webpack_require__(736));
+	hljs.registerLanguage('gherkin', __webpack_require__(737));
+	hljs.registerLanguage('glsl', __webpack_require__(738));
+	hljs.registerLanguage('go', __webpack_require__(739));
+	hljs.registerLanguage('golo', __webpack_require__(740));
+	hljs.registerLanguage('gradle', __webpack_require__(741));
+	hljs.registerLanguage('groovy', __webpack_require__(742));
+	hljs.registerLanguage('haml', __webpack_require__(743));
+	hljs.registerLanguage('handlebars', __webpack_require__(744));
+	hljs.registerLanguage('haskell', __webpack_require__(745));
+	hljs.registerLanguage('haxe', __webpack_require__(746));
+	hljs.registerLanguage('hsp', __webpack_require__(747));
+	hljs.registerLanguage('htmlbars', __webpack_require__(748));
+	hljs.registerLanguage('http', __webpack_require__(749));
+	hljs.registerLanguage('hy', __webpack_require__(750));
+	hljs.registerLanguage('inform7', __webpack_require__(751));
+	hljs.registerLanguage('ini', __webpack_require__(752));
+	hljs.registerLanguage('irpf90', __webpack_require__(753));
+	hljs.registerLanguage('java', __webpack_require__(754));
+	hljs.registerLanguage('javascript', __webpack_require__(755));
+	hljs.registerLanguage('json', __webpack_require__(756));
+	hljs.registerLanguage('julia', __webpack_require__(757));
+	hljs.registerLanguage('kotlin', __webpack_require__(758));
+	hljs.registerLanguage('lasso', __webpack_require__(759));
+	hljs.registerLanguage('ldif', __webpack_require__(760));
+	hljs.registerLanguage('leaf', __webpack_require__(761));
+	hljs.registerLanguage('less', __webpack_require__(762));
+	hljs.registerLanguage('lisp', __webpack_require__(763));
+	hljs.registerLanguage('livecodeserver', __webpack_require__(764));
+	hljs.registerLanguage('livescript', __webpack_require__(765));
+	hljs.registerLanguage('llvm', __webpack_require__(766));
+	hljs.registerLanguage('lsl', __webpack_require__(767));
+	hljs.registerLanguage('lua', __webpack_require__(768));
+	hljs.registerLanguage('makefile', __webpack_require__(769));
+	hljs.registerLanguage('mathematica', __webpack_require__(770));
+	hljs.registerLanguage('matlab', __webpack_require__(771));
+	hljs.registerLanguage('maxima', __webpack_require__(772));
+	hljs.registerLanguage('mel', __webpack_require__(773));
+	hljs.registerLanguage('mercury', __webpack_require__(774));
+	hljs.registerLanguage('mipsasm', __webpack_require__(775));
+	hljs.registerLanguage('mizar', __webpack_require__(776));
+	hljs.registerLanguage('perl', __webpack_require__(777));
+	hljs.registerLanguage('mojolicious', __webpack_require__(778));
+	hljs.registerLanguage('monkey', __webpack_require__(779));
+	hljs.registerLanguage('moonscript', __webpack_require__(780));
+	hljs.registerLanguage('n1ql', __webpack_require__(781));
+	hljs.registerLanguage('nginx', __webpack_require__(782));
+	hljs.registerLanguage('nimrod', __webpack_require__(783));
+	hljs.registerLanguage('nix', __webpack_require__(784));
+	hljs.registerLanguage('nsis', __webpack_require__(785));
+	hljs.registerLanguage('objectivec', __webpack_require__(786));
+	hljs.registerLanguage('ocaml', __webpack_require__(787));
+	hljs.registerLanguage('openscad', __webpack_require__(788));
+	hljs.registerLanguage('oxygene', __webpack_require__(789));
+	hljs.registerLanguage('parser3', __webpack_require__(790));
+	hljs.registerLanguage('pf', __webpack_require__(791));
+	hljs.registerLanguage('php', __webpack_require__(792));
+	hljs.registerLanguage('pony', __webpack_require__(793));
+	hljs.registerLanguage('powershell', __webpack_require__(794));
+	hljs.registerLanguage('processing', __webpack_require__(795));
+	hljs.registerLanguage('profile', __webpack_require__(796));
+	hljs.registerLanguage('prolog', __webpack_require__(797));
+	hljs.registerLanguage('protobuf', __webpack_require__(798));
+	hljs.registerLanguage('puppet', __webpack_require__(799));
+	hljs.registerLanguage('purebasic', __webpack_require__(800));
+	hljs.registerLanguage('python', __webpack_require__(801));
+	hljs.registerLanguage('q', __webpack_require__(802));
+	hljs.registerLanguage('qml', __webpack_require__(803));
+	hljs.registerLanguage('r', __webpack_require__(804));
+	hljs.registerLanguage('rib', __webpack_require__(805));
+	hljs.registerLanguage('roboconf', __webpack_require__(806));
+	hljs.registerLanguage('rsl', __webpack_require__(807));
+	hljs.registerLanguage('ruleslanguage', __webpack_require__(808));
+	hljs.registerLanguage('rust', __webpack_require__(809));
+	hljs.registerLanguage('scala', __webpack_require__(810));
+	hljs.registerLanguage('scheme', __webpack_require__(811));
+	hljs.registerLanguage('scilab', __webpack_require__(812));
+	hljs.registerLanguage('scss', __webpack_require__(813));
+	hljs.registerLanguage('smali', __webpack_require__(814));
+	hljs.registerLanguage('smalltalk', __webpack_require__(815));
+	hljs.registerLanguage('sml', __webpack_require__(816));
+	hljs.registerLanguage('sqf', __webpack_require__(817));
+	hljs.registerLanguage('sql', __webpack_require__(818));
+	hljs.registerLanguage('stan', __webpack_require__(819));
+	hljs.registerLanguage('stata', __webpack_require__(820));
+	hljs.registerLanguage('step21', __webpack_require__(821));
+	hljs.registerLanguage('stylus', __webpack_require__(822));
+	hljs.registerLanguage('subunit', __webpack_require__(823));
+	hljs.registerLanguage('swift', __webpack_require__(824));
+	hljs.registerLanguage('taggerscript', __webpack_require__(825));
+	hljs.registerLanguage('yaml', __webpack_require__(826));
+	hljs.registerLanguage('tap', __webpack_require__(827));
+	hljs.registerLanguage('tcl', __webpack_require__(828));
+	hljs.registerLanguage('tex', __webpack_require__(829));
+	hljs.registerLanguage('thrift', __webpack_require__(830));
+	hljs.registerLanguage('tp', __webpack_require__(831));
+	hljs.registerLanguage('twig', __webpack_require__(832));
+	hljs.registerLanguage('typescript', __webpack_require__(833));
+	hljs.registerLanguage('vala', __webpack_require__(834));
+	hljs.registerLanguage('vbnet', __webpack_require__(835));
+	hljs.registerLanguage('vbscript', __webpack_require__(836));
+	hljs.registerLanguage('vbscript-html', __webpack_require__(837));
+	hljs.registerLanguage('verilog', __webpack_require__(838));
+	hljs.registerLanguage('vhdl', __webpack_require__(839));
+	hljs.registerLanguage('vim', __webpack_require__(840));
+	hljs.registerLanguage('x86asm', __webpack_require__(841));
+	hljs.registerLanguage('xl', __webpack_require__(842));
+	hljs.registerLanguage('xquery', __webpack_require__(843));
+	hljs.registerLanguage('zephir', __webpack_require__(844));
 
 	module.exports = hljs;
 
 /***/ },
-/* 674 */
+/* 672 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -73972,7 +73861,7 @@
 
 
 /***/ },
-/* 675 */
+/* 673 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -74055,7 +73944,7 @@
 	};
 
 /***/ },
-/* 676 */
+/* 674 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74130,7 +74019,7 @@
 	};
 
 /***/ },
-/* 677 */
+/* 675 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74172,7 +74061,7 @@
 	};
 
 /***/ },
-/* 678 */
+/* 676 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74250,7 +74139,7 @@
 	};
 
 /***/ },
-/* 679 */
+/* 677 */
 /***/ function(module, exports) {
 
 	module.exports = // We try to support full Ada2012
@@ -74427,7 +74316,7 @@
 	};
 
 /***/ },
-/* 680 */
+/* 678 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74477,7 +74366,7 @@
 	};
 
 /***/ },
-/* 681 */
+/* 679 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74567,7 +74456,7 @@
 	};
 
 /***/ },
-/* 682 */
+/* 680 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74737,7 +74626,7 @@
 	};
 
 /***/ },
-/* 683 */
+/* 681 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74841,7 +74730,7 @@
 	};
 
 /***/ },
-/* 684 */
+/* 682 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -74937,7 +74826,7 @@
 	};
 
 /***/ },
-/* 685 */
+/* 683 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -75044,7 +74933,7 @@
 	};
 
 /***/ },
-/* 686 */
+/* 684 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -75236,7 +75125,7 @@
 	};
 
 /***/ },
-/* 687 */
+/* 685 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -75384,7 +75273,7 @@
 	};
 
 /***/ },
-/* 688 */
+/* 686 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -75436,7 +75325,7 @@
 	};
 
 /***/ },
-/* 689 */
+/* 687 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -75576,7 +75465,7 @@
 	};
 
 /***/ },
-/* 690 */
+/* 688 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -75642,7 +75531,7 @@
 	};
 
 /***/ },
-/* 691 */
+/* 689 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -75699,7 +75588,7 @@
 	};
 
 /***/ },
-/* 692 */
+/* 690 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -75734,7 +75623,7 @@
 	};
 
 /***/ },
-/* 693 */
+/* 691 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -75813,7 +75702,7 @@
 	};
 
 /***/ },
-/* 694 */
+/* 692 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -75868,7 +75757,7 @@
 	};
 
 /***/ },
-/* 695 */
+/* 693 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -75901,7 +75790,7 @@
 	};
 
 /***/ },
-/* 696 */
+/* 694 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -75942,7 +75831,7 @@
 	};
 
 /***/ },
-/* 697 */
+/* 695 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76026,7 +75915,7 @@
 	};
 
 /***/ },
-/* 698 */
+/* 696 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76079,7 +75968,7 @@
 	};
 
 /***/ },
-/* 699 */
+/* 697 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76150,7 +76039,7 @@
 	};
 
 /***/ },
-/* 700 */
+/* 698 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76179,7 +76068,7 @@
 	};
 
 /***/ },
-/* 701 */
+/* 699 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76278,7 +76167,7 @@
 	};
 
 /***/ },
-/* 702 */
+/* 700 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76297,7 +76186,7 @@
 	};
 
 /***/ },
-/* 703 */
+/* 701 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76339,7 +76228,7 @@
 	};
 
 /***/ },
-/* 704 */
+/* 702 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76489,7 +76378,7 @@
 	};
 
 /***/ },
-/* 705 */
+/* 703 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76560,7 +76449,7 @@
 	};
 
 /***/ },
-/* 706 */
+/* 704 */
 /***/ function(module, exports) {
 
 	module.exports = function cos (hljs) {
@@ -76688,7 +76577,7 @@
 	};
 
 /***/ },
-/* 707 */
+/* 705 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76786,7 +76675,7 @@
 	};
 
 /***/ },
-/* 708 */
+/* 706 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -76967,7 +76856,7 @@
 	};
 
 /***/ },
-/* 709 */
+/* 707 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -77138,7 +77027,7 @@
 	};
 
 /***/ },
-/* 710 */
+/* 708 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -77164,7 +77053,7 @@
 	};
 
 /***/ },
-/* 711 */
+/* 709 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -77273,7 +77162,7 @@
 	};
 
 /***/ },
-/* 712 */
+/* 710 */
 /***/ function(module, exports) {
 
 	module.exports = /**
@@ -77535,7 +77424,7 @@
 	};
 
 /***/ },
-/* 713 */
+/* 711 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -77647,7 +77536,7 @@
 	};
 
 /***/ },
-/* 714 */
+/* 712 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -77752,7 +77641,7 @@
 	};
 
 /***/ },
-/* 715 */
+/* 713 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -77825,7 +77714,7 @@
 	};
 
 /***/ },
-/* 716 */
+/* 714 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -77869,7 +77758,7 @@
 	};
 
 /***/ },
-/* 717 */
+/* 715 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -77937,7 +77826,7 @@
 	};
 
 /***/ },
-/* 718 */
+/* 716 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -77970,7 +77859,7 @@
 	};
 
 /***/ },
-/* 719 */
+/* 717 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -77996,7 +77885,7 @@
 	};
 
 /***/ },
-/* 720 */
+/* 718 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78052,7 +77941,7 @@
 	};
 
 /***/ },
-/* 721 */
+/* 719 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78103,7 +77992,7 @@
 	};
 
 /***/ },
-/* 722 */
+/* 720 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78231,7 +78120,7 @@
 	};
 
 /***/ },
-/* 723 */
+/* 721 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78267,7 +78156,7 @@
 	};
 
 /***/ },
-/* 724 */
+/* 722 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78304,7 +78193,7 @@
 	};
 
 /***/ },
-/* 725 */
+/* 723 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78405,7 +78294,7 @@
 	};
 
 /***/ },
-/* 726 */
+/* 724 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78492,7 +78381,7 @@
 	};
 
 /***/ },
-/* 727 */
+/* 725 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78672,7 +78561,7 @@
 	};
 
 /***/ },
-/* 728 */
+/* 726 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78691,7 +78580,7 @@
 	};
 
 /***/ },
-/* 729 */
+/* 727 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78741,7 +78630,7 @@
 	};
 
 /***/ },
-/* 730 */
+/* 728 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78891,7 +78780,7 @@
 	};
 
 /***/ },
-/* 731 */
+/* 729 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78943,7 +78832,7 @@
 	};
 
 /***/ },
-/* 732 */
+/* 730 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -78976,7 +78865,7 @@
 	};
 
 /***/ },
-/* 733 */
+/* 731 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -79025,7 +78914,7 @@
 	};
 
 /***/ },
-/* 734 */
+/* 732 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -79100,7 +78989,7 @@
 	};
 
 /***/ },
-/* 735 */
+/* 733 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -79163,7 +79052,7 @@
 	};
 
 /***/ },
-/* 736 */
+/* 734 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -79321,7 +79210,7 @@
 	};
 
 /***/ },
-/* 737 */
+/* 735 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -79549,7 +79438,7 @@
 	};
 
 /***/ },
-/* 738 */
+/* 736 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -79620,7 +79509,7 @@
 	};
 
 /***/ },
-/* 739 */
+/* 737 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -79661,7 +79550,7 @@
 	};
 
 /***/ },
-/* 740 */
+/* 738 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -79782,7 +79671,7 @@
 	};
 
 /***/ },
-/* 741 */
+/* 739 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -79840,7 +79729,7 @@
 	};
 
 /***/ },
-/* 742 */
+/* 740 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -79867,7 +79756,7 @@
 	};
 
 /***/ },
-/* 743 */
+/* 741 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -79906,7 +79795,7 @@
 	};
 
 /***/ },
-/* 744 */
+/* 742 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80004,7 +79893,7 @@
 	};
 
 /***/ },
-/* 745 */
+/* 743 */
 /***/ function(module, exports) {
 
 	module.exports = // TODO support filter tags like :javascript, support inline HTML
@@ -80115,7 +80004,7 @@
 	};
 
 /***/ },
-/* 746 */
+/* 744 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80153,7 +80042,7 @@
 	};
 
 /***/ },
-/* 747 */
+/* 745 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80279,7 +80168,7 @@
 	};
 
 /***/ },
-/* 748 */
+/* 746 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80395,7 +80284,7 @@
 	};
 
 /***/ },
-/* 749 */
+/* 747 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80445,7 +80334,7 @@
 	};
 
 /***/ },
-/* 750 */
+/* 748 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80520,7 +80409,7 @@
 	};
 
 /***/ },
-/* 751 */
+/* 749 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80565,7 +80454,7 @@
 	};
 
 /***/ },
-/* 752 */
+/* 750 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80671,7 +80560,7 @@
 	};
 
 /***/ },
-/* 753 */
+/* 751 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80732,7 +80621,7 @@
 	};
 
 /***/ },
-/* 754 */
+/* 752 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80802,7 +80691,7 @@
 	};
 
 /***/ },
-/* 755 */
+/* 753 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80882,7 +80771,7 @@
 	};
 
 /***/ },
-/* 756 */
+/* 754 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -80994,7 +80883,7 @@
 	};
 
 /***/ },
-/* 757 */
+/* 755 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -81169,7 +81058,7 @@
 	};
 
 /***/ },
-/* 758 */
+/* 756 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -81210,7 +81099,7 @@
 	};
 
 /***/ },
-/* 759 */
+/* 757 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -81392,7 +81281,7 @@
 	};
 
 /***/ },
-/* 760 */
+/* 758 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -81570,7 +81459,7 @@
 	};
 
 /***/ },
-/* 761 */
+/* 759 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -81737,7 +81626,7 @@
 	};
 
 /***/ },
-/* 762 */
+/* 760 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -81764,7 +81653,7 @@
 	};
 
 /***/ },
-/* 763 */
+/* 761 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -81808,7 +81697,7 @@
 	};
 
 /***/ },
-/* 764 */
+/* 762 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -81952,7 +81841,7 @@
 	};
 
 /***/ },
-/* 765 */
+/* 763 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -82059,7 +81948,7 @@
 	};
 
 /***/ },
-/* 766 */
+/* 764 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -82220,7 +82109,7 @@
 	};
 
 /***/ },
-/* 767 */
+/* 765 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -82373,7 +82262,7 @@
 	};
 
 /***/ },
-/* 768 */
+/* 766 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -82466,7 +82355,7 @@
 	};
 
 /***/ },
-/* 769 */
+/* 767 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -82553,7 +82442,7 @@
 	};
 
 /***/ },
-/* 770 */
+/* 768 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -82623,7 +82512,7 @@
 	};
 
 /***/ },
-/* 771 */
+/* 769 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -82672,7 +82561,7 @@
 	};
 
 /***/ },
-/* 772 */
+/* 770 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -82734,7 +82623,7 @@
 	};
 
 /***/ },
-/* 773 */
+/* 771 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -82826,7 +82715,7 @@
 	};
 
 /***/ },
-/* 774 */
+/* 772 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -83236,7 +83125,7 @@
 	};
 
 /***/ },
-/* 775 */
+/* 773 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -83465,7 +83354,7 @@
 	};
 
 /***/ },
-/* 776 */
+/* 774 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -83551,7 +83440,7 @@
 	};
 
 /***/ },
-/* 777 */
+/* 775 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -83641,7 +83530,7 @@
 	};
 
 /***/ },
-/* 778 */
+/* 776 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -83664,7 +83553,7 @@
 	};
 
 /***/ },
-/* 779 */
+/* 777 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -83825,7 +83714,7 @@
 	};
 
 /***/ },
-/* 780 */
+/* 778 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -83854,7 +83743,7 @@
 	};
 
 /***/ },
-/* 781 */
+/* 779 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -83933,7 +83822,7 @@
 	};
 
 /***/ },
-/* 782 */
+/* 780 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84049,7 +83938,7 @@
 	};
 
 /***/ },
-/* 783 */
+/* 781 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84122,7 +84011,7 @@
 	};
 
 /***/ },
-/* 784 */
+/* 782 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84219,7 +84108,7 @@
 	};
 
 /***/ },
-/* 785 */
+/* 783 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84278,7 +84167,7 @@
 	};
 
 /***/ },
-/* 786 */
+/* 784 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84331,7 +84220,7 @@
 	};
 
 /***/ },
-/* 787 */
+/* 785 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84441,7 +84330,7 @@
 	};
 
 /***/ },
-/* 788 */
+/* 786 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84536,7 +84425,7 @@
 	};
 
 /***/ },
-/* 789 */
+/* 787 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84611,7 +84500,7 @@
 	};
 
 /***/ },
-/* 790 */
+/* 788 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84672,7 +84561,7 @@
 	};
 
 /***/ },
-/* 791 */
+/* 789 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84746,7 +84635,7 @@
 	};
 
 /***/ },
-/* 792 */
+/* 790 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84798,7 +84687,7 @@
 	};
 
 /***/ },
-/* 793 */
+/* 791 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84854,7 +84743,7 @@
 	};
 
 /***/ },
-/* 794 */
+/* 792 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -84985,7 +84874,7 @@
 	};
 
 /***/ },
-/* 795 */
+/* 793 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85080,7 +84969,7 @@
 	};
 
 /***/ },
-/* 796 */
+/* 794 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85165,7 +85054,7 @@
 	};
 
 /***/ },
-/* 797 */
+/* 795 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85217,7 +85106,7 @@
 	};
 
 /***/ },
-/* 798 */
+/* 796 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85251,7 +85140,7 @@
 	};
 
 /***/ },
-/* 799 */
+/* 797 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85343,7 +85232,7 @@
 	};
 
 /***/ },
-/* 800 */
+/* 798 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85383,7 +85272,7 @@
 	};
 
 /***/ },
-/* 801 */
+/* 799 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85502,7 +85391,7 @@
 	};
 
 /***/ },
-/* 802 */
+/* 800 */
 /***/ function(module, exports) {
 
 	module.exports = // Base deafult colors in PB IDE: background: #FFFFDF; foreground: #000000;
@@ -85564,7 +85453,7 @@
 	};
 
 /***/ },
-/* 803 */
+/* 801 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85684,7 +85573,7 @@
 	};
 
 /***/ },
-/* 804 */
+/* 802 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85711,7 +85600,7 @@
 	};
 
 /***/ },
-/* 805 */
+/* 803 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85884,7 +85773,7 @@
 	};
 
 /***/ },
-/* 806 */
+/* 804 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85958,7 +85847,7 @@
 	};
 
 /***/ },
-/* 807 */
+/* 805 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -85989,7 +85878,7 @@
 	};
 
 /***/ },
-/* 808 */
+/* 806 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86060,7 +85949,7 @@
 	};
 
 /***/ },
-/* 809 */
+/* 807 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86100,7 +85989,7 @@
 	};
 
 /***/ },
-/* 810 */
+/* 808 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86165,7 +86054,7 @@
 	};
 
 /***/ },
-/* 811 */
+/* 809 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86277,7 +86166,7 @@
 	};
 
 /***/ },
-/* 812 */
+/* 810 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86396,7 +86285,7 @@
 	};
 
 /***/ },
-/* 813 */
+/* 811 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86544,7 +86433,7 @@
 	};
 
 /***/ },
-/* 814 */
+/* 812 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86602,7 +86491,7 @@
 	};
 
 /***/ },
-/* 815 */
+/* 813 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86704,7 +86593,7 @@
 	};
 
 /***/ },
-/* 816 */
+/* 814 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86764,7 +86653,7 @@
 	};
 
 /***/ },
-/* 817 */
+/* 815 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86818,7 +86707,7 @@
 	};
 
 /***/ },
-/* 818 */
+/* 816 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -86888,7 +86777,7 @@
 	};
 
 /***/ },
-/* 819 */
+/* 817 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -87263,7 +87152,7 @@
 	};
 
 /***/ },
-/* 820 */
+/* 818 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -87427,7 +87316,7 @@
 	};
 
 /***/ },
-/* 821 */
+/* 819 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -87514,7 +87403,7 @@
 	};
 
 /***/ },
-/* 822 */
+/* 820 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -87556,7 +87445,7 @@
 	};
 
 /***/ },
-/* 823 */
+/* 821 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -87607,7 +87496,7 @@
 	};
 
 /***/ },
-/* 824 */
+/* 822 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88065,7 +87954,7 @@
 	};
 
 /***/ },
-/* 825 */
+/* 823 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88103,7 +87992,7 @@
 	};
 
 /***/ },
-/* 826 */
+/* 824 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88224,7 +88113,7 @@
 	};
 
 /***/ },
-/* 827 */
+/* 825 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88272,7 +88161,7 @@
 	};
 
 /***/ },
-/* 828 */
+/* 826 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88364,7 +88253,7 @@
 	};
 
 /***/ },
-/* 829 */
+/* 827 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88404,7 +88293,7 @@
 	};
 
 /***/ },
-/* 830 */
+/* 828 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88469,7 +88358,7 @@
 	};
 
 /***/ },
-/* 831 */
+/* 829 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88535,7 +88424,7 @@
 	};
 
 /***/ },
-/* 832 */
+/* 830 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88574,7 +88463,7 @@
 	};
 
 /***/ },
-/* 833 */
+/* 831 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88662,7 +88551,7 @@
 	};
 
 /***/ },
-/* 834 */
+/* 832 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88732,7 +88621,7 @@
 	};
 
 /***/ },
-/* 835 */
+/* 833 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88892,7 +88781,7 @@
 	};
 
 /***/ },
-/* 836 */
+/* 834 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -88946,7 +88835,7 @@
 	};
 
 /***/ },
-/* 837 */
+/* 835 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89006,7 +88895,7 @@
 	};
 
 /***/ },
-/* 838 */
+/* 836 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89049,7 +88938,7 @@
 	};
 
 /***/ },
-/* 839 */
+/* 837 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89065,7 +88954,7 @@
 	};
 
 /***/ },
-/* 840 */
+/* 838 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89168,7 +89057,7 @@
 	};
 
 /***/ },
-/* 841 */
+/* 839 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89233,7 +89122,7 @@
 	};
 
 /***/ },
-/* 842 */
+/* 840 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89343,7 +89232,7 @@
 	};
 
 /***/ },
-/* 843 */
+/* 841 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89483,7 +89372,7 @@
 	};
 
 /***/ },
-/* 844 */
+/* 842 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89560,7 +89449,7 @@
 	};
 
 /***/ },
-/* 845 */
+/* 843 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89635,7 +89524,7 @@
 	};
 
 /***/ },
-/* 846 */
+/* 844 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -89746,7 +89635,7 @@
 	};
 
 /***/ },
-/* 847 */
+/* 845 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -89754,8 +89643,8 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(31);
 	var findDOMNode = ReactDOM.findDOMNode;
-	var className = __webpack_require__(848);
-	var debounce = __webpack_require__(849);
+	var className = __webpack_require__(846);
+	var debounce = __webpack_require__(847);
 
 	function normalizeLineEndings(str) {
 		if (!str) return str;
@@ -89783,7 +89672,7 @@
 			};
 		},
 		getCodeMirrorInstance: function getCodeMirrorInstance() {
-			return this.props.codeMirrorInstance || __webpack_require__(850);
+			return this.props.codeMirrorInstance || __webpack_require__(848);
 		},
 		getInitialState: function getInitialState() {
 			return {
@@ -89862,7 +89751,7 @@
 	module.exports = CodeMirror;
 
 /***/ },
-/* 848 */
+/* 846 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -89916,7 +89805,7 @@
 
 
 /***/ },
-/* 849 */
+/* 847 */
 /***/ function(module, exports) {
 
 	/**
@@ -90299,7 +90188,7 @@
 
 
 /***/ },
-/* 850 */
+/* 848 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -99610,7 +99499,7 @@
 
 
 /***/ },
-/* 851 */
+/* 849 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -99618,7 +99507,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(850));
+	    mod(__webpack_require__(848));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -100418,7 +100307,7 @@
 
 
 /***/ },
-/* 852 */
+/* 850 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -100426,7 +100315,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(850));
+	    mod(__webpack_require__(848));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -100818,7 +100707,7 @@
 
 
 /***/ },
-/* 853 */
+/* 851 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -100826,7 +100715,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(850), __webpack_require__(852), __webpack_require__(854));
+	    mod(__webpack_require__(848), __webpack_require__(850), __webpack_require__(852));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "../xml/xml", "../meta"], mod);
 	  else // Plain browser env
@@ -101632,7 +101521,7 @@
 
 
 /***/ },
-/* 854 */
+/* 852 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -101640,7 +101529,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(850));
+	    mod(__webpack_require__(848));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -101852,7 +101741,7 @@
 
 
 /***/ },
-/* 855 */
+/* 853 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -101867,159 +101756,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _menuButton = __webpack_require__(575);
-
-	var _menuButton2 = _interopRequireDefault(_menuButton);
-
-	var _reactRedux = __webpack_require__(177);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ipc = __webpack_require__(223).ipcRenderer;
-
-	var shared = __webpack_require__(225);
-
-	var FlashcardViewer = function (_React$Component) {
-	  _inherits(FlashcardViewer, _React$Component);
-
-	  function FlashcardViewer() {
-	    _classCallCheck(this, FlashcardViewer);
-
-	    var _this = _possibleConstructorReturn(this, (FlashcardViewer.__proto__ || Object.getPrototypeOf(FlashcardViewer)).call(this));
-
-	    _this.state = {
-	      open: false
-	    };
-
-	    _this.getContent = _this.getContent.bind(_this);
-	    _this.prevCard = _this.prevCard.bind(_this);
-	    _this.nextCard = _this.nextCard.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(FlashcardViewer, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.unsubscribe = this.props.store.subscribe(this.storeDidUpdate);
-	      this.applyFlashcardsHanlders();
-	    }
-	  }, {
-	    key: 'componentWillUnmount',
-	    value: function componentWillUnmount() {
-	      this.unsubscribe();
-	    }
-	  }, {
-	    key: 'storeDidUpdate',
-	    value: function storeDidUpdate() {
-	      this.setState({ open: this.props.store.getState().sessionActive });
-	    }
-	  }, {
-	    key: 'getContent',
-	    value: function getContent() {
-	      var state = this.props.store.getState();
-	      return state.notes.folders[state.state.folderIndex].pages[state.state.pageIndex].content;
-	    }
-	  }, {
-	    key: 'prevCard',
-	    value: function prevCard() {
-	      this.props.store.dispatch({ type: 'PREV_FLASHCARD' });
-	    }
-	  }, {
-	    key: 'nextCard',
-	    value: function nextCard() {
-	      this.props.store.dispatch({ type: 'NEXT_FLASHCARD' });
-	    }
-	  }, {
-	    key: 'componentDidUpdate',
-	    value: function componentDidUpdate() {
-	      this.applyFlashcardsHanlders();
-	    }
-	  }, {
-	    key: 'applyFlashcardsHanlders',
-	    value: function applyFlashcardsHanlders() {
-	      var cards = document.getElementsByClassName('card');
-	      var i;
-	      for (i = 0; i < cards.length; i++) {
-	        cards[i].style.backgroundColor = "red";
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      console.log(JSON.stringify(this.props.store.getState().flashcards.flashcards));
-	      console.log(JSON.stringify(this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex]));
-	      var flashcard = this.props.store.getState().flashcards.flashcards[this.props.store.getState().flashcards.currentIndex];
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'flashcard-viewer' },
-	        _react2.default.createElement(_menuButton2.default, { className: 'prev-card-btn', label: 'Prev', onClick: function onClick() {
-	            return _this2.prevCard();
-	          } }),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'card-container' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'card-flipper' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'front' },
-	              flashcard.front
-	            ),
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'back' },
-	              flashcard.back
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'hint-btn' },
-	            _react2.default.createElement('i', { className: 'icon-lightbulb' })
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'hint' },
-	            flashcard.hint
-	          )
-	        ),
-	        _react2.default.createElement(_menuButton2.default, { className: 'next-card-btn', label: 'Next', onClick: function onClick() {
-	            return _this2.nextCard();
-	          } })
-	      );
-	    }
-	  }]);
-
-	  return FlashcardViewer;
-	}(_react2.default.Component);
-
-	exports.default = FlashcardViewer;
-
-/***/ },
-/* 856 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _dialogFolderCreate = __webpack_require__(857);
+	var _dialogFolderCreate = __webpack_require__(854);
 
 	var _dialogFolderCreate2 = _interopRequireDefault(_dialogFolderCreate);
 
@@ -102031,7 +101768,12 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements:
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-7: Desktop: Folder System: Deletion
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-8: Desktop: Folder System: Navigation
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-9: Desktop: Folder System: Open
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var shared = __webpack_require__(225);
 	var ipc = __webpack_require__(223).ipcRenderer;
@@ -102187,7 +101929,7 @@
 	exports.default = (0, _reactRedux.connect)()(FolderContainerView);
 
 /***/ },
-/* 857 */
+/* 854 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -102202,7 +101944,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog = __webpack_require__(631);
+	var _Dialog = __webpack_require__(629);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -102236,7 +101978,10 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements:
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-6: Desktop: Folder System: Creation
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var DialogFolderCreate = function (_React$Component) {
 	  _inherits(DialogFolderCreate, _React$Component);
@@ -102317,7 +102062,7 @@
 	exports.default = DialogFolderCreate;
 
 /***/ },
-/* 858 */
+/* 855 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -102342,7 +102087,9 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements: None
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var _require = __webpack_require__(223),
 	    remote = _require.remote;
@@ -102468,7 +102215,7 @@
 	exports.default = MenubarTile;
 
 /***/ },
-/* 859 */
+/* 856 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -102483,11 +102230,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _pushConflictDialog = __webpack_require__(860);
+	var _pushConflictDialog = __webpack_require__(857);
 
 	var _pushConflictDialog2 = _interopRequireDefault(_pushConflictDialog);
 
-	var _waitingDialog = __webpack_require__(861);
+	var _waitingDialog = __webpack_require__(858);
 
 	var _waitingDialog2 = _interopRequireDefault(_waitingDialog);
 
@@ -102497,7 +102244,11 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements:
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-22: Cloud Sync: Retrieve
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               - FU-23: Cloud Sync: Push
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var DialogContainer = function (_React$Component) {
 	  _inherits(DialogContainer, _React$Component);
@@ -102553,7 +102304,7 @@
 	exports.default = DialogContainer;
 
 /***/ },
-/* 860 */
+/* 857 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -102568,7 +102319,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog = __webpack_require__(631);
+	var _Dialog = __webpack_require__(629);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
@@ -102602,7 +102353,9 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements: None
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var ipc = __webpack_require__(223).ipcRenderer;
 
@@ -102692,7 +102445,7 @@
 	exports.default = PushConflictDialog;
 
 /***/ },
-/* 861 */
+/* 858 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -102707,11 +102460,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Dialog = __webpack_require__(631);
+	var _Dialog = __webpack_require__(629);
 
 	var _Dialog2 = _interopRequireDefault(_Dialog);
 
-	var _CircularProgress = __webpack_require__(862);
+	var _CircularProgress = __webpack_require__(859);
 
 	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
 
@@ -102729,7 +102482,9 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Relevant requirements: None
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
 
 	var WaitingDialog = function (_React$Component) {
 	  _inherits(WaitingDialog, _React$Component);
@@ -102778,7 +102533,7 @@
 	exports.default = WaitingDialog;
 
 /***/ },
-/* 862 */
+/* 859 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -102788,7 +102543,7 @@
 	});
 	exports.default = undefined;
 
-	var _CircularProgress = __webpack_require__(863);
+	var _CircularProgress = __webpack_require__(860);
 
 	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
 
@@ -102797,7 +102552,7 @@
 	exports.default = _CircularProgress2.default;
 
 /***/ },
-/* 863 */
+/* 860 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -103069,7 +102824,7 @@
 	exports.default = CircularProgress;
 
 /***/ },
-/* 864 */
+/* 861 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -103079,7 +102834,7 @@
 	});
 	exports.default = undefined;
 
-	var _Snackbar = __webpack_require__(865);
+	var _Snackbar = __webpack_require__(862);
 
 	var _Snackbar2 = _interopRequireDefault(_Snackbar);
 
@@ -103088,7 +102843,7 @@
 	exports.default = _Snackbar2.default;
 
 /***/ },
-/* 865 */
+/* 862 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -103137,11 +102892,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _ClickAwayListener = __webpack_require__(669);
+	var _ClickAwayListener = __webpack_require__(667);
 
 	var _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);
 
-	var _SnackbarBody = __webpack_require__(866);
+	var _SnackbarBody = __webpack_require__(863);
 
 	var _SnackbarBody2 = _interopRequireDefault(_SnackbarBody);
 
@@ -103402,7 +103157,7 @@
 	exports.default = Snackbar;
 
 /***/ },
-/* 866 */
+/* 863 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -103432,7 +103187,7 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _withWidth = __webpack_require__(867);
+	var _withWidth = __webpack_require__(864);
 
 	var _withWidth2 = _interopRequireDefault(_withWidth);
 
@@ -103571,7 +103326,7 @@
 	exports.default = (0, _withWidth2.default)()(SnackbarBody);
 
 /***/ },
-/* 867 */
+/* 864 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -103721,11 +103476,11 @@
 	}
 
 /***/ },
-/* 868 */
+/* 865 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(7);
-	var defaultClickRejectionStrategy = __webpack_require__(869);
+	var defaultClickRejectionStrategy = __webpack_require__(866);
 
 	var alreadyInjected = false;
 
@@ -103747,13 +103502,13 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(41).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(870)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(867)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 869 */
+/* 866 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -103764,7 +103519,7 @@
 
 
 /***/ },
-/* 870 */
+/* 867 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -103788,14 +103543,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(871);
+	var EventConstants = __webpack_require__(868);
 	var EventPluginUtils = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(40);
 	var SyntheticUIEvent = __webpack_require__(74);
-	var TouchEventUtils = __webpack_require__(872);
+	var TouchEventUtils = __webpack_require__(869);
 	var ViewportMetrics = __webpack_require__(75);
 
-	var keyOf = __webpack_require__(873);
+	var keyOf = __webpack_require__(870);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -103941,7 +103696,7 @@
 
 
 /***/ },
-/* 871 */
+/* 868 */
 /***/ function(module, exports) {
 
 	/**
@@ -104037,7 +103792,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 872 */
+/* 869 */
 /***/ function(module, exports) {
 
 	/**
@@ -104085,7 +103840,7 @@
 
 
 /***/ },
-/* 873 */
+/* 870 */
 /***/ function(module, exports) {
 
 	"use strict";
