@@ -1,0 +1,133 @@
+$fa-font-path:"../../node_modules/font-awesome/fonts";
+@import '../../node_modules/font-awesome/scss/font-awesome';
+
+$mdi-font-path:"../../node_modules/mdi/fonts";
+@import '../../node_modules/mdi/scss/materialdesignicons';
+
+.icon-cloud-push {
+  @extend .mdi;
+  @extend .mdi-cloud-upload;
+  @extend .mdi-36px;
+}
+
+.icon-cloud-pull {
+  @extend .mdi;
+  @extend .mdi-cloud-download;
+  @extend .mdi-36px;
+}
+
+.icon-spinning-cog {
+  @extend .fa;
+  @extend .fa-cog;
+  @extend .fa-spin;
+  @extend .fa-2x;
+  @extend .fa-fw;
+}
+
+.icon-lightbulb {
+  @extend .mdi;
+  @extend .mdi-lightbulb;
+}
+
+.icon-cards {
+  @extend .mdi;
+  @extend .mdi-cards;
+}
+
+.icon-close {
+  @extend .mdi;
+  @extend .mdi-window-close;
+}
+
+.icon-minimize {
+  @extend .mdi;
+  @extend .mdi-window-minimize;
+}
+
+.icon-maximize {
+  @extend .mdi;
+  @extend .mdi-window-maximize;
+}
+
+.icon-restore {
+  @extend .mdi;
+  @extend .mdi-window-restore;
+}
+
+.icon-user {
+  @extend .fa;
+  @extend .fa-user;
+}
+
+.icon-bars {
+  @extend .mdi;
+  @extend .mdi-menu;
+}
+
+.icon-tree {
+  @extend .fa;
+  @extend .fa-tree;
+}
+
+.icon-square-solid {
+  @extend .fa;
+  @extend .fa-square;
+}
+
+.icon-arrow-left {
+  @extend .mdi;
+  @extend .mdi-page-first;
+}
+
+.icon-arrow-right {
+  @extend .mdi;
+  @extend .mdi-page-last;
+}
+
+.icon-search-plus {
+  @extend .mdi;
+  @extend .mdi-magnify-plus;
+}
+
+.icon-search-minus {
+  @extend .mdi;
+  @extend .mdi-magnify-minus;
+}
+
+.icon-folderview {
+  @extend .mdi;
+  @extend .mdi-folder-multiple;
+}
+
+.icon-minus {
+  @extend .fa;
+  @extend .fa-minus;
+  font-weight: 100;
+}
+
+.icon-square {
+  @extend .fa;
+  @extend .fa-square-o;
+  font-weight: 100;
+}
+
+.icon-clone {
+  @extend .fa;
+  @extend .fa-clone;
+}
+
+.icon-times {
+  @extend .fa;
+  @extend .fa-times;
+  font-weight: 100;
+}
+
+.icon-file-text {
+  @extend .mdi;
+  @extend .mdi-book-open-page-variant;
+}
+
+.icon-trash {
+  @extend .fa;
+  @extend .fa-trash;
+}
